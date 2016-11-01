@@ -1,0 +1,704 @@
+html {
+  font-size: 12px;
+}
+#editorPage_carret_div {
+    outline: 0;
+    vertical-align:top;
+    position:absolute;
+    z-index:100;
+    overflow:hidden;
+    background-color:rgba(0,0,255,0);
+    visibility: hidden;
+}
+#editorPage_carret_div :focus{
+    outline: none;
+}
+input::-moz-focus-inner {
+    border: 0;
+}
+
+.fabric{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color:white;
+/*    border-color: #aff;used for textshade color
+    border-width: 1px;used for textshade width
+    border:thin dotted #000000;*/
+}
+.contextmenu{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color: rgba(218,165,32,0.5);
+/*    border-width: 1px;
+    border-color: rgb(218,165,32);*/
+/*    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);*/
+}
+.contextitems{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color: rgba(255,255,255,0.7);
+    box-shadow:0px 0px 6px 6px rgba(255,255,255,0.9);
+    text-shadow:1px 1px 3px rgba(218,165,32,1);
+    padding: 2px;
+}
+
+.contextitems:hover{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color: rgba(255,255,255,1);
+
+}
+
+
+.preview{
+    
+    background-color:white;
+/*    border-color: #aff;used for textshade color
+    border-width: 1px;used for textshade width
+    border:thin dotted #000000;*/
+
+}
+
+.control{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color:#cccccc;
+
+/*    border-color: #aff;used for textshade color
+    border-width: 1px;used for textshade width
+    font-style: italic;
+    border:thin dotted #FF0000;*/
+}
+
+.test{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color:rgba(255,255,222,0);
+    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
+/*    border-color:rgba(170,221,170,0.7);
+    border-width: 1px;*/
+/*    border-color: #aff;used for textshade color
+    border-width: 1px;used for textshade width
+    font-style: italic;
+    border:thin dotted #FF0000;*/
+}
+.testLabel{
+/*    my-hover-color:#9aabb;*/
+    /*cursor:text;*/
+/*    font-family : sans-serif;*/
+    font-size: 3em;
+    font-weight:bold;
+    /*background-color: #555;*/
+    border-color: rgba(255,255,255,0.2);
+    border-width: 1px;
+    color:rgba(255,255,255,0.7);
+/*    font-style:italic;*/
+    cursor:pointer;
+    padding: 5px;
+    padding-top: 5px;
+    text-align:justify;
+    text-shadow: 2px 2px 2px rgba(0,0,0,1);
+    letter-spacing : 1.5em;
+    word-spacing : 0px;
+    text-indent: 0px;
+    transition: width 2s, height 4s;
+}
+
+.testLabel:hover{
+    background-color:rgba(255,255,255,0.5);
+}
+.testLabel:focus{
+    
+}
+/*.testLabel:active{
+    background-color:rgba(255,255,255,0.7);
+    cursor:progress;
+}*/
+
+.tabRed{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(221,170,120,0.7);
+    border-color:rgba(221,170,120,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.tabGreen{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(170,221,170,0.7);
+    border-color:rgba(170,221,170,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.tabBlue{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(170,170,221,0.7);
+    border-color:rgba(170,170,221,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.tabWhite{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(221,221,221,0.7);
+    border-color:rgba(221,221,221,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+
+.stats{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color:#cccccc;
+/*    border-color: #aff;
+    border-width: 1px;
+    font-style: italic;
+    border:thin dotted #00FF00;*/
+}
+
+.loginBtns{
+/*    my-hover-color:#9aabb;*/
+    font-family: Arial;
+    font-size: 2em;
+    background-color: #4488cc;
+    /*background-color:#aff;*/
+    border-color: #aaaaaa;/*used for textshade color*/
+    border-width: 0px;/*used for textshade width*/
+    color:#000000;
+    font-style: italic;
+    text-align:center;
+    font-weight:normal;
+}
+
+.loginTxt{
+/*    my-hover-color:#9aabb;*/
+    font-family: Arial;
+    font-size: 12px;
+    background-color: #eeeeee;
+    /*background-color:#aff;*/
+    border-color: #aaaaaa;/*used for textshade color*/
+    border-width: 0px;/*used for textshade width*/
+    color:#000000;
+    font-style: italic;
+    text-align:left;
+    font-weight:normal;
+}
+
+/*canvas{
+    font-family: Arial;
+    font-size: 0.9em;
+    background-color:white;
+    border-color: #aff;used for textshade color
+    border-width: 2px;used for textshade width
+    color:#a5a;
+    font-style: italic;
+    text-align:left;
+    font-weight:normal;
+    border:thin dotted #FF0000;
+}*/
+.listStuff{
+/*    my-hover-color:#9aabb;*/
+    font-family: Arial;
+    font-size: 10px;
+    background-color: #555;
+    border-color: #aaa;/*used for textshade color*/
+    border-width: 1px;/*used for textshade width*/
+    color:red;
+    font-style: italic;
+    padding: 10px;
+    padding-top: 2px;
+    text-align:left;
+    font-weight:normal;
+}
+.textStuff{
+/*    my-hover-color:#9aabb;*/
+    cursor:text;
+    font-family : sans-serif;
+    font-size: 0.7em;
+    font-weight:bold;
+    background-color: #555;
+    border-color: #444;/*used for textshade color*/
+    border-width: 1px;/*used for textshade width*/
+    color:white;
+    font-style:italic;
+    padding: 5px;
+    padding-top: 5px;
+    text-align:justify;
+/*    text-shadow: 2px 2px 2px rgba(255,255,255,0.5);*/
+    letter-spacing : 0px;
+    word-spacing : 0px;
+    text-indent: 10px;
+    transition: width 2s, height 4s;
+}
+.textStuff:hover{
+
+    background-color: #777;
+    cursor:text;
+}
+.textStuff:focus{
+
+    border-top-color: #d00;
+    cursor:text;
+}
+.textStuff:active{
+    
+    font-size: 0.7em;
+    
+    border-top-color: #00d;
+    background-color: rgba(255,255,255,1);
+    color:rgba(0,0,0,1);
+    cursor:text;
+/*    text-shadow: 2px 2px 2px rgba(0,0,0,0.5);*/
+}
+
+.label1{
+/*    my-hover-color:#9aabb;*/
+    font-family: Arial;
+    font-size: 0.75em;
+/*    background-color: #555;*/
+    padding: 3px;
+    color:#ffffff;
+    text-align:justify;
+}
+.btnGreen{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(170,221,170,0.7);
+    border-color:rgba(170,221,170,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    cursor:pointer;
+    
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.btnGreen:hover{
+    background-color:rgba(170,221,170,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,221,170,0.7),7px 2px red;
+    font-weight:bold;
+}
+.btnGreen:focus{
+    
+}
+.btnGreen:active{
+    background-color:rgba(170,221,170,1);
+    box-shadow:inset 2px 2px 17px rgba(170,221,170,0.7),7px 2px red;
+    cursor:progress;
+}
+.btnBlue1{
+    font-family: Arial;
+    font-size: 0.75em;
+    background-color:rgba(170,170,221,0.7);
+    border-color:rgba(170,170,221,0.7);
+    border-width: 1px;
+    padding: 2px;
+    color:greenyellow;
+    font-style: italic;
+    text-align:justify;
+    font-weight:normal;
+    cursor:pointer;
+    
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.btnBlue1:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.btnBlue1:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.btnBlue1:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.btnWhite1{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(221,221,221,0.7);
+    border-color:rgba(221,221,221,0.7);
+    border-width: 1px;
+    padding: 2px;
+    color:greenyellow;
+    font-style: italic;
+    text-align:justify;
+    font-weight:normal;
+    cursor:pointer;
+    
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.btnWhite1:hover{
+    background-color:rgba(221,221,221,0.6);
+    box-shadow:inset 2px 2px 17px rgba(221,221,221,0.7),7px 2px red;
+}
+.btnWhite1:active{
+    
+    background-color:rgba(221,221,221,1);
+    box-shadow:inset 2px 2px 17px rgba(221,221,221,0.7),7px 2px red;
+    cursor:default;
+}
+.btnWhite1:focus{
+    font-family: Arial;
+    font-size: 10px;
+    color:#fff;
+}
+
+.btnRed1{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(221,170,120,0.7);
+    border-color:rgba(221,170,170,0.7);
+    border-width: 1px;
+    padding: 2px;
+    color:white;
+    font-style: italic;
+    text-align:justify;
+    font-weight:normal;
+    cursor:pointer;
+    
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.btnRed1:hover{
+    background-color:rgba(221,170,120,0.6);
+    box-shadow:inset 2px 2px 17px rgba(221,170,120,0.7),7px 2px red;
+}
+
+.btnRed1:active{
+    
+    background-color:rgba(221,170,120,1);
+    box-shadow:inset 2px 2px 17px rgba(221,170,120,0.7),7px 2px red;
+    cursor:default;
+}
+.btnRed1:focus{
+    font-family: Arial;
+    font-size: 10px;
+}
+.hearts1{
+    font-family: Arial;
+    font-size: 1rem;
+    background-color:rgba(255,0,0,0.5);
+    border-color: red;
+    border-width: 2px;
+    color:#200;
+    font-style:normal;
+    text-align:left;
+    font-weight:normal;
+}
+.hearts1:hover{
+    background-color:rgba(255,60,60,0.5);
+    border-color: #ffd;
+    color:#455;
+}
+.hearts1:focus{
+    border-color: gray;
+    border-width: 4px;
+    color:#22f;
+}
+.hearts1:active{
+    background-color:rgba(255,60,60,0.9);
+    color:#fff;
+}
+.hearts2{
+    font-family: Arial;
+    font-size: 1rem;
+/*    background-color:rgba(0,255,0,0.5);*/
+    border-color: green;
+    border-width: 2px;
+    color:#00f;
+    
+}
+.hearts2:hover{
+    background-color:rgba(60,255,60,0.5);
+    border-color: rgba(0,255,0,1);
+}
+.hearts2:active{
+    background-color:rgba(60,255,60,0.9);
+    
+}
+.hearts2:focus{
+    border-color: gray;
+    border-width: 4px;
+}
+
+.hearts3{
+/*    my-hover-color:#9bbaa;*/
+    font-family: Arial;
+    font-size: 2rem;
+    background-color:rgba(0,0,255,0.5);
+    border-color: blue;
+    border-width: 2px;
+    color:#0f0;
+    
+}
+
+.hearts3:hover{
+    background-color:rgba(60,60,255,0.5);
+    border-color: rgba(0,0,255,1);
+}
+.hearts3:active{
+    background-color:rgba(60,60,255,0.9);
+    
+}
+.hearts3:focus{
+    border-color: gray;
+    border-width: 4px;
+}
+
+.loginCanv{
+/*    my-hover-color:#9bbaa;*/
+
+    background-color:rgba(190,230,255,0.5);
+/*    border-color: rgba(110,200,255,0.7);
+    border-width: 1px;*/
+    color:#f00;
+    font-style:normal;
+    text-align:left;
+    font-weight:normal;
+}
+
+#header{
+    height: 50px;
+}
+#main{
+    position:absolute;
+    top:0px;
+    width: 100%;
+    height: 100%;
+    min-width: 640px;
+    z-index: 1;
+}
+#tabslabels{
+    height: 10%;
+}
+.clstabslabels{
+    float:left;
+    width:16%;
+    margin-left:3.2%;
+    height: 100%;
+    background-color:#9999aa;
+    cursor:pointer;
+    text-align: center;
+    font-size: 1.5rem;
+    border:2px solid #404049;
+}
+.clstabs{
+    position: absolute;
+    top:10%;
+    margin-top:2px;
+    margin-bottom:-4px;
+    border-top:2px solid #404049;
+    border-bottom:2px solid #404049;
+    display: none;
+    float:left;
+    width:100%;
+    height: 87%;
+    background-color:#aaaabb;
+    z-index: -1;
+    
+}
+#a1png{
+    width:100%;
+    height: 100%;
+    position: absolute;
+    z-index: -2;
+}
+#a2png{
+    width:100%;
+    height: 100%;
+    position: absolute;
+    z-index: -2;
+}
+
+#form1{
+    margin-top: 100px;
+    margin-left: 100px;
+    background-color:#aaaabb;
+}
+#tab2el{
+    font-size: 1.5rem;
+}
+#canvasDiv{
+    height: 100%;
+    width: 90%;
+}
+#canvas{
+    background-color: #ffffff;
+    margin-top: 11%;
+}
+#canvastab1{
+    position:absolute;
+    margin-top: 10px;
+    margin-left: 3.2%;
+    width: 16%;
+    border: 1px solid #404049;
+    left:0px;
+    top:0px;
+    padding: 1px;
+    
+}
+#canvastab1 td{
+    
+  
+}
+
+#canvastab2{
+    position:absolute;
+    margin-top: 10px;
+    margin-left: 82%;
+    
+    border: 1px solid #404049;
+    left:0px;
+    top:0px;
+    padding: 1px;
+    width: 16%;
+}
+#canvastab2 td{
+
+}
+#canvastab3{
+    position:absolute;
+    margin-top: 10px;
+    margin-left: 22.6%;
+    border: 1px solid #404049;
+    left:0px;
+    top:0px;
+    padding: 1px;
+    width: 16%;
+}
+#canvastab3 td{
+
+}
+
+#form2{
+    margin-top: 20px;
+    margin-left: 100px;
+}
+#langsel{
+    padding: 1px;
+    margin-top: 100px;
+    margin-left: 100px;
+}
+/*#XYtext{
+    position: absolute;
+    top:560px;
+    Left:193px;
+    width: 100px;
+    height: 20px;
+    font-size: 9px;
+}*/
+.buttoncanv1{
+    width:100%;
+    height: 50px;
+    background-color:#9999aa;
+    cursor:pointer;
+    border:1px solid #404049;
+    margin: 0px;
+    margin-top: 5px;
+}
+.buttoncanv1a{
+    position:absolute;
+    width:80%;
+    height: 50px;
+    margin: 0px;
+    margin-top: 5px;
+    
+}
+.buttoncanv1b{
+    position:absolute;
+    left:80%;
+    width:20%;
+    height: 50px;
+    margin: 0px;
+    margin-top: 5px;
+}
+.buttoncanv2{
+    width:100%;
+    height: 50px;
+/*    border:1px solid #404049;*/
+    border:1px ;
+    margin: 0px;
+    cursor:pointer;
+}
+.buttoncanv2a{
+    height: 24px;
+    margin: 0px;
+    cursor:pointer;
+}
+.buttoncanv2b{
+    width:100%;
+    height: 24px;
+/*    border:1px solid #404049;*/
+    border:1px ;
+    margin: 0px;
+    cursor:pointer;
+    
+}
+.buttonLangSel{
+    width:100%;
+    height: 50px;
+    border:1px solid #404049;
+    margin: 0px;
+    cursor:pointer;
+}
+.buttoncanv3{
+    width:100%;
+    height: 50px;
+    margin: 0px;
+    border: 1px solid transparent;
+    margin-top: 5px;
+/*    text-align: center;*/
+}
+.buttoncanv3a{
+    width:100%;
+    margin-top:2px;
+    background-color:#000000;
+    cursor:pointer;
+    margin: 0px;
+    margin-top: 5px;
+}
+
+.dynamicDiv {  
+    width: 200px;  
+    height: 100px;  
+    border: solid 1px #c0c0c0;  
+    background-color: #e1e1e1;  
+    font-size: 11px;  
+    font-family: verdana;  
+    color: #000;  
+} 
+.eltabs{
+    position:absolute;
+}
+
+#video {
+    videoWidth: 640px;
+    videoHeight: 480px;
+}
