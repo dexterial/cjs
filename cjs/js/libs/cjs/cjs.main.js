@@ -154,7 +154,8 @@ function loadPageInEditor(boolRemFirst) {
         var jsonPageEditor = window["editorPage"];
         
         jsonPageEditor.elements = $.extend(true, jsonPageEditor.elements, loadedPageAct.elements);
-        jsonPageEditor.states = $.extend(true, jsonPageEditor.states, loadedPageAct.states);
+        //jsonPageEditor.states = $.extend(true, jsonPageEditor.states, loadedPageAct.states);
+        //jsonPageEditor.state = $.extend(true, jsonPageEditor.state, loadedPageAct.state);
         jsonPageEditor.shapes = $.extend(true, jsonPageEditor.shapes, loadedPageAct.shapes);
         
         var preview = loadedPageAct.children[loadcanvas];
@@ -190,6 +191,7 @@ function resetEditorCEls(fabric,preview) {
                 //if(preview.children){
                     fabric.children[i].enabled = false;
                     fabric.children[i].events = null;
+                    fabric.children[i].states = null;
                     fabric.children[i].shape = preview.children[i].shape;
                     fabric.children[i].shape.redraw = true;
                     resetEditorCEls(fabric.children[i],preview.children[i]);
@@ -1052,18 +1054,19 @@ function cEl_presets(cEl,cEl_page){
         if(cEl.states){
             //cdebug(cEl.id,false,true,0);
             var stateNames = getKeys(cEl.states);
-            //cdebug(stateNames,false,true,0); 
+            //cdebug(stateNames,true,true,0); 
             
-            for(var i= 0,cEl_stateId,cEl_state;i< stateNames.length; i++){
+            for(var i=0,cEl_stateId,cEl_state;i< stateNames.length; i++){
                 
-//                cdebug(stateNames[i],false,true,0);
-//                cdebug(cEl_page.state[stateNames[i]],false,true,0);
-//                cdebug(cEl_page.state[stateNames[i]][0],false,true,0);
+                //cdebug(stateNames[i],false,true,0);
+                //cdebug(cEl_page.state[stateNames[i]],false,true,0);
+                //cdebug(cEl_page.state[stateNames[i]][0],false,true,0);
                 
-                if(cEl.states[stateNames[i]]){
-                    
+                if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
+                    //cEl_page.state[stateNames[i]]
+                    //cdebug(cEl.id + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0);
                     cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
-                    //cdebug(cEl_stateId,false,true,0);
+                    
 
                     cEl_state = cEl_page.states[cEl_stateId];
                     //cdebug(cEl_state,false,true,0); 

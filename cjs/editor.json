@@ -111,9 +111,7 @@
             "states":{
                 "global":{"default":"global-enabled"},
                 "ct":{
-                    "text":"text",
-                    "unfolded":"visible",
-                    "unfoldedfull":"visible"
+                    "text":"text"
                 }
             },
             "data":{
@@ -143,9 +141,7 @@
             "states":{
                 "global":{"default":"global-enabled"},
                 "ct":{
-                    "text":"text",
-                    "unfolded":"visible",
-                    "unfoldedfull":"visible"
+                    "text":"text"
                 }
             },
             "data":{
@@ -230,7 +226,6 @@
             "shape":{
                 "redraw":true,
                 "id":"rectangle-tl",
-                
                 "type":"poligon"
             },
             "states":{
