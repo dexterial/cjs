@@ -874,10 +874,11 @@ function testPointInShape(cEl){
         var angleFactor = Math.PI/180;
         var hits = 0;
         var skipFactor = 22;
+        cdebug(cEl.data.values.temp.lines3, true, false,0);
         
         for(var i = 0,startPos,endPos;i<cEl.data.values.temp.lines3.length;i++){
             
-            //cdebug(cEl.data.values.temp.lines3[i], false, false,0);
+            
             var r = cEl.data.values.temp.lines3[i].w;
             var charHeight = cEl.data.values.temp.lines3[i].fs;
             var charWidth = cEl.data.values.temp.lines3[i].w;
