@@ -874,7 +874,7 @@ function testPointInShape(cEl){
         var angleFactor = Math.PI/180;
         var hits = 0;
         var skipFactor = 22;
-        cdebug(cEl.data.values.temp.lines3, true, false,0);
+        //cdebug(cEl.data.values.temp.lines3, true, false,0);
         
         for(var i = 0,startPos,endPos;i<cEl.data.values.temp.lines3.length;i++){
             
@@ -937,7 +937,7 @@ function testPointInShape(cEl){
                             if(diff<=(180-skipFactor) || diff>=(180+skipFactor)){
                                 //cdebug("hits= " + hits + " <" + cEl.data.values.temp.lines3[i].chr + "> r= " + r + " (xPrev " + xPrev + " yPrev " + yPrev +  ") (xAct " + xAct + " yAct " + yAct + ") (x " + x + " y " + y,false,false,0);
                             
-                                cdebug( "<" + cEl.data.values.temp.lines3[i].chr + "> startPos " + startPos + " , endPos " + endPos +" , actAngle " + actAngle +" , startAngle " + startAngle +" , angle diff " + diff + ", boolFlip " + boolFlip,false,false,0);
+                                //cdebug( "<" + cEl.data.values.temp.lines3[i].chr + "> startPos " + startPos + " , endPos " + endPos +" , actAngle " + actAngle +" , startAngle " + startAngle +" , angle diff " + diff + ", boolFlip " + boolFlip,false,false,0);
                            
                                 startAngle = actAngle;
                                 

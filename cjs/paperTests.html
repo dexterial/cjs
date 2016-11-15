@@ -123,7 +123,7 @@ function drawTextAlongPath(lines,path,i,offset){
                         break;
                     }
                     var tan =  curve.getTangentAtTime(location.time);
-                    charObj.angle = toDegrees(Math.atan2(tan.y,tan.x));
+                    charObj.angle = tan.angle;//toDegrees(Math.atan2(tan.y,tan.x));
                     charObj.point = new Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
                     
                     offset = offset + charObj.w/2;
