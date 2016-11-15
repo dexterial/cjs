@@ -11,13 +11,10 @@
         
 
 var textItem = new PointText({
-	content: 'Press any key to see stuff',
+	content: 'Drag the line to see stuff',
 	point: new Point(20, 30),
 	fillColor: 'black',
 });
-
-
-
 
 var values = {
 	paths: 2,
@@ -27,83 +24,38 @@ var values = {
 	maxRadius: 90
 };
 
-var hitOptions = {
-	segments: true,
-	stroke: true,
-	fill: true,
-	tolerance: 5
-};
 
-var path3 = createPaths(new Point(0.5, 0.5),4,1,120,150,12);
-
-var path2 = createPaths(new Point(0.5, 0.5),3,1,120,150,12);
-
-var path1 = createPaths(new Point(0.5, 0.5),2.3,1,120,150,12);
-
-
-
-
-function createPaths(point,rad,delta,L,H,blob) {
-	var radiusDelta = values.maxRadius - values.minRadius;
-	var pointsDelta = values.maxPoints - values.minPoints;
-
-		var radius = values.minRadius + rad * radiusDelta ;//values.minRadius + Math.random() * radiusDelta;
-		var points = values.minPoints + Math.floor(rad * pointsDelta); //values.minPoints + Math.floor(Math.random() * pointsDelta);
-		var path = createBlob(view.size * point, radius, points, blob);//createBlob(view.size * Point.random(), radius, points);
-		var lightness = H;//(Math.random() - 0.5) * 0.4 + 0.4;
-		var hue = L;//Math.random() * 360;
-		path.fillColor = { hue: hue, saturation: 0.2, lightness: lightness };
-		path.strokeColor = 'rgba(111,111,111,0.2)';
-                //path.selected = true;
-        return path;        
-}
-
-function createBlob(center, maxRadius, points, blob) {
-	var path = new Path();
-	path.closed = true;
-	for (var i = 0; i < points; i++) {
-		var delta = new Point({
-			length: (maxRadius * 0.5) + (i/blob * maxRadius * 0.5),
-			angle: (360 / points) * i
-		});
-		path.add(center + delta);
-	}
-	path.smooth();
-	return path;
-}
-
-//path.simplify(10);
-
+var path1 = createPaths(new Point(0.5, 0.5),2.3,1,120,150,12,"a1");
+var path2 = createPaths(new Point(0.5, 0.5),3,1,120,150,12,"a2");
+var path3 = createPaths(new Point(0.5, 0.5),4,1,120,150,12,"a3");
 
 var index1 = 0;
 
 var lines1 =  [{"chr":"n","f":{"id":0},"wp":true,"pp":true,"nl":true,"sc":false,"pr":false,"w":0,"fs":12,"ls":0},{"chr":"[","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"1","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"]","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"O","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"D","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"[","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"2","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"]","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"[","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"3","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"]","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"S","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":8,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":".","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":true,"pp":true,"nl":true,"sc":false,"pr":false,"w":0,"fs":12,"ls":0},{"chr":"[","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"4","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"]","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"U","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"S","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":8,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"\\","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":".","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":true,"pp":true,"nl":true,"sc":false,"pr":false,"w":0,"fs":12,"ls":0},{"chr":"[","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"5","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"]","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"U","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"D","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":",","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":".","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":" ","f":{"id":0},"wp":false,"pp":false,"nl":true,"sc":true,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":"s","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"t","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"u","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"v","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"w","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":9,"fs":12,"ls":0},{"chr":"x","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"y","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"z","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"a","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"b","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"c","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"d","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"e","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"f","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"g","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"h","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"i","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"j","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"k","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":6,"fs":12,"ls":0},{"chr":"l","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0},{"chr":"m","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":10,"fs":12,"ls":0},{"chr":"n","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"o","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"p","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"q","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":7,"fs":12,"ls":0},{"chr":"r","f":{"id":0},"wp":false,"pp":false,"nl":false,"sc":false,"pr":true,"w":4,"fs":12,"ls":0},{"chr":".","f":{"id":0},"wp":true,"pp":false,"nl":false,"sc":false,"pr":true,"w":3,"fs":12,"ls":0}];
+
+    
 function onKeyDown(event) {
-    
-    var startChar = 0;
-    drawTextAlongPath(lines1,path1,startChar,150);
-    
-    drawTextAlongPath(lines1,path2,startChar,120);
-    
-    drawTextAlongPath(lines1,path3,startChar,110);
-    
-    //start=0;
-    //for(var charObj,curve; i < lines.length; i ++){
-    //    if(!path2.curves[i-j]){
-    //        j = i;
-    //        break;  
-    //    }
-    //    charObj = lines[i];
-    //    curve = path2.curves[i-j];
-        //drawCharAtCurve(charObj,curve);
-    //}
-    
-    //textItem.content = JSON.stringify(path.curves.length) + " vs " + i;
-    //textItem.content = path1.curves[0].getTangentAtTime(0); 
-    
+    //console.log("start event");
+
+    resetTextPath();
 }
 
-
+function resetTextPath(){
+    var startIndex = 0;
+    var offset = 0;
+    
+    //project.clear();
+    project.activeLayer.removeChildren();
+    project.activeLayer.addChild(path1);
+    project.activeLayer.addChild(path2);
+    project.activeLayer.addChild(path3);
+    project.activeLayer.addChild(textItem);
+    
+    
+    startIndex = drawTextAlongPath(lines1,path1,startIndex,50);
+    startIndex = drawTextAlongPath(lines1,path2,startIndex,65);
+    startIndex = drawTextAlongPath(lines1,path3,startIndex,80);
+}
 
 var zzz = {"chr":"O","f":{"id":0},"wp":true,"pp":false,"nl":true,"sc":false,"pr":true,"w":9,"fs":12,"ls":0};
 
@@ -142,106 +94,59 @@ function toRadians (angle) {
   return angle * (Math.PI / 180);
 }
 
-function drawCharAtCurve(charObj,curve){
-    
-        if( charObj.w > 0 ){
-            curve.divide(charObj.w,false);
-            var tan =  curve.getTangentAtTime(0);
-            var angle = Math.atan2(tan.y,tan.x);
-            var arccos = Math.cos(angle);
-            
-            var charPoint = (curve.point1 + curve.point2)/2;
-            
-            // TODO precompute the char positioning
-            //var offset = new Point(tan.y*charObj.w/2,tan.x*charObj.ls/2);
-            //var offset = new Point(charObj.w/2,charObj.ls/2);
-            var offset = new Point(charPoint.x,charPoint.y + charObj.fs*0.2);
-            
-            var textItem1 = new PointText({
-                    content: charObj.chr,
-                    point: offset,
-                    fillColor: 'blue',
-                    rotation: toDegrees(angle)
-            });
-            
-            
-            var pathBd = new Path.Rectangle(textItem1.bounds);
-            pathBd.fillColor = 'rgba(111,111,111,0)';
-            
-            
-            //var size = new Size(10, 5);
-            //var rect = new Path.Rectangle(curve.point1, size);
-            
-            //var pathPoint = new Path.Circle({
-            //    center: curve.point1,
-            //    radius: 1,
-            //    fillColor: 'red'
-            //});
-            //var pathPoint = new Path.Circle({
-            //    center: curve.point1 + tan,
-            //    radius: 1,
-            //    fillColor: 'green'
-            //});
-        }
-    
-}
-
-function drawTextAlongPath(lines,path1,i,offset){
+function drawTextAlongPath(lines,path,i,offset){
     
     //var i = 0;
     //var j = 0;
     //var offset=0;
     var showCP = false;
-
-    for(var j=0;j<path1.curves.length;j++){
-        var curve = path1.curves[j];
-        curveLen = curve.length;
+    if(showCP)console.log("start " + i); 
+    var boolIsSet = path.lastPos ? true:false;
+    
+    for(var j=0;j<path.curves.length;j++){
+        var curve = path.curves[j];
+        var curveLen = curve.length;
         //console.log(curveLen);
 
-        for(var charObj; i < lines.length; i ++){
+        for(var charObj ; i < lines.length; i ++){
             charObj = lines[i];
-            //console.log(i + " " + charObj.w);
+            //console.log(i + " " + charObj.chr);
             
             if( charObj.w > 0 ){
                 
-                if(!charObj.point){
+                //if(!charObj.point){
                     offset = offset + charObj.w/2;
                     var location = curve.getLocationAt(offset);
                     if(!location){
                         offset = - curveLen + offset - charObj.w/2;
+                        //startPos = i;
                         break;
                     }
-                  
                     var tan =  curve.getTangentAtTime(location.time);
-                    charObj.point = new Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
                     charObj.angle = toDegrees(Math.atan2(tan.y,tan.x));
+                    charObj.point = new Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
+                    
                     offset = offset + charObj.w/2;
                     
-                }
-                
-                //drawChar(charObj);
-
-                var textItem1 = new PointText({
-                    content: charObj.chr,
-                    point: charObj.point,
-                    fillColor: 'blue',
-                    rotation: charObj.angle
-                });
-
-                if(showCP){
-
-                    var pathPoint = new Path.Circle({
-                        center: charObj.point,
-                        radius: 1,
-                        fillColor: 'red'
-                    });
-                    var pathPoint = new Path.Circle({
-                        center: location.point,
-                        radius: 1,
-                        fillColor: 'green'
-                    });
-                }
-
+                    if(showCP){
+                        var pathPoint = new Path.Circle({
+                            center: location.point,
+                            radius: 1,
+                            fillColor: 'green'
+                        });
+                    }
+                    
+                    
+                    drawChar(charObj,showCP);
+                    
+                //    path.lastPos = i;
+                    
+                //}else{
+                //    drawChar(charObj,showCP);
+                //    if(boolIsSet){
+                //        if(i === path.lastPos)break;
+                //    }
+                //}
             }
         }
         if(showCP){
@@ -251,30 +156,132 @@ function drawTextAlongPath(lines,path1,i,offset){
                 fillColor: 'black'
             });
         }
+        //break;
     }
+    //path.lastPos = startPos;
+    if(showCP)console.log("end " + i);
+    return i;
 }
 
-// While the user drags the mouse, points are added to the path
-// at the position of the mouse:
+function drawChar(charObj,showCP){
+    
+    var textItem1 = new PointText({
+        content: charObj.chr,
+        point: charObj.point,
+        fillColor: 'blue',
+        rotation: charObj.angle
+    });
+
+    if(showCP){
+        var pathPoint = new Path.Circle({
+            center: charObj.point,
+            radius: 1,
+            fillColor: 'red'
+        });
+    }
+    
+}
+
+
+var hitOptions = {
+        class: Path,
+	segments: true,
+	stroke: true,
+	fill: true,
+	tolerance: 5
+};
+
+var segment, path;
+var movePath = false;
+function onMouseDown(event) {
+	segment = path = null;
+	var hitResult = project.hitTest(event.point, hitOptions);
+	if (!hitResult)
+		return;
+            
+        textItem.content = JSON.stringify(hitResult.item.uid);
+        //console.log(JSON.stringify(hitResult.item.uid));
+            
+	if (event.modifiers.shift) {
+		if (hitResult.type == 'segment') {
+			hitResult.segment.remove();
+		};
+		return;
+	}
+
+	if (hitResult) {
+		path = hitResult.item;
+		if (hitResult.type == 'segment') {
+			segment = hitResult.segment;
+		} else if (hitResult.type == 'stroke') {
+			var location = hitResult.location;
+			segment = path.insert(location.index + 1, event.point);
+			path.smooth();
+		}
+                
+                
+                
+	}
+	movePath = hitResult.type == 'fill';
+	if (movePath)
+		project.activeLayer.addChild(hitResult.item);
+}
+
+function onMouseUp(event){
+    
+    
+    resetTextPath();
+}
+
+function onMouseMove(event) {
+        
+        
+    
+	project.activeLayer.selected = false;
+	//if (event.item)
+		//event.item.selected = true;
+}
+
 function onMouseDrag(event) {
-
+	if (segment) {
+		segment.point += event.delta;
+		path.smooth();
+	} else if (path) {
+		path.position += event.delta;
+	}
+        
 }
 
-// When the mouse is released, we simplify the path:
-function onMouseUp(event) {
 
+function createPaths(point,rad,delta,L,H,blob,id) {
+	var radiusDelta = values.maxRadius - values.minRadius;
+	var pointsDelta = values.maxPoints - values.minPoints;
+
+		var radius = values.minRadius + rad * radiusDelta ;//values.minRadius + Math.random() * radiusDelta;
+		var points = values.minPoints + Math.floor(rad * pointsDelta); //values.minPoints + Math.floor(Math.random() * pointsDelta);
+		var path = createBlob(view.size * point, radius, points, blob);//createBlob(view.size * Point.random(), radius, points);
+		var lightness = H;//(Math.random() - 0.5) * 0.4 + 0.4;
+		var hue = L;//Math.random() * 360;
+		path.fillColor = 'rgba(111,111,111,0)';
+		path.strokeColor = 'rgba(111,111,111,0.2)';
+                path.uid = id;
+                //path.selected = true;
+        return path;        
 }
 
-var textItem2 = new PointText({
-	content: 'z',
-	point: new Point(20, 30),
-	fillColor: 'black',
-});
-
-
-//function onKeyDown(event){
-
-//}
+function createBlob(center, maxRadius, points, blob) {
+	var path = new Path();
+	path.closed = true;
+	for (var i = 0; i < points; i++) {
+		var delta = new Point({
+			length: (maxRadius * 0.5) + (i/blob * maxRadius * 0.5),
+			angle: (360 / points) * i
+		});
+		path.add(center + delta);
+	}
+	path.smooth();
+	return path;
+}
 
     </script>
 </head>
