@@ -1,0 +1,20 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+if($_POST['strUserAuth']){
+    $strUserAuth =  $_POST['strUserAuth'];
+    echo chkUserAuth($strUserAuth);
+}
+
+function chkUserAuth($strUserAuth){
+    if ($strUserAuth === "username") {
+        return 1;
+    }else{
+        return -1;
+    }
+};
