@@ -38,6 +38,9 @@ var GLOBAL_rem = getRootElementFontSize();
 
 var GLOBAL_loaded = false;
 var GLOBAL_renderer = false;
+
+
+
 //window.setInterval(function(){cdebug("zz",false,true)},100);
 
 // load json from file, to be changed to allow loading json from external file or from local storage or from server directly
@@ -746,6 +749,30 @@ function draw_cEl_page(cEl){
 
 var boolImgLoaded = false;
 
+function setGetProject(cEl_canv,name){
+    try {
+        
+        for(var i = 0; i<projects.length; i++){
+            if(projects[i].name && projects[i].name === name){
+                if(paper.project.name && paper.project.name!==name){
+                    projects[i].activate();
+                    cdebug(!paper.project.name);
+                    return true;
+                }
+            }
+        }
+        paper.setup(cEl_canv);
+        paper.project.name = name;
+        
+        return true;
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3);
+        return false;
+    }
+} 
+
+
 function draw_cEl_canvas(cEl) {
     
     try {
@@ -801,7 +828,9 @@ function draw_cEl_canvas(cEl) {
         
         //cEl_canv.contentEditable = true;
         var boolRedraw = false;
-        paper.setup(cEl_canv);
+        
+        setGetProject(cEl_canv,cEl.pageId + "_" + cEl.layerId + "_canvas");
+
         
         if(cEl.style.calc["background-image"]){
             var url = cEl.style.calc["background-image"];
@@ -900,8 +929,38 @@ function draw_cEl_shape(cEl) {
         
         cEl_setPaperPath(cEl, cEl.shape, true, false);
         
-        cEl.shape.path.strokeColor = 'green';
-        //cEl.shape.path.fillColor = 'blue';
+        
+        var fillColor, strokeColor, lineWidth;
+        if(cEl_layer.debug){
+            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
+            var cEl_index = window[editIndex];
+            boolDrawCp = cEl_index ? true : false;
+            
+            boolDrawCp = boolDrawCp && (cEl_index.parentId + cEl_index.id === cEl.parentId + cEl.id);
+            if(boolDrawCp){
+                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
+                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
+                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
+            }else{
+                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
+                lineWidth = 1;
+                strokeColor = "rgba(0,0,0,0.5)";
+            }
+        }else{
+            fillColor = cEl.style.calc["background-color"];
+            lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
+            strokeColor = cEl.style.calc["border-top-color"];
+        }
+        
+        if(fillColor){
+            cEl.shape.path.fillColor = fillColor;
+        }
+        if(strokeColor){
+            cEl.shape.path.strokeColor = strokeColor;
+            cEl.shape.path.strokeWidth = lineWidth;
+        }
+        
+        
         
         var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
         var cEl_ctx = cEl_canv.getContext('2d');
@@ -909,7 +968,6 @@ function draw_cEl_shape(cEl) {
         
         
         paper.view.draw();
-        
         
         
         return true;
@@ -1570,6 +1628,8 @@ function checkPointInShape(cEl){
                     switch(cEl.shape.detection){
                         case "border":
                             return checkPointInBorder(cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y,cEl.shape.temp.cpBorder.x1,cEl.shape.temp.cpBorder.y1,eventholder.metrics.xy);
+                            
+                            
                         break;
                         case "bordersquare":
                             var intSqrSide = Math.max(cEl.shape.temp.cpBorder.x1-cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y1-cEl.shape.temp.cpBorder.y)/2;
@@ -1634,7 +1694,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         var x0,y0,x,y,x1,y1,x2,y2,wF,hF,cpMP;
         var i=0;
         var scaleCP=[1,1];
-        var cElPath;
+        var cElPath = new paper.Path();
         var cpArray = [];
         var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
         var cEl_parent = window[cEl.parentId];
@@ -1672,12 +1732,14 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
         
         //var GLOBAL_Path2D = checkPath2D();
-        //cElPath = new paper.CompoundPath();
-        cElPath = new paper.Path();
+
+        
+        
+        //cdebug(cEl.pageId + "_" + cEl.layerId + "_" + cEl.id,false,false,0);
         
 //        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
         cpMP = shapeContainer.temp.cpMp;
-
+        cElPath.name = cEl.parentId + "_" + cEl.id;
         
         switch(shapeContainer.type){
 
@@ -1686,125 +1748,61 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                 x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                 y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
 
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
- 
                 cElPath.moveTo(x, y);
                 
                 for(i = 1; i < pointsLen; i = i + 1){
-//                    x=scaleCP[0]*points[i][0]+cpMP[0];
-//                    y=scaleCP[1]*points[i][1]+cpMP[1];
                     x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
                     y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-                
-//                    if(boolSetCP){
-//                        cpArray.push([x, y, 0, i]);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                    }
-                    
                     cElPath.lineTo(x, y); 
                 }
+                //cElPath.closed = true;
                 
             break;
-
+                
             case "quadratic":// Poligon  Shape Quadratic Points
-                //cEl_ctx.beginPath();
-//                x=scaleCP[0]*points[0][0]+cpMP[0];
-//                y=scaleCP[1]*points[0][1]+cpMP[1];
+
                 x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                 y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
                 
-//                console.log("0 " + i + " ; " + [x,y]);
-                
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
                 cElPath.moveTo(x, y);
 
-                
                 for(i = 0; i < pointsLen - 2; i = i + 2){ //len
-
-//                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-//                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
                     x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
                     y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
                     x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
                     y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    
-                    //console.log("1 " + i + " ; " + x + " " + y + " ; " + x1 + " " + y1 + " ");
-                    
-//                    if(boolSetCP){
-//                        cpArray.push([x1, y1, 0, i+2]);
-//                        cpArray.push([x, y, 1, i+1]);
-//
-//
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                    }
-
                     cElPath.quadraticCurveTo(x,y,x1,y1); 
                 }
                 switch(pointsLen-i){
                     case 2:
-//                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y1=scaleCP[1]*points[0][1]+cpMP[1];
-//                        console.log("1 " + i + " ; " + [x1,y1]);
-    
+
                         x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
                         y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
                         x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                         y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-//                        console.log("2 " + i + " ; " + [x,y] + " ; " + " " + [x1,y1]);
-                        
-//                        if(boolSetCP){
-//                            cpArray.push([x, y, 1, i]);
-//                    
-//                    
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                        }
-
                         cElPath.quadraticCurveTo(x,y,x1,y1);
                     break;
                     case 1:
-//                        x=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y=scaleCP[1]*points[0][1]+cpMP[1];
+                        
                         x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                         y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-//                        console.log("3 " + i + " " + x + " " + y + " " + x1 + " " + y1 + " ");
-                        
-//                        if(boolSetCP){
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        }
-
                         cElPath.lineTo(x, y);
                     break;
                 }
+                //cElPath.closed = true;
             break;
 
             case "bezier":// Poligon  Poligon  Shape Bezier Points
-
-//                x=scaleCP[0]*points[0][0]+cpMP[0];
+                
+                //                x=scaleCP[0]*points[0][0]+cpMP[0];
 //                y=scaleCP[1]*points[0][1]+cpMP[1];
-//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                cElPath.moveTo(x, y);
+                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+                cElPath.moveTo(x, y);
                 
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
+
                 
-                for(i = 0; i < pointsLen - 4; i = i + 3){
+                for(i = 0; i < pointsLen - 3; i = i + 3){
 
 //                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
 //                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
@@ -1812,141 +1810,114 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
 //                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
 //                    x2=scaleCP[0]*points[i+3][0]+cpMP[0];
 //                    y2=scaleCP[1]*points[i+3][1]+cpMP[1];
-//                    var strSVG = "M";
-//                    strSVG += point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
-//                    strSVG += ",";
-//                    strSVG += point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-//                    strSVG += " C";
-//                    strSVG +=  point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                    strSVG += ",";
-//                    strSVG +=  point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                    strSVG += " ";
-//                    strSVG +=  point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-//                    strSVG += ",";
-//                    strSVG +=  point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-//                    strSVG += " ";
-//                    strSVG +=  point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
-//                    strSVG += ",";
-//                    strSVG +=  point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
-//                    var path = new paper.Path(strSVG);
-//                    cElPath.children.push(path);
+                    
+                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+                    x2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
+                    y2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
                     
                     
-                    x0 = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
-                    y0 = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-                    x1 = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                    y1 = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                    x2 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-                    y2 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    x = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-                    y = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    
-//                    if(boolSetCP){
-//                        cpArray.push([x2, y2, 0, i+3]);
-//                        cpArray.push([x, y, 1, i+1]);
-//                        cpArray.push([x1, y1, 2, i+2]);
-//
-//
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-//                    }
-                    var point0 = new paper.Point(x0,y0);
-                    var point1 = new paper.Point(x1-x0,y1-y0);
-                    var point2 = new paper.Point(x-x2,y-y2);
-                    var point = new paper.Point(x,y);
-//                    
-//                    //"M100,250 C100,100 400,100 400,250"
-//
-//                    var firstSegment = new paper.Segment(point0, null, point1);
-//                    var secondSegment = new paper.Segment(point, point2, null);
-                   // var strSVG = "M"+x0+",",250 C100,100 400,100 400,250"
-                    
-                    //path.closePath() ;// = false;
-                    //var path = new paper.Path(firstSegment, secondSegment);
-                    
-//                    var curve = new paper.Curve(point0,point1,point2,point);
-//                    cElPath.addSegments([curve.segment1, curve.segment2]);
-
-                    var firstPoint = point0;
-                    var firstSegment = new paper.Segment(firstPoint, null, point1);
-                    var secondPoint = point;
-                    var secondSegment = new paper.Segment(secondPoint, point2, null);
-                    cElPath.addSegments([firstSegment, secondSegment]);
-                    
+                    //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+                    cElPath.cubicCurveTo(x,y,x1,y1,x2,y2); 
                 }
+                switch(pointsLen-i){
+                    case 3:
+                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+                        
+                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+                        cElPath.cubicCurveTo(x,y,x1,y1,x2,y2);
+                        
+                    break;
+                    case 2:
+//                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+//                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+//                        x1=scaleCP[0]*points[0][0]+cpMP[0];
+//                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+
+                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+                        
+                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
+                        cElPath.quadraticCurveTo(x,y,x1,y1);
+
+                    break;
+                    case 1:
+//                        x=scaleCP[0]*points[0][0]+cpMP[0];
+//                        y=scaleCP[1]*points[0][1]+cpMP[1];
+                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+                        
+                        //cEl_ctx.lineTo(x, y);
+                        cElPath.lineTo(x, y);
+                        
+                    break;
                 
-                //shapeContainer.path = cElPath;
-                
-                
-                cElPath.closed = true;
-                //cElPath.smooth({ type: 'continuous' });
-//                switch(pointsLen-i){
-//                    case 3:
-////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                        x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-////                        y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-////                        x2=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y2=scaleCP[1]*points[0][1]+cpMP[1];
-//                        
-//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-//                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-//                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-//                        
-////                        if(boolSetCP){
-////                            cpArray.push([x, y, 1, i+1]);
-////                            cpArray.push([x1, y1, 2, i+2]);
-////
-////
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-////                        }
-//                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-//                        cElPath.curve(x,y,x1,y1,x2,y2);
-//                        
-//                    break;
-//                    case 2:
-////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+//                for(i = 0; i < pointsLen - 4; i = i + 3){
 //
-//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-////                        if(boolSetCP){
-////                            cpArray.push([x, y, 1, i+1]);
-////                    
-////                    
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-////                        }
-//                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
-//                        cElPath.quadraticCurveTo(x,y,x1,y1);
 //
-//                    break;
-//                    case 1:
-////                        x=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y=scaleCP[1]*points[0][1]+cpMP[1];
-//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-////                        if(boolSetCP){
-////                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-////                        }
-//                        //cEl_ctx.lineTo(x, y);
-//                        cElPath.lineTo(x, y);
-//                        
-//                    break;
-//                }
+////                    var strSVG = "M";
+////                    strSVG += point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
+////                    strSVG += ",";
+////                    strSVG += point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
+////                    strSVG += " C";
+////                    strSVG +=  point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+////                    strSVG += ",";
+////                    strSVG +=  point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+////                    strSVG += " ";
+////                    strSVG +=  point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+////                    strSVG += ",";
+////                    strSVG +=  point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+////                    strSVG += " ";
+////                    strSVG +=  point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
+////                    strSVG += ",";
+////                    strSVG +=  point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
+////                    var path = new paper.Path(strSVG);
+////                    cElPath.children.push(path);
+//                    
+//                    
+//                    x0 = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
+//                    y0 = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
+//                    x1 = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                    y1 = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                    x2 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y2 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    x = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    
+//                    var point0 = new paper.Point(x0,y0);
+//                    var point1 = new paper.Point(x1-x0,y1-y0);
+//                    var point2 = new paper.Point(x-x2,y-y2);
+//                    var point = new paper.Point(x,y);
+////                    
+////                    //"M100,250 C100,100 400,100 400,250"
+////
+////                    var firstSegment = new paper.Segment(point0, null, point1);
+////                    var secondSegment = new paper.Segment(point, point2, null);
+//                   // var strSVG = "M"+x0+",",250 C100,100 400,100 400,250"
+//                    
+//                    //path.closePath() ;// = false;
+//                    //var path = new paper.Path(firstSegment, secondSegment);
+//                    
+////                    var curve = new paper.Curve(point0,point1,point2,point);
+////                    cElPath.addSegments([curve.segment1, curve.segment2]);
+//
+//                    var firstPoint = point0;
+//                    var firstSegment = new paper.Segment(firstPoint, null, point1);
+//                    var secondPoint = point;
+//                    var secondSegment = new paper.Segment(secondPoint, point2, null);
+//                    cElPath.addSegments([firstSegment, secondSegment]);
+//                    
+                }
+                //cElPath.closed = true;
             break;
         };
         //cElPath.closePath();
@@ -1969,9 +1940,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         
         //shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
         
-//        if(GLOBAL_Path2D){
-            shapeContainer.path = cElPath;
-//        }
+        shapeContainer.path = cElPath;
         return true;
     } catch (e) {
         var err = listError(e);
@@ -2476,7 +2445,7 @@ function runEval(actEl, evtType){
     
     try{
         //cdebug(actEl);
-        if(!actEl.events)return null;
+        if(!actEl || !actEl.events)return null;
         var strEval = actEl.events[evtType];
         
 //        cdebug("runEval " + actEl.id + ", event " + strEval + ", evtType " + evtType);

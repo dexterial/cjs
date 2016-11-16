@@ -1365,7 +1365,7 @@ function drawTextAlongPath(cEl,i,offset){
     var lines = cEl.data.values.temp.lines3;
     var path = cEl.data.values.temp.path;
     
-    var showCP = true;
+    var showCP = false;
     if(showCP){
         //console.log("start " + i);
         path.strokeColor = "rgba(111,111,111,0.3)";
@@ -1423,7 +1423,7 @@ function drawTextAlongPath(cEl,i,offset){
                     }
                     
                     
-                    drawChar(charObj,showCP);
+                    drawChar(charObj,showCP,cEl.parentId + "_" + cEl.id);
                     
                 //    path.lastPos = i;
                     
@@ -1451,7 +1451,7 @@ function drawTextAlongPath(cEl,i,offset){
     return i;
 }
 
-function drawChar(charObj,showCP){
+function drawChar(charObj,showCP,name){
    
     
     
@@ -1460,7 +1460,8 @@ function drawChar(charObj,showCP){
         point: charObj.point,
         fillColor: 'blue',
         rotation: charObj.angle,
-        fontSize:charObj.fs
+        fontSize:charObj.fs,
+        name:name
     });
 
     if(showCP){
