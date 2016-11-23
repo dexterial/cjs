@@ -75,7 +75,7 @@ $.getJSON(loadedFile, function (jsonPage) {
 function renderer(arrPages){
     try {
         if(GLOBAL_renderer){
-            //cdebug("RENDER START",true,false,2);
+            //cdebug("RENDER START",true,false,2)();
             for(var i = 0,len = arrPages.length;i<len;i++){
                 if(window[arrPages[i]]){
                     drawChildren(window[arrPages[i]]);
@@ -85,7 +85,7 @@ function renderer(arrPages){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -134,7 +134,7 @@ function remloadedPage(cEl,pageId){
         return boolAllIsWell;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -178,7 +178,7 @@ function loadPageInEditor(boolRemFirst) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -189,7 +189,7 @@ function resetEditorCEls(fabric,preview) {
     try {
         
         if(fabric.children){
-            //cdebug(fabric.children.length);
+            //cdebug(fabric.children.length)();
             for (var i = 0; i < fabric.children.length; i++) {
                 //if(preview.children){
                     fabric.children[i].enabled = false;
@@ -206,7 +206,7 @@ function resetEditorCEls(fabric,preview) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -248,6 +248,161 @@ function detectIE() {
     return false;
 }
 
+
+
+//var context = "ALIASED LOG:"
+//var logalias;
+//
+//if (console.log.bind === 'undefined') { // IE < 10
+//    logalias = Function.prototype.bind.call(console.log, console, context);
+//}
+//else {
+//    logalias = console.log.bind(console, context);
+//}
+//
+//logalias('Hello, world!');
+
+//define([], function () {
+//
+//    var enableDebug = true;
+//    var separator = ">";    
+//
+//    function bind(f, thisArg, ctx) {
+//        if (f.bind !== 'undefined') { // IE < 10
+//            return Function.prototype.bind.call(f, thisArg, ctx);
+//        }
+//        else {
+//            return f.bind(thisArg, ctx);
+//        }
+//    }
+//
+//    function newConsole(context, parentConsole) {
+//        var log;
+//        var debug;
+//        var warn;
+//        var error;
+//
+//        if (!parentConsole) {
+//            parentConsole = console;
+//        }
+//
+//        context = context + separator;
+//
+//
+//        if (enableDebug) {
+//            debug = bind(console.log, console, context + "DEBUG" + separator);
+//        } else {
+//            debug = function () {
+//                // suppress all debug messages
+//            };
+//        }
+//
+//        log = bind(console.log, console, context);
+//
+//        warn = bind(console.warn, console, context);
+//
+//        error = bind(console.error, console, context);
+//
+//        return {
+//            debug: debug,
+//            info: log,
+//            log: log,
+//            warn: warn,
+//            error: error,
+//            /* access console context information */
+//            context: context,
+//            /* create a new console with nested context */
+//            nest: function (subContext) {
+//                return newConsole(context + subContext, this);
+//            },
+//            parent: parentConsole
+//        };
+//    }
+//
+//    return newConsole("");
+//});
+
+cdebug = function() {
+    // Put your extension code here
+    //var args = Array.prototype.slice.call(arguments);		
+    //args.unshift(console);
+    //0-msg, 1-clearMe, 2-boolConsole, 3-intConsoleNo
+    try {
+        var d = new Date();
+        var intConsoleNo = arguments[3] ? arguments[3] :1;
+        var dl = window["GLOBAL_delay" + intConsoleNo];
+        var strDelay  =  Math.abs(d.getTime() - dl.getTime());
+        strDelay = String("00000" + strDelay).slice(-5);
+        var strNow =  [d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()];
+        strNow =  String("00" + strNow[0]).slice(-2) + ":" + String("00" + strNow[1]).slice(-2) + ":" + String("00" + strNow[2]).slice(-2) + ":" + String("000" + strNow[3]).slice(-3);
+
+        var cEl_debug = window["editorPage_stats_log"+intConsoleNo];
+        var msg = arguments[0];
+        if(kind(msg)==="Object" || kind(msg)==="Array"){
+            msg = JSON.stringify(msg);
+        }
+
+        var strMsgOld = "";
+        var strMsg = "";
+        var clearMe = arguments[1] ? arguments[1] :false;
+        var boolConsole = arguments[2] ? arguments[1] :false;
+
+        if(cEl_debug && GLOBAL_debugger){
+            strMsgOld = cEl_debug.data.values.text;
+            if(strMsgOld && (strMsgOld.length>GLOBAL_debugger_maxlen))clearMe = true;
+
+            if (clearMe){
+                if(clearMe)console.API.clear();
+                strMsg = strNow + "(" + strDelay + "): " + msg + "\\n" + strNow + "(" + strDelay + ")";
+            }else{
+                //make append text function
+                strMsg =  strNow + "(" + strDelay + "): " + msg + "\\n" + strMsgOld;
+            }
+
+            if(cEl_debug.data.values.temp){
+                //set_cEl_text(cEl_debug, strMsg);
+                cEl_debug.data.values.temp.valueOld = null;
+                cEl_debug.data.values.text = strMsg;
+                //cEl_debug.shape.redraw = true;
+                cEl_debug.style.redraw = true;
+                window[cEl_debug.parentId].shape.redraw = true;
+                drawChildren(cEl_debug);
+
+            }
+        }else{
+            if(GLOBAL_debugger){
+                boolConsole = true;
+            }
+        }
+        
+        if(boolConsole){
+            strMsg =  strNow + "(" + strDelay + "): " + msg;
+            window["GLOBAL_delay" + intConsoleNo] = d
+            if (console.log.bind === 'undefined') { // IE < 10
+                return Function.prototype.bind.apply(console.log, console, strMsg);
+            }else {
+                return console.log.bind(console, strMsg);
+            }  
+        }else{
+            window["GLOBAL_delay" + intConsoleNo] = d;
+            return console.log;
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        console.log(err.message);
+        return err;
+    }
+};
+
+// Note the extra () to call the original console.log
+//cdebug("Foo")();
+
+
+//function cdebug(arg1,arg2,arg3,arg4,arg5){
+//    log("test " + arg1)();
+//}
+
 /**
  * Function cdebug
  * Description This function
@@ -256,7 +411,7 @@ function detectIE() {
  * @param {type} boolConsole
  * @param {type} intConsoleNo
  */
-function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
+function cdebugZZZ(msg, clearMe, boolConsole, intConsoleNo) {
     
     try {
         if(!intConsoleNo && intConsoleNo!==0){intConsoleNo = 1;};
@@ -265,15 +420,12 @@ function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
         var dl = window["GLOBAL_delay" + intConsoleNo];
         var strDelay  =  Math.abs(d.getTime() - dl.getTime());
         
-        var strNow =  [d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()];
+        
         var strMsg="",strMsgOld;
 
-        strNow =  String("00" + strNow[0]).slice(-2) + ":" + String("00" + strNow[1]).slice(-2) + ":" + String("00" + strNow[2]).slice(-2) + ":" + String("000" + strNow[3]).slice(-3);
-        strDelay = String("00000" + strDelay).slice(-5);
+        
             
-        if(kind(msg)==="Object" || kind(msg)==="Array"){
-            msg = JSON.stringify(msg);
-        }
+        
         
 
         if(cEl_debug && GLOBAL_debugger){
@@ -281,7 +433,7 @@ function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
             if(strMsgOld && (strMsgOld.length>GLOBAL_debugger_maxlen))clearMe = true;
             
             if (clearMe){
-                if(boolConsole)console.clear();
+                if(clearMe)console.API.clear();
                 strMsg = strNow + "(" + strDelay + "): " + msg + "\\n" + strNow + "(" + strDelay + ")";
             }else{
                 //make append text function
@@ -289,7 +441,7 @@ function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
             }
            
             if(boolConsole){
-                console.log(strNow + "(" + strDelay + "): " + msg);
+                log(strNow + "(" + strDelay + "): " + msg);
             }else{
                 if(cEl_debug.data.values.temp){
                     //set_cEl_text(cEl_debug, strMsg);
@@ -302,10 +454,10 @@ function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
                     
                 }
             }
-        }else if(GLOBAL_debugger && (intConsoleNo === 0 || intConsoleNo === 3)){
+        }else if(GLOBAL_debugger){
             if(clearMe)console.clear();
             strMsg = strNow + "(" + strDelay + "): " + msg;
-            console.log(strMsg);
+            log(strMsg);
         }
 //        if(intConsoleNo===3)alert(msg);
         
@@ -318,6 +470,18 @@ function cdebug(msg, clearMe, boolConsole, intConsoleNo) {
         return err;
     }
 }
+
+//console.API;
+//
+//if (typeof console._commandLineAPI !== 'undefined') {
+//    console.API = console._commandLineAPI; //chrome
+//} else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
+//    console.API = console._inspectorCommandLineAPI; //Safari
+//} else if (typeof console.clear !== 'undefined') {
+//    console.API = console;
+//}
+
+
 
 function listError(e,boolFullStack){
     
@@ -434,7 +598,7 @@ function kind(item) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -466,7 +630,7 @@ function showProps(obj,arrLvl,arrMaxLen) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -477,7 +641,7 @@ function mirror(strJson) {
         return strJson;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -500,7 +664,7 @@ function getSetHtmlEl(cEl){
         }    
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -516,13 +680,13 @@ function pre_load_children(cEl,pageId,layerId,parentId){
         if(cEl.element){
             if(!pageId){pageId = cEl.pageId;}
             if(!cEl.loaded){
-//                cdebug(cEl.id,false,true,3);
-//                cdebug(cEl.shape,false,true,3);
+//                cdebug(cEl.id,false,true,3)();
+//                cdebug(cEl.shape,false,true,3)();
                 cEl = $.extend(true, cEl, window[pageId].elements[cEl.element]);
 //                if(!cEl.states)cEl.states = {};
 //                cEl.states = $.extend(true, cEl.states, window[pageId].states);
                 
-//                cdebug(cEl.shape,false,true,3);
+//                cdebug(cEl.shape,false,true,3)();
                 cEl.loaded = true;
             }
         }
@@ -607,7 +771,7 @@ function pre_load_children(cEl,pageId,layerId,parentId){
                     setStyle_cEl(cEl);
                 }
                 
-                if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.id,false,true,3);}
+                if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.id,false,true,3)();}
                 //boolHasChildren = cEl.children ? true: false;
                 
             break; 
@@ -615,7 +779,7 @@ function pre_load_children(cEl,pageId,layerId,parentId){
         
         
         var boolChildren = cEl.children ? true: false;
-        //cdebug(cEl.parentId + "_" + cEl.id + " " + boolChildren,false,true,1);
+        //cdebug(cEl.parentId + "_" + cEl.id + " " + boolChildren,false,true,1)();
         if(boolChildren){
             for(var i = 0, len = cEl.children.length +1 ;i < len; i++){
                 boolAllIsWell = (boolAllIsWell && pre_load_children(cEl.children[i],pageId,layerId,cEl.parentId + "_" + cEl.id));
@@ -625,7 +789,7 @@ function pre_load_children(cEl,pageId,layerId,parentId){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -648,7 +812,7 @@ function drawChildren(cEl,boolRedraw){
         return boolAllIsWell;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -661,8 +825,8 @@ function draw_cEl(cEl,boolRedraw){
         switch(cEl.tag){
             case "page": //draw page element
                 if(!cEl.shape.redraw){return true;};
-                //cdebug("draw page " + cEl.id);
-//                cdebug("draw page " + cEl.id,true,false,2);
+                //cdebug("draw page " + cEl.id)();
+//                cdebug("draw page " + cEl.id,true,false,2)();
                 draw_cEl_page(cEl);
                 cEl.shape.redraw = false;
             break;
@@ -672,7 +836,7 @@ function draw_cEl(cEl,boolRedraw){
                 if(cEl.style.redraw){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
-                cdebug("draw canvas " + cEl.id + " , redraw " + cEl.shape.redraw,true,false,2);
+                //cdebug("draw canvas")();
                 draw_cEl_canvas(cEl);
                 cEl.style.redraw = false;
             break;
@@ -693,11 +857,11 @@ function draw_cEl(cEl,boolRedraw){
                 if(cEl.style.redraw){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
                 }
-//                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2);
+//                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2)();
                 draw_cEl_shape(cEl);
                 cEl.shape.redraw = false;
                 cEl.style.redraw = false;
-                //cdebug("END draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2);
+                //cdebug("END draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2)();
             break;
         }
         
@@ -706,7 +870,7 @@ function draw_cEl(cEl,boolRedraw){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -742,7 +906,7 @@ function draw_cEl_page(cEl){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return false;
     }
 }
@@ -756,7 +920,7 @@ function setGetProject(cEl_canv,name){
             if(projects[i].name && projects[i].name === name){
                 if(paper.project.name && paper.project.name!==name){
                     projects[i].activate();
-                    cdebug(!paper.project.name);
+                    //cdebug(projects[i].name)();
                     return true;
                 }
             }
@@ -767,7 +931,7 @@ function setGetProject(cEl_canv,name){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return false;
     }
 } 
@@ -779,9 +943,13 @@ function draw_cEl_canvas(cEl) {
         if(!cEl.shape.redraw){return true;};
         
         var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
+        
+        
+        
         if(!cEl_canv){
             return false;
         }
+        
         
         var cElPage = window[cEl.pageId];
         //console.log(cElPage.id);
@@ -801,6 +969,8 @@ function draw_cEl_canvas(cEl) {
         }else{
             if(cEl_canv.style.visibility !== "visible")cEl_canv.style.visibility = "visible";
         }
+        
+        
 
         //console.log(cEl_canvas.id);
 
@@ -817,8 +987,8 @@ function draw_cEl_canvas(cEl) {
         
         cEl_canv.style.left = cEl.shape.temp.cpBorder.x + 'px';
         cEl_canv.style.top =  cEl.shape.temp.cpBorder.y + 'px';
-        
-        // reset canvas
+//        
+//        // reset canvas
         cEl_canv.width = cEl.shape.w;
         cEl_canv.height = cEl.shape.h;
         
@@ -829,8 +999,8 @@ function draw_cEl_canvas(cEl) {
         //cEl_canv.contentEditable = true;
         var boolRedraw = false;
         
+        
         setGetProject(cEl_canv,cEl.pageId + "_" + cEl.layerId + "_canvas");
-
         
         if(cEl.style.calc["background-image"]){
             var url = cEl.style.calc["background-image"];
@@ -864,7 +1034,7 @@ function draw_cEl_canvas(cEl) {
         //cEl_canv.style.height = cEl.shape.h + 'px';
 
         // reset canvas style stuff
-        //cdebug(cEl.style["background-color"]);
+        //cdebug(cEl.style["background-color"])();
 
         if(cEl.style.calc["box-shadow"])cEl_canv.style.boxShadow = cEl.style.calc["box-shadow"];
         //cEl_canv.style.backgroundColor = cEl.style.calc["background-color"];
@@ -886,7 +1056,7 @@ function draw_cEl_canvas(cEl) {
         return true;
     } catch (e) {
         var err = listError(e,true);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return false;
     }
 }
@@ -921,8 +1091,8 @@ function draw_cEl_shape(cEl) {
 
         //{console.log("pageId: " + cEl.pageId + ", layerId: " + cEl.layerId + ", parentId:  " + cEl.parentId + ", cEl.id: " + cEl.id + ",    redraw:" + cEl.shape.redraw);}
         
-        //cdebug(cEl.id,false,true,3);
-        //cdebug(cEl.shape.rotation,false,true,3);
+        //cdebug(cEl.id,false,true,3)();
+        //cdebug(cEl.shape.rotation,false,true,3)();
         
         
         //oldShapeDraw(cEl,cEl_ctx,boolDrawCp,cEl_layer)
@@ -973,7 +1143,7 @@ function draw_cEl_shape(cEl) {
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -988,7 +1158,7 @@ function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
         
 
         
-        //cdebug(cEl.shape.rotation,false,true,3);
+        //cdebug(cEl.shape.rotation,false,true,3)();
 
         var fillColor, strokeColor, lineWidth;
         cEl_ctx.save();
@@ -1027,8 +1197,8 @@ function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
         
         if(cEl.style.calc["box-shadow"]){
             var shadowObj = getShadowObj(cEl.style.calc["box-shadow"]);
-//            cdebug(shadowObj,true,true);
-//            cdebug(cEl.style.calc["box-shadow"],false,true);
+//            cdebug(shadowObj,true,true)();
+//            cdebug(cEl.style.calc["box-shadow"],false,true)();
             cEl_ctx.shadowOffsetX = shadowObj[0].shadowOffsetX;
             cEl_ctx.shadowOffsetY = shadowObj[0].shadowOffsetY;
             cEl_ctx.shadowBlur = shadowObj[0].shadowBlur;
@@ -1066,7 +1236,7 @@ function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
     
 }
 
-//cdebug(getShadowObj("5px 5px 7px 5px rgba(218,165,32,0.5),7px 7px 12px 7px rgba(32,165,218,0.5)"),false,true);
+//cdebug(getShadowObj("5px 5px 7px 5px rgba(218,165,32,0.5),7px 7px 12px 7px rgba(32,165,218,0.5)"),false,true)();
 
 function getShadowObj(strShadowCSS,scale){
     try{
@@ -1119,7 +1289,7 @@ function getShadowObj(strShadowCSS,scale){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1147,30 +1317,30 @@ function cEl_presets(cEl,cEl_page){
     try{
         // reset states
         if(cEl.states){
-            //cdebug(cEl.id,false,true,0);
+            //cdebug(cEl.id,false,true,0)();
             var stateNames = getKeys(cEl.states);
-            //cdebug(stateNames,true,true,0); 
+            //cdebug(stateNames,true,true,0)(); 
             
             for(var i=0,cEl_stateId,cEl_state;i< stateNames.length; i++){
                 
-                //cdebug(stateNames[i],false,true,0);
-                //cdebug(cEl_page.state[stateNames[i]],false,true,0);
-                //cdebug(cEl_page.state[stateNames[i]][0],false,true,0);
+                //cdebug(stateNames[i],false,true,0)();
+                //cdebug(cEl_page.state[stateNames[i]],false,true,0)();
+                //cdebug(cEl_page.state[stateNames[i]][0],false,true,0)();
                 
                 if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
                     //cEl_page.state[stateNames[i]]
-                    //cdebug(cEl.id + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0);
+                    //cdebug(cEl.id + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0)();
                     cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
                     
 
                     cEl_state = cEl_page.states[cEl_stateId];
-                    //cdebug(cEl_state,false,true,0); 
+                    //cdebug(cEl_state,false,true,0)(); 
                     cEl = $.extend(true,cEl,cEl_state);
                 }
             }
             
-//            cdebug(cEl.states,false,true,0);
-//            cdebug(getKeys(cEl.states),false,true,0); 
+//            cdebug(cEl.states,false,true,0)();
+//            cdebug(getKeys(cEl.states),false,true,0)(); 
         }
 
 //        switch(cEl.data.type){
@@ -1180,7 +1350,7 @@ function cEl_presets(cEl,cEl_page){
 //                        val_temp = cEl.data.values[cEl.children[i].id];
 //                        if(val_temp){
 //                            if(val_temp["eval"]){
-//                                //cdebug(eval(cEl.data.values[cEl.children[i].id]["val"]));
+//                                //cdebug(eval(cEl.data.values[cEl.children[i].id]["val"]))();
 //                                cEl.children[i].data.values.text = eval(val_temp["val"]);
 //                                cEl.children[i].data.values.temp = null;
 //                            }else{
@@ -1215,7 +1385,7 @@ function cEl_presets(cEl,cEl_page){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1235,7 +1405,7 @@ function cEl_postsets(cEl,cEl_ctx,boolDrawCp){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1304,7 +1474,7 @@ function setStyleGlobal(GLOBAL_styles, cId, cClass, tag) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1338,7 +1508,7 @@ function addToGlobalStyle(GLOBAL_styles,strCIdStyle,selectorText) {
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1387,7 +1557,7 @@ function setStyle_cEl(cEl) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1420,7 +1590,7 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
         return true;
     } catch (e) {
         var err = listError(e,true);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1439,7 +1609,7 @@ function cEl_getChildById(cEl,childId){
         return null;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1460,7 +1630,7 @@ function size2px(remVal, boolPxOut, scaleFactor){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1478,7 +1648,7 @@ function lineDelta( pointArr1, pointArr2 ){
         return xs + ys;
     } catch (e) {
             var err = listError(e);
-            cdebug(err,false,false,3);
+            cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1527,7 +1697,7 @@ function setState(cEl_caller,stateName){
         
     } catch (e){
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1550,7 +1720,7 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1565,7 +1735,7 @@ function checkPointInBorder(x,y,x1,y1,xy){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1588,7 +1758,7 @@ function checkPointInPath(cEl,shapeContainer,xy){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1610,7 +1780,7 @@ function checkPointInStroke(cEl,shapeContainer,xy){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1660,7 +1830,7 @@ function checkPointInShape(cEl){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -1944,7 +2114,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -2265,7 +2435,7 @@ function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -2289,7 +2459,7 @@ function point_get_cpXY(point,scale,cpMp,flipXY,index){
     
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2305,7 +2475,7 @@ function cEl_set_CpBorder(cpBorder,x,y){
     
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2339,7 +2509,7 @@ function getProperties(o) {
         return _properties(o);
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2355,7 +2525,7 @@ function showObject(obj) {
         return result;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2370,7 +2540,7 @@ function showObjectjQuery(obj) {
         return result;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -2383,7 +2553,7 @@ function checkDelta(xy1,xy2,delta,offset,index){
     } catch (e) {
         
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2408,7 +2578,7 @@ function mergeIntArrays(a,b){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2435,7 +2605,7 @@ function getIntArray(val1,val2,boolLeft){
         return a;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2463,7 +2633,7 @@ function runEval(actEl, evtType){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -2483,7 +2653,7 @@ function resetCursor(cEl){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
     
@@ -2503,7 +2673,7 @@ function id_generator(prefix, idLength){
         return prefix + text;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }

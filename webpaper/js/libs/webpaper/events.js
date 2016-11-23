@@ -74,7 +74,7 @@ function loadEvents() {
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return false;
     }
 }
@@ -116,7 +116,7 @@ function retCElId(cElId,eventholder){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -165,7 +165,7 @@ function handleWheel(evt) {
             };
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -224,7 +224,7 @@ function handleKeys(evt) {
     
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -307,7 +307,7 @@ function handleMouse(evt) {
     
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -369,7 +369,7 @@ function handleTouch(evt) {
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -414,7 +414,7 @@ function handleTextSelection(eventholder){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -466,7 +466,7 @@ function setEventHolder(pageId) {
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -480,7 +480,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
         var evt = paperevt.event;
         
         
-        paperevt.stop();
+        //paperevt.stop();
 
         var targetId = evt.target.id;
         
@@ -585,7 +585,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
        
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -654,7 +654,7 @@ function updateEventHolder(eventholder,boolHover,boolFocus,boolActive) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -737,7 +737,7 @@ function handleCSSEvents_keys(eventholder,evt) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -836,7 +836,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -876,7 +876,7 @@ function handleContextMenu(eventholder){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -889,7 +889,7 @@ function setContextMenu(cEl_canv){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -908,7 +908,7 @@ function resetTextSelection(cEl){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -1061,7 +1061,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }

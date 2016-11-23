@@ -24,7 +24,7 @@ function draw_cEl_text(cEl_ctx,cEl,boolDrawCp){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -89,7 +89,7 @@ function draw_cEl_text_sq(cEl_ctx,cEl,boolDrawCp){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -133,7 +133,7 @@ function set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,addStyle,boolReturnId){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -234,7 +234,7 @@ function set_cEl_text_css(cEl,cEl_ctx,cEl_pageText,boolReturnId){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -279,7 +279,7 @@ function set_cEl_text(cEl,strNewText){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -315,7 +315,7 @@ function cEl_set_wordMap3(cEl){
     } catch (e) {
         
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -390,7 +390,7 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -406,7 +406,7 @@ function pushChar(charObj,lines,styleMap,boolSetStyle){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -466,7 +466,7 @@ function set_charObj_style(styleMap,charObj){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -500,7 +500,7 @@ function cEl_set_chr_metrics(cEl_ctx,cEl,cEl_pageText){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -558,7 +558,7 @@ function delete_chars(eventholder){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -588,7 +588,7 @@ function delete_selection(cEl,cEl_layer,cEl_pageText){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }  
 }
@@ -655,7 +655,7 @@ function edit_chars(eventholder,boolAppend){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -672,7 +672,7 @@ function move_chars(eventholder){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -707,7 +707,7 @@ function setGetFontObj(cEl_ctx,cEl_pageText,fontText,fontObj,boolReturnId){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -720,7 +720,7 @@ function getFontObjById(cEl_pageText,fontObjId){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -738,7 +738,7 @@ function setGetCharsObj(cEl_ctx,cEl_pageText,chars,char,fontObj){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -758,7 +758,7 @@ function setFont(cEl_ctx,cEl_pageText,fontId){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -783,7 +783,7 @@ function setGetCharWidth(cEl_ctx,cEl_pageText,tmpChar,charFont){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -960,7 +960,7 @@ function draw_cEl_lines3(cEl_ctx,cEl,cEl_pageText){
 //        
 //    } catch (e) {
 //        var err = listError(e);
-//        cdebug(err,false,false,3);
+//        cdebug(err,false,false,3)();
 //        return err;
 //    }
 //}
@@ -1164,7 +1164,7 @@ function getCharPos(lines,xy){
                             
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1208,7 +1208,7 @@ function setCarret(boolShowCarret,chrObj,boolCrLeft) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1329,7 +1329,7 @@ function setGetWordStyle(cEl_ctx,cEl_pageText,word,font){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1341,7 +1341,7 @@ function getWordWidths(cEl_ctx,cEl_pageText,word,font){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }

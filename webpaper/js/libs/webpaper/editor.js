@@ -75,13 +75,13 @@ function editor_keydown(cEl_layer) {
                         }
                     break;
                 }
-//                cdebug("editor_keydown START state " + cEl_layer.data.state,true);
+//                cdebug("editor_keydown START state " + cEl_layer.data.state,true)();
             break;
         }
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -93,13 +93,13 @@ function editor_keyup(cEl_layer) {
     try{
         //var cEl_layer = window[cEl.layerId];
         //var eventholder = window["eventholder"];
-        //cdebug(eventholder.event.shiftKey);
-        //cdebug(window.event.shiftKey);
+        //cdebug(eventholder.event.shiftKey)();
+        //cdebug(window.event.shiftKey)();
 
         switch (cEl_layer.id) {
             case "fabric":
 
-//                //cdebug("editor_keyup state " + cEl_layer.data.state);
+//                //cdebug("editor_keyup state " + cEl_layer.data.state)();
 //                var cEl_page = window["editorPage"];
 //                var cEl = window[cEl_layer.data.editIndex];
 //                switch (cEl_layer.data.state) {
@@ -117,7 +117,7 @@ function editor_keyup(cEl_layer) {
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;;
     }
 }
@@ -129,7 +129,7 @@ function editor_keypress(cEl_layer) {
         var eventholder = window["eventholder"];
         switch (cEl_layer.id) {
             case "fabric":
-                //cdebug("editor_keypress START state " + cEl_layer.data.state,true);
+                //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
                 
                 switch (cEl_layer.data.state) {
                     case "editlimbo":
@@ -160,12 +160,12 @@ function editor_keypress(cEl_layer) {
                         }
                     break;
                 }
-                //cdebug("editor_keypress END state " + cEl_layer.data.state);
+                //cdebug("editor_keypress END state " + cEl_layer.data.state)();
             break;
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -176,7 +176,7 @@ function editor_wheel(cEl_layer) {
         var eventholder = window["eventholder"];
         switch (cEl_layer.id) {
             case "fabric":
-                //cdebug("editor_wheel state " + cEl_layer.data.state);
+                //cdebug("editor_wheel state " + cEl_layer.data.state)();
                 switch (cEl_layer.data.state) {
                     case "pre":
                     case "edit":
@@ -191,7 +191,7 @@ function editor_wheel(cEl_layer) {
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -213,13 +213,13 @@ function editor_mousedown(cEl_layer) {
 //            case "tools":
 //            break;
             case "fabric":
-                cdebug("editor_mousedown START state " + cEl_layer.data.state + " at index " + cEl_layer.data.editIndex,true);
+                cdebug("editor_mousedown START state " + cEl_layer.data.state + " at index " + cEl_layer.data.editIndex,true)();
                 switch (cEl_layer.data.state) {
                     case "edit":
                         //if(cEl_layer.data.editIndex<0){return false;}
                         //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
-//                        cdebug(cEl.shape.temp.activeCp);
-//                        cdebug(cEl_layer.metrics.xy);
+//                        cdebug(cEl.shape.temp.activeCp)();
+//                        cdebug(cEl_layer.metrics.xy)();
                         if(cEl_setActiveCp(cEl_layer)){
                             cEl_setCpCursor(cEl_layer);
                             cEl_layer.data.state = "editmove";
@@ -244,7 +244,7 @@ function editor_mousedown(cEl_layer) {
                         addDrawShape(cEl_layer,false);
                     break;
                 }
-                cdebug("editor_mousedown END state " + cEl_layer.data.state);
+                cdebug("editor_mousedown END state " + cEl_layer.data.state)();
                 
             break;
 //            case "code":
@@ -256,7 +256,7 @@ function editor_mousedown(cEl_layer) {
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -264,9 +264,9 @@ function editor_mousedown(cEl_layer) {
 
 function editor_mousemove(cEl_layer) {
     try{
-        //cdebug(cEl,true);
+        //cdebug(cEl,true)();
         //var cEl_layer = window[cEl.layerId], cEl_page, cEl;
-        //cdebug(cEl_layer.metrics.xy);
+        //cdebug(cEl_layer.metrics.xy)();
 
         switch (cEl_layer.id) {
     //            case "preview":
@@ -274,7 +274,7 @@ function editor_mousemove(cEl_layer) {
     //            case "tools":
     //            break;
             case "fabric":
-                //cdebug("editor_mousemove state " + cEl_layer.data.state);
+                //cdebug("editor_mousemove state " + cEl_layer.data.state)();
                 switch (cEl_layer.data.state) {
                     case "editmove":
 
@@ -300,7 +300,7 @@ function editor_mousemove(cEl_layer) {
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -313,7 +313,7 @@ function editor_mouseup(cEl_layer) {
         switch (cEl_layer.id) {
             case "fabric":
                 
-                cdebug("editor_mouseup START state " + cEl_layer.data.state);
+                cdebug("editor_mouseup START state " + cEl_layer.data.state)();
                 switch (cEl_layer.data.state) {
                     case "editmove":
                         //var cEl_page = window[cEl_layer.pageId];
@@ -363,12 +363,12 @@ function editor_mouseup(cEl_layer) {
                         cEl_layer.shape.redraw = true;
                     break;
                 }
-                cdebug("editor_mouseup END state " + cEl_layer.data.state);
+                cdebug("editor_mouseup END state " + cEl_layer.data.state)();
             break;
         }
     } catch (e) {
         var err = listError(e,true);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -376,10 +376,10 @@ function editor_mouseup(cEl_layer) {
 function editor_hover(cEl_layer) {
 
     try{
-    //cdebug("editor_hover");
+    //cdebug("editor_hover")();
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 
@@ -389,10 +389,10 @@ function editor_hover(cEl_layer) {
 function editor_mouseout(cEl_layer) {
 
     try{
-    //cdebug("editor_hover");
+    //cdebug("editor_hover")();
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 
@@ -415,10 +415,10 @@ function get_cEl_properties(cEl,property){
             break;
         }
         
-    //cdebug("editor_hover");
+    //cdebug("editor_hover")();
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }    
 }
@@ -459,7 +459,7 @@ function addDrawShape(cEl_layer, boolFinalise) {
         cEl_ctx.stroke();
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -517,7 +517,7 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
             
             
             page.shapes[shape_id] = arrAproxShape;
-            cdebug(arrAproxShape,true,true,0);
+            cdebug(arrAproxShape,true,true,0)();
             pre_load_children(cEl_new_load,cEl_layer.pageId,cEl_layer.id,cEl_layer.pageId + "_" +cEl_layer.id);
             
             if(loadedPageAct){
@@ -527,7 +527,7 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
                 edit_layer.children.push(cEl_new);
                 pre_load_children(cEl_new,edit_layer.pageId,edit_layer.id,edit_layer.pageId + "_" +edit_layer.id);
                 cEl_new_load.shape = cEl_new.shape;
-                //cdebug(edit_layer.id);
+                //cdebug(edit_layer.id)();
                 
             }
             //cEl_layer.shape.redraw = true;
@@ -570,7 +570,7 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
         return false;
     } catch (e) {
             var err = listError(e);
-            cdebug(err,false,false,3);
+            cdebug(err,false,false,3)();
         return err;
     }
 
@@ -621,7 +621,7 @@ function createAprox (cEl_layer, reduction, delta, masspoint){
         return drawArrayOut;
         } catch (e) {
             var err = listError(e);
-            cdebug(err,false,false,3);
+            cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -667,8 +667,8 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
 
                 var cEl_lookInto = window[cEl_actualIndex.parentId];
 
-                //cdebug("here look into  " + cEl_lookInto.id);
-                //cdebug("...of           " + cEl_caller.data.editIndex);
+                //cdebug("here look into  " + cEl_lookInto.id)();
+                //cdebug("...of           " + cEl_caller.data.editIndex)();
 
                 if(boolNext){
                     for(var i = 0;i<cEl_lookInto.children.length-1;i++){
@@ -688,7 +688,7 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
                     }
                 }
             }
-            //cdebug("... set to           " + cEl_caller.data.editIndex);
+            //cdebug("... set to           " + cEl_caller.data.editIndex)();
         }
         if(boolReset){
             cEl_caller.shape.redraw = true;
@@ -696,7 +696,7 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -731,7 +731,7 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
 //        }
 //    } catch (e) {
 //        var err = listError(e);
-//        cdebug(err,false,false,3);
+//        cdebug(err,false,false,3)();
 //        return err;
 //    }
 //}
@@ -750,7 +750,7 @@ function undoLastCpEdit(cEl_caller, increment, boolResetActiveCp) {
         
     } catch (e){
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -776,7 +776,7 @@ function keyAdjustments(cEl_caller, increment){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return false;
     }
 }
@@ -840,7 +840,7 @@ function cEl_setCpCursor(cEl_caller, boolReset) {
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -870,7 +870,7 @@ function cEl_storeRefPoints(cEl_layer, boolFirst){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -897,7 +897,7 @@ function cEl_restoreRefPoints(cEl_layer,increment, boolResetActiveCp){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -963,7 +963,7 @@ function get_undo_rf_position(rf, editIndex, increment, boolDebug, boolObject){
         return retIndex;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -987,7 +987,7 @@ function saveLastCpEdit(cEl_caller,state,boolReset){
         
     } catch (e){
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1068,7 +1068,7 @@ function cEl_drawCp(shape,cEl_ctx){
         return true;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 };
@@ -1110,7 +1110,7 @@ function cEl_drawCp_Points(shape,cEl_ctx){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1135,7 +1135,7 @@ function draw_pointXY(cEl, cEl_layer, cEl_ctx){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1153,7 +1153,7 @@ function draw_pointXY_path1(cEl_ctx,xy,w,h){
             
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1166,7 +1166,7 @@ function draw_pointXY_square(cEl_ctx,xy,w,h){
             
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1176,7 +1176,7 @@ function cEl_setCpXY(activeCp,xy) {
         activeCp.xy = [xy[0],xy[1]];
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1190,7 +1190,7 @@ function cEl_getCpXY(activeCp){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1209,7 +1209,7 @@ function save_changes(cEl_caller){
         
     } catch (e){
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1314,7 +1314,7 @@ function cEl_editActiveCp(cEl_caller){
         }
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1333,7 +1333,7 @@ function cEl_editActiveCp_SCP(cEl_layer, cEl, editIndex, xy){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1360,7 +1360,7 @@ function cEl_editActiveCp_MP(cEl_layer, cEl, editIndex, xy){
         
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1373,7 +1373,7 @@ function cEl_edit_MP(cEl_layer,xy,scale){
         return [scale[0]*xy[0]/cEl_layer.shape.w,scale[1]*xy[1]/cEl_layer.shape.h];
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1468,7 +1468,7 @@ function cEl_setActiveCp(cEl_caller){
         return false;
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }
@@ -1523,7 +1523,7 @@ function drawGrid(cEl_canvas){
 
     } catch (e) {
         var err = listError(e);
-        cdebug(err,false,false,3);
+        cdebug(err,false,false,3)();
         return err;
     }
 }

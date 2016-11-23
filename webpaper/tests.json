@@ -99,7 +99,7 @@
             "tag":"shape",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
-                "mousedown":"testPointInShape(this)"
+                "mousedown":"testEvents2(this)"
             },
             "shape":{
                 "redraw":true,
