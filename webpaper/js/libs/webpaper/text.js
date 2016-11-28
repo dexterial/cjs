@@ -20,19 +20,6 @@ function draw_cEl_text(cEl_ctx,cEl,boolDrawCp){
     
     try{ 
 
-        draw_cEl_text_sq(cEl_ctx,cEl,boolDrawCp);
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function draw_cEl_text_sq(cEl_ctx,cEl,boolDrawCp){
-    
-    try{
-        
         var boolNotSet = false;
         if(!cEl.data.values.temp){
             cEl.data.values.temp = {};
@@ -40,53 +27,22 @@ function draw_cEl_text_sq(cEl_ctx,cEl,boolDrawCp){
         }
         
         var cEl_pageText = window[cEl.pageId].text;
-        
+
         if(cEl.style.redraw || boolNotSet){
-            
             // set the css attributes for text box
-            set_cEl_text_css(cEl,cEl_ctx,cEl_pageText,true);
+            set_cEl_text_css(cEl,cEl_pageText,true);
 
 
             if(set_cEl_text(cEl)){
                 //cEl.data.values.temp.lines2 = {"0":{}};
                 cEl_set_wordMap3(cEl);
-                cEl_set_chr_metrics(cEl_ctx,cEl,cEl_pageText);
+                cEl_set_chr_metrics(cEl,cEl_pageText);
             }
 
-
-
-//            if(cEl.id === "txtInputObj" && cEl.parentId === "editorPage_control_list2"){
-//                //console.log(JSON.stringify(cEl.data.values.temp.zzz));
-//                //console.log( " VS " +JSON.stringify(cEl.data.values.temp.fontActive));
-//                //console.clear();
-//                //console.log(cEl.parentId + "_" + cEl.id);
-//                //console.log(GLOBAL_rem);
-//                //console.log(JSON.stringify(cEl.data.values.customStyle));
-//                //console.log(JSON.stringify(cEl.data.values.temp.styleMap.chars[0]));
-//                //console.log(JSON.stringify(cEl.data.values.temp.styleMap.chars[4]));
-//
-//                //console.log(JSON.stringify(cEl.data.values.temp.lines3));
-//                //console.log(JSON.stringify(cEl.data.values.temp.lines3[4].f));
-//                //console.log(JSON.stringify(cEl.data.values.temp.style));
-//
-//            }    
-        
         }
         // draw the text
-        
-        
-        
-        draw_cEl_lines3(cEl_ctx,cEl,cEl_pageText);
-        
-        
-//        
-//        if(cEl.id === "txtInputObj"){
-//            //console.log(JSON.stringify(cEl.data.values.temp.zzz));
-//            //console.log( " VS " +JSON.stringify(cEl.data.values.temp.fontActive));
-//            //console.log(JSON.stringify(cEl.data.values.temp.lines2[0][4]));
-//        }    
-        
-        
+        draw_cEl_lines3(cEl,cEl_pageText);
+
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -94,7 +50,8 @@ function draw_cEl_text_sq(cEl_ctx,cEl,boolDrawCp){
     }
 }
 
-function set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,addStyle,boolReturnId){
+
+function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
     
     try{
         //console.log("before " + cEl.style.calc.color);
@@ -113,9 +70,9 @@ function set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,addStyle,boolReturnId){
         styleObj.fontWeight = cEl.style.calc2["font-weight"] ? cEl.style.calc2["font-weight"] : "normal";
         styleObj.fontFamily = cEl.style.calc2["font-family"] ? cEl.style.calc2["font-family"] : "Arial";
         
-        styleObj.fontCanvas = styleObj.fontStyle + " " + styleObj.fontVariant + " ";
-        styleObj.fontCanvas += styleObj.fontWeight + " " + styleObj.fontSize + "px ";
-        styleObj.fontCanvas += styleObj.fontFamily;
+//        styleObj.fontCanvas = styleObj.fontStyle + " " + styleObj.fontVariant + " ";
+//        styleObj.fontCanvas += styleObj.fontWeight + " " + styleObj.fontSize + "px ";
+//        styleObj.fontCanvas += styleObj.fontFamily;
         
         styleObj.letterSpacing = cEl.style.calc2["letter-spacing"] ? size2px(cEl.style.calc2["letter-spacing"],false) : 0;
         styleObj.color = cEl.style.calc2["color"] ? cEl.style.calc2["color"] : "rgba(0,0,0,1)";
@@ -127,7 +84,7 @@ function set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,addStyle,boolReturnId){
         //var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
         var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
 
-        return setGetFontObj(cEl_ctx,cEl_pageText,fontText,styleObj,boolReturnId);
+        return setGetFontObj(cEl_pageText,fontText,styleObj,boolReturnId);
         
         //return styleObj;
         
@@ -138,22 +95,22 @@ function set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,addStyle,boolReturnId){
     }
 }
 
-function set_cEl_text_css(cEl,cEl_ctx,cEl_pageText,boolReturnId){
+function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
     
     try{
         
         if(!cEl.data.values.temp.style)cEl.data.values.temp.style = {};
         if(!cEl.data.values.temp.styleMap)cEl.data.values.temp.styleMap = {"default":null};
         
-        cEl.data.values.temp.styleMap.default = $.extend(true,cEl.data.values.temp.styleMap.default,set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,null,boolReturnId));
-        //cEl.data.values.temp.styleMap.default = set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,null,boolReturnId);
+        cEl.data.values.temp.styleMap.default = $.extend(true,cEl.data.values.temp.styleMap.default,set_cEl_font_css(cEl,cEl_pageText,null,boolReturnId));
+        //cEl.data.values.temp.styleMap.default = set_cEl_font_css(cEl,cEl_pageText,null,boolReturnId);
         
         if(cEl.data.values.customStyle){
             // todo pre-compute style map,
             //[{"style":{"font-size":"1em"},"chars":["0","1","3","4"]}];
             for(var i = 0, maxLen = cEl.data.values.customStyle.length, customStyle;i < maxLen;i++){
                 customStyle = cEl.data.values.customStyle[i];
-                customStyle.f = $.extend(true,customStyle.f,set_cEl_font_css(cEl,cEl_ctx,cEl_pageText,customStyle.style,boolReturnId));
+                customStyle.f = $.extend(true,customStyle.f,set_cEl_font_css(cEl,cEl_pageText,customStyle.style,boolReturnId));
                 //if(customStyle.style.color)console.log("after  " + cEl.style.calc.color);
                 if(customStyle.paragraphspos){
                     if(!cEl.data.values.temp.styleMap.paragraphspos)cEl.data.values.temp.styleMap.paragraphspos = {};
@@ -220,15 +177,15 @@ function set_cEl_text_css(cEl,cEl_ctx,cEl_pageText,boolReturnId){
         
         cEl.data.values.temp.style.lineHeight = cEl.style.calc["line-height"] ? size2px(cEl.style.calc["line-height"]) : 10;
         
-        if (cEl.data.values.vertical){
-            var trans = cEl.data.values.temp.style.lineBottom;
-            cEl.data.values.temp.style.lineBottom = cEl.data.values.temp.style.lineRight;
-            cEl.data.values.temp.style.lineRight = trans;
-
-            trans = cEl.data.values.temp.style.lineLeft;
-            cEl.data.values.temp.style.lineLeft = cEl.data.values.temp.style.lineTop;
-            cEl.data.values.temp.style.lineTop = trans;
-        }
+//        if (cEl.data.values.vertical){
+//            var trans = cEl.data.values.temp.style.lineBottom;
+//            cEl.data.values.temp.style.lineBottom = cEl.data.values.temp.style.lineRight;
+//            cEl.data.values.temp.style.lineRight = trans;
+//
+//            trans = cEl.data.values.temp.style.lineLeft;
+//            cEl.data.values.temp.style.lineLeft = cEl.data.values.temp.style.lineTop;
+//            cEl.data.values.temp.style.lineTop = trans;
+//        }
         
         return true;
         
@@ -472,7 +429,7 @@ function set_charObj_style(styleMap,charObj){
 }
 
 // TODO split bellow function according to text allignment, will keep it simple
-function cEl_set_chr_metrics(cEl_ctx,cEl,cEl_pageText){
+function cEl_set_chr_metrics(cEl,cEl_pageText){
     
     try{
         
@@ -484,15 +441,18 @@ function cEl_set_chr_metrics(cEl_ctx,cEl,cEl_pageText){
             chrObj = lines[i];
             
             charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
-            //console.log(cEl_ctx.fillStyle);
-            if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
+            //cdebug(charStyle.fontCanvas,false,false,0)();
+            
+            //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
             
             if(chrObj.pr){
-                charWidth = setGetCharWidth(cEl_ctx,cEl_pageText,chrObj.chr,chrObj.f);
+                charWidth = setGetCharWidth(cEl_pageText,chrObj.chr,chrObj.f.id,charStyle);
+                chrObj.fc = charWidth.fc;
                 chrObj.w = charWidth.w;
                 chrObj.fs = charStyle.fontSize;
                 chrObj.ls = charStyle.letterSpacing;
             }else{
+                chrObj.fc = null;
                 chrObj.w = 0;
                 chrObj.fs = charStyle.fontSize;
                 chrObj.ls = 0;
@@ -505,193 +465,195 @@ function cEl_set_chr_metrics(cEl_ctx,cEl,cEl_pageText){
     }    
 }
 
-function delete_chars(eventholder){
-    
-    try{
-        
-        //cdebug(eventholder.keys.chr);
-        var cEl = window[eventholder.active.id];
-        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
-        
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-        var cEl_pageText = window[cEl.pageId].text;
+//function delete_chars(eventholder){
+//    
+//    try{
+//        
+//        //cdebug(eventholder.keys.chr);
+//        var cEl = window[eventholder.active.id];
+//        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
+//        
+//        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
+//        var cEl_pageText = window[cEl.pageId].text;
+//
+//        if(delete_selection(cEl,cEl_layer,cEl_pageText)){
+//            // do nada
+//        }else if(eventholder.keys.chr === 8 ){
+//            if(cEl_pageText.charsSelection.cr.pos > 0){
+//                
+//                if(cEl_pageText.charsSelection.cr.left){
+//                    cEl_pageText.charsSelection.cr.pos--;
+//                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
+//                }else{
+//                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
+//                    cEl_pageText.charsSelection.cr.pos--;
+//                }
+//                
+//                cEl_layer.shape.redraw = true;
+//            }
+//            
+//        }else{
+//            if(cEl_pageText.charsSelection.cr.pos < cEl.data.values.temp.lines3.length-1){
+//                
+//                if(cEl_pageText.charsSelection.cr.left){
+//                    //cEl_pageText.charsSelection.cr.pos++;
+//                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
+//                }else{
+//                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos+1,1);
+//                    cEl_pageText.charsSelection.cr.left = true;
+//                    cEl_pageText.charsSelection.cr.pos++;
+//                }
+//                cEl_layer.shape.redraw = true;
+//            } else if(cEl_pageText.charsSelection.cr.pos === cEl.data.values.temp.lines3.length-1){
+//                if(cEl_pageText.charsSelection.cr.left){
+//                    cEl_pageText.charsSelection.cr.left = false;
+//                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
+//                    cEl_pageText.charsSelection.cr.pos--;
+//                }
+//                cEl_layer.shape.redraw = true;
+//            }
+//            
+//        }
+//        //cdebug(cEl_pageText.charsSelection.cr.pos,false,true);
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }    
+//}
+//
+//function delete_selection(cEl,cEl_layer,cEl_pageText){
+//    
+//    try{  
+//        var selLen = cEl_pageText.charsSelection.charspos.length;
+//        if(selLen > 0){
+//            var delPos = 0;
+//            // TODO detect last charObj selection type
+//            cEl_pageText.charsSelection.cr.left = false;
+//            
+//            for(var i = selLen-1;i>-1;i--){
+//                delPos = cEl_pageText.charsSelection.charspos[i];
+//                //console.log(delPos + " vs "+cEl.data.values.temp.lines3[delPos].chr + " vs " + cEl.data.values.temp.lines3[delPos].wp);
+//                cEl.data.values.temp.lines3.splice(delPos,1);
+//            }
+//            cEl_pageText.charsSelection.charspos = [];
+//            cEl_pageText.charsSelection.cr.pos = delPos-1;
+//            //cEl_pageText.charsSelection.cr.left = true;
+//            cEl_layer.shape.redraw = true;
+//            return true;
+//        }else{
+//            return false;
+//        }
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }  
+//}
+//
+//function edit_chars(eventholder,boolAppend){
+//    
+//    try{
+//        
+//        var cEl = window[eventholder.active.id];
+//        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
+//        
+//        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
+//        var cEl_pageText = window[cEl.pageId].text;
+//        
+//        delete_selection(cEl,cEl_layer,cEl_pageText);
+//        
+//        var chrObj ,newCarObj;
+//        if(boolAppend){
+//            if(cEl_pageText.charsSelection.cr.pos > -1){
+//
+//                chrObj = cEl.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos];
+//                var charCode = eventholder.keys.chr;
+//                var charVal = eventholder.keys.chrVal;
+//
+//                // TODO account for special keys
+//                //cdebug("<" + charVal + ">" + charCode,true,true);
+//
+//                newCarObj = {
+//                    "chr":charVal,
+//                    "f":chrObj.f,
+//                    "wp":false,
+//                    "pp":false,
+//                    "pr":true,
+//                    "fs":chrObj.fs,
+//                    "ls":chrObj.ls
+//                };
+//                if(charVal!==chrObj.chr){
+//                    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
+//                    var cEl_ctx = cEl_canv.getContext('2d');
+//
+//                    // TODO add custom style for new character
+//
+//                    cEl_ctx.save();
+//                    newCarObj.w = setGetCharWidth(cEl_ctx,cEl_pageText,newCarObj.chr,newCarObj.f).w;
+//                    cEl_ctx.restore();
+//                }else{
+//                    newCarObj.w = chrObj.w;
+//                }
+//                newCarObj.sc = (charVal === " ");
+//                newCarObj.nl = (charCode === 13);
+//                if(newCarObj.nl){
+//                    newCarObj.chr = "n";
+//                    newCarObj.pr = false;
+//                    newCarObj.pp = true;
+//                };
+//
+//                cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,0,newCarObj);
+//                cEl_pageText.charsSelection.cr.pos++;
+//                
+//                cEl_layer.shape.redraw = true;
+//            } 
+//        }
+//        //cdebug(cEl_pageText.charsSelection.cr.pos,false,true);
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }    
+//}
+//
+//function move_chars(eventholder){
+//    
+//    try{
+//        
+//        var cEl = window[eventholder.active.id];
+//        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
+//        
+//        return selection_actions(cEl, null, eventholder.keys.chr,false);
+//        
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }    
+//}
 
-        if(delete_selection(cEl,cEl_layer,cEl_pageText)){
-            // do nada
-        }else if(eventholder.keys.chr === 8 ){
-            if(cEl_pageText.charsSelection.cr.pos > 0){
-                
-                if(cEl_pageText.charsSelection.cr.left){
-                    cEl_pageText.charsSelection.cr.pos--;
-                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
-                }else{
-                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
-                    cEl_pageText.charsSelection.cr.pos--;
-                }
-                
-                cEl_layer.shape.redraw = true;
-            }
-            
-        }else{
-            if(cEl_pageText.charsSelection.cr.pos < cEl.data.values.temp.lines3.length-1){
-                
-                if(cEl_pageText.charsSelection.cr.left){
-                    //cEl_pageText.charsSelection.cr.pos++;
-                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
-                }else{
-                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos+1,1);
-                    cEl_pageText.charsSelection.cr.left = true;
-                    cEl_pageText.charsSelection.cr.pos++;
-                }
-                cEl_layer.shape.redraw = true;
-            } else if(cEl_pageText.charsSelection.cr.pos === cEl.data.values.temp.lines3.length-1){
-                if(cEl_pageText.charsSelection.cr.left){
-                    cEl_pageText.charsSelection.cr.left = false;
-                    cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
-                    cEl_pageText.charsSelection.cr.pos--;
-                }
-                cEl_layer.shape.redraw = true;
-            }
-            
-        }
-        //cdebug(cEl_pageText.charsSelection.cr.pos,false,true);
 
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }    
-}
-
-function delete_selection(cEl,cEl_layer,cEl_pageText){
-    
-    try{  
-        var selLen = cEl_pageText.charsSelection.charspos.length;
-        if(selLen > 0){
-            var delPos = 0;
-            // TODO detect last charObj selection type
-            cEl_pageText.charsSelection.cr.left = false;
-            
-            for(var i = selLen-1;i>-1;i--){
-                delPos = cEl_pageText.charsSelection.charspos[i];
-                //console.log(delPos + " vs "+cEl.data.values.temp.lines3[delPos].chr + " vs " + cEl.data.values.temp.lines3[delPos].wp);
-                cEl.data.values.temp.lines3.splice(delPos,1);
-            }
-            cEl_pageText.charsSelection.charspos = [];
-            cEl_pageText.charsSelection.cr.pos = delPos-1;
-            //cEl_pageText.charsSelection.cr.left = true;
-            cEl_layer.shape.redraw = true;
-            return true;
-        }else{
-            return false;
-        }
-        
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }  
-}
-
-function edit_chars(eventholder,boolAppend){
-    
-    try{
-        
-        var cEl = window[eventholder.active.id];
-        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
-        
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-        var cEl_pageText = window[cEl.pageId].text;
-        
-        delete_selection(cEl,cEl_layer,cEl_pageText);
-        
-        var chrObj ,newCarObj;
-        if(boolAppend){
-            if(cEl_pageText.charsSelection.cr.pos > -1){
-
-                chrObj = cEl.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos];
-                var charCode = eventholder.keys.chr;
-                var charVal = eventholder.keys.chrVal;
-
-                // TODO account for special keys
-                //cdebug("<" + charVal + ">" + charCode,true,true);
-
-                newCarObj = {
-                    "chr":charVal,
-                    "f":chrObj.f,
-                    "wp":false,
-                    "pp":false,
-                    "pr":true,
-                    "fs":chrObj.fs,
-                    "ls":chrObj.ls
-                };
-                if(charVal!==chrObj.chr){
-                    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
-                    var cEl_ctx = cEl_canv.getContext('2d');
-
-                    // TODO add custom style for new character
-
-                    cEl_ctx.save();
-                    newCarObj.w = setGetCharWidth(cEl_ctx,cEl_pageText,newCarObj.chr,newCarObj.f).w;
-                    cEl_ctx.restore();
-                }else{
-                    newCarObj.w = chrObj.w;
-                }
-                newCarObj.sc = (charVal === " ");
-                newCarObj.nl = (charCode === 13);
-                if(newCarObj.nl){
-                    newCarObj.chr = "n";
-                    newCarObj.pr = false;
-                    newCarObj.pp = true;
-                };
-
-                cEl.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,0,newCarObj);
-                cEl_pageText.charsSelection.cr.pos++;
-                
-                cEl_layer.shape.redraw = true;
-            } 
-        }
-        //cdebug(cEl_pageText.charsSelection.cr.pos,false,true);
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }    
-}
-
-function move_chars(eventholder){
-    
-    try{
-        
-        var cEl = window[eventholder.active.id];
-        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
-        
-        return selection_actions(cEl, null, eventholder.keys.chr,false);
-        
-        
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }    
-}
-
-
-function setGetFontObj(cEl_ctx,cEl_pageText,fontText,fontObj,boolReturnId){
+function setGetFontObj(cEl_pageText,fontText,fontObj,boolReturnId){
     
     try{
         var md5Font =  md5(fontText);
         var fontObjRet = cEl_pageText.charsFontsMd5[md5Font];
         var fontObjId = -1;
         if(!fontObjRet){
-            // this to reset the font property, maybe use a string replace "normal" with "", should be faster i think
-            cEl_ctx.font = fontObj.fontCanvas;
-            cEl_ctx.fillStyle = fontObj.color;
             
-            fontObj.fontCanvas = cEl_ctx.font;
-            fontObj.color = cEl_ctx.fillStyle;
-            fontObj.fontSize = parseInt(cEl_ctx.font.match(/\d+px/));
+            
+            // this to reset the font property, maybe use a string replace "normal" with "", should be faster i think
+//            cEl_ctx.font = fontObj.fontCanvas;
+//            cEl_ctx.fillStyle = fontObj.color;
+//            
+//            fontObj.fontCanvas = cEl_ctx.font;
+//            fontObj.color = cEl_ctx.fillStyle;
+//            fontObj.fontSize = parseInt(cEl_ctx.font.match(/\d+px/));
             
             fontObjId = cEl_pageText.charsFontsObj.length;//Object.keys(cEl_pageText.charsFontsMd5).length;
             cEl_pageText.charsFontsObj.push(fontObj);
@@ -745,41 +707,59 @@ function setGetCharsObj(cEl_ctx,cEl_pageText,chars,char,fontObj){
 
 
 
-function setFont(cEl_ctx,cEl_pageText,fontId){
-    
-    try{
-        var charFont = cEl_pageText.charsFonts[Object.keys(cEl_pageText.charsFonts)[fontId]];
-        
-        // reset font if needed 
-        if(cEl_ctx.font !== charFont.val){
-            cEl_ctx.font = charFont.val;
-        }
-        return true;
+//function setFont(cEl_ctx,cEl_pageText,fontId){
+//    
+//    try{
+//        var charFont = cEl_pageText.charsFonts[Object.keys(cEl_pageText.charsFonts)[fontId]];
+//        
+//        // reset font if needed 
+//        if(cEl_ctx.font !== charFont.val){
+//            cEl_ctx.font = charFont.val;
+//        }
+//        return true;
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
 
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function setGetCharWidth(cEl_ctx,cEl_pageText,tmpChar,charFont){
+function setGetCharWidth(cEl_pageText,chrVal,charFontId,charStyle){
     
     try{
         // get set char width
-        var strFontChar =  charFont.id + " " + tmpChar;// CryptoJS.MD5(cEl.data.values.temp.font + " " + cEl_pageText.chars[i]).toString();
+        var strFontChar =  charFontId + " " + chrVal;// CryptoJS.MD5(cEl.data.values.temp.font + " " + cEl_pageText.chars[i]).toString();
         var charWidth = cEl_pageText.charsWidths[strFontChar];
         if(!charWidth){
-            if(cEl_ctx.font !== charFont.val){
-                // reset font if needed 
-                cEl_ctx.font = charFont.val;
-            }
-            charWidth = {"w":cEl_ctx.measureText(tmpChar).width,"f":charFont.id};
+            
+            //cdebug(charStyle)();
+            
+            var charPoint = new paper.PointText({
+                content: chrVal,
+                fontSize: charStyle.fontSize,
+                fontFamily: charStyle.fontFamily,
+                fontWeight: charStyle.fontWeight,
+                fontStyle: charStyle.fontStyle,
+                fillColor: charStyle.color//,
+                //strokeColor: charStyle.color
+            });
+
+            // Create a symbol definition from the path:
+            var charSymbol = new paper.SymbolDefinition(charPoint);
+            
+            //var instance = new paper.SymbolItem(charSymbol);
+            
+            //cdebug(instance.bounds,false,false,0)();
+            //cdebug(charPoint.bounds,false,false,0)();
+            
+            charWidth = {"w":charPoint.bounds.width,"f":charFontId,"fc":strFontChar,"symbol":charSymbol};
+            
             cEl_pageText.charsWidths[strFontChar] = charWidth;
             charWidth = cEl_pageText.charsWidths[strFontChar];
             //cdebug(tmpChar,false,true,0);
         }
-        return cEl_pageText.charsWidths[strFontChar];
+        return charWidth;
         
     } catch (e) {
         var err = listError(e);
@@ -789,181 +769,23 @@ function setGetCharWidth(cEl_ctx,cEl_pageText,tmpChar,charFont){
 }
 
 // TODO split bellow function according to text allignment, will keep it simple
-function draw_cEl_lines3(cEl_ctx,cEl,cEl_pageText){
+function draw_cEl_lines3(cEl,cEl_pageText){
     
     try{
         
-        cEl_ctx.save();
+        set_text_path(cEl);
         
+        var offset = cEl.data.values.temp.style.textIndent;
         
-        switch(cEl.data.values.temp.style.textAlign){
-            
-            case "right":
-                
-                
-            break;
-            
-            case "left":
-                
-                
-            break;
-            
-            case "justify":
-                //cEl_ctx.textBaseline="bottom";
-                //cEl_ctx.textBaseline="alphabetic";
-                draw_cEl_lines_justify(cEl_ctx,cEl,cEl_pageText);
-                
-            break;
-            //charX = charX + cEl.data.values.temp.lines2[0].endW - cEl.data.values.temp.textIndent;
-            
-        }
-        cEl_ctx.restore();
-
+        drawTextAlongPath(cEl,0,offset,cEl_pageText);
+        
+       
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,true,0);
         return err;
     }
 }
-
-//function testPointInShape(cEl){
-//    
-//    
-//    //return true;
-//    
-//    try{
-//        
-//        drawTextAlongPath(cEl.data.values.temp.lines3,cEl.shape.path,0,0);
-//        
-//        return true;
-//        
-////        //cdebug(cEl.parentId + "_" + cEl.id);
-////        //cdebug(eventholder.metrics.xy);
-////        //cdebug(checkPointInStroke(cEl,cEl.shape,[134,251]));
-////        //cdebug(checkPointInPath(cEl,cEl.shape,eventholder.metrics.xy));
-////        //cdebug(cEl.data.values.shape.temp);
-////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
-////        cEl_setPath(cEl_ctx, cEl, cEl.data.values.shape, false, false);
-////        //cdebug(cEl.data.values.shape.temp);
-////        //cdebug(cEl.data.values.shape.temp.fp);
-////        //cdebug(cEl.data.values.temp.lines3,true, false,0);
-////        var x = cEl.data.values.shape.temp.fp[0];
-////        var y = cEl.data.values.shape.temp.fp[1];
-////        
-////        //cEl_ctx.fillText("#",x,y);
-////        
-////        var startAngle = 45;
-////        var boolFlip = true;
-////        var angleFactor = Math.PI/180;
-////        var hits = 0;
-////        var skipFactor = 22;
-////        //cdebug(cEl.data.values.temp.lines3, true, false,0);
-////        
-////        for(var i = 0,startPos,endPos;i<cEl.data.values.temp.lines3.length;i++){
-////            
-////            
-////            var r = cEl.data.values.temp.lines3[i].w;
-////            var charHeight = cEl.data.values.temp.lines3[i].fs;
-////            var charWidth = cEl.data.values.temp.lines3[i].w;
-////            
-////            if(r>0){
-////                //var delta = r/2;
-////                //cdebug(x + " , " + y,true,false,0);
-////                //r = 22 +i * 10;
-////                var xAct=0;
-////                var yAct=0;
-////                
-////                var increment = parseInt(45/r);
-////                increment = increment=0?1:increment;
-////                
-////                if(!boolFlip){
-////                    startPos = startAngle+skipFactor;
-////                }else{
-////                    startPos = startAngle-skipFactor;
-////                }
-////                endPos = startPos + 360;
-////                
-////                //hits = 0;
-////                var actAngle;
-////                var xPrev = 0;
-////                var yPrev = 0;
-////                var diff = 0;
-////                
-////                //draw_pointXY_square(cEl_ctx,[x,y],2,2);
-////                
-////                for(var angle = startPos, angleRad; angle<endPos;angle+=increment){
-////                    
-////                    //angle= (angle>360)? angle-360 : angle;
-////                    
-////                    angleRad = angle * angleFactor;
-////                    xAct = parseInt(x + r * Math.cos(angleRad));
-////                    yAct = parseInt(y - r * Math.sin(angleRad));
-////                    
-////                    //if(r!==0)cdebug(r * Math.cos(angle * angleFactor) + " of " + xAct + " , " + xPrev + " vs " + yAct + " , " + yPrev,false,false,0);
-////                    //cdebug(Math.abs(xAct-xPrev), false, false,0);
-////                    if((Math.abs(xAct-xPrev)>0) || (Math.abs(yAct-yPrev)>0)){
-////                        //cdebug("pre " + i + " " + cEl.data.values.temp.lines3[i].chr + " r " + r + " xAct " + xAct + " yAct " + yAct + " xPrev " + xPrev + " yPrev " + yPrev + " startAngle " + startAngle + " angle " + angleRad + " vs " + startAngle + " diff " + (startAngle - angle),false,false,0);
-////                        if(checkPointInStroke(cEl,cEl.data.values.shape,[xAct,yAct])){
-////                            
-////                            //draw_pointXY_square(cEl_ctx,[xAct,yAct],2,2);
-////                            //cEl_ctx.fillText(hits,xAct,yAct);
-////                            
-////                            //cdebug("hits= " + hits + " <" + cEl.data.values.temp.lines3[i].chr + "> r= " + r + " (xPrev " + xPrev + " yPrev " + yPrev +  ") (xAct " + xAct + " yAct " + yAct + ") (x " + x + " y " + y,false,false,0);
-////                            //cdebug( "startPos " + startPos + " , endPos " + endPos +" , angle " + angle +" , startAngle " + startAngle +" , angle diff " + (angle - startAngle),false,false,0);
-////                            
-////                            actAngle = (angle>360)? angle-360 : angle;
-////                            //actAngle = angle;
-////                            
-////                            diff = Math.abs(startAngle-actAngle);
-////                            //boolFlip = (startAngle-actAngle)>0;
-////                            
-////                            if(diff<=(180-skipFactor) || diff>=(180+skipFactor)){
-////                                //cdebug("hits= " + hits + " <" + cEl.data.values.temp.lines3[i].chr + "> r= " + r + " (xPrev " + xPrev + " yPrev " + yPrev +  ") (xAct " + xAct + " yAct " + yAct + ") (x " + x + " y " + y,false,false,0);
-////                            
-////                                //cdebug( "<" + cEl.data.values.temp.lines3[i].chr + "> startPos " + startPos + " , endPos " + endPos +" , actAngle " + actAngle +" , startAngle " + startAngle +" , angle diff " + diff + ", boolFlip " + boolFlip,false,false,0);
-////                           
-////                                startAngle = actAngle;
-////                                
-////                                break;
-////                            }
-////                            
-////                            
-////                            //if(Math.abs(startAngle - angle)>20){
-////                            //cdebug("hit " + i + " " + cEl.data.values.temp.lines3[i].chr + " r " + r + " xAct " + xAct + " yAct " + yAct + " xPrev " + xPrev + " yPrev " + yPrev + " angle " + angle + " vs " + startAngle + " diff " + (angle - actAngle),false,false,0);
-////                            //    i=cEl.data.values.temp.lines3.length;
-////                            //}
-////                            //if(!(170<Math.abs(startAngle-angle)<190)){
-////                                
-////                            //    break;
-////                            //}
-////                            //cdebug("hit " + i + " " + cEl.data.values.temp.lines3[i].chr + " r " + r + " xAct " + xAct + " yAct " + yAct + " xPrev " + xPrev + " yPrev " + yPrev + " angle " + angle + " vs " + startAngle + " diff " + (angle - startAngle),false,false,0);
-////                            
-////
-////                            
-////                            hits = hits + 1;
-////                        }  
-////                    }
-////                    xPrev = xAct;
-////                    yPrev = yAct;
-////                }
-////                
-////                cEl_ctx.fillText(cEl.data.values.temp.lines3[i].chr,x,y);
-////                //draw_pointXY_square(cEl_ctx,[x,y],r,-charHeight);
-////                //draw_pointXY_square(cEl_ctx,[x,y],r,1);
-////                //cEl_ctx.fillText(i,x,y);
-////                //if(i>0 && Math.abs(cEl.data.values.shape.temp.fp[0]-x)<delta && Math.abs(cEl.data.values.shape.temp.fp[1]-y)<delta)break;
-////                x = xAct;//(x + r * Math.cos(startAngle * angleFactor));
-////                y = yAct;//(y - r * Math.sin(startAngle * angleFactor));
-////            }
-////        }
-//        
-//        
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return err;
-//    }
-//}
 
 
 function set_text_path(cEl){
@@ -974,6 +796,7 @@ function set_text_path(cEl){
             case "box-fill":
                 
                 //cdebug(cEl.data.values.vertical,false,false,0);
+                
                 var path;
                 if(cEl.data.values.vertical){
                     path = new paper.Path.Line({
@@ -986,7 +809,6 @@ function set_text_path(cEl){
                         to: [cEl.shape.path.bounds.x + cEl.shape.path.bounds.width,cEl.shape.path.bounds.y  + cEl.shape.path.bounds.height/2]
                     });
                 }
-                
                 
                 cEl.data.values.temp.path = path;
                 
@@ -1006,21 +828,7 @@ function set_text_path(cEl){
     }
 }
 
-// TODO split bellow function according to text allignment, will keep it simple
-function draw_cEl_lines_justify(cEl_ctx,cEl,cEl_pageText){
-    
-    try{
-        
-        set_text_path(cEl);
-        drawTextAlongPath(cEl,0,0);
-        
-        return true;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,true,0);
-        return err;
-    }
-}
+
 
 //function draw_chr(chrObj,charpos,cEl_ctx,cEl_Selection,boolHasSelection){
 //    
@@ -1131,17 +939,17 @@ function getCharPos(lines,xy){
         for(var i = 0, chrObj,offsetXY,actY=0,boolYset=false,len = lines.length; i<len;i++){
             pos = i;
             chrObj = lines[i];
-            if(chrObj.xy){
+            if(chrObj.point){
 
                 offsetXY = [-chrObj.w/2,0];
 
-                if(chrObj.xy[1]>xy[1]+offsetXY[1]){
+                if(chrObj.point.y>xy[1]+offsetXY[1]){
                     pos = i;
                     if(!boolYset){
                         boolYset = true;
-                        actY = chrObj.xy[1];
+                        actY = chrObj.point.y;
                     }
-                    if(chrObj.xy[0]>xy[0]+offsetXY[0]){
+                    if(chrObj.point.x>xy[0]+offsetXY[0]){
                         pos = i;
                         boolLeft =true;
                         break;
@@ -1150,7 +958,7 @@ function getCharPos(lines,xy){
                 
                 if(boolYset){
                     //cdebug(actY > chrObj.xy[1],false,true);
-                    if(actY < chrObj.xy[1]){
+                    if(actY < chrObj.point.y){
                         pos = i-1;
                         boolLeft = false;
                         break;
@@ -1159,7 +967,7 @@ function getCharPos(lines,xy){
             }
         }
         //cdebug(lines[pos],true,true);
-        //cdebug({"pos":pos,"left":boolLeft},false,true);
+        //cdebug({"pos":pos,"left":boolLeft},false,true)();
         return {"pos":pos,"left":boolLeft};
                             
     } catch (e) {
@@ -1357,7 +1165,7 @@ function toRadians (angle) {
 
 
 
-function drawTextAlongPath(cEl,i,offset){
+function drawTextAlongPath(cEl,i,offset,cEl_pageText){
     
     //var i = 0;
     //var j = 0;
@@ -1365,19 +1173,46 @@ function drawTextAlongPath(cEl,i,offset){
     var lines = cEl.data.values.temp.lines3;
     var path = cEl.data.values.temp.path;
     
+    // TODO do something about this part
+    switch(cEl.data.values.temp.style.textAlign){
+            
+        case "right":
+
+        break;
+
+        case "left":
+
+        break;
+
+        case "justify":
+
+        break;
+
+    }
+    
+    
     var showCP = false;
     if(showCP){
         //console.log("start " + i);
         path.strokeColor = "rgba(111,111,111,0.3)";
+        path.selected = true;
+        path.name = cEl.parentId + "_" + cEl.id + ".L";
     }
+    var charsCount = lines.length;
+    //charsCount = 10;
+    //cdebug(charsCount)();
 
     for(var j=0;j<path.curves.length;j++){
         var curve = path.curves[j];
         var curveLen = curve.length;
         //console.log(curveLen);
 
-        for(var charObj ; i < lines.length; i ++){
+        for(var charObj, charFont, charSymbolContainer; i < charsCount; i ++){
             charObj = lines[i];
+            charFont = cEl_pageText.charsFontsObj[charObj.f.id];
+            charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
+            
+            
             //console.log(i + " " + charObj.chr);
             
             if( charObj.w > 0 ){
@@ -1389,13 +1224,15 @@ function drawTextAlongPath(cEl,i,offset){
                         offset = offset + charObj.w/2;
                         var location = curve.getLocationAt(offset);
                         if(!location){
-                            offset = - curveLen + offset - charObj.w/2;
+                            offset = offset - charObj.w/2 - curveLen;
                             break;
+                        }else{
+                            var tan =  curve.getTangentAtTime(location.time);
+                            charObj.angle = tan.angle;//toDegrees(Math.atan2(tan.y,tan.x));
+                            charObj.point = location.point;//new paper.Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
+                            offset = offset + charObj.w/2 + charFont.letterSpacing;
                         }
-                        var tan =  curve.getTangentAtTime(location.time);
-                        charObj.angle = tan.angle;//toDegrees(Math.atan2(tan.y,tan.x));
-                        charObj.point = new paper.Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
-                        offset = offset + charObj.w/2;
+                        
                         
                     }else{
                         
@@ -1408,22 +1245,27 @@ function drawTextAlongPath(cEl,i,offset){
                         
                         
                         charObj.angle = 0;//toDegrees(Math.atan2(tan.y,tan.x));
-                        charObj.point = new paper.Point(location.point.x - charObj.w/2,location.point.y - charObj.fs*0.2);
+                        charObj.point = location.point; //new paper.Point(location.point.x - charObj.w/2,location.point.y - charObj.fs*0.2);
                     }
                     
+                    //cdebug(charObj.point)();
                     
-                   
+                    drawChar(charObj,cEl.parentId + "_" + cEl.id + ".P_" + i,charFont,charSymbolContainer);
                     
                     if(showCP){
-                        var pathPoint = new paper.Path.Circle({
+                        var pathPoint1 = new paper.Path.Circle({
                             center: location.point,
                             radius: 1,
-                            fillColor: 'green'
+                            fillColor: 'green',
+                            name:cEl.parentId + "_" + cEl.id + ".MP_" + i
+                        });
+                        var pathPoint2 = new paper.Path.Circle({
+                            center: charObj.point,
+                            radius: 1,
+                            fillColor: 'red',
+                            name:cEl.parentId + "_" + cEl.id + ".LR_" + i
                         });
                     }
-                    
-                    
-                    drawChar(charObj,showCP,cEl.parentId + "_" + cEl.id);
                     
                 //    path.lastPos = i;
                     
@@ -1451,25 +1293,57 @@ function drawTextAlongPath(cEl,i,offset){
     return i;
 }
 
-function drawChar(charObj,showCP,name){
+function drawChar(charObj,name,charFont,charSymbolContainer){
    
+    //cdebug(charFont)();
+    var charSymbol = charSymbolContainer.symbol;
+    
+    //cdebug(charSymbol)();
+    
+    //var textItem = new paper.SymbolItem(charSymbol);
+    
+    var textItem = charSymbol.place(charObj.point);
+    textItem.rotate = charObj.angle;
+    textItem.name = name;
+    
+    //definition.fillColor = "red";
+    //textItem.position = charObj.point;
+    //charSymbol.definition.fillColor = charFont.color;
+    //charSymbol.definition.strokeColor = charFont.color;
+    //textItem.rotate = charObj.angle;
+    
+    //{"fontSize":36,"fontStyle":"normal","fontVariant":"normal",
+    //"fontWeight":"bold","fontFamily":"Arial","fontCanvas":"bold 36px Arial",
+    //"letterSpacing":18,"color":"rgba(255, 255, 255, 0.701960784313725)","wordSpacing":0}
     
     
-    var textItem1 = new paper.PointText({
-        content: charObj.chr,
-        point: charObj.point,
-        fillColor: 'blue',
-        rotation: charObj.angle,
-        fontSize:charObj.fs,
-        name:name
-    });
+    //cEl_pageText.charsWidths[strFontChar];
+    
+    
+    
+//    var textItem = new paper.PointText({
+//        content: charObj.chr,
+//        point: charObj.point,
+//        fillColor: charFont.color,
+//        rotation: charObj.angle,
+//        fontSize:charObj.fs,
+//        fontStyle:charFont.fontStyle,
+//        fontWeight: charFont.fontWeight,
+//        name:name,
+//        selected:false
+//    });
+    
+    
+//    var textItem = new paper.PointText({
+//        content: charObj.chr,
+//        point: charObj.point,
+//        fillColor: charFont.color,
+//        rotation: charObj.angle,
+//        fontSize:charObj.fs,
+//        fontStyle:charFont.fontStyle,
+//        fontWeight: charFont.fontWeight,
+//        name:name,
+//        selected:false
+//    });
 
-    if(showCP){
-        var pathPoint = new paper.Path.Circle({
-            center: charObj.point,
-            radius: 1,
-            fillColor: 'red'
-        });
-    }
-    
 }

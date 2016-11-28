@@ -104,8 +104,11 @@ function retCElId(cElId,eventholder){
             if(eventholder.retObj.nostop && hitResult){
                 //if(retObj.id && cElId.search(retObj.id)===-1){
                 if(hitResult.item.name){
-                    //cdebug(hitResult.item.name,true,false,0);
+                    //cdebug(hitResult.item.name,true,false,0)();
+                    
                     eventholder.retObj.id = hitResult.item.name;
+                    //cdebug(eventholder.retObj.id,true,false,0)();
+                    
                 }else{
                     eventholder.retObj.id = cElId;
                 }
@@ -121,15 +124,8 @@ function retCElId(cElId,eventholder){
     }
 };
 
-paper.install(window);
-//var path;
-//function onMouseDownA(event) {
-//        path = new Path();
-//        path.strokeColor = 'black';
-//        path.add(event.point);
-//}
 
-globalTool = new Tool();
+globalTool = new paper.Tool();
 globalTool.onMouseDown = handleMouse;
 globalTool.onMouseMove = handleMouse;
 globalTool.onMouseUp = handleMouse;
@@ -196,7 +192,7 @@ function handleKeys(evt) {
         switch(evtType){
             
             case "keydown":
-                //cdebug(eventholder,true);
+                //cdebug(eventholder)();
                 handleCSSEvents_keys(eventholder,evt);
                 
                 runEval(cEl,evtType) ;
@@ -204,8 +200,6 @@ function handleKeys(evt) {
             case "keypress":
                 
                 handleCSSEvents_keys(eventholder,evt);
-                
-                
                 
                 //alert(evt.keyCode);
                 runEval(cEl,evtType) ;
@@ -220,6 +214,9 @@ function handleKeys(evt) {
                 runEval(cEl,evtType);
             break;
         };
+        
+        //paper.view.draw();
+        
         return true;
     
     } catch (e) {
@@ -235,7 +232,9 @@ function handleMouse(evt) {
     try{
         var evtType = evt.type;
         // exit if not event
-        if(!evtType){return false;}
+        if(!evtType){
+            return false;
+        }
         
         // prevent default events
         //disableEvent(evt);
@@ -247,7 +246,7 @@ function handleMouse(evt) {
         // exit if not valid event
         if (eventholder.noevent){return false;};
         
-        //cdebug(eventholder.currentid,true,true,0);
+        //cdebug(eventholder.currentid)();
         var cEl = window[eventholder.currentid];
         
         
@@ -256,7 +255,7 @@ function handleMouse(evt) {
         switch(evtType){
             
             case "mousedown":
-                //cdebug(eventholder,true,true);
+                
                 
                 //cdebug(evt.detail,true);
                 updateEventHolder(eventholder,false,true,true);
@@ -267,14 +266,15 @@ function handleMouse(evt) {
                 
                 handleContextMenu(eventholder);
                 
-//                runEval(cEl,evtType);
+                //paper.view.draw();
+                renderer(eventholder.canvReset);
                 
             break;
             case "mouseup":
                 
                 handleTextSelection(eventholder);
                 
-//                runEval(cEl,evtType);
+                renderer(eventholder.canvReset);
                 
             break;
             case "mousemove":
@@ -285,8 +285,12 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
    
-//                runEval(cEl,evtType);
-
+                //paper.view.draw();
+                
+                //cdebug(eventholder.targetId + " " + paper.project.name,true,true)();
+                //cdebug(eventholder.canvReset,true,true)();
+                renderer(eventholder.canvReset);
+                
             break;
             case "mouseout":
                 
@@ -296,13 +300,13 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
                 
-                // actual mouse out event
-//                runEval(cEl,evtType) ;
+                renderer(eventholder.canvReset);
                 
             break;
         };
         
-        //page.cElOld = cloneMonoArray(arrActEl);
+        
+        
         return true;
     
     } catch (e) {
@@ -564,21 +568,24 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             eventholder.noevent = false;
             
             var arrTargetId = targetId.split("_");
+            
+            //cdebug(arrTargetId)();
+            
             if(arrTargetId.length === 3){
                 eventholder.pageId = arrTargetId[0];
                 eventholder.layerId = arrTargetId[1];
                 eventholder.tag = arrTargetId[2];
             }
-            if(targetId  === "editorPage_carret_div"){
-            // just retrieve it from the event store and update metrics a little bit
-                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
-                eventholder.metrics.xy[1] = eventholder.metrics.xyAbs[1];
-            }else{
+//            if(targetId  === "editorPage_carret_div"){
+//            // just retrieve it from the event store and update metrics a little bit
+////                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
+////                eventholder.metrics.xy[1] = eventholder.metrics.xyAbs[1];
+//            }else{
                 eventholder.retObj = {"id":null,"nostop":true,"all":[]};
-                retCElId(eventholder.pageId,eventholder);
-                //cdebug(retObj,true);
-                eventholder.currentid = eventholder.retObj.id;
-            }
+                retCElId(eventholder.pageId + "_" + eventholder.layerId,eventholder);
+                eventholder.composedid = eventholder.retObj.id;
+                eventholder.currentid = eventholder.retObj.id.split(".")[0];
+//            }
         }
 
         
@@ -663,75 +670,75 @@ function handleCSSEvents_keys(eventholder,evt) {
     
     try{
         
-        switch(eventholder.type){
-            
-            case "keydown":
-                //cdebug(eventholder.keys.chr);
-                switch(eventholder.keys.chr){
-                    case 37:
-                    case 38:
-                    case 39:
-                    case 40:    
-                        move_chars(eventholder);
-                        evt.preventDefault();
-                    break;
-                    case 8:
-                    case 46:
-                        delete_chars(eventholder);
-                        evt.preventDefault();
-                    break;
-                    case 9:
-                        updateEventHolder(eventholder,false,true,false);
-                        handleCSSEvents_mouse(eventholder,false,true,false);
-                        evt.preventDefault();
-                    break;
-                    case 13:
-                        updateEventHolder(eventholder,false,false,true);
-                        handleCSSEvents_mouse(eventholder,false,false,true);
-
-                    break;
-                    case 27:
-                        evt.preventDefault();
-                    break;
-                    case 86:
-                    case 118:    
-                        if(evt.ctrlKey){
-                            handlePaste(evt);
-                        }
-                    break;
-                    default:
-                        //evt.preventDefault();
-                        //insert_chars(eventholder,true);
-                    break;
-                }
-                
-            break;
-            case "keypress":
-                
-                switch(eventholder.keys.chrVal){
-                    
-                    default:
-                        
-                        edit_chars(eventholder,true);
-                        evt.preventDefault();
-                    break;
-                }
-                
-            break;
-            case "keyup":
-                
-                switch(evt.keyCode){
-                    case 86:
-                    case 118:
-                        if(evt.ctrlKey){
-                            handlePaste(evt);
-                        }
-                    break;
-                }
-                
-                
-            break;
-        };
+//        switch(eventholder.type){
+//            
+//            case "keydown":
+//                //cdebug(eventholder.keys.chr);
+//                switch(eventholder.keys.chr){
+//                    case 37:
+//                    case 38:
+//                    case 39:
+//                    case 40:    
+//                        move_chars(eventholder);
+//                        evt.preventDefault();
+//                    break;
+//                    case 8:
+//                    case 46:
+//                        delete_chars(eventholder);
+//                        evt.preventDefault();
+//                    break;
+//                    case 9:
+//                        updateEventHolder(eventholder,false,true,false);
+//                        handleCSSEvents_mouse(eventholder,false,true,false);
+//                        evt.preventDefault();
+//                    break;
+//                    case 13:
+//                        updateEventHolder(eventholder,false,false,true);
+//                        handleCSSEvents_mouse(eventholder,false,false,true);
+//
+//                    break;
+//                    case 27:
+//                        evt.preventDefault();
+//                    break;
+//                    case 86:
+//                    case 118:    
+//                        if(evt.ctrlKey){
+//                            handlePaste(evt);
+//                        }
+//                    break;
+//                    default:
+//                        //evt.preventDefault();
+//                        //insert_chars(eventholder,true);
+//                    break;
+//                }
+//                
+//            break;
+//            case "keypress":
+//                
+//                switch(eventholder.keys.chrVal){
+//                    
+//                    default:
+//                        
+//                        edit_chars(eventholder,true);
+//                        evt.preventDefault();
+//                    break;
+//                }
+//                
+//            break;
+//            case "keyup":
+//                
+//                switch(evt.keyCode){
+//                    case 86:
+//                    case 118:
+//                        if(evt.ctrlKey){
+//                            handlePaste(evt);
+//                        }
+//                    break;
+//                }
+//                
+//                
+//            break;
+//        };
         
         return true;
         
@@ -858,12 +865,12 @@ function handleContextMenu(eventholder){
             layer_context.visible = true;
             
             var page_context = window[eventholder.pageId];
-            var xy = eventholder.metrics.xyAbs;
+            var xy = eventholder.metrics.xy;
             
             //cdebug(xy[0] + " vs " + page_context.w + " vs " + layer_context.w);
             // TODO check if what ???
-            if(xy[0]>page_context.shape.w-layer_context.shape.w-2)xy[0]=page_context.shape.w-layer_context.shape.w-2;
-            if(xy[1]>page_context.shape.h-layer_context.shape.h-2)xy[1]=xy[1]-layer_context.shape.h-2;
+            if(xy[0]>(page_context.shape.w-layer_context.shape.w-2))xy[0]=page_context.shape.w-layer_context.shape.w-2;
+            if(xy[1]>(page_context.shape.h-layer_context.shape.h-2))xy[1]=xy[1]-layer_context.shape.h-2;
             
             layer_context.shape.masspoint = cEl_edit_MP(layer_context,xy,layer_context.shape.scale);
             layer_context.shape.redraw = true;
@@ -871,6 +878,9 @@ function handleContextMenu(eventholder){
             layer_context.visible = false;
             layer_context.shape.redraw = true;
         }
+        
+        renderer([eventholder.pageId]);
+        
         
         return true;
         

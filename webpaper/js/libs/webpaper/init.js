@@ -21,7 +21,7 @@ var loadedFile = 'Dexterial.json';
 //var loadedFile = 'tests.json';
 //var loadedFile = 'editor.json';
 var loadcanvas = 0;
-var boolEditMode = false;
+var boolEditMode = true;
 var GLOBAL_rendertime = 50/3; // 50/3 = 60 fps
 var GLOBAL_debugger_maxlen = 2000;
 var GLOBAL_debugger = true;

@@ -9,7 +9,7 @@
 	var tool1, tool2;
 
 	window.onload = function() {
-		paper.setup('myCanvas');
+		paper.setup('myCanvas1');
 
 		// Create two drawing tools.
 		// tool1 will draw straight lines,
@@ -28,7 +28,38 @@
 
 		tool1.onMouseDrag = function(event) {
 			path.add(event.point);
+		};
+
+//		tool2 = new Tool();
+//		tool2.minDistance = 20;
+//		tool2.onMouseDown = onMouseDown;
+//
+//		tool2.onMouseDrag = function(event) {
+//			// Use the arcTo command to draw cloudy lines
+//			path.arcTo(event.point);
+//		}
+                
+                
+                paper.setup('myCanvas2');
+
+		// Create two drawing tools.
+		// tool1 will draw straight lines,
+		// tool2 will draw clouds.
+
+		// Both share the mouseDown event:
+		var path2;
+		function onMouseDown(event) {
+			path = new Path();
+			path.strokeColor = 'black';
+			path.add(event.point);
 		}
+
+//		tool1 = new Tool();
+//		tool1.onMouseDown = onMouseDown;
+//
+//		tool1.onMouseDrag = function(event) {
+//			path.add(event.point);
+//		}
 
 		tool2 = new Tool();
 		tool2.minDistance = 20;
@@ -36,14 +67,15 @@
 
 		tool2.onMouseDrag = function(event) {
 			// Use the arcTo command to draw cloudy lines
-			path.arcTo(event.point);
-		}
+			path2.arcTo(event.point);
+		};
 	}
 </script>
 </head>
 <body>
     <a href="#" onclick="tool1.activate();">Lines</a>
     <a href="#" onclick="tool2.activate();">Clouds</a>
-	<canvas id="myCanvas" resize></canvas>
+	<canvas id="myCanvas1"></canvas>
+        <canvas id="myCanvas2"></canvas>
 </body>
 </html>

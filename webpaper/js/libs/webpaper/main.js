@@ -38,7 +38,7 @@ var GLOBAL_rem = getRootElementFontSize();
 
 var GLOBAL_loaded = false;
 var GLOBAL_renderer = false;
-
+paper.install(window);
 
 
 //window.setInterval(function(){cdebug("zz",false,true)},100);
@@ -49,7 +49,7 @@ $.getJSON(loadedFile, function (jsonPage) {
     if(boolEditMode){
     
         $.getJSON(editorFile, function (jsonPageEditor) {
-    
+
             document.title = "<EDIT MODE>" + jsonPage.title;
             pre_load_children(jsonPageEditor);
             
@@ -62,12 +62,15 @@ $.getJSON(loadedFile, function (jsonPage) {
             //GLOBAL_debugger = true;
         });
     }else{
-            clearInterval(interval1);
+
+            //clearInterval(interval1);
             document.title = jsonPage.title;
             //GLOBAL_debugger = jsonPage.debug;
             pre_load_children(jsonPage);
             GLOBAL_renderer = true;
-            interval1 = setInterval(function(){renderer([jsonPage.id]);},GLOBAL_rendertime);
+            //renderer([jsonPage.id]);
+            renderer([jsonPage.id]);
+            //interval1 = setInterval(function(){renderer([jsonPage.id]);},GLOBAL_rendertime);
  
     };
 });
@@ -79,6 +82,7 @@ function renderer(arrPages){
             for(var i = 0,len = arrPages.length;i<len;i++){
                 if(window[arrPages[i]]){
                     drawChildren(window[arrPages[i]]);
+                    //paper.view.draw();
                 }
             }
             GLOBAL_loaded = true;
@@ -144,7 +148,7 @@ function loadPageInEditor(boolRemFirst) {
     
     try {
         
-        clearInterval(interval1);
+        //clearInterval(interval1);
         //clearInterval(interval2);
         //drawChildren(loadedPageAct,"Z");
 
@@ -168,13 +172,18 @@ function loadPageInEditor(boolRemFirst) {
         fabric.shape.points = preview.shape.points;
         fabric.shape.scale = [preview.shape.scale[0]/2,preview.shape.scale[1]/2];
 
-        //fabric.children = preview.children;
+
+        fabric.children = preview.children;
         fabric.children = $.extend(true,[],preview.children);
         resetEditorCEls(fabric,preview);
+        
+        
         pre_load_children(fabric,"editorPage","fabric");
         
         GLOBAL_renderer = true;
-        interval1 = setInterval(function(){renderer(["Z","editorPage"]);},GLOBAL_rendertime);
+        renderer(["Z","editorPage"]);
+        //renderer(["Z","editorPage"]);
+        //interval1 = setInterval(function(){renderer(["Z","editorPage"]);},GLOBAL_rendertime);
         
     } catch (e) {
         var err = listError(e);
@@ -322,14 +331,22 @@ function detectIE() {
 //    return newConsole("");
 //});
 
-cdebug = function() {
+/**
+ * Function cdebug
+ * Description This function
+ * @param {type} msg
+ * @param {type} clearMe
+ * @param {type} boolConsole
+ * @param {type} intConsoleNo
+ */
+var cdebug = function() {
     // Put your extension code here
     //var args = Array.prototype.slice.call(arguments);		
     //args.unshift(console);
     //0-msg, 1-clearMe, 2-boolConsole, 3-intConsoleNo
     try {
         var d = new Date();
-        var intConsoleNo = arguments[3] ? arguments[3] :1;
+        var intConsoleNo = arguments[3] ? arguments[3] :0;
         var dl = window["GLOBAL_delay" + intConsoleNo];
         var strDelay  =  Math.abs(d.getTime() - dl.getTime());
         strDelay = String("00000" + strDelay).slice(-5);
@@ -403,83 +420,14 @@ cdebug = function() {
 //    log("test " + arg1)();
 //}
 
-/**
- * Function cdebug
- * Description This function
- * @param {type} msg
- * @param {type} clearMe
- * @param {type} boolConsole
- * @param {type} intConsoleNo
- */
-function cdebugZZZ(msg, clearMe, boolConsole, intConsoleNo) {
-    
-    try {
-        if(!intConsoleNo && intConsoleNo!==0){intConsoleNo = 1;};
-        var cEl_debug = window["editorPage_stats_log"+intConsoleNo];
-        var d = new Date();
-        var dl = window["GLOBAL_delay" + intConsoleNo];
-        var strDelay  =  Math.abs(d.getTime() - dl.getTime());
-        
-        
-        var strMsg="",strMsgOld;
 
-        
-            
-        
-        
-
-        if(cEl_debug && GLOBAL_debugger){
-            strMsgOld = cEl_debug.data.values.text;
-            if(strMsgOld && (strMsgOld.length>GLOBAL_debugger_maxlen))clearMe = true;
-            
-            if (clearMe){
-                if(clearMe)console.API.clear();
-                strMsg = strNow + "(" + strDelay + "): " + msg + "\\n" + strNow + "(" + strDelay + ")";
-            }else{
-                //make append text function
-                strMsg =  strNow + "(" + strDelay + "): " + msg + "\\n" + strMsgOld;
-            }
-           
-            if(boolConsole){
-                log(strNow + "(" + strDelay + "): " + msg);
-            }else{
-                if(cEl_debug.data.values.temp){
-                    //set_cEl_text(cEl_debug, strMsg);
-                    cEl_debug.data.values.temp.valueOld = null;
-                    cEl_debug.data.values.text = strMsg;
-                    //cEl_debug.shape.redraw = true;
-                    cEl_debug.style.redraw = true;
-                    window[cEl_debug.parentId].shape.redraw = true;
-                    drawChildren(cEl_debug);
-                    
-                }
-            }
-        }else if(GLOBAL_debugger){
-            if(clearMe)console.clear();
-            strMsg = strNow + "(" + strDelay + "): " + msg;
-            log(strMsg);
-        }
-//        if(intConsoleNo===3)alert(msg);
-        
-        // reset counter date so that console logging time is substracted .... sort of
-        window["GLOBAL_delay" + intConsoleNo] = d ;//new Date();
-        return true;
-    } catch (e) {
-        var err = listError(e);
-        console.log(err.message);
-        return err;
-    }
+if (typeof console._commandLineAPI !== 'undefined') {
+    console.API = console._commandLineAPI; //chrome
+} else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
+    console.API = console._inspectorCommandLineAPI; //Safari
+} else if (typeof console.clear !== 'undefined') {
+    console.API = console;
 }
-
-//console.API;
-//
-//if (typeof console._commandLineAPI !== 'undefined') {
-//    console.API = console._commandLineAPI; //chrome
-//} else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
-//    console.API = console._inspectorCommandLineAPI; //Safari
-//} else if (typeof console.clear !== 'undefined') {
-//    console.API = console;
-//}
 
 
 
@@ -771,7 +719,7 @@ function pre_load_children(cEl,pageId,layerId,parentId){
                     setStyle_cEl(cEl);
                 }
                 
-                if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.id,false,true,3)();}
+                //if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.id,false,true,3)();}
                 //boolHasChildren = cEl.children ? true: false;
                 
             break; 
@@ -803,8 +751,9 @@ function drawChildren(cEl,boolRedraw){
         boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
         
         var boolHasChildren = cEl.children ? true: false;
+        
         if(boolHasChildren){
-            for(var i = 0, len = cEl.children.length ;i < len; i++){
+            for(var i = 0;i < cEl.children.length; i++){
                 boolAllIsWell = (boolAllIsWell && drawChildren(cEl.children[i],boolRedraw));
             };
         }
@@ -1064,13 +1013,15 @@ function draw_cEl_canvas(cEl) {
 function draw_cEl_shape(cEl) {
     
     try {
+        
+        //cdebug(cEl.id,false,true,3)();
 
         var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
         var cEl_parent = window[cEl.parentId];
         var cEl_page = window[cEl.pageId];
         
         cEl.visible = cEl_parent.visible;
-        //if(!cEl_parent.visible){cEl.visible = false; };
+        if(!cEl_parent.visible){cEl.visible = false; };
 
         cEl_presets(cEl,cEl_page);
         
@@ -1091,7 +1042,7 @@ function draw_cEl_shape(cEl) {
 
         //{console.log("pageId: " + cEl.pageId + ", layerId: " + cEl.layerId + ", parentId:  " + cEl.parentId + ", cEl.id: " + cEl.id + ",    redraw:" + cEl.shape.redraw);}
         
-        //cdebug(cEl.id,false,true,3)();
+        
         //cdebug(cEl.shape.rotation,false,true,3)();
         
         
@@ -1137,7 +1088,7 @@ function draw_cEl_shape(cEl) {
         cEl_postsets(cEl,cEl_ctx,boolDrawCp);
         
         
-        paper.view.draw();
+        
         
         
         return true;
@@ -1726,114 +1677,112 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
 }
 
 
-function checkPointInBorder(x,y,x1,y1,xy){
-    
-    try{
-        if(x<=xy[0] && x1>=xy[0] && y<=xy[1] && y1>=xy[1]){
-            return true;
-        }
-        return false;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-
-function checkPointInPath(cEl,shapeContainer,xy){
-    
-    try{
-//        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
-//        cEl_setPath(cEl_ctx, cEl,shapeContainer, false, false);
-//        if(GLOBAL_Path2D){
-//            if(cEl_ctx.isPointInPath(cEl.shape.path,xy[0],xy[1])){
-//                return true;
-//            }
-//        }else{
-//            if(cEl_ctx.isPointInPath(xy[0],xy[1])){
-//                return true;
-//            }
+//function checkPointInBorder(x,y,x1,y1,xy){
+//    
+//    try{
+//        if(x<=xy[0] && x1>=xy[0] && y<=xy[1] && y1>=xy[1]){
+//            return true;
 //        }
-        return false;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
+//        return false;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
 
-function checkPointInStroke(cEl,shapeContainer,xy){
-    
-    try{
-//        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
-//        cEl_setPath(cEl_ctx, cEl, shapeContainer, false, false);
-//        if(GLOBAL_Path2D){
-//            if(cEl_ctx.isPointInStroke(cEl.shape.path,xy[0],xy[1])){
+
+//function checkPointInPath(cEl,shapeContainer,xy){
+//    
+//    try{
+////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
+////        cEl_setPath(cEl_ctx, cEl,shapeContainer, false, false);
+////        if(GLOBAL_Path2D){
+////            if(cEl_ctx.isPointInPath(cEl.shape.path,xy[0],xy[1])){
+////                return true;
+////            }
+////        }else{
+////            if(cEl_ctx.isPointInPath(xy[0],xy[1])){
+////                return true;
+////            }
+////        }
+//        return false;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+//function checkPointInStroke(cEl,shapeContainer,xy){
+//    
+//    try{
+////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
+////        cEl_setPath(cEl_ctx, cEl, shapeContainer, false, false);
+////        if(GLOBAL_Path2D){
+////            if(cEl_ctx.isPointInStroke(cEl.shape.path,xy[0],xy[1])){
+////                return true;
+////            }
+////        }else{
+////            if(cEl_ctx.isPointInStroke(xy[0],xy[1])){
+////                return true;
+////            }
+////        }
+//        return false;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+//function checkPointInShape(cEl){
+//    
+//    try{
+//        
+//        if(!cEl || !cEl.visible)return false;
+//        //cdebug("checkPointInShape  " + cEl.pageId + "_" + cEl.layerId + "_canvas    vs    " + cEl.id + "  " + cEl.tag,true,true);
+//        switch(cEl.tag){
+//            case "shape":// Poligon Shape Lines
+//                //&& window[cEl.parentId].visible && window[cEl.parentId].events && window[cEl.parentId].enabled
+//                if(cEl.enabled){ //&& cEl.events
+////                    switch(cEl.shape.detection){
+////                        case "border":
+////                            return checkPointInBorder(cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y,cEl.shape.temp.cpBorder.x1,cEl.shape.temp.cpBorder.y1,eventholder.metrics.xy);
+////                        break;
+////                        case "bordersquare":
+////                            var intSqrSide = Math.max(cEl.shape.temp.cpBorder.x1-cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y1-cEl.shape.temp.cpBorder.y)/2;
+////                            var xyCenter = [(cEl.shape.temp.cpBorder.x1+cEl.shape.temp.cpBorder.x)/2,(cEl.shape.temp.cpBorder.y1+cEl.shape.temp.cpBorder.y)/2];
+////                            return checkPointInBorder(xyCenter[0]-intSqrSide,xyCenter[1]-intSqrSide,xyCenter[0]+intSqrSide,xyCenter[1]+intSqrSide,eventholder.metrics.xy);
+////                        break;
+////                        case "bordercircle":
+////                            // TODO implement detection for circle around the border
+////                        break;
+////                        case "shape":
+//                            return checkPointInPath(cEl,cEl.shape,eventholder.metrics.xy);
+////                        break;
+////                        default:
+////                            // undefined shape detection type
+////                            return checkPointInPath(cEl,cEl.shape,eventholder.metrics.xy);
+////                        break;
+////                    }
+//                }
+//            break;
+//            case "canvas":
+//                //return checkPointInBorder(cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y,cEl.shape.temp.cpBorder.x1,cEl.shape.temp.cpBorder.y1,eventholder.metrics.xyAbs);
+//            break;
+//            case "page":
+//                
 //                return true;
-//            }
-//        }else{
-//            if(cEl_ctx.isPointInStroke(xy[0],xy[1])){
-//                return true;
-//            }
+//            break;
 //        }
-        return false;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function checkPointInShape(cEl){
-    
-    try{
-        
-        if(!cEl || !cEl.visible)return false;
-        //cdebug("checkPointInShape  " + cEl.pageId + "_" + cEl.layerId + "_canvas    vs    " + cEl.id + "  " + cEl.tag,true,true);
-        switch(cEl.tag){
-            case "shape":// Poligon Shape Lines
-                //&& window[cEl.parentId].visible && window[cEl.parentId].events && window[cEl.parentId].enabled
-                if(cEl.enabled){ //&& cEl.events
-                    switch(cEl.shape.detection){
-                        case "border":
-                            return checkPointInBorder(cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y,cEl.shape.temp.cpBorder.x1,cEl.shape.temp.cpBorder.y1,eventholder.metrics.xy);
-                            
-                            
-                        break;
-                        case "bordersquare":
-                            var intSqrSide = Math.max(cEl.shape.temp.cpBorder.x1-cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y1-cEl.shape.temp.cpBorder.y)/2;
-                            var xyCenter = [(cEl.shape.temp.cpBorder.x1+cEl.shape.temp.cpBorder.x)/2,(cEl.shape.temp.cpBorder.y1+cEl.shape.temp.cpBorder.y)/2];
-                            return checkPointInBorder(xyCenter[0]-intSqrSide,xyCenter[1]-intSqrSide,xyCenter[0]+intSqrSide,xyCenter[1]+intSqrSide,eventholder.metrics.xy);
-                        break;
-                        case "bordercircle":
-                            // TODO implement detection for circle around the border
-                        break;
-                        case "shape":
-                            return checkPointInPath(cEl,cEl.shape,eventholder.metrics.xy);
-                        break;
-                        default:
-                            // undefined shape detection type
-                            return checkPointInPath(cEl,cEl.shape,eventholder.metrics.xy);
-                        break;
-                    }
-                }
-            break;
-            case "canvas":
-                //return checkPointInBorder(cEl.shape.temp.cpBorder.x,cEl.shape.temp.cpBorder.y,cEl.shape.temp.cpBorder.x1,cEl.shape.temp.cpBorder.y1,eventholder.metrics.xyAbs);
-            break;
-            case "page":
-                
-                return true;
-            break;
-        }
-        return false;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-};
+//        return false;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
 
 
 
@@ -1865,7 +1814,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         var i=0;
         var scaleCP=[1,1];
         var cElPath = new paper.Path();
-        var cpArray = [];
+        
         var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
         var cEl_parent = window[cEl.parentId];
         var cEl_page = window[cEl.pageId];
@@ -1901,13 +1850,6 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         
         shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
         
-        //var GLOBAL_Path2D = checkPath2D();
-
-        
-        
-        //cdebug(cEl.pageId + "_" + cEl.layerId + "_" + cEl.id,false,false,0);
-        
-//        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
         cpMP = shapeContainer.temp.cpMp;
         cElPath.name = cEl.parentId + "_" + cEl.id;
         
@@ -2093,19 +2035,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         //cElPath.closePath();
 
         if(boolSetCP){
-//            if(shapeContainer.swapwh){
-//                shapeContainer.temp.cpBorder = {
-//                    "x":cpBorder.y,
-//                    "y":cpBorder.x,
-//                    "x1":cpBorder.y1,
-//                    "y1":cpBorder.x1
-//                    };
-//            }else{
-                //shapeContainer.temp.cpBorder = cpBorder;
-//            }
-            
-            //shapeContainer.temp.cp = cpArray;
-            //cdebug(pointsLen + " vs "+ shapeContainer.temp.cp.length );
+            cElPath.selected = true;
         }
         
         //shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
@@ -2119,326 +2049,326 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
     }
 };
 
-function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
-    //'use strict';
-    try{
-        //var shapeContainer = cEl.shape;
-        // exit if path already exists
-        if(!shapeContainer.temp){
-            shapeContainer.temp = {"cpMp":[0,0]};
-        }else{
-            // exit if path already exists
-            if(!boolReset){
-                return true;
-            }
-        }
-        
-        var x,y,x1,y1,x2,y2,wF,hF,cpMP;
-        var i=0;
-        var scaleCP=[1,1];
-        var cElPath;
-        var cpArray = [];
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-        var cEl_parent = window[cEl.parentId];
-        var cEl_page = window[cEl.pageId];
-        
-        if (!shapeContainer.points){
-            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.id]);
-        }
-        var points = shapeContainer.points;
-        var pointsLen = points.length;
-        
-        wF=cEl_layer.shape.w;
-        hF=cEl_layer.shape.h;
-        
-        
-        if(!shapeContainer.scale[1]){
-            shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
-        }
-        
-        scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
-        
-        var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
-
-        if(!shapeContainer.masspoint){
-            shapeContainer.masspoint = $.extend(true,[],cEl_parent.shape.masspoint);
-        }
-        
-        if(shapeContainer.parentoffsetMp){
-            //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
-            var parentMp = cEl_parent.shape.masspoint;
-            var parentCp = cEl_parent.shape.points[shapeContainer.parentoffsetMp.pointindex];
-            shapeContainer.masspoint = [cEl_parent.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_parent.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
-        }
-        
-        shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
-        
-        //var GLOBAL_Path2D = checkPath2D();
-        if(GLOBAL_Path2D){
-            cElPath = new Path2D();
-        }else{
-            cElPath = cEl_ctx;
-            cElPath.beginPath();
-        }
-        
-        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
-        cpMP = shapeContainer.temp.cpMp;
-
-        
-        switch(shapeContainer.type){
-
-            case "poligon":// Poligon Shape Lines
-
-                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-
-                if(boolSetCP){
-                    cpArray.push([x, y, 0, 0]);
-                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                }
- 
-                cElPath.moveTo(x, y);
-                
-                for(i = 1; i < pointsLen; i = i + 1){
-//                    x=scaleCP[0]*points[i][0]+cpMP[0];
-//                    y=scaleCP[1]*points[i][1]+cpMP[1];
-                    x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
-                    y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-                
-                    if(boolSetCP){
-                        cpArray.push([x, y, 0, i]);
-                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                    }
-                    
-                    cElPath.lineTo(x, y); 
-                }
-                
-            break;
-
-            case "quadratic":// Poligon  Shape Quadratic Points
-                //cEl_ctx.beginPath();
-//                x=scaleCP[0]*points[0][0]+cpMP[0];
-//                y=scaleCP[1]*points[0][1]+cpMP[1];
-                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                
-//                console.log("0 " + i + " ; " + [x,y]);
-                
-                if(boolSetCP){
-                    cpArray.push([x, y, 0, 0]);
-                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                }
-                cElPath.moveTo(x, y);
-
-                
-                for(i = 0; i < pointsLen - 2; i = i + 2){ //len
-
-//                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-//                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    
-                    //console.log("1 " + i + " ; " + x + " " + y + " ; " + x1 + " " + y1 + " ");
-                    
-                    if(boolSetCP){
-                        cpArray.push([x1, y1, 0, i+2]);
-                        cpArray.push([x, y, 1, i+1]);
-
-
-                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-                    }
-
-                    cElPath.quadraticCurveTo(x,y,x1,y1); 
-                }
-                switch(pointsLen-i){
-                    case 2:
-//                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y1=scaleCP[1]*points[0][1]+cpMP[1];
-//                        console.log("1 " + i + " ; " + [x1,y1]);
-    
-                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-//                        console.log("2 " + i + " ; " + [x,y] + " ; " + " " + [x1,y1]);
-                        
-                        if(boolSetCP){
-                            cpArray.push([x, y, 1, i]);
-                    
-                    
-                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-                        }
-
-                        cElPath.quadraticCurveTo(x,y,x1,y1);
-                    break;
-                    case 1:
-//                        x=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y=scaleCP[1]*points[0][1]+cpMP[1];
-                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-//                        console.log("3 " + i + " " + x + " " + y + " " + x1 + " " + y1 + " ");
-                        
-                        if(boolSetCP){
-                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                        }
-
-                        cElPath.lineTo(x, y);
-                    break;
-                }
-            break;
-
-            case "bezier":// Poligon  Poligon  Shape Bezier Points
-
-//                x=scaleCP[0]*points[0][0]+cpMP[0];
-//                y=scaleCP[1]*points[0][1]+cpMP[1];
-                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                cElPath.moveTo(x, y);
-                
-                if(boolSetCP){
-                    cpArray.push([x, y, 0, 0]);
-                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                }
-                
-                for(i = 0; i < pointsLen - 3; i = i + 3){
-
-//                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-//                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-//                    x2=scaleCP[0]*points[i+3][0]+cpMP[0];
-//                    y2=scaleCP[1]*points[i+3][1]+cpMP[1];
-                    
-                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    x2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
-                    y2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
-                    
-                    
-                    if(boolSetCP){
-                        cpArray.push([x2, y2, 0, i+3]);
-                        cpArray.push([x, y, 1, i+1]);
-                        cpArray.push([x1, y1, 2, i+2]);
-
-
-                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-                        cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-                    }
-                    
-                    //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-                    cElPath.bezierCurveTo(x,y,x1,y1,x2,y2); 
-                }
-                switch(pointsLen-i){
-                    case 3:
-//                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                        x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-//                        y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-//                        x2=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y2=scaleCP[1]*points[0][1]+cpMP[1];
-                        
-                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-                        
-                        if(boolSetCP){
-                            cpArray.push([x, y, 1, i+1]);
-                            cpArray.push([x1, y1, 2, i+2]);
-
-
-                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-                            cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-                        }
-                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-                        cElPath.bezierCurveTo(x,y,x1,y1,x2,y2);
-                        
-                    break;
-                    case 2:
-//                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-//                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-//                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y1=scaleCP[1]*points[0][1]+cpMP[1];
-
-                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-                        if(boolSetCP){
-                            cpArray.push([x, y, 1, i+1]);
-                    
-                    
-                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-                        }
-                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
-                        cElPath.quadraticCurveTo(x,y,x1,y1);
-
-                    break;
-                    case 1:
-//                        x=scaleCP[0]*points[0][0]+cpMP[0];
-//                        y=scaleCP[1]*points[0][1]+cpMP[1];
-                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        
-                        if(boolSetCP){
-                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-                        }
-                        //cEl_ctx.lineTo(x, y);
-                        cElPath.lineTo(x, y);
-                        
-                    break;
-                }
-            break;
-        };
-        cElPath.closePath();
-
-        if(boolSetCP){
-//            if(shapeContainer.swapwh){
-//                shapeContainer.temp.cpBorder = {
-//                    "x":cpBorder.y,
-//                    "y":cpBorder.x,
-//                    "x1":cpBorder.y1,
-//                    "y1":cpBorder.x1
-//                    };
-//            }else{
-                shapeContainer.temp.cpBorder = cpBorder;
+//function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
+//    //'use strict';
+//    try{
+//        //var shapeContainer = cEl.shape;
+//        // exit if path already exists
+//        if(!shapeContainer.temp){
+//            shapeContainer.temp = {"cpMp":[0,0]};
+//        }else{
+//            // exit if path already exists
+//            if(!boolReset){
+//                return true;
 //            }
-            
-            shapeContainer.temp.cp = cpArray;
-            //cdebug(pointsLen + " vs "+ shapeContainer.temp.cp.length );
-        }
-        
-        shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
-        
-        if(GLOBAL_Path2D){
-            shapeContainer.path = cElPath;
-        }
-        return true;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-};
+//        }
+//        
+//        var x,y,x1,y1,x2,y2,wF,hF,cpMP;
+//        var i=0;
+//        var scaleCP=[1,1];
+//        var cElPath;
+//        var cpArray = [];
+//        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
+//        var cEl_parent = window[cEl.parentId];
+//        var cEl_page = window[cEl.pageId];
+//        
+//        if (!shapeContainer.points){
+//            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.id]);
+//        }
+//        var points = shapeContainer.points;
+//        var pointsLen = points.length;
+//        
+//        wF=cEl_layer.shape.w;
+//        hF=cEl_layer.shape.h;
+//        
+//        
+//        if(!shapeContainer.scale[1]){
+//            shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
+//        }
+//        
+//        scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
+//        
+//        var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
+//
+//        if(!shapeContainer.masspoint){
+//            shapeContainer.masspoint = $.extend(true,[],cEl_parent.shape.masspoint);
+//        }
+//        
+//        if(shapeContainer.parentoffsetMp){
+//            //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
+//            var parentMp = cEl_parent.shape.masspoint;
+//            var parentCp = cEl_parent.shape.points[shapeContainer.parentoffsetMp.pointindex];
+//            shapeContainer.masspoint = [cEl_parent.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_parent.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
+//        }
+//        
+//        shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
+//        
+//        //var GLOBAL_Path2D = checkPath2D();
+//        if(GLOBAL_Path2D){
+//            cElPath = new Path2D();
+//        }else{
+//            cElPath = cEl_ctx;
+//            cElPath.beginPath();
+//        }
+//        
+//        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
+//        cpMP = shapeContainer.temp.cpMp;
+//
+//        
+//        switch(shapeContainer.type){
+//
+//            case "poligon":// Poligon Shape Lines
+//
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+// 
+//                cElPath.moveTo(x, y);
+//                
+//                for(i = 1; i < pointsLen; i = i + 1){
+////                    x=scaleCP[0]*points[i][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i][1]+cpMP[1];
+//                    x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
+//                
+//                    if(boolSetCP){
+//                        cpArray.push([x, y, 0, i]);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                    }
+//                    
+//                    cElPath.lineTo(x, y); 
+//                }
+//                
+//            break;
+//
+//            case "quadratic":// Poligon  Shape Quadratic Points
+//                //cEl_ctx.beginPath();
+////                x=scaleCP[0]*points[0][0]+cpMP[0];
+////                y=scaleCP[1]*points[0][1]+cpMP[1];
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                
+////                console.log("0 " + i + " ; " + [x,y]);
+//                
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+//                cElPath.moveTo(x, y);
+//
+//                
+//                for(i = 0; i < pointsLen - 2; i = i + 2){ //len
+//
+////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    
+//                    //console.log("1 " + i + " ; " + x + " " + y + " ; " + x1 + " " + y1 + " ");
+//                    
+//                    if(boolSetCP){
+//                        cpArray.push([x1, y1, 0, i+2]);
+//                        cpArray.push([x, y, 1, i+1]);
+//
+//
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                    }
+//
+//                    cElPath.quadraticCurveTo(x,y,x1,y1); 
+//                }
+//                switch(pointsLen-i){
+//                    case 2:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+////                        console.log("1 " + i + " ; " + [x1,y1]);
+//    
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+////                        console.log("2 " + i + " ; " + [x,y] + " ; " + " " + [x1,y1]);
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i]);
+//                    
+//                    
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        }
+//
+//                        cElPath.quadraticCurveTo(x,y,x1,y1);
+//                    break;
+//                    case 1:
+////                        x=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y=scaleCP[1]*points[0][1]+cpMP[1];
+//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+////                        console.log("3 " + i + " " + x + " " + y + " " + x1 + " " + y1 + " ");
+//                        
+//                        if(boolSetCP){
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        }
+//
+//                        cElPath.lineTo(x, y);
+//                    break;
+//                }
+//            break;
+//
+//            case "bezier":// Poligon  Poligon  Shape Bezier Points
+//
+////                x=scaleCP[0]*points[0][0]+cpMP[0];
+////                y=scaleCP[1]*points[0][1]+cpMP[1];
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                cElPath.moveTo(x, y);
+//                
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+//                
+//                for(i = 0; i < pointsLen - 3; i = i + 3){
+//
+////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+////                    x2=scaleCP[0]*points[i+3][0]+cpMP[0];
+////                    y2=scaleCP[1]*points[i+3][1]+cpMP[1];
+//                    
+//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    x2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
+//                    y2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
+//                    
+//                    
+//                    if(boolSetCP){
+//                        cpArray.push([x2, y2, 0, i+3]);
+//                        cpArray.push([x, y, 1, i+1]);
+//                        cpArray.push([x1, y1, 2, i+2]);
+//
+//
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
+//                    }
+//                    
+//                    //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                    cElPath.bezierCurveTo(x,y,x1,y1,x2,y2); 
+//                }
+//                switch(pointsLen-i){
+//                    case 3:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+////                        x2=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y2=scaleCP[1]*points[0][1]+cpMP[1];
+//                        
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i+1]);
+//                            cpArray.push([x1, y1, 2, i+2]);
+//
+//
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
+//                        }
+//                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                        cElPath.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                        
+//                    break;
+//                    case 2:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+//
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i+1]);
+//                    
+//                    
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        }
+//                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
+//                        cElPath.quadraticCurveTo(x,y,x1,y1);
+//
+//                    break;
+//                    case 1:
+////                        x=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y=scaleCP[1]*points[0][1]+cpMP[1];
+//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        if(boolSetCP){
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        }
+//                        //cEl_ctx.lineTo(x, y);
+//                        cElPath.lineTo(x, y);
+//                        
+//                    break;
+//                }
+//            break;
+//        };
+//        cElPath.closePath();
+//
+//        if(boolSetCP){
+////            if(shapeContainer.swapwh){
+////                shapeContainer.temp.cpBorder = {
+////                    "x":cpBorder.y,
+////                    "y":cpBorder.x,
+////                    "x1":cpBorder.y1,
+////                    "y1":cpBorder.x1
+////                    };
+////            }else{
+//                shapeContainer.temp.cpBorder = cpBorder;
+////            }
+//            
+//            shapeContainer.temp.cp = cpArray;
+//            //cdebug(pointsLen + " vs "+ shapeContainer.temp.cp.length );
+//        }
+//        
+//        shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
+//        
+//        if(GLOBAL_Path2D){
+//            shapeContainer.path = cElPath;
+//        }
+//        return true;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
 
 function point_get_cpXY(point,scale,cpMp,flipXY,index){
     
