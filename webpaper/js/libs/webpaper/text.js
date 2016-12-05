@@ -63,7 +63,7 @@ function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
         }
         var styleObj = {};
         //cdebug(window[cEl.pageId].shape.scale,false,true,0);
-        //cdebug(cEl.id + " " + cEl.style.calc2["font-size"],false,true,0);
+        //cdebug(cEl.name + " " + cEl.style.calc2["font-size"],false,true,0);
         styleObj.fontSize = size2px(cEl.style.calc2["font-size"],false,window[cEl.pageId].shape.scale[1]);
         styleObj.fontStyle = cEl.style.calc2["font-style"] ? cEl.style.calc2["font-style"] : "normal";
         styleObj.fontVariant = cEl.style.calc2["font-variant"] ? cEl.style.calc2["font-variant"] : "normal";
@@ -440,13 +440,13 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
         for(var i = 0, chrObj, charStyle,charWidth; i< len;i++){
             chrObj = lines[i];
             
-            charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
+            charStyle = cEl_pageText.charsFontsObj[chrObj.f.name];
             //cdebug(charStyle.fontCanvas,false,false,0)();
             
             //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
             
             if(chrObj.pr){
-                charWidth = setGetCharWidth(cEl_pageText,chrObj.chr,chrObj.f.id,charStyle);
+                charWidth = setGetCharWidth(cEl_pageText,chrObj.chr,chrObj.f.name,charStyle);
                 chrObj.fc = charWidth.fc;
                 chrObj.w = charWidth.w;
                 chrObj.fs = charStyle.fontSize;
@@ -470,7 +470,7 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
 //    try{
 //        
 //        //cdebug(eventholder.keys.chr);
-//        var cEl = window[eventholder.active.id];
+//        var cEl = window[eventholder.active.name];
 //        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
 //        
 //        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
@@ -557,7 +557,7 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
 //    
 //    try{
 //        
-//        var cEl = window[eventholder.active.id];
+//        var cEl = window[eventholder.active.name];
 //        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
 //        
 //        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
@@ -624,7 +624,7 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
 //    
 //    try{
 //        
-//        var cEl = window[eventholder.active.id];
+//        var cEl = window[eventholder.active.name];
 //        if(!cEl || cEl.data.type!=="text" || !cEl.data.values.editable)return false;
 //        
 //        return selection_actions(cEl, null, eventholder.keys.chr,false);
@@ -663,7 +663,7 @@ function setGetFontObj(cEl_pageText,fontText,fontObj,boolReturnId){
             return fontObj;
         }else{
             if(boolReturnId)return fontObjRet ;//cEl_pageText.charsFonts[md5Font];
-            return cEl_pageText.charsFontsObj[fontObjRet.id];
+            return cEl_pageText.charsFontsObj[fontObjRet.name];
         }
         
 
@@ -1196,7 +1196,7 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
         //console.log("start " + i);
         path.strokeColor = "rgba(111,111,111,0.3)";
         path.selected = true;
-        path.name = cEl.parentId + "_" + cEl.id + ".L";
+        path.name = cEl.parentName + "_" + cEl.name + ".L";
     }
     var charsCount = lines.length;
     //charsCount = 10;
@@ -1209,7 +1209,7 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
 
         for(var charObj, charFont, charSymbolContainer; i < charsCount; i ++){
             charObj = lines[i];
-            charFont = cEl_pageText.charsFontsObj[charObj.f.id];
+            charFont = cEl_pageText.charsFontsObj[charObj.f.name];
             charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
             
             
@@ -1250,20 +1250,20 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
                     
                     //cdebug(charObj.point)();
                     
-                    drawChar(charObj,cEl.parentId + "_" + cEl.id + ".P_" + i,charFont,charSymbolContainer);
+                    drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,charFont,charSymbolContainer);
                     
                     if(showCP){
                         var pathPoint1 = new paper.Path.Circle({
                             center: location.point,
                             radius: 1,
                             fillColor: 'green',
-                            name:cEl.parentId + "_" + cEl.id + ".MP_" + i
+                            name:cEl.parentName + "_" + cEl.name + ".MP_" + i
                         });
                         var pathPoint2 = new paper.Path.Circle({
                             center: charObj.point,
                             radius: 1,
                             fillColor: 'red',
-                            name:cEl.parentId + "_" + cEl.id + ".LR_" + i
+                            name:cEl.parentName + "_" + cEl.name + ".LR_" + i
                         });
                     }
                     

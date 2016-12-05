@@ -68,9 +68,12 @@ $.getJSON(loadedFile, function (jsonPage) {
             //GLOBAL_debugger = jsonPage.debug;
             pre_load_children(jsonPage);
             GLOBAL_renderer = true;
-            //renderer([jsonPage.id]);
-            renderer([jsonPage.id]);
-            //interval1 = setInterval(function(){renderer([jsonPage.id]);},GLOBAL_rendertime);
+            //renderer([jsonPage.name]);
+            //renderer([jsonPage.name]);
+            
+            drawProjects(paper);
+            
+            //interval1 = setInterval(function(){renderer([jsonPage.name]);},GLOBAL_rendertime);
  
     };
 });
@@ -117,13 +120,13 @@ function remloadedPage(cEl,pageId){
                 window["editorPage_fabric"].shape.redraw = true;
             break;
             case "canvas": //draw canvas element
-                //console.log(pageId + "_" + cEl.id + "_canvas");
-                delete window[pageId + "_" + cEl.id];
-                var child = document.getElementById(pageId + "_" + cEl.id + "_canvas");
+                //console.log(pageId + "_" + cEl.name + "_project");
+                delete window[pageId + "_" + cEl.name];
+                var child = document.getElementById(pageId + "_" + cEl.name + "_project");
                 if(child)document.body.removeChild(child);
             break;
             case "shape": //draw shape 
-                delete window[cEl.parentId + "_" + cEl.id ];
+                delete window[cEl.parentName + "_" + cEl.name ];
             break; 
         }
         
@@ -382,7 +385,7 @@ var cdebug = function() {
                 cEl_debug.data.values.text = strMsg;
                 //cEl_debug.shape.redraw = true;
                 cEl_debug.style.redraw = true;
-                window[cEl_debug.parentId].shape.redraw = true;
+                window[cEl_debug.parentName].shape.redraw = true;
                 drawChildren(cEl_debug);
 
             }
@@ -594,19 +597,27 @@ function mirror(strJson) {
     }
 }
 
-function getSetHtmlEl(cEl){
+
+
+
+function getSetHtmlEl(cEl,parentName){
     try {
+        
+        //cdebug(cEl.tag)();
         switch(cEl.tag){
-            case "canvas": //draw canvas element
-                if(window[cEl.pageId+"_"+cEl.id+"_"+cEl.tag]){
-                    return window[cEl.pageId+"_"+cEl.id+"_"+cEl.tag];
-                }else{
-                    var canvEl = document.createElement(cEl.tag);
+            case "page": //draw canvas element
+                
+            break;
+            case "project": //draw canvas element
+
+                var canvEl = document.getElementById(parentName + "_" + cEl.name+"_project");
+                if(!canvEl){
+                    var canvEl = document.createElement("canvas");
                     canvEl.style.position = "absolute";
                     document.body.appendChild(canvEl);
-                    canvEl.id = cEl.pageId+"_"+cEl.id+"_"+cEl.tag;
-                    return canvEl;
+                    canvEl.id = parentName + "_" + cEl.name + "_project";
                 }
+                return canvEl;
                 
             break;
         }    
@@ -617,124 +628,299 @@ function getSetHtmlEl(cEl){
     }
 }
 
-function pre_load_children(cEl,pageId,layerId,parentId){
-    
-    try{
+function setGetPage(cEl){
+    try {
         
+        paper.name = cEl.name;
+        paper.parentName = "";
+        paper.tag = cEl.tag;
+        paper.class = cEl.class;
+        
+        //cdebug(paper.tag)();
+        
+        paper.shape = $.extend(true,{},cEl.shape);
+        paper.style = $.extend(true,{},cEl.style);
+        
+        paper.data = {
+            "text" : $.extend(true,{},cEl.text),
+            "clipboard" : $.extend(true,{},cEl.clipboard),
+            "styles" : $.extend(true,{},cEl.styles),
+            
+            "rules" : $.extend(true,{},cEl.rules),
+            "state" : $.extend(true,{},cEl.state),
+            "states" : $.extend(true,{},cEl.states),
+            "shapes" : $.extend(true,{},cEl.shapes),
+            "elements" : $.extend(true,{},cEl.elements)
+        };
+        paper.loaded = true;
+        
+        return paper;
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }    
+}
+
+
+function projectSwitch(toProject){
+    try {
+        
+        if(paper.project && paper.project.name && paper.project.name===toProject){
+            return true;//paper.project;
+        }
+        
+        var projects = paper.projects;
+        for(var i = 0; i<projects.length; i++){
+            if(projects[i].name && projects[i].name === toProject){
+                projects[i].activate();
+                //cdebug("project switch " + projects[i].name)();
+                return projects[i];
+            }
+        }
+        return null;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }  
+}
+
+
+function setGetProject(cEl,parentName){
+    try {
+        
+        //cdebug(cEl.tag + "  of   " + cEl.name)();
+        
+        var project = projectSwitch(cEl.name);
+        if(project)return project;
+        //cdebug(cEl.tag + "  of   " + cEl.name)();
+        
+        var cEl_canv = getSetHtmlEl(cEl,parentName);
+        
+        //cdebug(paper.projects.length + " setGetProject " + cEl.name + " >>> tag:" + cEl.tag + " on canvas " + cEl_canv.id)();
+        
+        paper.setup(cEl_canv);
+        project = paper.project;
+        
+        //var project = paper.project;
+        
+        //var project = paper.project;
+        project.debug = cEl.debug;
+        project.tab = cEl.tab;
+        
+        project.name = cEl.name;
+        project.tag = cEl.tag;
+        project.class = cEl.class;
+        
+        
+        project.visible = cEl.visible;
+        project.focus = cEl.focus;
+        project.hover = cEl.hover;
+        project.active = cEl.active;
+        
+        project.style = $.extend(true,{},cEl.style);
+        project.events = $.extend(true,{},cEl.events);
+        project.data = $.extend(true,{},cEl.data);
+        project.shape = $.extend(true,{},cEl.shape);
+        
+        return project;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return false;
+    }
+} 
+
+function setGetLayer(cEl){
+    
+    try {
+        var layers = paper.project.layers;
+        var actLayer = paper.project.activeLayer;
+        for(var i = 0; i<layers.length; i++){
+            if(layers[i].name && layers[i].name === cEl.name){
+                if(actLayer.name && actLayer.name!==cEl.name){
+                    if(layers[i].visible){
+                        cdebug(" layer change from " + actLayer.name + " to " + layers[i].name)();
+                        layers[i].activate();
+                    } 
+                }
+                return layers[i];
+            }
+        }
+        
+        var layer = new Layer;
+        layer.name = cEl.name;
+        layer.tab = cEl.tab;
+        layer.debug = cEl.debug;
+        
+        layer.tag = cEl.tag;
+        layer.class = cEl.class;
+        
+        layer.visible = cEl.visible;
+        layer.focus = cEl.focus;
+        layer.hover = cEl.hover;
+        layer.active = cEl.active;
+        
+        layer.shape = cEl.shape;
+        
+        paper.project.addLayer(layer);
+        //layer.activate();
+        
+        
+        return layer;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return false;
+    }
+} 
+
+
+function setGetShape(cEl){
+    try {
+
+        var shape = new paper.Path();
+        shape.name = cEl.name;
+        shape.tab = cEl.tab;
+        shape.debug = cEl.debug;
+        
+        shape.name = cEl.name;
+        shape.tag = cEl.tag;
+        shape.class = cEl.class;
+        
+        shape.visible = cEl.visible;
+        shape.focus = cEl.focus;
+        shape.hover = cEl.hover;
+        shape.active = cEl.active;
+        
+        shape.events = $.extend(true,{},cEl.events);
+        shape.data = $.extend(true,{},cEl.data);
+        shape.shape = $.extend(true,{},cEl.shape);
+        shape.rules = $.extend(true,{},cEl.rules);
+        shape.states = $.extend(true,{},cEl.states);
+        
+
+        return shape;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return false;
+    }
+} 
+
+
+function pre_load_children(cEl,parentName){
+    try{
         if(!cEl)return true;
         var boolAllIsWell = true;
         
-        // set additional
-        if(cEl.element){
-            if(!pageId){pageId = cEl.pageId;}
+        
+        
+        if(cEl.elId){
             if(!cEl.loaded){
-//                cdebug(cEl.id,false,true,3)();
-//                cdebug(cEl.shape,false,true,3)();
-                cEl = $.extend(true, cEl, window[pageId].elements[cEl.element]);
-//                if(!cEl.states)cEl.states = {};
-//                cEl.states = $.extend(true, cEl.states, window[pageId].states);
-                
-//                cdebug(cEl.shape,false,true,3)();
-                cEl.loaded = true;
+                //cdebug(cEl.name)();
+                cEl = $.extend(true, cEl, paper.data.elements[cEl.elId]);
+                //cEl.loaded = true;
             }
         }
-
-        // set parent and window objects
+        
+        //cdebug(cEl.tag + ": " + cEl.name + " >>> parentName: " + parentName)();
+        
         switch(cEl.tag){
-            case "page": //draw page element
+            
+            case "page":
+                parentName = "";
+                var page = setGetPage(cEl);
                 
-                if(pageId){
-                    cEl.id = pageId;
-                    cEl.pageId = pageId;
-                }else{
-                    pageId = cEl.id;
-                }
-                setEventHolder(pageId);
-                parentId = "";
-                cEl.parentId = "";
-                 // add window object
-                if(!window[cEl.id]){
-                    window[cEl.id]=cEl;
-                }
+                //cdebug()();
+                
+                setEventHolder(page.name);
+                
+                setStyle_cEl(page);
+                
+                //cdebug(cEl.style)();
+                
+                
+                page.loaded = true;
                 
             break;
-            case "canvas": //draw canvas element
-                //console.clear();
-                if(pageId){
-                    cEl.pageId = pageId;
-                }else{
-                    pageId = cEl.pageId;
-                }
+            
+            case "project": //draw page element
                 
-                if(layerId){
-                    cEl.id = layerId;
-                }else{
-                    layerId = cEl.id;
-                }
-                parentId = pageId;
                 
-                cEl.layerId = layerId;
-                cEl.parentId = pageId;
                 
-                // add window object
-                if(!window[cEl.parentId + "_" + cEl.id]){
-                    window[cEl.parentId + "_" + cEl.id]=cEl;
-                }
+                // attach project.name to paper global scope
+                var project = setGetProject(cEl,parentName);
                 
-                // preload style
-                if(!cEl.style){
-                    setStyle_cEl(cEl);
-                }
+                //cdebug(paper.projects.length + " setup project " + cEl.name)();
                 
-                getSetHtmlEl(cEl);
+                project.parentName = parentName;
+                
+                setStyle_cEl(project);
+                
+                // add parentName
+                
+
+//                var path = new paper.Path.Rectangle([75, 75], [100, 100]);
+//		path.strokeColor = 'black';
+//                path.name ="zzz";
+//
+//                var items = project.getItem({
+//                    "id" :1
+//                });
+//                cdebug(items)();
+
+                //cdebug(paper.project.name)();
+                
+                
+                project.loaded = true;
+                
+            break;
+            case "layer": //draw canvas element
+                
+//                var layer = setGetLayer(cEl);
+//                //cdebug(paper.project.layers)();
+//                layer.parentName = parentName;
+//                
+//                setStyle_cEl(layer);
+//                
+//                layer.loaded = true;
                 
             break;
             case "shape": //draw shape
                 
-                if(pageId){
-                    cEl.pageId = pageId;
-                }else{
-                    pageId = cEl.pageId;
-                }
+                var shape = setGetShape(cEl);
                 
-                if(layerId){
-                    cEl.layerId = layerId;
-                }else{
-                    layerId = cEl.id;
-                }
+                //paper.activeLayer.addChild();
                 
-                if(parentId){
-                    cEl.parentId = parentId;
-                }else{
-                    parentId = cEl.parentId + "_" + cEl.id;
-                }
+                shape.parentName = parentName;
+                shape.projectName = paper.project.name;
                 
-                // add window object
-                if(!window[cEl.parentId + "_" + cEl.id]){
-                    window[cEl.parentId + "_" + cEl.id]=cEl;
-                }
+                setStyle_cEl(shape);
                 
-                // preload style
-                if(!cEl.style){
-                    setStyle_cEl(cEl);
-                }
+                //cdebug(shape.parentName + "_" +shape.name)();
+                //cdebug(paper.project.activeLayer.getItem({"name":shape.name}))();
                 
-                //if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.id,false,true,3)();}
-                //boolHasChildren = cEl.children ? true: false;
+                shape.loaded = true;
                 
             break; 
         }
         
         
         var boolChildren = cEl.children ? true: false;
-        //cdebug(cEl.parentId + "_" + cEl.id + " " + boolChildren,false,true,1)();
+        //cdebug(cEl.parentName + "_" + cEl.name + " " + boolChildren,false,true,1)();
         if(boolChildren){
-            for(var i = 0, len = cEl.children.length +1 ;i < len; i++){
-                boolAllIsWell = (boolAllIsWell && pre_load_children(cEl.children[i],pageId,layerId,cEl.parentId + "_" + cEl.id));
+            for(var i = 0, len = cEl.children.length ;i < len; i++){
+                boolAllIsWell = (boolAllIsWell && pre_load_children(cEl.children[i],parentName + "_" + cEl.name));
             };
         }
         return boolAllIsWell;
-        
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -742,21 +928,50 @@ function pre_load_children(cEl,pageId,layerId,parentId){
     }
 }
 
-function drawChildren(cEl,boolRedraw){
+
+function drawProjects(cEl,boolRedraw){
     
     try{
+        
         //if(!cEl)return true;
         var boolAllIsWell = true;
-        if(cEl.tag === "canvas"){boolRedraw = cEl.shape.redraw;};
+        //if(cEl.tag === "layer"){boolRedraw = cEl.shape.redraw;};
         boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
         
+        
+        
         var boolHasChildren = cEl.children ? true: false;
+        var boolHasLayers = cEl.layers ? true: false;
+        var boolHasProjects = cEl.projects ? true: false;
+        
+        //cdebug(cEl.name + " " + boolHasProjects + " " + boolHasLayers + " " + boolHasChildren)();
+        
+        
+        if(boolHasProjects){
+            for(var i = 0;i < cEl.projects.length; i++){
+                //if(cEl.layers[i].visible){
+                    boolAllIsWell = (boolAllIsWell && drawProjects(cEl.projects[i],boolRedraw));
+                //}
+            };
+        }
+
+        if(boolHasLayers){
+            for(var i = 0;i < cEl.layers.length; i++){
+                //if(cEl.layers[i].visible){
+                    boolAllIsWell = (boolAllIsWell && drawProjects(cEl.layers[i],boolRedraw));
+                //}
+            };
+        }
         
         if(boolHasChildren){
             for(var i = 0;i < cEl.children.length; i++){
-                boolAllIsWell = (boolAllIsWell && drawChildren(cEl.children[i],boolRedraw));
+                //cdebug(cEl.children[i].name)();
+                //if(cEl.children[i].visible){
+                    boolAllIsWell = (boolAllIsWell && drawProjects(cEl.children[i],boolRedraw));
+                //}
             };
         }
+        
         
         return boolAllIsWell;
     } catch (e) {
@@ -767,34 +982,80 @@ function drawChildren(cEl,boolRedraw){
 };
 
 
+//function drawChildren(cEl,boolRedraw){
+//    
+//    try{
+//        //if(!cEl)return true;
+//        var boolAllIsWell = true;
+//        if(cEl.tag === "layer"){boolRedraw = cEl.shape.redraw;};
+//        boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
+//        
+//        var boolHasChildren = cEl.children ? true: false;
+//        
+//        if(boolHasChildren){
+//            for(var i = 0;i < cEl.children.length; i++){
+//                boolAllIsWell = (boolAllIsWell && drawChildren(cEl.children[i],boolRedraw));
+//            };
+//        }
+//        
+//        return boolAllIsWell;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+
+
 function draw_cEl(cEl,boolRedraw){
     try{
         //if(!cEl){return false;};
         
         switch(cEl.tag){
-            case "page": //draw page element
+            
+            case "page":
+                
                 if(!cEl.shape.redraw){return true;};
-                //cdebug("draw page " + cEl.id)();
-//                cdebug("draw page " + cEl.id,true,false,2)();
+                
+                if(cEl.style.redraw){
+                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
+                }
+                
                 draw_cEl_page(cEl);
+                //cdebug(cEl.shape)();
                 cEl.shape.redraw = false;
+            
             break;
-            case "canvas": //draw canvas element
+            case "project": //draw page element
                 if(!cEl.shape.redraw){return true;};
+                //cdebug("draw project " + cEl.name)();
+//                cdebug("draw page " + cEl.name,true,false,2)();
                 // compute style
                 if(cEl.style.redraw){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
-                //cdebug("draw canvas")();
-                draw_cEl_canvas(cEl);
-                cEl.style.redraw = false;
+                draw_cEl_project(cEl);
+                
+                cEl.shape.redraw = false;
+            break;
+            case "layer": //draw canvas element
+//                if(!cEl.shape.redraw){return true;};
+//                
+//                if(cEl.style.redraw){
+//                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
+//                }
+//                
+//                //cdebug("draw canvas")();
+//                draw_cEl_layer(cEl);
+//                cEl.style.redraw = false;
             break;
             case "shape": //draw shape
                 
-                //it renders all shape elements if layer is reset ..... so the shape.redraw does not do much, 
-                //perhaps load the image of the shape in a temp value of the cel.shape element and 
-                //just repaint the canvas as the old time, that can speed up stuff.
-                
+//                //it renders all shape elements if layer is reset ..... so the shape.redraw does not do much, 
+//                //perhaps load the image of the shape in a temp value of the cel.shape element and 
+//                //just repaint the canvas as the old time, that can speed up stuff.
+//              
+
                 if(boolRedraw){
                     //cEl.shape.redraw = true;
                 }else{
@@ -806,11 +1067,14 @@ function draw_cEl(cEl,boolRedraw){
                 if(cEl.style.redraw){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
                 }
-//                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2)();
+                
+                //cdebug(cEl.shape)();
+                
+////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.shape.redraw,false,false,2)();
                 draw_cEl_shape(cEl);
                 cEl.shape.redraw = false;
                 cEl.style.redraw = false;
-                //cdebug("END draw shape " + cEl.id + " , redraw " + cEl.shape.redraw,false,false,2)();
+                //cdebug("END draw shape " + cEl.name + " , redraw " + cEl.shape.redraw,false,false,2)();
             break;
         }
         
@@ -824,22 +1088,32 @@ function draw_cEl(cEl,boolRedraw){
     }
 };
 
-
 function draw_cEl_page(cEl){
     
     try {
-        //if(!cEl.shape.redraw){return true;};
-        if(!cEl.visible){return true;}
         
         var w = window.innerWidth;
         var h = window.innerHeight;
         
-        //console.log(w + " " + h);
-        
         if (!cEl.shape.points){
-            cEl.shape.points = cEl.shapes[cEl.shape.id];
+            cEl.shape.points = paper.data.shapes[cEl.shape.name];
         }
         
+        //cdebug(cEl.style)();
+        
+        var borderTop = cEl.style.calc["border-top-width"] ? size2px(cEl.style.calc["border-top-width"],false):0;
+        var borderRight = cEl.style.calc["border-right-width"] ? size2px(cEl.style.calc["border-right-width"],false):0;
+        var borderBottom = cEl.style.calc["border-bottom-width"] ? size2px(cEl.style.calc["border-bottom-width"],false):0;
+        var borderLeft = cEl.style.calc["border-left-width"] ? size2px(cEl.style.calc["border-left-width"],false):0;
+        
+//        cdebug(borderTop + " " +borderRight + " " +borderBottom + " " +borderLeft)();
+
+        w = w - borderRight - borderLeft;
+        h = h - borderTop - borderBottom;
+
+        
+
+
         if(!cEl.shape.w>0){
             //cEl.shape.w = w;
             cEl.shape.w = Math.floor(w * cEl.shape.scale[0] * Math.abs(cEl.shape.points[2][0]-cEl.shape.points[0][0])) ;
@@ -849,8 +1123,172 @@ function draw_cEl_page(cEl){
             cEl.shape.h = Math.floor(h * cEl.shape.scale[1] * Math.abs(cEl.shape.points[2][1]-cEl.shape.points[0][1])) ;
         };
         
-        cEl.shape.left = Math.floor(w * cEl.shape.masspoint[0] + cEl.shape.w * cEl.shape.points[0][0]);
-        cEl.shape.top = Math.floor(h * cEl.shape.masspoint[1] + cEl.shape.h * cEl.shape.points[0][1]);
+        cEl.shape.left = Math.floor(w * cEl.shape.masspoint[0] + cEl.shape.w * cEl.shape.points[0][0]) ;
+        cEl.shape.top = Math.floor(h * cEl.shape.masspoint[1] + cEl.shape.h * cEl.shape.points[0][1]) ;
+        
+        
+        return true;
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+};
+
+function draw_cEl_project(cEl){
+    
+    try {
+        
+        if(!cEl.shape.redraw){return true;};
+        if(!cEl.visible){
+            //cdebug("not visible")();
+            cEl.view.element.style.visibility = "hidden";
+            return true;
+        }
+        //cdebug("draw_cEl_project" + cEl.name)();
+        
+        //setGetProject(cEl,cEl.name);
+        projectSwitch(cEl.name);
+
+        if(cEl.view.element.style.visibility === "hidden")
+            cEl.view.element.style.visibility = "visible";
+        
+        
+        //cdebug(paper.shape)();
+        
+        var w = paper.shape.w;
+        var h = paper.shape.h;
+        
+        //setGetProject(cEl,cEl.parentName);
+        
+        
+        if (!cEl.shape.points){
+            cEl.shape.points = paper.data.shapes[cEl.shape.name];
+        }
+        
+        var borderTop = cEl.style.calc["border-top-width"] ? size2px(cEl.style.calc["border-top-width"],false):0;
+        var borderRight = cEl.style.calc["border-right-width"] ? size2px(cEl.style.calc["border-right-width"],false):0;
+        var borderBottom = cEl.style.calc["border-bottom-width"] ? size2px(cEl.style.calc["border-bottom-width"],false):0;
+        var borderLeft = cEl.style.calc["border-left-width"] ? size2px(cEl.style.calc["border-left-width"],false):0;
+        
+//        cdebug(borderTop + " " +borderRight + " " +borderBottom + " " +borderLeft)();
+
+        w = w - borderRight - borderLeft;
+        h = h - borderTop - borderBottom;
+
+        
+
+
+        if(!cEl.shape.w>0){
+            //cEl.shape.w = w;
+            cEl.shape.w = Math.floor(w * cEl.shape.scale[0] * Math.abs(cEl.shape.points[2][0]-cEl.shape.points[0][0])) ;
+        }; 
+        if(!cEl.shape.h>0){
+            //cEl.shape.h = h;
+            cEl.shape.h = Math.floor(h * cEl.shape.scale[1] * Math.abs(cEl.shape.points[2][1]-cEl.shape.points[0][1])) ;
+        };
+        
+        cEl.shape.left = Math.floor(w * cEl.shape.masspoint[0] + cEl.shape.w * cEl.shape.points[0][0]) ;
+        cEl.shape.top = Math.floor(h * cEl.shape.masspoint[1] + cEl.shape.h * cEl.shape.points[0][1]) ;
+        
+        
+        
+        //if(!cEl.shape.redraw){return true;};
+        
+//        var cEl_canv = document.getElementById(cEl.name + "_project");
+//        
+//        //cdebug("here " +cEl_canv.id)();
+//        
+//        
+//        if(!cEl_canv){
+//            return false;
+//        }
+//        
+//        if(!cEl.visible && cEl.loaded){
+//            if(cEl_canv.style.visibility !== "hidden")cEl_canv.style.visibility = "hidden";
+//            cEl.shape.redraw = false;
+//            return true;
+//        }else{
+//            if(cEl_canv.style.visibility !== "visible")cEl_canv.style.visibility = "visible";
+//        }
+        
+        
+
+        //console.log(cEl.shape.w + " " + cEl.shape.h);
+//        cEl.shape.temp = {
+//            "cpBorder":{
+//                "x":cEl.shape.left + Math.floor(cEl.shape.w * cEl.shape.masspoint[0] + cEl.shape.w * cEl.shape.points[0][0]),
+//                "y":cEl.shape.top + Math.floor(cEl.shape.h * cEl.shape.masspoint[1] + cEl.shape.h * cEl.shape.points[0][1])
+//            }
+//        };
+//        cEl.shape.temp.cpBorder.x1=cEl.shape.temp.cpBorder.x+cEl.shape.w;
+//        cEl.shape.temp.cpBorder.y1=cEl.shape.temp.cpBorder.y+cEl.shape.h;
+        
+        // reset canvas on resize or move ???
+        
+        //cdebug(cEl.shape)();
+        
+        //cdebug(cEl.visible)();
+        
+        //cEl.visible = cEl.visible;
+        
+        cEl.view.viewSize.width = cEl.shape.w;
+        cEl.view.viewSize.height = cEl.shape.h;
+        
+        
+        
+        
+
+        //cEl_canv.width = cEl.shape.w;
+        //cEl_canv.height = cEl.shape.h;
+        
+//        var cEl_ctx = cEl_canv.getContext('2d');
+//        cEl_ctx.textBaseline="alphabetic";
+//        cEl_ctx.textAlign="left";
+        
+        //cEl_canv.contentEditable = true;
+
+        // reset canvas style stuff
+        //cdebug(cEl.shape.left)();
+        
+        var cEl_canv = cEl.view.element;
+        if(cEl.style.calc["box-shadow"])cEl_canv.style.boxShadow = cEl.style.calc["box-shadow"];
+//        //console.log(JSON.stringify(cEl.style.calc));
+        cEl_canv.style.border = "solid " + cEl.style.calc["border-top-width"] + " " + cEl.style.calc["border-top-color"] ;
+        cEl_canv.style.left = cEl.shape.left + "px";
+        cEl_canv.style.top =  cEl.shape.top + "px";
+        
+        //cEl_canv.style.border = "solid 1px blue";//cEl_canv.cStyle["border"];
+
+//        if(cEl.debug){
+//            drawGrid(cEl_canv);
+//            if(!cEl.data.temp)cEl.data.temp = {"drawPoints":null,"rf":[]};
+//        }
+        
+        
+        if(cEl.style.calc["background-image"]){
+            var url = cEl.style.calc["background-image"];
+            url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
+
+            //cdebug(cEl.name + " >>> " + url + " start on " + paper.project.name)();
+
+    //            layer.addChild(new paper.Raster(url, paper.view.bounds.center));
+
+    //            // TODO , add more logic from css with scale "auto" stuff
+            var raster = new paper.Raster(url);
+            raster.sourceUrl = url;
+            raster.onLoad = function(){
+
+    //                var scaleX = paper.view.bounds.width/raster.width;
+    //                var scaleY = paper.view.bounds.height/raster.height;
+    //                raster.scale([scaleX,scaleY]);
+                raster.fitBounds(cEl.view.bounds,true);
+                //cdebug(cEl.name + " >>> " + raster.sourceUrl +" end on " + paper.project.name)();
+                //boolImgLoaded=true;
+            };
+        }
+
+        
         
         return true;
     } catch (e) {
@@ -860,112 +1298,57 @@ function draw_cEl_page(cEl){
     }
 }
 
-var boolImgLoaded = false;
 
-function setGetProject(cEl_canv,name){
-    try {
-        
-        for(var i = 0; i<projects.length; i++){
-            if(projects[i].name && projects[i].name === name){
-                if(paper.project.name && paper.project.name!==name){
-                    projects[i].activate();
-                    //cdebug(projects[i].name)();
-                    return true;
-                }
-            }
-        }
-        paper.setup(cEl_canv);
-        paper.project.name = name;
-        
-        return true;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return false;
-    }
-} 
+//var boolImgLoaded = false;
 
 
-function draw_cEl_canvas(cEl) {
+
+
+function draw_cEl_layer(cEl) {
     
     try {
-        if(!cEl.shape.redraw){return true;};
         
-        var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
-        
-        
-        
-        if(!cEl_canv){
-            return false;
-        }
-        
-        
-        var cElPage = window[cEl.pageId];
-        //console.log(cElPage.id);
-
-        if (!cEl.shape.points){
-            cEl.shape.points = $.extend(true,[],cElPage.shapes[cEl.shape.id]);
-        }
-        
-        cEl.shape.w = Math.floor(cElPage.shape.w * cEl.shape.scale[0] * Math.abs(cEl.shape.points[2][0]-cEl.shape.points[0][0])) ;
-        cEl.shape.h = Math.floor(cElPage.shape.h * cEl.shape.scale[1] * Math.abs(cEl.shape.points[2][1]-cEl.shape.points[0][1])) ;
-        
-        
-        if(!cEl.visible && cEl.loaded){
-            if(cEl_canv.style.visibility !== "hidden")cEl_canv.style.visibility = "hidden";
-            cEl.shape.redraw = false;
-            return true;
-        }else{
-            if(cEl_canv.style.visibility !== "visible")cEl_canv.style.visibility = "visible";
-        }
-        
-        
-
-        //console.log(cEl_canvas.id);
-
-        //console.log(cEl.shape.w + " " + cEl.shape.h);
-        cEl.shape.temp = {
-            "cpBorder":{
-                "x":cElPage.shape.left + Math.floor(cElPage.shape.w * cEl.shape.masspoint[0] + cEl.shape.w * cEl.shape.points[0][0]),
-                "y":cElPage.shape.top + Math.floor(cElPage.shape.h * cEl.shape.masspoint[1] + cEl.shape.h * cEl.shape.points[0][1])
-            }
-        };
-        cEl.shape.temp.cpBorder.x1=cEl.shape.temp.cpBorder.x+cEl.shape.w;
-        cEl.shape.temp.cpBorder.y1=cEl.shape.temp.cpBorder.y+cEl.shape.h;
-        
-        
-        cEl_canv.style.left = cEl.shape.temp.cpBorder.x + 'px';
-        cEl_canv.style.top =  cEl.shape.temp.cpBorder.y + 'px';
-//        
-//        // reset canvas
-        cEl_canv.width = cEl.shape.w;
-        cEl_canv.height = cEl.shape.h;
-        
-        var cEl_ctx = cEl_canv.getContext('2d');
-        cEl_ctx.textBaseline="alphabetic";
-        cEl_ctx.textAlign="left";
-        
-        //cEl_canv.contentEditable = true;
-        var boolRedraw = false;
-        
-        
-        setGetProject(cEl_canv,cEl.pageId + "_" + cEl.layerId + "_canvas");
+        var layer = setGetLayer(cEl);
+        //cdebug("layer " + cEl.name)();
+        //cdebug(cEl.style.calc)();
         
         if(cEl.style.calc["background-image"]){
             var url = cEl.style.calc["background-image"];
             url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
             
+            cdebug(cEl.name + " >>> " + url + " start on " + paper.project.activeLayer.name)();
             
-            // TODO , add more logic from css with scale "auto" stuff
+//            layer.addChild(new paper.Raster(url, paper.view.bounds.center));
+            
+//            // TODO , add more logic from css with scale "auto" stuff
             var raster = new paper.Raster(url);
-            raster.onLoad = function(){boolImgLoaded=true;};
-            var scaleX = paper.view.bounds.width/raster.width;
-            var scaleY = paper.view.bounds.height/raster.height;
-            raster.scale([scaleX,scaleY]);
+            raster.sourceUrl = url;
+            raster.onLoad = function(){
+                
+//                var scaleX = paper.view.bounds.width/raster.width;
+//                var scaleY = paper.view.bounds.height/raster.height;
+//                raster.scale([scaleX,scaleY]);
+                //raster.fitBounds(paper.view.bounds.center,false);
+                setGetLayer(cEl);
+                cdebug(cEl.name + " >>> " + raster.sourceUrl +" end on " + paper.project.activeLayer.name)();
+                //boolImgLoaded=true;
+            };
+            
+            //new paper.Raster(image.dataURL,
+            //                    paper.view.bounds.center)
+            
+            
+            layer.addChild(raster);
+            
+            
             //raster.width = 100;
             //raster.height = 100;
             
-            raster.fitBounds(paper.view.bounds,false);
+            
+            
+            //raster
+            
+            
 //            if(!cEl.image){
 //                cEl.image = new Image();
 //                cEl.image.src = url;
@@ -975,34 +1358,14 @@ function draw_cEl_canvas(cEl) {
 //            cEl.image.onload = function(){boolImgLoaded=true;};
 //            //console.log(cEl.style.calc["background-image"]);
 //            cEl_ctx.drawImage(cEl.image, 0, 0,cEl.shape.w,cEl.shape.h); //,cEl.shape.w,cEl.shape.h
+            boolRedraw = true;
         }else{
             boolRedraw = true;
         }
         
-        //cEl_canv.style.width = cEl.shape.w + 'px';
-        //cEl_canv.style.height = cEl.shape.h + 'px';
-
-        // reset canvas style stuff
-        //cdebug(cEl.style["background-color"])();
-
-        if(cEl.style.calc["box-shadow"])cEl_canv.style.boxShadow = cEl.style.calc["box-shadow"];
-        //cEl_canv.style.backgroundColor = cEl.style.calc["background-color"];
+        //if(boolImgLoaded || boolRedraw)
+        cEl.shape.redraw = false;
         
-        
-        //console.log(JSON.stringify(cEl.style.calc));
-        cEl_canv.style.border = "solid " + cEl.style.calc["border-top-width"] + " " + cEl.style.calc["border-top-color"] ;
-        
-
-        //cEl_canv.style.border = "solid 1px blue";//cEl_canv.cStyle["border"];
-
-        if(cEl.debug){
-            drawGrid(cEl_canv);
-            if(!cEl.data.temp)cEl.data.temp = {"drawPoints":null,"rf":[]};
-        }
-        
-        if(boolImgLoaded || boolRedraw)cEl.shape.redraw = false;
-
-        return true;
     } catch (e) {
         var err = listError(e,true);
         cdebug(err,false,false,3)();
@@ -1014,14 +1377,11 @@ function draw_cEl_shape(cEl) {
     
     try {
         
-        //cdebug(cEl.id,false,true,3)();
-
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-        var cEl_parent = window[cEl.parentId];
-        var cEl_page = window[cEl.pageId];
+        //cdebug(cEl.name,false,true,3)();
+        projectSwitch(cEl.projectName);
         
-        cEl.visible = cEl_parent.visible;
-        if(!cEl_parent.visible){cEl.visible = false; };
+        var cEl_layer = paper.project;
+        var cEl_page = paper.data;
 
         cEl_presets(cEl,cEl_page);
         
@@ -1037,55 +1397,47 @@ function draw_cEl_shape(cEl) {
 
         var boolDrawCp = false;
 
-        //var cEl_page = window[cEl.pageId];
-        
-
-        //{console.log("pageId: " + cEl.pageId + ", layerId: " + cEl.layerId + ", parentId:  " + cEl.parentId + ", cEl.id: " + cEl.id + ",    redraw:" + cEl.shape.redraw);}
-        
-        
         //cdebug(cEl.shape.rotation,false,true,3)();
         
-        
-        //oldShapeDraw(cEl,cEl_ctx,boolDrawCp,cEl_layer)
+        //cdebug(cEl_layer.name +  " >>>  " + cEl.name +  " on " + cEl.projectName)();
         
         cEl_setPaperPath(cEl, cEl.shape, true, false);
         
-        
         var fillColor, strokeColor, lineWidth;
-        if(cEl_layer.debug){
-            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
-            var cEl_index = window[editIndex];
-            boolDrawCp = cEl_index ? true : false;
-            
-            boolDrawCp = boolDrawCp && (cEl_index.parentId + cEl_index.id === cEl.parentId + cEl.id);
-            if(boolDrawCp){
-                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
-                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
-                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
-            }else{
-                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
-                lineWidth = 1;
-                strokeColor = "rgba(0,0,0,0.5)";
-            }
-        }else{
+//        if(cEl_layer.debug){
+//            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
+//            var cEl_index = window[editIndex];
+//            boolDrawCp = cEl_index ? true : false;
+//            
+//            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
+//            if(boolDrawCp){
+//                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
+//                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
+//                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
+//            }else{
+//                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
+//                lineWidth = 1;
+//                strokeColor = "rgba(0,0,0,0.5)";
+//            }
+//        }else{
             fillColor = cEl.style.calc["background-color"];
             lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
             strokeColor = cEl.style.calc["border-top-color"];
-        }
+//        }
         
         if(fillColor){
-            cEl.shape.path.fillColor = fillColor;
+            cEl.fillColor = fillColor;
         }
         if(strokeColor){
-            cEl.shape.path.strokeColor = strokeColor;
-            cEl.shape.path.strokeWidth = lineWidth;
+            cEl.strokeColor = strokeColor;
+            cEl.strokeWidth = lineWidth;
         }
         
         
         
-        var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
-        var cEl_ctx = cEl_canv.getContext('2d');
-        cEl_postsets(cEl,cEl_ctx,boolDrawCp);
+        //var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
+        //var cEl_ctx = cEl_canv.getContext('2d');
+        //cEl_postsets(cEl,cEl_ctx,boolDrawCp);
         
         
         
@@ -1103,7 +1455,7 @@ function draw_cEl_shape(cEl) {
 function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
     
     
-    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_canvas"];
+    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
     var cEl_ctx = cEl_canv.getContext('2d');
     cEl_setPath(cEl_ctx, cEl, cEl.shape, true, true); //cEl.shape.redraw
         
@@ -1118,7 +1470,7 @@ function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
             var cEl_index = window[editIndex];
             boolDrawCp = cEl_index ? true : false;
             
-            boolDrawCp = boolDrawCp && (cEl_index.parentId + cEl_index.id === cEl.parentId + cEl.id);
+            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
             if(boolDrawCp){
                 fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
                 lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
@@ -1268,7 +1620,7 @@ function cEl_presets(cEl,cEl_page){
     try{
         // reset states
         if(cEl.states){
-            //cdebug(cEl.id,false,true,0)();
+            //cdebug(cEl.name,false,true,0)();
             var stateNames = getKeys(cEl.states);
             //cdebug(stateNames,true,true,0)(); 
             
@@ -1280,7 +1632,7 @@ function cEl_presets(cEl,cEl_page){
                 
                 if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
                     //cEl_page.state[stateNames[i]]
-                    //cdebug(cEl.id + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0)();
+                    //cdebug(cEl.name + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0)();
                     cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
                     
 
@@ -1298,10 +1650,10 @@ function cEl_presets(cEl,cEl_page){
 //            case "list":
 //                if(cEl.data.values){
 //                    for(var i = 0,len = cEl.children.length,val_temp,cEl_out;i<len;i++){
-//                        val_temp = cEl.data.values[cEl.children[i].id];
+//                        val_temp = cEl.data.values[cEl.children[i].name];
 //                        if(val_temp){
 //                            if(val_temp["eval"]){
-//                                //cdebug(eval(cEl.data.values[cEl.children[i].id]["val"]))();
+//                                //cdebug(eval(cEl.data.values[cEl.children[i].name]["val"]))();
 //                                cEl.children[i].data.values.text = eval(val_temp["val"]);
 //                                cEl.children[i].data.values.temp = null;
 //                            }else{
@@ -1309,8 +1661,8 @@ function cEl_presets(cEl,cEl_page){
 //                                cEl.children[i].data.values.temp = null;
 //                            }
 //
-//                            if(cEl.children[i].id === cEl.data.index){
-//                                cEl_out = window[cEl.parentId+"_"+cEl.id+"_"+val_temp["out_id"]];
+//                            if(cEl.children[i].name === cEl.data.index){
+//                                cEl_out = window[cEl.parentName+"_"+cEl.name+"_"+val_temp["out_id"]];
 //
 //                                if(val_temp["out_eval"]){
 //                                    cEl_out.data.values.text = eval(val_temp["out_val"]);
@@ -1346,7 +1698,7 @@ function cEl_postsets(cEl,cEl_ctx,boolDrawCp){
     try{
         switch(cEl.data.type){
             case "text":
-                draw_cEl_text(cEl_ctx,cEl,boolDrawCp);
+                //draw_cEl_text(cEl_ctx,cEl,boolDrawCp);
                 return true;
             break;
             default:
@@ -1472,8 +1824,11 @@ function addToGlobalStyle(GLOBAL_styles,strCIdStyle,selectorText) {
 function setStyle_cEl(cEl) {
     try {
 
-        var cEl_fullId = cEl.parentId + "_" + cEl.id;
-        var GLOBAL_styles = window[cEl.pageId].styles;
+        var cEl_fullId = cEl.parentName + "_" + cEl.name;
+        
+        //cdebug(cEl_fullId  + " " + cEl.tag)();
+        
+        var GLOBAL_styles = paper.data.styles;
         
         cEl.style = {};
         cEl.style.default = {};
@@ -1482,27 +1837,28 @@ function setStyle_cEl(cEl) {
         cEl.style.focus = {};
         cEl.style.redraw = true;
         
-        var cEl_style_id = GLOBAL_styles["#" + cEl_fullId];
-        if(!cEl_style_id){
+        if(!GLOBAL_styles["#" + cEl_fullId]){
             // just make an entry inside the main Global style variable
             setStyleGlobal(GLOBAL_styles,cEl_fullId, cEl.class, cEl.tag);
         }
+        
+        
 
         cEl.style.default.tag =  GLOBAL_styles[cEl.tag];
         cEl.style.default.class = GLOBAL_styles["." + cEl.class];
-        cEl.style.default.id = GLOBAL_styles["#" + cEl_fullId];
+        cEl.style.default.name = GLOBAL_styles["#" + cEl_fullId];
         
         cEl.style.hover.tag =  GLOBAL_styles[cEl.tag + ":hover"];
         cEl.style.hover.class = GLOBAL_styles["." + cEl.class + ":hover"];
-        cEl.style.hover.id = GLOBAL_styles["#" + cEl_fullId + ":hover"];
+        cEl.style.hover.name = GLOBAL_styles["#" + cEl_fullId + ":hover"];
         
         cEl.style.focus.tag =  GLOBAL_styles[cEl.tag + ":focus"];
         cEl.style.focus.class = GLOBAL_styles["." + cEl.class + ":focus"];
-        cEl.style.focus.id = GLOBAL_styles["#" + cEl_fullId + ":focus"];
+        cEl.style.focus.name = GLOBAL_styles["#" + cEl_fullId + ":focus"];
         
         cEl.style.active.tag =  GLOBAL_styles[cEl.tag + ":active"];
         cEl.style.active.class = GLOBAL_styles["." + cEl.class + ":active"];
-        cEl.style.active.id = GLOBAL_styles["#" + cEl_fullId + ":active"];
+        cEl.style.active.name = GLOBAL_styles["#" + cEl_fullId + ":active"];
          
         return true;
         
@@ -1520,23 +1876,26 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
         
         //cdebug(state_global,false,true,0);
         //precompute style from global container
-        cEl.style.default.calc = $.extend(true,{},cEl.style.default.tag,cEl.style.default.class,cEl.style.default.id,cEl.style.custom);
+        
+        
+        
+        cEl.style.default.calc = $.extend(true,{},cEl.style.default.tag,cEl.style.default.class,cEl.style.default.name,cEl.style.custom);
         cEl.style.calc = $.extend(true,objKeysDefs,cEl.style.default.calc);
         
         if (cEl.hover){ //.states.global.hover.
-            cEl.style.hover.calc = $.extend(true,{},cEl.style.hover.tag,cEl.style.hover.class,cEl.style.hover.id);
+            cEl.style.hover.calc = $.extend(true,{},cEl.style.hover.tag,cEl.style.hover.class,cEl.style.hover.name);
             cEl.style.calc = $.extend(true,cEl.style.calc,cEl.style.hover.calc);
         };
         if (cEl.focus){ //.states.global.hover.
-            cEl.style.focus.calc = $.extend(true,{},cEl.style.focus.tag,cEl.style.focus.class,cEl.style.focus.id);
+            cEl.style.focus.calc = $.extend(true,{},cEl.style.focus.tag,cEl.style.focus.class,cEl.style.focus.name);
             cEl.style.calc = $.extend(true,cEl.style.calc,cEl.style.focus.calc);
         };
         if (cEl.active){ //.states.global.hover.
-            cEl.style.active.calc = $.extend(true,{},cEl.style.active.tag,cEl.style.active.class,cEl.style.active.id);
+            cEl.style.active.calc = $.extend(true,{},cEl.style.active.tag,cEl.style.active.class,cEl.style.active.name);
             cEl.style.calc = $.extend(true,cEl.style.calc,cEl.style.active.calc);
         };
         
-        //cEl.style.redraw = false;
+        cEl.style.redraw = false;
         
         return true;
     } catch (e) {
@@ -1549,10 +1908,10 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
 function cEl_getChildById(cEl,childId){
     
     try{
-        if(cEl.id === childId)return cEl;
+        if(cEl.name === childId)return cEl;
         if (cEl.children){
             for (var i = cEl.children.length - 1; i >= 0; i--) {
-                if(cEl.children[i].id===childId){
+                if(cEl.children[i].name===childId){
                     return cEl.children[i];
                 }
             }
@@ -1609,17 +1968,22 @@ function setState(cEl_caller,stateName){
     try {
         // uses rules defined in the states space of the caller, but affects the parent then subsequently all children
         
+        //cdebug(cEl_caller.states)();
         
         if(!cEl_caller.states[stateName])return false;
         
-        //cdebug(cEl_caller.id, false,true,0);
         
-        var cEl_page = window[cEl_caller.pageId];
+        var cEl_page = paper.data;
+        
         
         var stateFrom = cEl_page.state[stateName][0];
+        //cdebug(cEl_caller.rules)();
+        
         var rule = cEl_page.rules[cEl_caller.rules[stateName]];
+        
+        
         var stateTo;
- 
+// 
         if(rule.from === stateFrom){
             stateTo = rule.to;
         }else{
@@ -1637,11 +2001,11 @@ function setState(cEl_caller,stateName){
         }
         if(cEl_page.state[stateName].length>2)cEl_page.state[stateName].pop();
         
-//        cdebug(cEl_caller.id, false,true,0);
+//        cdebug(cEl_caller.name, false,true,0);
 //        cdebug(stateFrom + " vs " + stateTo, false,true,0);
 //        cdebug(cEl_page.state[stateName], false,true,0);
 
-        var cEl_layer = window[cEl_caller.pageId + "_" + cEl_caller.layerId];
+        var cEl_layer = cEl_caller.project;
         cEl_layer.shape.redraw = true;
         
         return true;
@@ -1695,7 +2059,7 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
 //function checkPointInPath(cEl,shapeContainer,xy){
 //    
 //    try{
-////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
+////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_project").getContext('2d');
 ////        cEl_setPath(cEl_ctx, cEl,shapeContainer, false, false);
 ////        if(GLOBAL_Path2D){
 ////            if(cEl_ctx.isPointInPath(cEl.shape.path,xy[0],xy[1])){
@@ -1717,7 +2081,7 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
 //function checkPointInStroke(cEl,shapeContainer,xy){
 //    
 //    try{
-////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_canvas").getContext('2d');
+////        var cEl_ctx = document.getElementById(cEl.pageId + "_" + cEl.layerId + "_project").getContext('2d');
 ////        cEl_setPath(cEl_ctx, cEl, shapeContainer, false, false);
 ////        if(GLOBAL_Path2D){
 ////            if(cEl_ctx.isPointInStroke(cEl.shape.path,xy[0],xy[1])){
@@ -1741,10 +2105,10 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
 //    try{
 //        
 //        if(!cEl || !cEl.visible)return false;
-//        //cdebug("checkPointInShape  " + cEl.pageId + "_" + cEl.layerId + "_canvas    vs    " + cEl.id + "  " + cEl.tag,true,true);
+//        //cdebug("checkPointInShape  " + cEl.pageId + "_" + cEl.layerId + "_canvas    vs    " + cEl.name + "  " + cEl.tag,true,true);
 //        switch(cEl.tag){
 //            case "shape":// Poligon Shape Lines
-//                //&& window[cEl.parentId].visible && window[cEl.parentId].events && window[cEl.parentId].enabled
+//                //&& window[cEl.parentName].visible && window[cEl.parentName].events && window[cEl.parentName].enabled
 //                if(cEl.enabled){ //&& cEl.events
 ////                    switch(cEl.shape.detection){
 ////                        case "border":
@@ -1813,20 +2177,33 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         var x0,y0,x,y,x1,y1,x2,y2,wF,hF,cpMP;
         var i=0;
         var scaleCP=[1,1];
-        var cElPath = new paper.Path();
         
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-        var cEl_parent = window[cEl.parentId];
-        var cEl_page = window[cEl.pageId];
+//        if(!shapeContainer.segments){
+//            
+//        }
+        
+        if(cEl.segments.length){
+            cEl.removeSegments();
+        }
+        
+        
+        
+        var cEl_layer = paper.project;
+        //var cEl_parent = cEl.parent;
+        var cEl_page = paper.data;
         
         if (!shapeContainer.points){
-            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.id]);
+            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.name]);
         }
+        
+        //cdebug(cEl.shape.name)();
+        
         var points = shapeContainer.points;
         var pointsLen = points.length;
         
         wF=cEl_layer.shape.w;
         hF=cEl_layer.shape.h;
+        
         
         
         if(!shapeContainer.scale[1]){
@@ -1838,20 +2215,22 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
 
         if(!shapeContainer.masspoint){
-            shapeContainer.masspoint = $.extend(true,[],cEl_parent.shape.masspoint);
+            shapeContainer.masspoint = $.extend(true,[],cEl_layer.shape.masspoint);
         }
         
         if(shapeContainer.parentoffsetMp){
             //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
-            var parentMp = cEl_parent.shape.masspoint;
-            var parentCp = cEl_parent.shape.points[shapeContainer.parentoffsetMp.pointindex];
-            shapeContainer.masspoint = [cEl_parent.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_parent.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
+            var parentMp = cEl_layer.shape.masspoint;
+            var parentCp = cEl_layer.shape.points[shapeContainer.parentoffsetMp.pointindex];
+            shapeContainer.masspoint = [cEl_layer.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_layer.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
         }
         
         shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
         
         cpMP = shapeContainer.temp.cpMp;
-        cElPath.name = cEl.parentId + "_" + cEl.id;
+        //cElPath.name = cEl.parentName + "_" + cEl.name;
+        
+        
         
         switch(shapeContainer.type){
 
@@ -1860,12 +2239,12 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                 x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                 y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
 
-                cElPath.moveTo(x, y);
+                cEl.moveTo(x, y);
                 
                 for(i = 1; i < pointsLen; i = i + 1){
                     x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
                     y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-                    cElPath.lineTo(x, y); 
+                    cEl.lineTo(x, y); 
                 }
                 //cElPath.closed = true;
                 
@@ -1876,14 +2255,14 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                 x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                 y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
                 
-                cElPath.moveTo(x, y);
+                cEl.moveTo(x, y);
 
                 for(i = 0; i < pointsLen - 2; i = i + 2){ //len
                     x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
                     y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
                     x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
                     y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-                    cElPath.quadraticCurveTo(x,y,x1,y1); 
+                    cEl.quadraticCurveTo(x,y,x1,y1); 
                 }
                 switch(pointsLen-i){
                     case 2:
@@ -1892,13 +2271,13 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                         y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
                         x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                         y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        cElPath.quadraticCurveTo(x,y,x1,y1);
+                        cEl.quadraticCurveTo(x,y,x1,y1);
                     break;
                     case 1:
                         
                         x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                         y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                        cElPath.lineTo(x, y);
+                        cEl.lineTo(x, y);
                     break;
                 }
                 //cElPath.closed = true;
@@ -1910,7 +2289,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
 //                y=scaleCP[1]*points[0][1]+cpMP[1];
                 x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
                 y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-                cElPath.moveTo(x, y);
+                cEl.moveTo(x, y);
                 
 
                 
@@ -1932,7 +2311,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                     
                     
                     //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-                    cElPath.cubicCurveTo(x,y,x1,y1,x2,y2); 
+                    cEl.cubicCurveTo(x,y,x1,y1,x2,y2); 
                 }
                 switch(pointsLen-i){
                     case 3:
@@ -1944,7 +2323,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                         y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
                         
                         //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-                        cElPath.cubicCurveTo(x,y,x1,y1,x2,y2);
+                        cEl.cubicCurveTo(x,y,x1,y1,x2,y2);
                         
                     break;
                     case 2:
@@ -1959,7 +2338,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                         y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
                         
                         //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
-                        cElPath.quadraticCurveTo(x,y,x1,y1);
+                        cEl.quadraticCurveTo(x,y,x1,y1);
 
                     break;
                     case 1:
@@ -1969,7 +2348,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
                         y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
                         
                         //cEl_ctx.lineTo(x, y);
-                        cElPath.lineTo(x, y);
+                        cEl.lineTo(x, y);
                         
                     break;
                 
@@ -2035,12 +2414,12 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
         //cElPath.closePath();
 
         if(boolSetCP){
-            cElPath.selected = true;
+            cEl.selected = true;
         }
         
         //shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
         
-        shapeContainer.path = cElPath;
+        //shapeContainer.path = cElPath;
         return true;
     } catch (e) {
         var err = listError(e);
@@ -2049,326 +2428,7 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
     }
 };
 
-//function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
-//    //'use strict';
-//    try{
-//        //var shapeContainer = cEl.shape;
-//        // exit if path already exists
-//        if(!shapeContainer.temp){
-//            shapeContainer.temp = {"cpMp":[0,0]};
-//        }else{
-//            // exit if path already exists
-//            if(!boolReset){
-//                return true;
-//            }
-//        }
-//        
-//        var x,y,x1,y1,x2,y2,wF,hF,cpMP;
-//        var i=0;
-//        var scaleCP=[1,1];
-//        var cElPath;
-//        var cpArray = [];
-//        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-//        var cEl_parent = window[cEl.parentId];
-//        var cEl_page = window[cEl.pageId];
-//        
-//        if (!shapeContainer.points){
-//            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.id]);
-//        }
-//        var points = shapeContainer.points;
-//        var pointsLen = points.length;
-//        
-//        wF=cEl_layer.shape.w;
-//        hF=cEl_layer.shape.h;
-//        
-//        
-//        if(!shapeContainer.scale[1]){
-//            shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
-//        }
-//        
-//        scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
-//        
-//        var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
-//
-//        if(!shapeContainer.masspoint){
-//            shapeContainer.masspoint = $.extend(true,[],cEl_parent.shape.masspoint);
-//        }
-//        
-//        if(shapeContainer.parentoffsetMp){
-//            //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
-//            var parentMp = cEl_parent.shape.masspoint;
-//            var parentCp = cEl_parent.shape.points[shapeContainer.parentoffsetMp.pointindex];
-//            shapeContainer.masspoint = [cEl_parent.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_parent.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
-//        }
-//        
-//        shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
-//        
-//        //var GLOBAL_Path2D = checkPath2D();
-//        if(GLOBAL_Path2D){
-//            cElPath = new Path2D();
-//        }else{
-//            cElPath = cEl_ctx;
-//            cElPath.beginPath();
-//        }
-//        
-//        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
-//        cpMP = shapeContainer.temp.cpMp;
-//
-//        
-//        switch(shapeContainer.type){
-//
-//            case "poligon":// Poligon Shape Lines
-//
-//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
-// 
-//                cElPath.moveTo(x, y);
-//                
-//                for(i = 1; i < pointsLen; i = i + 1){
-////                    x=scaleCP[0]*points[i][0]+cpMP[0];
-////                    y=scaleCP[1]*points[i][1]+cpMP[1];
-//                    x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
-//                    y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
-//                
-//                    if(boolSetCP){
-//                        cpArray.push([x, y, 0, i]);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                    }
-//                    
-//                    cElPath.lineTo(x, y); 
-//                }
-//                
-//            break;
-//
-//            case "quadratic":// Poligon  Shape Quadratic Points
-//                //cEl_ctx.beginPath();
-////                x=scaleCP[0]*points[0][0]+cpMP[0];
-////                y=scaleCP[1]*points[0][1]+cpMP[1];
-//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                
-////                console.log("0 " + i + " ; " + [x,y]);
-//                
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
-//                cElPath.moveTo(x, y);
-//
-//                
-//                for(i = 0; i < pointsLen - 2; i = i + 2){ //len
-//
-////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-//                    
-//                    //console.log("1 " + i + " ; " + x + " " + y + " ; " + x1 + " " + y1 + " ");
-//                    
-//                    if(boolSetCP){
-//                        cpArray.push([x1, y1, 0, i+2]);
-//                        cpArray.push([x, y, 1, i+1]);
-//
-//
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                    }
-//
-//                    cElPath.quadraticCurveTo(x,y,x1,y1); 
-//                }
-//                switch(pointsLen-i){
-//                    case 2:
-////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
-////                        console.log("1 " + i + " ; " + [x1,y1]);
-//    
-//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-////                        console.log("2 " + i + " ; " + [x,y] + " ; " + " " + [x1,y1]);
-//                        
-//                        if(boolSetCP){
-//                            cpArray.push([x, y, 1, i]);
-//                    
-//                    
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                        }
-//
-//                        cElPath.quadraticCurveTo(x,y,x1,y1);
-//                    break;
-//                    case 1:
-////                        x=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y=scaleCP[1]*points[0][1]+cpMP[1];
-//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-////                        console.log("3 " + i + " " + x + " " + y + " " + x1 + " " + y1 + " ");
-//                        
-//                        if(boolSetCP){
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        }
-//
-//                        cElPath.lineTo(x, y);
-//                    break;
-//                }
-//            break;
-//
-//            case "bezier":// Poligon  Poligon  Shape Bezier Points
-//
-////                x=scaleCP[0]*points[0][0]+cpMP[0];
-////                y=scaleCP[1]*points[0][1]+cpMP[1];
-//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                cElPath.moveTo(x, y);
-//                
-//                if(boolSetCP){
-//                    cpArray.push([x, y, 0, 0]);
-//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                }
-//                
-//                for(i = 0; i < pointsLen - 3; i = i + 3){
-//
-////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-////                    x2=scaleCP[0]*points[i+3][0]+cpMP[0];
-////                    y2=scaleCP[1]*points[i+3][1]+cpMP[1];
-//                    
-//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-//                    x2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
-//                    y2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
-//                    
-//                    
-//                    if(boolSetCP){
-//                        cpArray.push([x2, y2, 0, i+3]);
-//                        cpArray.push([x, y, 1, i+1]);
-//                        cpArray.push([x1, y1, 2, i+2]);
-//
-//
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                        cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-//                    }
-//                    
-//                    //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-//                    cElPath.bezierCurveTo(x,y,x1,y1,x2,y2); 
-//                }
-//                switch(pointsLen-i){
-//                    case 3:
-////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                        x1=scaleCP[0]*points[i+2][0]+cpMP[0];
-////                        y1=scaleCP[1]*points[i+2][1]+cpMP[1];
-////                        x2=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y2=scaleCP[1]*points[0][1]+cpMP[1];
-//                        
-//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
-//                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
-//                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-//                        
-//                        if(boolSetCP){
-//                            cpArray.push([x, y, 1, i+1]);
-//                            cpArray.push([x1, y1, 2, i+2]);
-//
-//
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
-//                        }
-//                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
-//                        cElPath.bezierCurveTo(x,y,x1,y1,x2,y2);
-//                        
-//                    break;
-//                    case 2:
-////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
-////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
-////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
-//
-//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
-//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-//                        if(boolSetCP){
-//                            cpArray.push([x, y, 1, i+1]);
-//                    
-//                    
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
-//                        }
-//                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
-//                        cElPath.quadraticCurveTo(x,y,x1,y1);
-//
-//                    break;
-//                    case 1:
-////                        x=scaleCP[0]*points[0][0]+cpMP[0];
-////                        y=scaleCP[1]*points[0][1]+cpMP[1];
-//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
-//                        
-//                        if(boolSetCP){
-//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
-//                        }
-//                        //cEl_ctx.lineTo(x, y);
-//                        cElPath.lineTo(x, y);
-//                        
-//                    break;
-//                }
-//            break;
-//        };
-//        cElPath.closePath();
-//
-//        if(boolSetCP){
-////            if(shapeContainer.swapwh){
-////                shapeContainer.temp.cpBorder = {
-////                    "x":cpBorder.y,
-////                    "y":cpBorder.x,
-////                    "x1":cpBorder.y1,
-////                    "y1":cpBorder.x1
-////                    };
-////            }else{
-//                shapeContainer.temp.cpBorder = cpBorder;
-////            }
-//            
-//            shapeContainer.temp.cp = cpArray;
-//            //cdebug(pointsLen + " vs "+ shapeContainer.temp.cp.length );
-//        }
-//        
-//        shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
-//        
-//        if(GLOBAL_Path2D){
-//            shapeContainer.path = cElPath;
-//        }
-//        return true;
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return err;
-//    }
-//};
+
 
 function point_get_cpXY(point,scale,cpMp,flipXY,index){
     
@@ -2547,19 +2607,37 @@ function runEval(actEl, evtType){
         //cdebug(actEl);
         if(!actEl || !actEl.events)return null;
         var strEval = actEl.events[evtType];
-        
-//        cdebug("runEval " + actEl.id + ", event " + strEval + ", evtType " + evtType);
-//        cdebug(evtType,true);
-        
+
         if(strEval && actEl.enabled){
-            if(actEl.tag==="canvas"){
-                strEval = strEval.replace("this",actEl.pageId+"_"+actEl.id);
-            }else if(actEl.tag==="page"){
-                strEval = strEval.replace("this",actEl.pageId);
-            }else{
-                strEval = strEval.replace("this",actEl.parentId+"_"+actEl.id);
-            };
-            return eval(strEval);
+            
+            var fctName = strEval.split("(")[0];
+            var args = strEval.split("(")[1];
+            var args = args.split(")")[0];
+            args = args.split(",");
+            for(var i = 0 ;i<args.length;i++){
+                if(args[i] === "this"){
+                    args[i] = actEl;
+                    //cdebug(args[i])();
+                }else{
+                    args[i] = eval(args[i]);
+                }
+                //cdebug(args[i])();
+            }
+            //cdebug(args)();
+            //cdebug("runEval " + actEl.name + ", event " + strEval + ", evtType " + evtType + " >>> fctName:" + fctName + " args >>>" + args)();
+            
+//            
+//            if(actEl.tag==="canvas"){
+//                strEval = strEval.replace("this",actEl.pageId+"_"+actEl.name);
+//            }else if(actEl.tag==="page"){
+//                strEval = strEval.replace("this",actEl.pageId);
+//            }else{
+//                strEval = strEval.replace("this",actEl.parentName+"_"+actEl.name);
+//            };
+//            return eval(strEval);
+            
+            //return window[fctName](args);
+            return executeFunctionByName2(fctName,args);
         }
     } catch (e) {
         var err = listError(e);
@@ -2568,17 +2646,57 @@ function runEval(actEl, evtType){
     }
 }
 
+function executeFunctionByName2(fname , args){
+    var arr = fname.split('.');
+    var fn = window[ arr[0] ];
+    for (var i = 1; i < arr.length; i++)
+    { fn = fn[ arr[i] ]; }
+    return fn.apply(window, args);
+}
+
+
+function executeFunctionByName(functionName, context /*, args */) {
+    
+    try{    
+        //executeFunctionByName("My.Namespace.functionName", window, arguments);
+        var args = [].slice.call(arguments).splice(2);
+        var namespaces = functionName.split(".");
+        var func = namespaces.pop();
+        for(var i = 0; i < namespaces.length; i++) {
+          context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+//function executeFunctionByName(functionName, context /*, args */) {
+//    
+//    try{
+//        return window["functionName"](arguments);
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+
 function resetCursor(cEl){
     
     try{
         //var actCanv = getSetHtmlEl(cEl);
-        //cdebug(cEl.pageId + "_" + cEl.layerId + "_canvas");
+        //cdebug(cEl.pageId + "_" + cEl.layerId + "_project");
         
         if(cEl.tag!=="page"){
-            window[cEl.pageId + "_" + cEl.layerId + "_canvas"].style.cursor = cEl.style.calc["cursor"];
+            //cdebug(cEl.style.calc["cursor"])();
+            document.body.style.cursor = cEl.style.calc["cursor"];
         }
         //else{
-            //window[cEl.pageId + "_" + cEl.layerId + "_canvas"].style.cursor = cEl.style.calc["cursor"];
+            //window[cEl.pageId + "_" + cEl.layerId + "_project"].style.cursor = cEl.style.calc["cursor"];
         //}
         return true;
     } catch (e) {

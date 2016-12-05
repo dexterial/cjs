@@ -31,38 +31,38 @@ function loadEvents() {
         
         if (window.addEventListener) window.addEventListener("contextmenu", disableEvent, false);
         else if (window.attachEvent) window.attachEvent("oncontextmenu", disableEvent);
-        
-//        if (window.addEventListener) window.addEventListener("mousedown", handleMouse, false);
-//        else if (window.attachEvent) window.attachEvent("onmousedown", handleMouse);
-//        if (window.addEventListener) window.addEventListener("mousemove", handleMouse, false);
-//        else if (window.attachEvent) window.attachEvent("onmousemove", handleMouse);
-//        if (window.addEventListener) window.addEventListener("mouseup", handleMouse, false);
-//        else if (window.attachEvent) window.attachEvent("onmouseup", handleMouse);
-//        if (window.addEventListener) window.addEventListener("mouseout", handleMouse, false);
-//        else if (window.attachEvent) window.attachEvent("onmouseout", handleMouse);
-        if (window.addEventListener) window.addEventListener("wheel",handleWheel, false);
-        else if (window.attachEvent) window.attachEvent("onwheel", handleWheel);
-        
-        //clipboard events
-        //if (window.addEventListener) window.addEventListener("beforepaste", handleBeforePaste, false);
-        //else if (window.attachEvent) window.attachEvent("onbeforepaste", handleBeforePaste);
-        //if (window.addEventListener) window.addEventListener("paste", handlePaste, false);
-        //else if (window.attachEvent) window.attachEvent("onpaste", handlePaste);
-        
-        //keys events
-//        if (window.addEventListener) window.addEventListener("keydown", handleKeys, false);
-//        else if (window.attachEvent) window.attachEvent("onkeydown", handleKeys);
-//        if (window.addEventListener) window.addEventListener("keyup", handleKeys, false);
-//        else if (window.attachEvent) window.attachEvent("onkeyup", handleKeys);
-//        if (window.addEventListener) window.addEventListener("keypress", handleKeys, false);
-//        else if (window.attachEvent) window.attachEvent("onkeypress", handleKeys);
-        //touch events
-        if (window.addEventListener) window.addEventListener("touchstart",handleTouch, false);
-        else if (window.attachEvent) window.attachEvent("ontouchstart", handleTouch);
-        if (window.addEventListener) window.addEventListener("touchmove", handleTouch, false);
-        else if (window.attachEvent) window.attachEvent("ontouchmove", handleTouch);
-        if (window.addEventListener) window.addEventListener("touchend", handleTouch, false);
-        else if (window.attachEvent) window.attachEvent("ontouchend", handleTouch);
+//        
+////        if (window.addEventListener) window.addEventListener("mousedown", handleMouse, false);
+////        else if (window.attachEvent) window.attachEvent("onmousedown", handleMouse);
+////        if (window.addEventListener) window.addEventListener("mousemove", handleMouse, false);
+////        else if (window.attachEvent) window.attachEvent("onmousemove", handleMouse);
+////        if (window.addEventListener) window.addEventListener("mouseup", handleMouse, false);
+////        else if (window.attachEvent) window.attachEvent("onmouseup", handleMouse);
+////        if (window.addEventListener) window.addEventListener("mouseout", handleMouse, false);
+////        else if (window.attachEvent) window.attachEvent("onmouseout", handleMouse);
+//        if (window.addEventListener) window.addEventListener("wheel",handleWheel, false);
+//        else if (window.attachEvent) window.attachEvent("onwheel", handleWheel);
+//        
+//        //clipboard events
+//        //if (window.addEventListener) window.addEventListener("beforepaste", handleBeforePaste, false);
+//        //else if (window.attachEvent) window.attachEvent("onbeforepaste", handleBeforePaste);
+//        //if (window.addEventListener) window.addEventListener("paste", handlePaste, false);
+//        //else if (window.attachEvent) window.attachEvent("onpaste", handlePaste);
+//        
+//        //keys events
+////        if (window.addEventListener) window.addEventListener("keydown", handleKeys, false);
+////        else if (window.attachEvent) window.attachEvent("onkeydown", handleKeys);
+////        if (window.addEventListener) window.addEventListener("keyup", handleKeys, false);
+////        else if (window.attachEvent) window.attachEvent("onkeyup", handleKeys);
+////        if (window.addEventListener) window.addEventListener("keypress", handleKeys, false);
+////        else if (window.attachEvent) window.attachEvent("onkeypress", handleKeys);
+//        //touch events
+//        if (window.addEventListener) window.addEventListener("touchstart",handleTouch, false);
+//        else if (window.attachEvent) window.attachEvent("ontouchstart", handleTouch);
+//        if (window.addEventListener) window.addEventListener("touchmove", handleTouch, false);
+//        else if (window.attachEvent) window.attachEvent("ontouchmove", handleTouch);
+//        if (window.addEventListener) window.addEventListener("touchend", handleTouch, false);
+//        else if (window.attachEvent) window.attachEvent("ontouchend", handleTouch);
         
         // error events
 //        if (window.addEventListener) window.addEventListener("error", function(e) {cdebug(e);}, false);
@@ -80,40 +80,36 @@ function loadEvents() {
 }
 
 
-function retCElId(cElId,eventholder){
+function retCElId(eventholder,hitOptions,defaultID){
     
     try{
         
         
-        var hitOptions = {
-            segments: true,
-            stroke: true,
-            fill: true,
-            tolerance: 5
-        };
-        var hitResult = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
         
-        if(!hitResult){
-//            cdebug(paper.project.view.bounds,false,false,0);
-//            cdebug(paper.project.view.center,false,false,0);
-            //cdebug(eventholder.targetId,false,false,0);
-            //cdebug(eventholder,false,false,0);
-            // BUGGY
-            eventholder.retObj.id = eventholder.pageId;
-        }else{
-            if(eventholder.retObj.nostop && hitResult){
-                //if(retObj.id && cElId.search(retObj.id)===-1){
-                if(hitResult.item.name){
-                    //cdebug(hitResult.item.name,true,false,0)();
-                    
-                    eventholder.retObj.id = hitResult.item.name;
-                    //cdebug(eventholder.retObj.id,true,false,0)();
-                    
-                }else{
-                    eventholder.retObj.id = cElId;
-                }
-            }
-        }
+        
+//        if(!hitResult){
+////            cdebug(paper.project.view.bounds,false,false,0);
+////            cdebug(paper.project.view.center,false,false,0);
+//            //cdebug(eventholder.targetId,false,false,0);
+//            //cdebug(eventholder,false,false,0);
+//            // BUGGY
+//            //eventholder.retObj.name = eventholder.pageId;
+//            eventholder.retObj = null;
+//            
+//        }else{
+//            if(eventholder.retObj.nostop && hitResult){
+//                //if(retObj.name && cElId.search(retObj.name)===-1){
+//                if(hitResult.item.name){
+//                    //cdebug(hitResult.item.name,true,false,0)();
+//                    
+//                    eventholder.retObj = hitResult.item;
+//                    //cdebug(eventholder.retObj.name,true,false,0)();
+//                    
+//                }else{
+//                    eventholder.retObj.name = cElId;
+//                }
+//            }
+//        }
         
         return true;
 
@@ -138,6 +134,11 @@ globalTool.onKeyUp = handleKeys;
 //}
 
 
+function testLayer(){
+    cdebug(paper.project.name)();
+}
+
+
 function handleWheel(evt) {
     
     try{
@@ -150,8 +151,8 @@ function handleWheel(evt) {
         preSetEventHolder(eventholder,evt,"wheel");
         
         
-        if(!eventholder.active.id)return null;
-        var cElName = eventholder.active.id;
+        if(!eventholder.active.name)return null;
+        var cElName = eventholder.active.name;
         var cEl = window[cElName];
           
         switch(evtType){
@@ -183,10 +184,10 @@ function handleKeys(evt) {
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"keyboard");
         
-        if(!eventholder.active.id)return false;
+        if(!eventholder.active.name)return false;
         
         
-        var cElName = eventholder.active.id;
+        var cElName = eventholder.active.name;
         var cEl = window[cElName];
         
         switch(evtType){
@@ -247,10 +248,10 @@ function handleMouse(evt) {
         if (eventholder.noevent){return false;};
         
         //cdebug(eventholder.currentid)();
-        var cEl = window[eventholder.currentid];
+        //var cEl = window[eventholder.currentid];
         
         
-        runEval(cEl,evtType);
+        runEval(eventholder.retObj,evtType);
         
         switch(evtType){
             
@@ -264,17 +265,22 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
                 
-                handleContextMenu(eventholder);
+                //handleContextMenu(eventholder);
                 
+                //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
+                //cdebug(eventholder.hover)();
+                
+                //drawProjects(paper);
                 //paper.view.draw();
-                renderer(eventholder.canvReset);
+                //renderer(eventholder.canvReset);
                 
             break;
             case "mouseup":
                 
                 handleTextSelection(eventholder);
                 
-                renderer(eventholder.canvReset);
+                drawProjects(paper,true);
+                //renderer(eventholder.canvReset);
                 
             break;
             case "mousemove":
@@ -285,11 +291,11 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
    
-                //paper.view.draw();
-                
+//                paper.view.draw();
+                drawProjects(paper,true);
                 //cdebug(eventholder.targetId + " " + paper.project.name,true,true)();
                 //cdebug(eventholder.canvReset,true,true)();
-                renderer(eventholder.canvReset);
+                //renderer(eventholder.canvReset);
                 
             break;
             case "mouseout":
@@ -300,7 +306,8 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
                 
-                renderer(eventholder.canvReset);
+                //renderer(eventholder.canvReset);
+                drawProjects(paper,true);
                 
             break;
         };
@@ -334,7 +341,7 @@ function handleTouch(evt) {
         if (eventholder.noevent){return false;};
         
         var cEl = window[eventholder.currentid];
-        //cdebug(cEl.id,true);
+        //cdebug(cEl.name,true);
         runEval(cEl,evtType);
         
         switch(evtType){
@@ -382,8 +389,8 @@ function handleTouch(evt) {
 function handleTextSelection(eventholder){
     
     try{
-        if(!eventholder.active.id)return false;
-        var cEl = window[eventholder.active.id];
+        if(!eventholder.active.name)return false;
+        var cEl = window[eventholder.active.name];
         if(cEl.data.type !== "text")return false;
         var btnPressed = eventholder.keys.which ? eventholder.keys.which : eventholder.keys.button;
         var clickCount = eventholder.keys.detail;
@@ -483,16 +490,17 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
         eventholder.callerType = evtCallerType;
         var evt = paperevt.event;
         
+        //disableEvent(evt);
         
-        //paperevt.stop();
+        paperevt.stop();
 
         var targetId = evt.target.id;
         
-        if(paper.project.name!==targetId){
-            setGetProject(evt.target,targetId);
-        };
         
         eventholder.targetId = targetId;
+        
+        //cdebug(eventholder.targetId)();
+        
         //cdebug(projects.length,false,false,0);
         
         
@@ -569,22 +577,46 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             
             var arrTargetId = targetId.split("_");
             
-            //cdebug(arrTargetId)();
             
-            if(arrTargetId.length === 3){
-                eventholder.pageId = arrTargetId[0];
-                eventholder.layerId = arrTargetId[1];
-                eventholder.tag = arrTargetId[2];
+            
+            if(arrTargetId.length === 4){
+                eventholder.pageId = arrTargetId[1];
+                eventholder.layerId = arrTargetId[2];
+                eventholder.tag = arrTargetId[3];
             }
+            
+            //cdebug(eventholder.layerId + " vs " + paper.project.name)();
+            
+            if(eventholder.layerId !== paper.project.name)projectSwitch(eventholder.layerId);
+            
+            
 //            if(targetId  === "editorPage_carret_div"){
 //            // just retrieve it from the event store and update metrics a little bit
 ////                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
 ////                eventholder.metrics.xy[1] = eventholder.metrics.xyAbs[1];
 //            }else{
-                eventholder.retObj = {"id":null,"nostop":true,"all":[]};
-                retCElId(eventholder.pageId + "_" + eventholder.layerId,eventholder);
-                eventholder.composedid = eventholder.retObj.id;
-                eventholder.currentid = eventholder.retObj.id.split(".")[0];
+                //eventholder.retObj = {"id":null,"nostop":true,"all":[]};
+                var hitOptions = {
+                    segments: true,
+                    stroke: true,
+                    fill: true,
+                    tolerance: 5
+                };
+                var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
+                
+                if(hitObject){
+                    eventholder.retObj = hitObject.item;
+                }else{
+                    eventholder.retObj = paper.project;
+                }
+                //cdebug(eventholder.retObj.name)();
+                
+                //retCElId(eventholder,"_" + eventholder.pageId + "_" + eventholder.layerId);
+                
+                //cdebug(eventholder.retObj)();
+                
+                //eventholder.composedid = eventholder.retObj.name;
+                eventholder.currentid = eventholder.retObj.parentName + "_" + eventholder.retObj.name.split(".")[0];
 //            }
         }
 
@@ -602,60 +634,106 @@ function updateEventHolder(eventholder,boolHover,boolFocus,boolActive) {
     
     try{
         
-        eventholder.canvReset = [];
-        var currentid = eventholder.currentid;
-        // actual elements instantiation
-        var cEl = window[currentid];
-        if(!cEl || !cEl.layerId)return false;
+        if(!eventholder.retObj)return false;
+//        var cEl = eventholder.retObj;
+        //if(!cEl.layerId)return false;
         
-        var canvCElActual = cEl ? window[cEl.pageId + "_" + cEl.layerId] : null;
+        eventholder.canvReset = [];
+        //var currentid = eventholder.currentid;
+        // actual elements instantiation
+        //cdebug(eventholder.pageId + " > " + eventholder.layerId + " >>> " + cEl.name)();  
+                 
+        //cdebug(cEl.name)();
         var boolActual = false;
         
+        
         if(boolHover){
+            //{"id":null,"resetold":false,"reset":false,"name":null}
+            //cdebug(eventholder.retObj.name)();
+            
             // old hover elements instantiation
-            var cElHoverOldName = eventholder.hover.id;
-            var cElHoverOld = window[cElHoverOldName];
-            var canvElHoverOld = cElHoverOld ? window[cElHoverOld.pageId + "_" + cElHoverOld.layerId] : null;
-            eventholder.hover.resetold = (cElHoverOld && currentid !== cElHoverOldName) ? true : false; //!$.isEmptyObject(cElHoverOld.style.hover) && 
-            eventholder.hover.reset = (cEl && currentid !== cElHoverOldName) ? true : false; //!$.isEmptyObject(cEl.style.hover) && 
-            if(canvElHoverOld && eventholder.hover.resetold && eventholder.canvReset.indexOf(canvElHoverOld.pageId + "_" + canvElHoverOld.layerId)<0){
-                eventholder.canvReset.push(canvElHoverOld.pageId + "_" + canvElHoverOld.layerId);
+            //var cElHoverOldName = eventholder.hover.name;
+            //var cElHoverOld = window[cElHoverOldName];
+            //var canvElHoverOld = cElHoverOld ? window[cElHoverOld.pageId + "_" + cElHoverOld.layerId] : null;
+            if(eventholder.currentid !== eventholder.hover.id){
+                if(eventholder.hover.id){
+                    eventholder.hover.resetold = true;
+                }else{
+                    eventholder.hover.resetold = false;
+                }
+                eventholder.hover.reset = true;
+            }else{
+                eventholder.hover.resetold = false;
+                eventholder.hover.reset = false;
             }
+            //eventholder.hover.resetold = (currentid !== cElHoverOldName) ? true : false; //!$.isEmptyObject(cElHoverOld.style.hover) && 
+            
+            
+            
+//            eventholder.hover.reset = (cEl && currentid !== cElHoverOldName) ? true : false; //!$.isEmptyObject(cEl.style.hover) && 
+//            if(canvElHoverOld && eventholder.hover.resetold && eventholder.canvReset.indexOf(canvElHoverOld.pageId + "_" + canvElHoverOld.layerId)<0){
+//                eventholder.canvReset.push(canvElHoverOld.pageId + "_" + canvElHoverOld.layerId);
+//            }
             boolActual = boolActual || eventholder.hover.reset;
         }
         
         if(boolFocus){
-            // old focus elements instantiation
-            var cElFocusOldName = eventholder.focus.id;
-            var cElFocusOld = window[cElFocusOldName];
-            var canvElFocusOld = cElFocusOld ? window[cElFocusOld.pageId + "_" + cElFocusOld.layerId] : null;
-            eventholder.focus.resetold = (cElFocusOld && currentid !== cElFocusOldName) ? true : false; //!$.isEmptyObject(cElFocusOld.style.focus) && 
-            eventholder.focus.reset = (cEl && currentid !== cElFocusOldName) ? true : false; //!$.isEmptyObject(cEl.style.focus) &&
-            if(canvElFocusOld && eventholder.focus.resetold && eventholder.canvReset.indexOf(canvElFocusOld.pageId + "_" + canvElFocusOld.layerId)<0){
-                eventholder.canvReset.push(canvElFocusOld.pageId + "_" + canvElFocusOld.layerId);
+            
+            if(eventholder.currentid !== eventholder.focus.id){
+                if(eventholder.focus.id){
+                    eventholder.focus.resetold = true;
+                }else{
+                    eventholder.focus.resetold = false;
+                }
+                eventholder.focus.reset = true;
+            }else{
+                eventholder.focus.resetold = false;
+                eventholder.focus.reset = false;
             }
+            
+//            // old focus elements instantiation
+//            var cElFocusOldName = eventholder.focus.name;
+//            var cElFocusOld = window[cElFocusOldName];
+//            var canvElFocusOld = cElFocusOld ? window[cElFocusOld.pageId + "_" + cElFocusOld.layerId] : null;
+//            eventholder.focus.resetold = (cElFocusOld && currentid !== cElFocusOldName) ? true : false; //!$.isEmptyObject(cElFocusOld.style.focus) && 
+//            eventholder.focus.reset = (cEl && currentid !== cElFocusOldName) ? true : false; //!$.isEmptyObject(cEl.style.focus) &&
+//            if(canvElFocusOld && eventholder.focus.resetold && eventholder.canvReset.indexOf(canvElFocusOld.pageId + "_" + canvElFocusOld.layerId)<0){
+//                eventholder.canvReset.push(canvElFocusOld.pageId + "_" + canvElFocusOld.layerId);
+//            }
             boolActual = boolActual || eventholder.focus.reset;
         }  
-        
+//        
         if(boolActive){
-            // old active elements instantiation
-            var cElActiveOldName = eventholder.active.id;
-            var cElActiveOld = window[cElActiveOldName];
-            var canvElActiveOld = cElActiveOld ? window[cElActiveOld.pageId + "_" + cElActiveOld.layerId] : null;
-            eventholder.active.resetold =(cElActiveOld && currentid !== cElActiveOldName) ? true : false;
-            eventholder.active.reset =(cEl && currentid !== cElActiveOldName) ? true : false; //!$.isEmptyObject(cEl.style.active) &&
-            if(canvElActiveOld && eventholder.active.resetold && eventholder.canvReset.indexOf(canvElActiveOld.pageId + "_" + canvElActiveOld.layerId)<0){
-                eventholder.canvReset.push(canvElActiveOld.pageId + "_" + canvElActiveOld.layerId);
+            if(eventholder.currentid !== eventholder.active.id){
+                if(eventholder.active.id){
+                    eventholder.active.resetold = true;
+                }else{
+                    eventholder.active.resetold = false;
+                }
+                eventholder.active.reset = true;
+            }else{
+                eventholder.active.resetold = false;
+                eventholder.active.reset = false;
             }
+            
+//            // old active elements instantiation
+//            var cElActiveOldName = eventholder.active.name;
+//            var cElActiveOld = window[cElActiveOldName];
+//            var canvElActiveOld = cElActiveOld ? window[cElActiveOld.pageId + "_" + cElActiveOld.layerId] : null;
+//            eventholder.active.resetold =(cElActiveOld && currentid !== cElActiveOldName) ? true : false;
+//            eventholder.active.reset =(cEl && currentid !== cElActiveOldName) ? true : false; //!$.isEmptyObject(cEl.style.active) &&
+//            if(canvElActiveOld && eventholder.active.resetold && eventholder.canvReset.indexOf(canvElActiveOld.pageId + "_" + canvElActiveOld.layerId)<0){
+//                eventholder.canvReset.push(canvElActiveOld.pageId + "_" + canvElActiveOld.layerId);
+//            }
             boolActual = boolActual || eventholder.active.reset;
         }
         
         // reset layers
-        if(boolActual){
-            if(eventholder.canvReset.indexOf(canvCElActual.pageId + "_" + canvCElActual.layerId)<0){
-                eventholder.canvReset.push(canvCElActual.pageId + "_" + canvCElActual.layerId);
-            }
-        }
+//        if(boolActual){
+//            if(eventholder.canvReset.indexOf(canvCElActual.pageId + "_" + canvCElActual.layerId)<0){
+//                eventholder.canvReset.push(canvCElActual.pageId + "_" + canvCElActual.layerId);
+//            }
+//        }
         //console.log(eventholder.canvReset);
         return eventholder;
         
@@ -759,28 +837,39 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //        if(eventholder.canvReset.length>0){
 //            cdebug(eventholder.canvReset,false,false,0);
 //        }
-        for(var i = 0, len = eventholder.canvReset.length; i<len; i++){
-            window[eventholder.canvReset[i]].shape.redraw = true;
-        }
+//        for(var i = 0, len = eventholder.canvReset.length; i<len; i++){
+//            window[eventholder.canvReset[i]].shape.redraw = true;
+//        }
         //}
         
         var cEl;
         if(boolHover){
+            
+            
+            
             //  hover reset for old focus element 
             if(eventholder.hover && eventholder.hover.resetold){
-                cEl = window[eventholder.hover.id];
-                if(cEl){
+                cEl = eventholder.hover.oldObj;
+                //cdebug("->>>" + cEl.name)();
+//                if(cEl){
+//                    //cdebug(eventholder.hover.id)();
                     cEl.hover = false;
                     cEl.style.redraw = true;
                     cEl.shape.redraw = true;
                     runEval(cEl,"hoveroff");
-                    resetCursor(cEl);
-                }
+//                }
             }
             // new hover set
             if(eventholder.hover && eventholder.hover.reset){
+                
+                //cdebug("+>>>" + eventholder.retObj.name)();
+                
                 eventholder.hover.id = eventholder.currentid;
-                cEl = window[eventholder.currentid];
+                eventholder.hover.oldObj = eventholder.retObj;
+                
+                cEl = eventholder.retObj;
+                
+                //cEl = window[eventholder.currentid];
                 cEl.hover = true;
                 cEl.style.redraw = true;
                 cEl.shape.redraw = true;
@@ -792,19 +881,21 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
         if(boolFocus){
             //  focus reset for old focus element 
             if(eventholder.focus && eventholder.focus.resetold){
-                cEl = window[eventholder.focus.id];
-                if(cEl){
+                cEl = eventholder.focus.oldObj;
+//                if(cEl){
                     cEl.focus = false;
                     cEl.style.redraw = true;
                     cEl.shape.redraw = true;
                     runEval(cEl,"focusoff");
-                    resetCursor(cEl);
-                }
+//                    resetCursor(cEl);
+//                }
             }
             // new focus set
             if(eventholder.focus && eventholder.focus.reset){
                 eventholder.focus.id = eventholder.currentid;
-                cEl = window[eventholder.currentid];
+                eventholder.focus.oldObj = eventholder.retObj;
+                
+                cEl = eventholder.retObj;
                 cEl.focus = true;
                 cEl.style.redraw = true;
                 cEl.shape.redraw = true;
@@ -812,24 +903,27 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 resetCursor(cEl);
             }
         }
-        
+//        
         if(boolActive){
             //  active reset for old active element 
             if(eventholder.active && eventholder.active.resetold){
-                cEl = window[eventholder.active.id];
-                if(cEl){
+                cEl = eventholder.active.oldObj;
+//                if(cEl){
                     cEl.active = false;
                     cEl.style.redraw = true;
                     cEl.shape.redraw = true;
                     runEval(cEl,"activeoff");
                     resetTextSelection(cEl);
-                    resetCursor(cEl);
-                }
+                    //resetCursor(cEl);
+//                }
             }
             // new active set
             if(eventholder.active && eventholder.active.reset){
+                
                 eventholder.active.id = eventholder.currentid;
-                cEl = window[eventholder.currentid];
+                eventholder.active.oldObj = eventholder.retObj;
+                
+                cEl = eventholder.retObj;
                 cEl.active = true;
                 cEl.style.redraw = true;
                 cEl.shape.redraw = true;
@@ -853,34 +947,40 @@ function handleContextMenu(eventholder){
     try{
         //var eventholder = window["eventholder"];
         
-        //cdebug(eventholder.layerId,true,true);
+        //cdebug(eventholder.layerId)();
         //cdebug(eventholder.metrics,true);
         
         if(eventholder.layerId === "context")return true;
+        var page_context = paper;
+        if(!page_context.data.context && eventholder.keys.which !== 3)return true;
+        //if(eventholder.keys.which !== 3)return true;
         
-        var layer_context = window[eventholder.pageId + "_context"];
+        
+        //cdebug("handleContextMenu  " + eventholder.pageId)();
+        
+        var project_context = projectSwitch("context");//paper.project ;//window[eventholder.pageId + "_context"];
         
         
-        if(eventholder.keys.which === 3 && !layer_context.debug){
-            layer_context.visible = true;
+        if(eventholder.keys.which === 3 && !project_context.debug){
+            project_context.visible = true;
             
-            var page_context = window[eventholder.pageId];
+            
             var xy = eventholder.metrics.xy;
             
-            //cdebug(xy[0] + " vs " + page_context.w + " vs " + layer_context.w);
-            // TODO check if what ???
-            if(xy[0]>(page_context.shape.w-layer_context.shape.w-2))xy[0]=page_context.shape.w-layer_context.shape.w-2;
-            if(xy[1]>(page_context.shape.h-layer_context.shape.h-2))xy[1]=xy[1]-layer_context.shape.h-2;
+            project_context.shape.masspoint = cEl_edit_MP(page_context,xy,page_context.shape.scale);
+            project_context.shape.redraw = true;
             
-            layer_context.shape.masspoint = cEl_edit_MP(layer_context,xy,layer_context.shape.scale);
-            layer_context.shape.redraw = true;
+            page_context.data.context = true;
+            
         }else{
-            layer_context.visible = false;
-            layer_context.shape.redraw = true;
+            project_context.visible = false;
+            project_context.shape.redraw = true;
+            
+            page_context.data.context = false;
         }
         
-        renderer([eventholder.pageId]);
-        
+        //renderer([eventholder.pageId]);
+        //draw_cEl_project(layer_context);
         
         return true;
         
@@ -894,7 +994,7 @@ function handleContextMenu(eventholder){
 function setContextMenu(cEl_canv){
     try{
         var evt = window.event;
-        cdebug("handleContext: <" + evt.type + "> on <" + cEl_canv.parentId + "_" + cEl_canv.id + ">",true);
+        cdebug("handleContext: <" + evt.type + "> on <" + cEl_canv.parentName + "_" + cEl_canv.name + ">",true);
         cdebug(cEl_canv.style);
         
     } catch (e) {
@@ -932,7 +1032,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
         var cEl_Selection = window[cEl.pageId].text.charsSelection;
         var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
         
-        cEl_Selection.id = cEl.parentId  + "_" + cEl.id;
+        cEl_Selection.name = cEl.parentName  + "_" + cEl.name;
         
         if(boolReset)cEl_Selection.charspos = [];
         
@@ -1078,7 +1178,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
 
 function testEvents(cEl,eventName){
     
-    cdebug("testEvents: <" + eventName + "> on <" + cEl.parentId + "_" + cEl.id + ">",true);
+    cdebug("testEvents: <" + eventName + "> on <" + cEl.parentName + "_" + cEl.name + ">",true);
     
 //cdebug(window["eventholder"]);
 //    cdebug(cEl.hover);
@@ -1100,9 +1200,9 @@ function testEvents(cEl,eventName){
 }
 
 function testEvents2(cEl,eventName){
-    //alert(cEl.id);
+    //alert(cEl.name);
     
-    //cdebug(currentid.id);
+    //cdebug(currentid.name);
 //    var cEl = window[currentid];
 //    //cEl.shape.redraw = true;
 //    drawChildren(cEl,true);

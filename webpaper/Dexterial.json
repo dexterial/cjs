@@ -1,6 +1,7 @@
 {
     "title": "Dexterial",
-    "id":"dexterial","pageId":"editorPage","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
+    "name":"dexterial","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
+    "class":"test",
     "shape":{
         "redraw":true,
         "tab":-1,
@@ -8,23 +9,24 @@
         "h":"",
         "masspoint":[0,0],
         "scale":[1,1],
-        "id":"rectangle-tl",
+        "name":"rectangle-tl",
         "type":"poligon"
     },
+    "style":{"redraw":true},
     "data":{
-        "type":"global"
+        "type":"global",
+        "context":false
     },
     "clipboard":{},
     "text":{
         "chars":"0123456789 -",
         "words":["0","1","2","3","4","5","6","7","8","9"," ","-","00","000","0000"],
-        "charsSelection":{"id":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
+        "charsSelection":{"name":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
         "charsWidths":{},
         "charsFontsMd5":{},
         "charsFontsObj":[]
         },
     "styles":{},
-    "style":{},
     "rules":{
        "r1":{"from":null,"to":"normal","other":"normal","recurrent":true},
        "r2":{"from":null,"to":"unfoldedTL","other":"foldedTL","recurrent":true},
@@ -96,7 +98,6 @@
     "elements":{
         "text1":{
             "class":"contextitems",
-            "pageId":"editorPage",
             "tag":"shape",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -112,7 +113,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"rectangle-tl",
+                "name":"rectangle-tl",
                 
                 "type":"poligon"
             },
@@ -130,7 +131,7 @@
         },
         "contextlayer":{
             "class":"contextmenu",
-            "tag":"canvas",
+            "tag":"project",
             "visible":false,
             "enabled":true,
             "focus":false,
@@ -140,9 +141,9 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"rectangle-tl",
+                "name":"rectangle-tl",
                 "scale":[0.1,0.1],
-                "masspoint":[0,0],
+                "masspoint":[0.2,0.2],
                 "type":"poligon"
             },
             "states":{
@@ -157,19 +158,18 @@
                 "type":"list"
             },
             "children":[
-                {"id":"btnCopy","element":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.01]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
-                {"id":"btnPaste","element":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.35]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
+                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.01]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
+                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.35]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
             ]
         },
         "contextitems":{
             "class":"contextitems",
-            "pageId":"editorPage",
             "tag":"shape",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{},
             "shape":{
                 "redraw":true,
-                "id":"rectangle-tl",                
+                "name":"rectangle-tl",                
                 "scale":[0.96,0.3],
                 "type":"poligon"
             },
@@ -192,7 +192,7 @@
         },
         "layer1":{
             "class":"test",
-            "tag":"canvas",
+            "tag":"project",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -202,7 +202,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"rectangle-tl",                
+                "name":"rectangle-tl",                
                 "type":"poligon"
             },
             "states":{
@@ -221,7 +221,7 @@
                 "redraw":true,
                 "scale":[1,1],
                 "masspoint":[0,0],
-                "id":"rectangle-tl",
+                "name":"rectangle-tl",
                 "flipXY":[false,false],
                 "type":"poligon",
                 "detection":"shape"
@@ -236,7 +236,7 @@
                 "type":"list"
             },
             "children":[
-                {"id":"tabTL","element":"tab","tab":0,"class":"tabRed",
+                {"name":"tabTL","elId":"tab","tab":0,"class":"tabRed",
                     "shape":{"flipXY":[false,false]},
                     "states":{
                         "tabstate":{
@@ -249,7 +249,7 @@
                         }
                     },
                     "children":[
-                        {"id":"tabTLLabel","element":"tablabel","tab":0,"class":"testLabel",
+                        {"name":"tabTLLabel","elId":"tablabel","tab":0,"class":"testLabel",
                             "shape":{"flipXY":[false,false]},
                             "rules":{
                                 "tabstate":"r2"
@@ -267,7 +267,7 @@
                         }
                     ]
                 },
-                {"id":"tabTR","element":"tab","tab":1,"class":"tabGreen",
+                {"name":"tabTR","elId":"tab","tab":1,"class":"tabGreen",
                     "shape":{"flipXY":[true,false]},
                     "states":{
                         "tabstate":{
@@ -280,7 +280,7 @@
                         }
                     },
                     "children":[
-                        {"id":"tabTRLabel","element":"tablabel","tab":0,"class":"testLabel",
+                        {"name":"tabTRLabel","elId":"tablabel","tab":0,"class":"testLabel",
                             "shape":{"flipXY":[true,false]},
                             "rules":{
                                 "tabstate":"r3"
@@ -298,7 +298,7 @@
                         }
                     ]
                 },
-                {"id":"tabBR","element":"tab","tab":2,"class":"tabBlue",
+                {"name":"tabBR","elId":"tab","tab":2,"class":"tabBlue",
                     "shape":{"flipXY":[false,false]},
                     "states":{
                         "tabstate":{
@@ -311,7 +311,7 @@
                         }
                     },
                     "children":[
-                        {"id":"tabBLLabel","element":"tablabel","tab":0,"class":"testLabel",
+                        {"name":"tabBLLabel","elId":"tablabel","tab":0,"class":"testLabel",
                             "shape":{"flipXY":[false,false]},
                             "rules":{
                                 "tabstate":"r4"
@@ -329,7 +329,7 @@
                         }
                     ]
                 },
-                {"id":"tabBL","element":"tab","tab":3,"class":"tabWhite",
+                {"name":"tabBL","elId":"tab","tab":3,"class":"tabWhite",
                     "shape":{"flipXY":[false,true]},
                     "states":{
                         "tabstate":{
@@ -342,7 +342,7 @@
                         }
                     },
                     "children":[
-                        {"id":"tabBLLabel","element":"tablabel","tab":0,"class":"testLabel",
+                        {"name":"tabBLLabel","elId":"tablabel","tab":0,"class":"testLabel",
                             "shape":{"flipXY":[false,true]},
                             "rules":{
                                 "tabstate":"r5"
@@ -367,7 +367,7 @@
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "shape":{
                 "redraw":true,
-                "id":"round-corner-normal",                
+                "name":"round-corner-normal",                
                 "type":"quadratic"
             },
             "states":{
@@ -385,7 +385,7 @@
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
                 "redraw":true,
-                "id":"round-corner-normal",                
+                "name":"round-corner-normal",                
                 "type":"quadratic",
                 "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
             },
@@ -412,7 +412,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"sqrl",                
+                "name":"sqrl",                
                 "type":"poligon",
                 "detection":"border"
             },
@@ -441,7 +441,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"heart1",                
+                "name":"heart1",                
                 "type":"bezier",
                 "scale":[0.0015,null],
                 "detection":"border"
@@ -465,7 +465,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"plus1",                
+                "name":"plus1",                
                 "type":"poligon",
                 "scale":[0.0015,null],
                 "detection":"border"
@@ -489,7 +489,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"minus1",                
+                "name":"minus1",                
                 "type":"poligon",
                 "scale":[0.0015,null],
                 "detection":"bordersquare"
@@ -513,7 +513,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"arrow1",                
+                "name":"arrow1",                
                 "type":"poligon",
                 "scale":[0.0015,null],
                 "detection":"border"
@@ -537,7 +537,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"arrow1",                
+                "name":"arrow1",                
                 "type":"poligon",
                 "scale":[0.0015,null],
                 "detection":"border"
@@ -558,7 +558,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"triangle1",                
+                "name":"triangle1",                
                 "type":"poligon",
                 "scale":[0.0015,0.06],
                 "detection":"border"
@@ -579,7 +579,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"ok1",                
+                "name":"ok1",                
                 "type":"quadratic",
                 "detection":"border"
             },
@@ -602,7 +602,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"round1",                
+                "name":"round1",                
                 "type":"quadratic",
                 "scale":[0.0015,null],
                 "detection":"border"
@@ -623,7 +623,7 @@
             },
             "shape":{
                 "redraw":true,
-                "id":"sqrl",                
+                "name":"sqrl",                
                 "type":"poligon",
                 "scale":[0.0013,null],
                 "detection":"border",
@@ -644,15 +644,15 @@
     },
     "children":[
         {
-            "id":"main","element":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
+            "name":"main","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
             "children":[
-                {"id":"tabs","element":"tabs","tab":0,"events":{"mousedown":"testEvents(this,'mousedown')"}}
+                {"name":"tabs","elId":"tabs","tab":0,"events":{"mousedown":"testEvents(this,'mousedown')"}}
             ]
         },
         {
-            "id":"context","element":"contextlayer","tab":3,
+            "name":"context","elId":"contextlayer","tab":3,
             "children":[
-                {"id":"contextlist","element":"contextlist","tab":0}
+                {"name":"contextlist","elId":"contextlist","tab":0}
             ]    
         }
     ]

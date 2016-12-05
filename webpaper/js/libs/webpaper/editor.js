@@ -23,7 +23,7 @@ function editor_keydown(cEl_layer) {
         
         var eventholder = window["eventholder"];
         
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
             case "fabric":
                 //cdebug("editor_keydown START state " + cEl_layer.data.state,true);
                 //cdebug(eventholder.keys);
@@ -96,7 +96,7 @@ function editor_keyup(cEl_layer) {
         //cdebug(eventholder.event.shiftKey)();
         //cdebug(window.event.shiftKey)();
 
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
             case "fabric":
 
 //                //cdebug("editor_keyup state " + cEl_layer.data.state)();
@@ -127,7 +127,7 @@ function editor_keypress(cEl_layer) {
     try{
         //var cEl_layer = window[cEl.layerId];
         var eventholder = window["eventholder"];
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
             case "fabric":
                 //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
                 
@@ -172,9 +172,9 @@ function editor_keypress(cEl_layer) {
 function editor_wheel(cEl_layer) {
 
     try{
-        //cdebug(cEl_layer.id);
+        //cdebug(cEl_layer.name);
         var eventholder = window["eventholder"];
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
             case "fabric":
                 //cdebug("editor_wheel state " + cEl_layer.data.state)();
                 switch (cEl_layer.data.state) {
@@ -207,7 +207,7 @@ function editor_mousedown(cEl_layer) {
         }
         
 
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
 //            case "preview":
 //            break;
 //            case "tools":
@@ -268,7 +268,7 @@ function editor_mousemove(cEl_layer) {
         //var cEl_layer = window[cEl.layerId], cEl_page, cEl;
         //cdebug(cEl_layer.metrics.xy)();
 
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
     //            case "preview":
     //            break;
     //            case "tools":
@@ -310,7 +310,7 @@ function editor_mouseup(cEl_layer) {
     try{
         //var cEl_layer = window[cEl.layerId];
 
-        switch (cEl_layer.id) {
+        switch (cEl_layer.name) {
             case "fabric":
                 
                 cdebug("editor_mouseup START state " + cEl_layer.data.state)();
@@ -336,7 +336,7 @@ function editor_mouseup(cEl_layer) {
 //                            var e = $.Event('mousemove');
 //                            e.pageX = 11;
 //                            e.pageY = 12;
-//                            e.target = document.getElementById(cEl_layer.id + "_canvas");
+//                            e.target = document.getElementById(cEl_layer.name + "_canvas");
 //                            window.dispatchEvent(e);
                         }
                         cEl_layer.shape.redraw = true;
@@ -408,7 +408,7 @@ function get_cEl_properties(cEl,property){
                 return JSON.stringify(cEl.shape);
             break;
             case "general":
-                return JSON.stringify(cEl,['id','parentId','class','tag','visible','active','enabled']);
+                return JSON.stringify(cEl,['id','parentName','class','tag','visible','active','enabled']);
             break;
             default:
                 return "zzzz";
@@ -483,9 +483,9 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
             var cEl_id = id_generator("el", 8);
             var cEl_new = {
                 "id":cEl_id,
-                "layerId":cEl_layer.id,
-                "pageId":page.id,
-                "parentId":page.id + "_" + cEl_layer.id,
+                "layerId":cEl_layer.name,
+                "pageId":page.name,
+                "parentName":page.name + "_" + cEl_layer.name,
                 "tab":22,
                 "class":"btnBlue1",
                 "tag":"shape",
@@ -513,21 +513,21 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
                 cEl_layer.children = [cEl_new_load];
             }
             
-            cEl_layer.data.editIndex = page.id + "_" + cEl_layer.id + "_" + cEl_id;
+            cEl_layer.data.editIndex = page.name + "_" + cEl_layer.name + "_" + cEl_id;
             
             
             page.shapes[shape_id] = arrAproxShape;
             cdebug(arrAproxShape,true,true,0)();
-            pre_load_children(cEl_new_load,cEl_layer.pageId,cEl_layer.id,cEl_layer.pageId + "_" +cEl_layer.id);
+            pre_load_children(cEl_new_load,cEl_layer.pageId,cEl_layer.name,cEl_layer.pageId + "_" +cEl_layer.name);
             
             if(loadedPageAct){
                 loadedPageAct.shapes[shape_id] = arrAproxShape;
                 var edit_layer = loadedPageAct.children[loadcanvas];
                 cEl_new.enabled = true;
                 edit_layer.children.push(cEl_new);
-                pre_load_children(cEl_new,edit_layer.pageId,edit_layer.id,edit_layer.pageId + "_" +edit_layer.id);
+                pre_load_children(cEl_new,edit_layer.pageId,edit_layer.name,edit_layer.pageId + "_" +edit_layer.name);
                 cEl_new_load.shape = cEl_new.shape;
-                //cdebug(edit_layer.id)();
+                //cdebug(edit_layer.name)();
                 
             }
             //cEl_layer.shape.redraw = true;
@@ -637,12 +637,12 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
             boolReset = true;
             
             if(boolParent){
-                cEl_caller.data.editIndex = cEl_caller.children[0].parentId + "_" + cEl_caller.children[0].id;
+                cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
             }else{
                 if(boolNext){
-                    cEl_caller.data.editIndex = cEl_caller.children[0].parentId + "_" + cEl_caller.children[0].id;
+                    cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
                 }else{
-                    cEl_caller.data.editIndex = cEl_caller.children[cEl_caller.children.length-1].parentId + "_" + cEl_caller.children[cEl_caller.children.length-1].id;
+                    cEl_caller.data.editIndex = cEl_caller.children[cEl_caller.children.length-1].parentName + "_" + cEl_caller.children[cEl_caller.children.length-1].name;
                 }
             }
 
@@ -651,13 +651,13 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
             
             if(boolParent){
                 if(!boolNext){
-                    if(window[cEl_actualIndex.parentId].tag!=="canvas"){
-                        cEl_caller.data.editIndex = cEl_actualIndex.parentId;
+                    if(window[cEl_actualIndex.parentName].tag!=="canvas"){
+                        cEl_caller.data.editIndex = cEl_actualIndex.parentName;
                         boolReset = true;
                     }
                 }else{
                     if(cEl_actualIndex.children){
-                        cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentId + "_" + cEl_actualIndex.children[0].id;
+                        cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
                         boolReset = true;
                     }
                 }
@@ -665,23 +665,23 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
             }else{
                 
 
-                var cEl_lookInto = window[cEl_actualIndex.parentId];
+                var cEl_lookInto = window[cEl_actualIndex.parentName];
 
-                //cdebug("here look into  " + cEl_lookInto.id)();
+                //cdebug("here look into  " + cEl_lookInto.name)();
                 //cdebug("...of           " + cEl_caller.data.editIndex)();
 
                 if(boolNext){
                     for(var i = 0;i<cEl_lookInto.children.length-1;i++){
-                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentId + "_" + cEl_lookInto.children[i].id){
-                            cEl_caller.data.editIndex = cEl_lookInto.children[i+1].parentId + "_" + cEl_lookInto.children[i+1].id;
+                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
+                            cEl_caller.data.editIndex = cEl_lookInto.children[i+1].parentName + "_" + cEl_lookInto.children[i+1].name;
                             boolReset = true;
                             break;
                         }
                     }
                 }else{
                     for(var i = cEl_lookInto.children.length-1;i>0;i--){
-                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentId + "_" + cEl_lookInto.children[i].id){
-                            cEl_caller.data.editIndex = cEl_lookInto.children[i-1].parentId + "_" + cEl_lookInto.children[i-1].id;
+                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
+                            cEl_caller.data.editIndex = cEl_lookInto.children[i-1].parentName + "_" + cEl_lookInto.children[i-1].name;
                             boolReset = true;
                             break;
                         }
@@ -707,20 +707,20 @@ function cEl_editIndex(cEl_caller, boolNext, boolParent) {
 //        var boolReset = false;
 //        if(!cEl_caller.data.editIndex && cEl_caller.children){
 //            boolReset = true;
-//            cEl_caller.data.editIndex = cEl_caller.children[0].parentId + "_" + cEl_caller.children[0].id;
+//            cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
 //
 //        }else if(cEl_caller.data.editIndex){
 //            
 //            var cEl_actualIndex = window[cEl_caller.data.editIndex];
 //            
 //            if(boolParent){
-//                if(window[cEl_actualIndex.parentId].tag!=="canvas"){
-//                    cEl_caller.data.editIndex = cEl_actualIndex.parentId;
+//                if(window[cEl_actualIndex.parentName].tag!=="canvas"){
+//                    cEl_caller.data.editIndex = cEl_actualIndex.parentName;
 //                    boolReset = true;
 //                }
 //            }else{
 //                if(cEl_actualIndex.children){
-//                    cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentId + "_" + cEl_actualIndex.children[0].id;
+//                    cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
 //                    boolReset = true;
 //                }
 //            }
@@ -1199,7 +1199,7 @@ function save_changes(cEl_caller){
     
     try {
 //        var rule = {'unfolded':'folded','unfoldedfull':'unfolded'};
-//        var cEl_parent = window[cEl_caller.parentId];
+//        var cEl_parent = window[cEl_caller.parentName];
 //        if(rule[cEl_parent.state])cEl_parent.state = rule[cEl_parent.state];
         
         
@@ -1366,11 +1366,11 @@ function cEl_editActiveCp_MP(cEl_layer, cEl, editIndex, xy){
 }
 
 
-function cEl_edit_MP(cEl_layer,xy,scale){
+function cEl_edit_MP(cEl_parent,xy,scale){
     
     try{
         // reset masspoint
-        return [scale[0]*xy[0]/cEl_layer.shape.w,scale[1]*xy[1]/cEl_layer.shape.h];
+        return [scale[0]*xy[0]/cEl_parent.shape.w,scale[1]*xy[1]/cEl_parent.shape.h];
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();

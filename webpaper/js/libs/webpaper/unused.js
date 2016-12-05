@@ -1,3 +1,453 @@
+//function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
+//    //'use strict';
+//    try{
+//        //var shapeContainer = cEl.shape;
+//        // exit if path already exists
+//        if(!shapeContainer.temp){
+//            shapeContainer.temp = {"cpMp":[0,0]};
+//        }else{
+//            // exit if path already exists
+//            if(!boolReset){
+//                return true;
+//            }
+//        }
+//        
+//        var x,y,x1,y1,x2,y2,wF,hF,cpMP;
+//        var i=0;
+//        var scaleCP=[1,1];
+//        var cElPath;
+//        var cpArray = [];
+//        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
+//        var cEl_parent = window[cEl.parentName];
+//        var cEl_page = window[cEl.pageId];
+//        
+//        if (!shapeContainer.points){
+//            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl.shape.elId]);
+//        }
+//        var points = shapeContainer.points;
+//        var pointsLen = points.length;
+//        
+//        wF=cEl_layer.shape.w;
+//        hF=cEl_layer.shape.h;
+//        
+//        
+//        if(!shapeContainer.scale[1]){
+//            shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
+//        }
+//        
+//        scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
+//        
+//        var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
+//
+//        if(!shapeContainer.masspoint){
+//            shapeContainer.masspoint = $.extend(true,[],cEl_parent.shape.masspoint);
+//        }
+//        
+//        if(shapeContainer.parentoffsetMp){
+//            //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
+//            var parentMp = cEl_parent.shape.masspoint;
+//            var parentCp = cEl_parent.shape.points[shapeContainer.parentoffsetMp.pointindex];
+//            shapeContainer.masspoint = [cEl_parent.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_parent.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
+//        }
+//        
+//        shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
+//        
+//        //var GLOBAL_Path2D = checkPath2D();
+//        if(GLOBAL_Path2D){
+//            cElPath = new Path2D();
+//        }else{
+//            cElPath = cEl_ctx;
+//            cElPath.beginPath();
+//        }
+//        
+//        var cpBorder={"x":wF*shapeContainer.masspoint[0],"y":hF*shapeContainer.masspoint[1],"x1":0,"y1":0};
+//        cpMP = shapeContainer.temp.cpMp;
+//
+//        
+//        switch(shapeContainer.type){
+//
+//            case "poligon":// Poligon Shape Lines
+//
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+// 
+//                cElPath.moveTo(x, y);
+//                
+//                for(i = 1; i < pointsLen; i = i + 1){
+////                    x=scaleCP[0]*points[i][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i][1]+cpMP[1];
+//                    x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
+//                
+//                    if(boolSetCP){
+//                        cpArray.push([x, y, 0, i]);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                    }
+//                    
+//                    cElPath.lineTo(x, y); 
+//                }
+//                
+//            break;
+//
+//            case "quadratic":// Poligon  Shape Quadratic Points
+//                //cEl_ctx.beginPath();
+////                x=scaleCP[0]*points[0][0]+cpMP[0];
+////                y=scaleCP[1]*points[0][1]+cpMP[1];
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                
+////                console.log("0 " + i + " ; " + [x,y]);
+//                
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+//                cElPath.moveTo(x, y);
+//
+//                
+//                for(i = 0; i < pointsLen - 2; i = i + 2){ //len
+//
+////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    
+//                    //console.log("1 " + i + " ; " + x + " " + y + " ; " + x1 + " " + y1 + " ");
+//                    
+//                    if(boolSetCP){
+//                        cpArray.push([x1, y1, 0, i+2]);
+//                        cpArray.push([x, y, 1, i+1]);
+//
+//
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                    }
+//
+//                    cElPath.quadraticCurveTo(x,y,x1,y1); 
+//                }
+//                switch(pointsLen-i){
+//                    case 2:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+////                        console.log("1 " + i + " ; " + [x1,y1]);
+//    
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+////                        console.log("2 " + i + " ; " + [x,y] + " ; " + " " + [x1,y1]);
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i]);
+//                    
+//                    
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        }
+//
+//                        cElPath.quadraticCurveTo(x,y,x1,y1);
+//                    break;
+//                    case 1:
+////                        x=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y=scaleCP[1]*points[0][1]+cpMP[1];
+//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+////                        console.log("3 " + i + " " + x + " " + y + " " + x1 + " " + y1 + " ");
+//                        
+//                        if(boolSetCP){
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        }
+//
+//                        cElPath.lineTo(x, y);
+//                    break;
+//                }
+//            break;
+//
+//            case "bezier":// Poligon  Poligon  Shape Bezier Points
+//
+////                x=scaleCP[0]*points[0][0]+cpMP[0];
+////                y=scaleCP[1]*points[0][1]+cpMP[1];
+//                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                cElPath.moveTo(x, y);
+//                
+//                if(boolSetCP){
+//                    cpArray.push([x, y, 0, 0]);
+//                    cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                }
+//                
+//                for(i = 0; i < pointsLen - 3; i = i + 3){
+//
+////                    x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                    y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                    x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                    y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+////                    x2=scaleCP[0]*points[i+3][0]+cpMP[0];
+////                    y2=scaleCP[1]*points[i+3][1]+cpMP[1];
+//                    
+//                    x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                    y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                    x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                    y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                    x2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,0);
+//                    y2 = point_get_cpXY(points[i+3],scaleCP,cpMP,flipXY,1);
+//                    
+//                    
+//                    if(boolSetCP){
+//                        cpArray.push([x2, y2, 0, i+3]);
+//                        cpArray.push([x, y, 1, i+1]);
+//                        cpArray.push([x1, y1, 2, i+2]);
+//
+//
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
+//                    }
+//                    
+//                    //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                    cElPath.bezierCurveTo(x,y,x1,y1,x2,y2); 
+//                }
+//                switch(pointsLen-i){
+//                    case 3:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[i+2][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[i+2][1]+cpMP[1];
+////                        x2=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y2=scaleCP[1]*points[0][1]+cpMP[1];
+//                        
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[i+2],scaleCP,cpMP,flipXY,1);
+//                        x2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y2 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i+1]);
+//                            cpArray.push([x1, y1, 2, i+2]);
+//
+//
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x2,y2);
+//                        }
+//                        //cEl_ctx.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                        cElPath.bezierCurveTo(x,y,x1,y1,x2,y2);
+//                        
+//                    break;
+//                    case 2:
+////                        x=scaleCP[0]*points[i+1][0]+cpMP[0];
+////                        y=scaleCP[1]*points[i+1][1]+cpMP[1];
+////                        x1=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y1=scaleCP[1]*points[0][1]+cpMP[1];
+//
+//                        x = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[i+1],scaleCP,cpMP,flipXY,1);
+//                        x1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y1 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        if(boolSetCP){
+//                            cpArray.push([x, y, 1, i+1]);
+//                    
+//                    
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x1,y1);
+//                        }
+//                        //cEl_ctx.quadraticCurveTo(x,y,x1,y1);
+//                        cElPath.quadraticCurveTo(x,y,x1,y1);
+//
+//                    break;
+//                    case 1:
+////                        x=scaleCP[0]*points[0][0]+cpMP[0];
+////                        y=scaleCP[1]*points[0][1]+cpMP[1];
+//                        x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+//                        y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+//                        
+//                        if(boolSetCP){
+//                            cpBorder = cEl_set_CpBorder(cpBorder,x,y);
+//                        }
+//                        //cEl_ctx.lineTo(x, y);
+//                        cElPath.lineTo(x, y);
+//                        
+//                    break;
+//                }
+//            break;
+//        };
+//        cElPath.closePath();
+//
+//        if(boolSetCP){
+////            if(shapeContainer.swapwh){
+////                shapeContainer.temp.cpBorder = {
+////                    "x":cpBorder.y,
+////                    "y":cpBorder.x,
+////                    "x1":cpBorder.y1,
+////                    "y1":cpBorder.x1
+////                    };
+////            }else{
+//                shapeContainer.temp.cpBorder = cpBorder;
+////            }
+//            
+//            shapeContainer.temp.cp = cpArray;
+//            //cdebug(pointsLen + " vs "+ shapeContainer.temp.cp.length );
+//        }
+//        
+//        shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
+//        
+//        if(GLOBAL_Path2D){
+//            shapeContainer.path = cElPath;
+//        }
+//        return true;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+
+
+
+//function pre_load_childrenOld(cEl,pageId,layerId,parentName){
+//    
+//    try{
+//        
+//        if(!cEl)return true;
+//        var boolAllIsWell = true;
+//        
+//        // set additional
+//        if(cEl.element){
+//            if(!pageId){pageId = cEl.pageId;}
+//            if(!cEl.loaded){
+////                cdebug(cEl.name,false,true,3)();
+////                cdebug(cEl.shape,false,true,3)();
+//                cEl = $.extend(true, cEl, window[pageId].elements[cEl.element]);
+////                if(!cEl.states)cEl.states = {};
+////                cEl.states = $.extend(true, cEl.states, window[pageId].states);
+//                
+////                cdebug(cEl.shape,false,true,3)();
+//                cEl.loaded = true;
+//            }
+//        }
+//
+//        // set parent and window objects
+//        switch(cEl.tag){
+//            case "page": //draw page element
+//                
+//                
+//                if(pageId){
+//                    cEl.name = pageId;
+//                    cEl.pageId = pageId;
+//                }else{
+//                    pageId = cEl.name;
+//                }
+//                setEventHolder(pageId);
+//                parentName = "";
+//                cEl.parentName = "";
+//                 // add window object
+//                if(!window[cEl.name]){
+//                    window[cEl.name]=cEl;
+//                }
+//                
+//                // preload style
+//                if(!cEl.style){
+//                    setStyle_cEl(cEl);
+//                }
+//                
+//                getSetHtmlEl(cEl);
+//                
+//                
+//            break;
+//            case "layer": //draw canvas element
+//                //console.clear();
+//                if(pageId){
+//                    cEl.pageId = pageId;
+//                }else{
+//                    pageId = cEl.pageId;
+//                }
+//                
+//                if(layerId){
+//                    cEl.name = layerId;
+//                }else{
+//                    layerId = cEl.name;
+//                }
+//                parentName = pageId;
+//                
+//                cEl.layerId = layerId;
+//                cEl.parentName = pageId;
+//                
+//                // add window object
+//                if(!window[cEl.parentName + "_" + cEl.name]){
+//                    window[cEl.parentName + "_" + cEl.name]=cEl;
+//                }
+//                
+//            break;
+//            case "shape": //draw shape
+//                
+//                if(pageId){
+//                    cEl.pageId = pageId;
+//                }else{
+//                    pageId = cEl.pageId;
+//                }
+//                
+//                if(layerId){
+//                    cEl.layerId = layerId;
+//                }else{
+//                    layerId = cEl.name;
+//                }
+//                
+//                if(parentName){
+//                    cEl.parentName = parentName;
+//                }else{
+//                    parentName = cEl.parentName + "_" + cEl.name;
+//                }
+//                
+//                // add window object
+//                if(!window[cEl.parentName + "_" + cEl.name]){
+//                    window[cEl.parentName + "_" + cEl.name]=cEl;
+//                }
+//                
+//                // preload style
+//                if(!cEl.style){
+//                    setStyle_cEl(cEl);
+//                }
+//                
+//                //if(cEl.shape.rotation){cdebug(cEl.pageId + " vs " + cEl.name,false,true,3)();}
+//                //boolHasChildren = cEl.children ? true: false;
+//                
+//            break; 
+//        }
+//        
+//        
+//        var boolChildren = cEl.children ? true: false;
+//        //cdebug(cEl.parentName + "_" + cEl.name + " " + boolChildren,false,true,1)();
+//        if(boolChildren){
+//            for(var i = 0, len = cEl.children.length +1 ;i < len; i++){
+//                boolAllIsWell = (boolAllIsWell && pre_load_children(cEl.children[i],pageId,layerId,cEl.parentName + "_" + cEl.name));
+//            };
+//        }
+//        return boolAllIsWell;
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
 
 //function set_lineParsOLD(line,linePars,boolPP){
 //    
@@ -162,7 +612,7 @@
 //    
 //    try{
 //        // usage of == instead of === is intentional
-//        var boolHasSelection = (cEl_pageText.charsSelection.id == cEl.parentId + "_" +cEl.id);
+//        var boolHasSelection = (cEl_pageText.charsSelection.name == cEl.parentName + "_" +cEl.name);
 //        if(boolHasSelection && cEl.active && cEl.data.values.editable){
 //            cEl_pageText.charsSelection.cr.vis = true;
 //        }else{
@@ -177,7 +627,7 @@
 //            cEl_ctx.shadowColor = cEl.data.values.temp.style.textShadow[0].shadowColor;
 //        }
 //        
-//        //console.log(boolDrawSelection + "  " + cEl.parentId + "_" +cEl.id + "  vs  " + cEl_pageText.charsSelection.id);
+//        //console.log(boolDrawSelection + "  " + cEl.parentName + "_" +cEl.name + "  vs  " + cEl_pageText.charsSelection.name);
 //        
 //        var lines = cEl.data.values.temp.lines3;
 //        var len = lines.length;
@@ -202,8 +652,8 @@
 //        for(var i = 0, chrObj, chrObj_f_id, charStyle,charWidth; i< len;i++){
 //            chrObj = lines[i];
 //            //if(!line)console.log(i + " vs " + len + JSON.stringify(lines));
-//            if(chrObj_f_id !== chrObj.f.id){
-//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
+//            if(chrObj_f_id !== chrObj.f.name){
+//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.name];
 //                //console.log(cEl_ctx.fillStyle);
 //                if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
 //
@@ -217,7 +667,7 @@
 //            //console.log();
 //        }
 //        
-////        if(cEl.id === "txtInputObj" && cEl.parentId === "editorPage_control_list2"){
+////        if(cEl.name === "txtInputObj" && cEl.parentName === "editorPage_control_list2"){
 ////            console.log(JSON.stringify(lines));
 ////        }
 //        
@@ -234,8 +684,8 @@
 //            
 //            //if(!line)console.log(i + " vs " + len + JSON.stringify(lines));
 //            
-//            if(chrObj_f_id !== chrObj.f.id){
-//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
+//            if(chrObj_f_id !== chrObj.f.name){
+//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.name];
 //                //console.log(chrObj.h);
 //                if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
 //                if(cEl_ctx.fillStyle !== charStyle.color)cEl_ctx.fillStyle = charStyle.color;
@@ -244,11 +694,11 @@
 //            
 //            linePars.sp = i;
 //            if(i > linePars.bp || boolNewParagraph){
-//                //if(i<56 && cEl.id === "txtInputObj" && cEl.parentId === "editorPage_control_list2"){console.log(" BEFORE " +JSON.stringify(linePars));}
+//                //if(i<56 && cEl.name === "txtInputObj" && cEl.parentName === "editorPage_control_list2"){console.log(" BEFORE " +JSON.stringify(linePars));}
 //                
 //                set_linePars(lines,linePars,boolFirstLine || boolNewParagraph);
 //                
-//                //if(i<56 && cEl.id === "txtInputObj" && cEl.parentId === "editorPage_control_list2"){console.log(" AFTER " +JSON.stringify(linePars));}
+//                //if(i<56 && cEl.name === "txtInputObj" && cEl.parentName === "editorPage_control_list2"){console.log(" AFTER " +JSON.stringify(linePars));}
 //
 //                if(boolFirstLine || boolNewParagraph){
 //                    charX = linePars.minX + linePars.li;
@@ -270,7 +720,7 @@
 //            charX+= chrObj.w + chrObj.ls;
 //
 //            
-//            chrObj_f_id = chrObj.f.id;
+//            chrObj_f_id = chrObj.f.name;
 //            oldParagraphId = chrObj.pp;
 //        }
 //        return true;
@@ -811,10 +1261,10 @@
 //        var cElTabNew = cElTab;
 //        
 //        //cdebug([canvTab,canvTabNew,cElTab,cElTabNew]);
-//        //cdebug(cElFocusOld.id + " vs " + canvElFocusOld.id);            
+//        //cdebug(cElFocusOld.name + " vs " + canvElFocusOld.name);            
 //        //cdebug(cElFocusOld.tag);
 //
-//        if(canvElFocusOld && cElFocusOld.id!==canvElFocusOld.id){
+//        if(canvElFocusOld && cElFocusOld.name!==canvElFocusOld.name){
 //            
 //            if(!boolDescending){
 //                if(cElTab < canvElFocusOld.children.length - 1){
@@ -866,12 +1316,12 @@
 //
 //            page.children[canvTab].children[cElTab].focus = false;
 //            page.children[canvTabNew].children[cElTabNew].focus = true;
-//            //cdebug("zzzzzzzzzzzz "+page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].id + "_" + page.children[canvTabNew].children[cElTabNew].id);
-//            eventholder.cElFocus = page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].id + "_" + page.children[canvTabNew].children[cElTabNew].id;
+//            //cdebug("zzzzzzzzzzzz "+page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].name + "_" + page.children[canvTabNew].children[cElTabNew].name);
+//            eventholder.cElFocus = page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].name + "_" + page.children[canvTabNew].children[cElTabNew].name;
 //            
 //            if(cElActiveOld && cElActiveOldName===cElFocusOldName){
 //                page.children[canvTab].children[cElTab].active = false;
-//                eventholder.cElActive = page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].id + "_" + page.children[canvTabNew].children[cElTabNew].id;
+//                eventholder.cElActive = page.children[canvTabNew].pageId + "_" + page.children[canvTabNew].name + "_" + page.children[canvTabNew].children[cElTabNew].name;
 //                runEval(cElActiveOld,"activeoff");
 //            }
 //
@@ -922,9 +1372,9 @@
 //            runEval(cElActiveOld,"activeoff");
 //        }
 //        if(canvElFocusOld.tag ==="canvas"){
-//            eventholder.cElActive = canvElFocusOld.pageId + "_" + canvElFocusOld.id;
+//            eventholder.cElActive = canvElFocusOld.pageId + "_" + canvElFocusOld.name;
 //        }else{
-//            eventholder.cElActive = canvElFocusOld.pageId + "_" + canvElFocusOld.id + "_" + cElFocusOld.id;
+//            eventholder.cElActive = canvElFocusOld.pageId + "_" + canvElFocusOld.name + "_" + cElFocusOld.name;
 //        }
 //        
 //        cElFocusOld.active = true;
@@ -1031,14 +1481,14 @@
 //    
 //    try{
 //        var evtType = evt.type;
-//        //cdebug(evtType+" start on " + evt.target.id,true);
+//        //cdebug(evtType+" start on " + evt.target.name,true);
 //
 //        // exit if not event
 //        if(!evtType){return false;}
 //        // prevent default events        
 //        evt.preventDefault();
 //        evt.stopPropagation();
-//        var actCanvHtmlId = evt.target.id;
+//        var actCanvHtmlId = evt.target.name;
 //        // exit if not html element with id defined
 //        if (!actCanvHtmlId){
 //            return false;
@@ -1065,7 +1515,7 @@
 //        //cdebug(cElActualName,true);
 //        
 //        var cElActual = window[cElActualName];
-//        //cdebug(cElActual.id,true);
+//        //cdebug(cElActual.name,true);
 //
 //        eventholder.cElActual = arrActEl;
 //        
@@ -1089,9 +1539,9 @@
 //        var boolChangeElFocus = (cElActualName !== cElFocusOldName) ? true : false;
 //        var boolChangeElActive = (cElActualName !== cElActiveOldName) ? true : false;
 //        
-//        var boolChangeCanvHover = (!canvElHover || canvCElActual.id !== canvElHover.id) ? true : false;
-//        var boolChangeCanvFocus = (!canvElFocusOld || canvCElActual.id !== canvElFocusOld.id) ? true : false;
-//        var boolChangeCanvActive = (!canvElActiveOld || canvCElActual.id !== canvElActiveOld.id) ? true : false;
+//        var boolChangeCanvHover = (!canvElHover || canvCElActual.name !== canvElHover.name) ? true : false;
+//        var boolChangeCanvFocus = (!canvElFocusOld || canvCElActual.name !== canvElFocusOld.name) ? true : false;
+//        var boolChangeCanvActive = (!canvElActiveOld || canvCElActual.name !== canvElActiveOld.name) ? true : false;
 //        
 //        var boolRedrawCanvActual = false;
 //        var boolRedrawCanvHover = false;
@@ -1668,7 +2118,7 @@
 //                
 //                
 //                zz  = document.createElement('canvas');
-//                zz.id = 'canvBuilder';
+//                zz.name = 'canvBuilder';
 //                zz.style.backgroundColor = 'transparent';
 //                var zzCtx = zz.getContext("2d");
 //                zzCtx.imageSmoothingEnabled= false;

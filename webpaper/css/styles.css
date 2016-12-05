@@ -17,6 +17,15 @@ input::-moz-focus-inner {
     border: 0;
 }
 
+.page{
+/*    font-family: Arial;
+    font-size: 0.9rem;*/
+    background-color:white;
+/*    border-color: #aff;used for textshade color
+    border-width: 1px;used for textshade width
+    border:thin dotted #000000;*/
+}
+
 .fabric{
 /*    font-family: Arial;
     font-size: 0.9rem;*/
@@ -28,11 +37,11 @@ input::-moz-focus-inner {
 .contextmenu{
     font-family: Arial;
     font-size: 3rem;
-    background-color: rgba(218,165,32,0.5);
-    /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");*/
-/*    border-width: 1px;
-    border-color: rgb(218,165,32);*/
-/*    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);*/
+    background-color: rgba(218,165,32,1);
+    /*background-image: url("graphics/test.jpg");*/
+    border-width: 1px;
+    border-color: rgb(218,165,32);
+    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);
 }
 .contextitems{
     font-family: Arial;
@@ -75,9 +84,10 @@ input::-moz-focus-inner {
 /*    font-family: Arial;
     font-size: 0.9rem;*/
     /*background-color:rgba(255,255,222,0.2);*/
-    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
-/*    border-color:rgba(170,221,170,0.7);
-    border-width: 1px;*/
+    
+    /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");*/
+    border-color:rgba(170,221,170,0.7);
+    border-width: 5px;
 /*    border-color: #aff;used for textshade color
     border-width: 1px;used for textshade width
     font-style: italic;
