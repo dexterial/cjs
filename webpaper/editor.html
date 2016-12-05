@@ -12,22 +12,32 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $( function() {
-            $( "#draggable" ).draggable();
+            $( ".draggable" ).draggable();
         } );
     </script>
 </head>
 <body>
+    <div id="menu" class="draggable">
 
-<div id="draggable" class="ui-widget-content">
+    </div>
+    <div id="toolsPreview">
+        <div id="toolsBox" class="draggable">
+            <button id="move"></button>
+            <button id="select" ></button>
+            <button id="eyedropper" ></button>
+            <button id="more"></button>
+            <button id="text"></button>
+            <button id="colors"></button>
+        </div>
+        <div class="draggable" id="editBox">
+        </div>
+    </div>
 
-    <button id="move"></button>
-    <button id="select" ></button>
-    <button id="eyedropper" ></button>
-    <button id="more"></button>
-    <button id="text"></button>
-    <button id="colors"></button>
+    <div id="rightPanel" class="draggable">
+        <div id="optionsPanel"></div>
+        <div id="objetsPanel"></div>
+    </div>
 
-</div>
 
 </body>
 </html>
