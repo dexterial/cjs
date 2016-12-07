@@ -597,8 +597,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
 //            }else{
                 //eventholder.retObj = {"id":null,"nostop":true,"all":[]};
                 var hitOptions = {
-                    segments: true,
-                    stroke: true,
+                    class:paper.Path,
+                    segments: false,
+                    stroke: false,
                     fill: true,
                     tolerance: 5
                 };
@@ -850,7 +851,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
             //  hover reset for old focus element 
             if(eventholder.hover && eventholder.hover.resetold){
                 cEl = eventholder.hover.oldObj;
-                //cdebug("->>>" + cEl.name)();
+//                cdebug("->>>" + cEl.name)();
 //                if(cEl){
 //                    //cdebug(eventholder.hover.id)();
                     cEl.hover = false;

@@ -953,6 +953,7 @@ function drawProjects(cEl,boolRedraw){
                     boolAllIsWell = (boolAllIsWell && drawProjects(cEl.projects[i],boolRedraw));
                 //}
             };
+            
         }
 
         if(boolHasLayers){
@@ -1149,6 +1150,9 @@ function draw_cEl_project(cEl){
         
         //setGetProject(cEl,cEl.name);
         projectSwitch(cEl.name);
+        
+        
+        //paper.project.activeLayer.removeChildren();
 
         if(cEl.view.element.style.visibility === "hidden")
             cEl.view.element.style.visibility = "visible";
@@ -1437,11 +1441,8 @@ function draw_cEl_shape(cEl) {
         
         //var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
         //var cEl_ctx = cEl_canv.getContext('2d');
-        //cEl_postsets(cEl,cEl_ctx,boolDrawCp);
-        
-        
-        
-        
+        cEl_postsets(cEl,boolDrawCp);
+        //cdebug(paper.project.activeLayer.children.length)();
         
         return true;
     } catch (e) {
@@ -1452,92 +1453,7 @@ function draw_cEl_shape(cEl) {
 }
 
 
-function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
-    
-    
-    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
-    var cEl_ctx = cEl_canv.getContext('2d');
-    cEl_setPath(cEl_ctx, cEl, cEl.shape, true, true); //cEl.shape.redraw
-        
 
-        
-        //cdebug(cEl.shape.rotation,false,true,3)();
-
-        var fillColor, strokeColor, lineWidth;
-        cEl_ctx.save();
-        if(cEl_layer.debug){
-            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
-            var cEl_index = window[editIndex];
-            boolDrawCp = cEl_index ? true : false;
-            
-            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
-            if(boolDrawCp){
-                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
-                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
-                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
-            }else{
-                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
-                lineWidth = 1;
-                strokeColor = "rgba(0,0,0,0.5)";
-            }
-        }else{
-            fillColor = cEl.style.calc["background-color"];
-            lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
-            strokeColor = cEl.style.calc["border-top-color"];
-        }
-
-        if(fillColor)cEl_ctx.fillStyle = fillColor;
-        if(strokeColor)cEl_ctx.strokeStyle = strokeColor;
-        cEl_ctx.lineWidth = lineWidth;
-
-        if(cEl.shape.rotation){
-            //cEl_ctx.save();
-            cEl_ctx.translate(cEl.shape.temp.cpMp[0],cEl.shape.temp.cpMp[1]);
-            cEl_ctx.rotate(cEl.shape.rotation*2*Math.PI);
-            cEl_ctx.translate(-cEl.shape.temp.cpMp[0],-cEl.shape.temp.cpMp[1]);
-            //cEl_ctx.restore();
-        }
-        
-        if(cEl.style.calc["box-shadow"]){
-            var shadowObj = getShadowObj(cEl.style.calc["box-shadow"]);
-//            cdebug(shadowObj,true,true)();
-//            cdebug(cEl.style.calc["box-shadow"],false,true)();
-            cEl_ctx.shadowOffsetX = shadowObj[0].shadowOffsetX;
-            cEl_ctx.shadowOffsetY = shadowObj[0].shadowOffsetY;
-            cEl_ctx.shadowBlur = shadowObj[0].shadowBlur;
-            cEl_ctx.shadowSpread = shadowObj[0].shadowSpread;
-            cEl_ctx.shadowColor = shadowObj[0].shadowColor;
-        }
-        
-
-
-        if(GLOBAL_Path2D){
-            if(fillColor){
-                cEl_ctx.fill(cEl.shape.path);
-            }
-            if(strokeColor){
-                cEl_ctx.stroke(cEl.shape.path);
-            }
-        }else{
-            if(fillColor){
-                cEl_ctx.fill();
-            }
-            if(strokeColor){
-                cEl_ctx.stroke();
-            }
-        }
-
-        if(boolDrawCp){
-            cEl_drawCp(cEl.shape,cEl_ctx);
-            draw_pointXY(cEl, cEl_layer, cEl_ctx);
-        }
-        cEl_ctx.restore();
-        
-        
-        /// TODO text stuff here , ADD shadow text as well by using text-shadow component on ctx
-        cEl_postsets(cEl,cEl_ctx,boolDrawCp);
-    
-}
 
 //cdebug(getShadowObj("5px 5px 7px 5px rgba(218,165,32,0.5),7px 7px 12px 7px rgba(32,165,218,0.5)"),false,true)();
 
@@ -1620,72 +1536,19 @@ function cEl_presets(cEl,cEl_page){
     try{
         // reset states
         if(cEl.states){
-            //cdebug(cEl.name,false,true,0)();
             var stateNames = getKeys(cEl.states);
-            //cdebug(stateNames,true,true,0)(); 
-            
+            //cdebug(stateNames)(); 
             for(var i=0,cEl_stateId,cEl_state;i< stateNames.length; i++){
-                
-                //cdebug(stateNames[i],false,true,0)();
-                //cdebug(cEl_page.state[stateNames[i]],false,true,0)();
-                //cdebug(cEl_page.state[stateNames[i]][0],false,true,0)();
-                
-                if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
-                    //cEl_page.state[stateNames[i]]
-                    //cdebug(cEl.name + " " + cEl.states[stateNames[i]] + " vs " + cEl_page.state[stateNames[i]],false,true,0)();
-                    cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
-                    
 
+                if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
+
+                    cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
                     cEl_state = cEl_page.states[cEl_stateId];
-                    //cdebug(cEl_state,false,true,0)(); 
                     cEl = $.extend(true,cEl,cEl_state);
                 }
             }
-            
-//            cdebug(cEl.states,false,true,0)();
-//            cdebug(getKeys(cEl.states),false,true,0)(); 
         }
 
-//        switch(cEl.data.type){
-//            case "list":
-//                if(cEl.data.values){
-//                    for(var i = 0,len = cEl.children.length,val_temp,cEl_out;i<len;i++){
-//                        val_temp = cEl.data.values[cEl.children[i].name];
-//                        if(val_temp){
-//                            if(val_temp["eval"]){
-//                                //cdebug(eval(cEl.data.values[cEl.children[i].name]["val"]))();
-//                                cEl.children[i].data.values.text = eval(val_temp["val"]);
-//                                cEl.children[i].data.values.temp = null;
-//                            }else{
-//                                cEl.children[i].data.values.text = val_temp["val"];
-//                                cEl.children[i].data.values.temp = null;
-//                            }
-//
-//                            if(cEl.children[i].name === cEl.data.index){
-//                                cEl_out = window[cEl.parentName+"_"+cEl.name+"_"+val_temp["out_id"]];
-//
-//                                if(val_temp["out_eval"]){
-//                                    cEl_out.data.values.text = eval(val_temp["out_val"]);
-//                                    cEl_out.data.values.temp = null;
-//                                }else{
-//                                    cEl_out.data.values.text = val_temp["out_val"];
-//                                    cEl_out.data.values.temp = null;
-//                                }
-//                            }
-//                        }
-//                    }
-////                if(boolHasChanges){
-////                    var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
-////                    cEl_layer.shape.redraw = true;
-////                }
-//                }
-//                return true;
-//            break;
-//            default:
-//                return true;
-//            break;
-//        }
-        
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -1694,11 +1557,11 @@ function cEl_presets(cEl,cEl_page){
 }
 
 
-function cEl_postsets(cEl,cEl_ctx,boolDrawCp){
+function cEl_postsets(cEl,boolDrawCp){
     try{
         switch(cEl.data.type){
             case "text":
-                //draw_cEl_text(cEl_ctx,cEl,boolDrawCp);
+                draw_cEl_text(cEl,boolDrawCp);
                 return true;
             break;
             default:

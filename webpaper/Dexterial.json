@@ -42,7 +42,7 @@
     "state":{
         "global":["default"],
         "context":["text"],
-        "tabstate":["normal"]
+        "tabstate":["foldedTL"]
     },
     "states":{
         "global-enabled":{"visible":true,"enabled":true,"focus":false,"hover":false,"active":false,"loaded":false,"drawn":false},
@@ -219,15 +219,12 @@
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
                 "redraw":true,
-                "scale":[1,1],
-                "masspoint":[0,0],
+                "scale":[0.8,0.8],
+                "masspoint":[0.1,0.1],
                 "name":"rectangle-tl",
                 "flipXY":[false,false],
                 "type":"poligon",
                 "detection":"shape"
-            },
-            "rules":{
-                "tabstate":"r1"
             },
             "states":{
                 "global":{"default":"global-enabled"}

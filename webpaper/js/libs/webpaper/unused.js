@@ -1,4 +1,91 @@
-//function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
+//function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
+//    
+//    
+//    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
+//    var cEl_ctx = cEl_canv.getContext('2d');
+//    cEl_setPath(cEl_ctx, cEl, cEl.shape, true, true); //cEl.shape.redraw
+//        
+//
+//        
+//        //cdebug(cEl.shape.rotation,false,true,3)();
+//
+//        var fillColor, strokeColor, lineWidth;
+//        cEl_ctx.save();
+//        if(cEl_layer.debug){
+//            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
+//            var cEl_index = window[editIndex];
+//            boolDrawCp = cEl_index ? true : false;
+//            
+//            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
+//            if(boolDrawCp){
+//                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
+//                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
+//                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
+//            }else{
+//                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
+//                lineWidth = 1;
+//                strokeColor = "rgba(0,0,0,0.5)";
+//            }
+//        }else{
+//            fillColor = cEl.style.calc["background-color"];
+//            lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
+//            strokeColor = cEl.style.calc["border-top-color"];
+//        }
+//
+//        if(fillColor)cEl_ctx.fillStyle = fillColor;
+//        if(strokeColor)cEl_ctx.strokeStyle = strokeColor;
+//        cEl_ctx.lineWidth = lineWidth;
+//
+//        if(cEl.shape.rotation){
+//            //cEl_ctx.save();
+//            cEl_ctx.translate(cEl.shape.temp.cpMp[0],cEl.shape.temp.cpMp[1]);
+//            cEl_ctx.rotate(cEl.shape.rotation*2*Math.PI);
+//            cEl_ctx.translate(-cEl.shape.temp.cpMp[0],-cEl.shape.temp.cpMp[1]);
+//            //cEl_ctx.restore();
+//        }
+//        
+//        if(cEl.style.calc["box-shadow"]){
+//            var shadowObj = getShadowObj(cEl.style.calc["box-shadow"]);
+////            cdebug(shadowObj,true,true)();
+////            cdebug(cEl.style.calc["box-shadow"],false,true)();
+//            cEl_ctx.shadowOffsetX = shadowObj[0].shadowOffsetX;
+//            cEl_ctx.shadowOffsetY = shadowObj[0].shadowOffsetY;
+//            cEl_ctx.shadowBlur = shadowObj[0].shadowBlur;
+//            cEl_ctx.shadowSpread = shadowObj[0].shadowSpread;
+//            cEl_ctx.shadowColor = shadowObj[0].shadowColor;
+//        }
+//        
+//
+//
+//        if(GLOBAL_Path2D){
+//            if(fillColor){
+//                cEl_ctx.fill(cEl.shape.path);
+//            }
+//            if(strokeColor){
+//                cEl_ctx.stroke(cEl.shape.path);
+//            }
+//        }else{
+//            if(fillColor){
+//                cEl_ctx.fill();
+//            }
+//            if(strokeColor){
+//                cEl_ctx.stroke();
+//            }
+//        }
+//
+//        if(boolDrawCp){
+//            cEl_drawCp(cEl.shape,cEl_ctx);
+//            draw_pointXY(cEl, cEl_layer, cEl_ctx);
+//        }
+//        cEl_ctx.restore();
+//        
+//        
+//        /// TODO text stuff here , ADD shadow text as well by using text-shadow component on ctx
+//        cEl_postsets(cEl,cEl_ctx,boolDrawCp);
+//    
+//}
+//
+////function cEl_setPath(cEl_ctx, cEl, shapeContainer, boolReset, boolSetCP){
 //    //'use strict';
 //    try{
 //        //var shapeContainer = cEl.shape;
@@ -652,8 +739,8 @@
 //        for(var i = 0, chrObj, chrObj_f_id, charStyle,charWidth; i< len;i++){
 //            chrObj = lines[i];
 //            //if(!line)console.log(i + " vs " + len + JSON.stringify(lines));
-//            if(chrObj_f_id !== chrObj.f.name){
-//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.name];
+//            if(chrObj_f_id !== chrObj.f.id){
+//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
 //                //console.log(cEl_ctx.fillStyle);
 //                if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
 //
@@ -684,8 +771,8 @@
 //            
 //            //if(!line)console.log(i + " vs " + len + JSON.stringify(lines));
 //            
-//            if(chrObj_f_id !== chrObj.f.name){
-//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.name];
+//            if(chrObj_f_id !== chrObj.f.id){
+//                charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
 //                //console.log(chrObj.h);
 //                if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
 //                if(cEl_ctx.fillStyle !== charStyle.color)cEl_ctx.fillStyle = charStyle.color;
@@ -720,7 +807,7 @@
 //            charX+= chrObj.w + chrObj.ls;
 //
 //            
-//            chrObj_f_id = chrObj.f.name;
+//            chrObj_f_id = chrObj.f.id;
 //            oldParagraphId = chrObj.pp;
 //        }
 //        return true;
