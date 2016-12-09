@@ -349,7 +349,7 @@ var cdebug = function() {
     //0-msg, 1-clearMe, 2-boolConsole, 3-intConsoleNo
     try {
         var d = new Date();
-        var intConsoleNo = arguments[3] ? arguments[3] :0;
+        var intConsoleNo = arguments[3] ? arguments[3] :1;
         var dl = window["GLOBAL_delay" + intConsoleNo];
         var strDelay  =  Math.abs(d.getTime() - dl.getTime());
         strDelay = String("00000" + strDelay).slice(-5);
@@ -1151,7 +1151,7 @@ function draw_cEl_project(cEl){
         //setGetProject(cEl,cEl.name);
         projectSwitch(cEl.name);
         
-        
+        //paper.project.activeLayer.removeChildren();
         //paper.project.activeLayer.removeChildren();
 
         if(cEl.view.element.style.visibility === "hidden")
@@ -2085,6 +2085,11 @@ function cEl_setPaperPath(cEl, shapeContainer, boolReset, boolSetCP){
             //console.log(points[shapeContainer.parentoffsetMp.pointindex][0]*shapeContainer.scale[0]);
             var parentMp = cEl_layer.shape.masspoint;
             var parentCp = cEl_layer.shape.points[shapeContainer.parentoffsetMp.pointindex];
+            //if(!parentCp)cdebug(cEl_layer.shape.points)();
+            //if(!parentCp)cdebug(cEl_layer.shape.points)();
+            
+            //cdebug(parentMp)();
+            
             shapeContainer.masspoint = [cEl_layer.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_layer.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
         }
         
@@ -2487,7 +2492,7 @@ function runEval(actEl, evtType){
                 //cdebug(args[i])();
             }
             //cdebug(args)();
-            //cdebug("runEval " + actEl.name + ", event " + strEval + ", evtType " + evtType + " >>> fctName:" + fctName + " args >>>" + args)();
+//            cdebug("runEval " + actEl.name + ", event " + strEval + ", evtType " + evtType + " >>> fctName:" + fctName + " args >>>" + args)();
             
 //            
 //            if(actEl.tag==="canvas"){
@@ -2510,11 +2515,19 @@ function runEval(actEl, evtType){
 }
 
 function executeFunctionByName2(fname , args){
-    var arr = fname.split('.');
-    var fn = window[ arr[0] ];
-    for (var i = 1; i < arr.length; i++)
-    { fn = fn[ arr[i] ]; }
-    return fn.apply(window, args);
+    
+    try{ 
+        var arr = fname.split('.');
+        var fn = window[ arr[0] ];
+        for (var i = 1; i < arr.length; i++)
+        { fn = fn[ arr[i] ]; }
+        return fn.apply(window, args);
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
 }
 
 

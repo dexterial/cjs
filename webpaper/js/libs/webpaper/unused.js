@@ -1,4 +1,104 @@
-//function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
+
+
+//function draw_chr(chrObj,charpos,cEl_ctx,cEl_Selection,boolHasSelection){
+//    
+//    try{
+//        
+////        alphabetic font proportions, total of 1.5
+////        -0.3
+////        1
+////        1.05
+////        1.2
+//
+//        if(boolHasSelection){
+//            
+//            
+//            if(chrObj.pr){
+//                var boolIsNotMatched = true;
+//                var boolDrawSelection = false;
+//                // check if in char @ position
+//                if(boolIsNotMatched){
+//                    for (var i=0, len = cEl_Selection.charspos.length; i < len; i++){
+//                        if(cEl_Selection.charspos[i] === charpos){
+//                            boolIsNotMatched =true;
+//                            boolDrawSelection = true;
+//                            break;
+//                        }
+//                    }
+//                }
+////                // check if in word @ position
+////                if(boolIsNotMatched){
+////                    for (var i=0, len = cEl_Selection.wordspos.length; i < len; i++){
+////                        if(cEl_Selection.wordspos[i] === chrObj.pp + "_" + chrObj.sc){
+////                            boolIsNotMatched =true;
+////                            boolDrawSelection = true;
+////                            break;
+////                        }
+////                    }
+////                }
+////                // check if in word
+////                if(boolIsNotMatched){
+////                    for (var i=0, len = cEl_Selection.wordspos.length; i < len; i++){
+////                        if(cEl_Selection.wordspos[i] === chrObj.sc){
+////                            boolIsNotMatched =true;
+////                            boolDrawSelection = true;
+////                            break;
+////                        }
+////                    }
+////                }
+////                // check if in paragraph
+////                if(boolIsNotMatched){
+////                    for (var i=0, len = cEl_Selection.paragraphspos.length; i < len; i++){
+////                        if(cEl_Selection.paragraphspos[i] === chrObj.pp){
+////                            boolIsNotMatched =true;
+////                            boolDrawSelection = true;
+////                            break;
+////                        }
+////                    }
+////                }
+//                if(boolDrawSelection){
+//                    cEl_ctx.save();
+//                    draw_chr_selection(chrObj,cEl_Selection,cEl_ctx);
+//                }
+//                if(chrObj.r){
+//                    
+////                    cEl_ctx.translate(chrObj.xy[0],chrObj.xy[1]);
+////                    cEl_ctx.rotate(chrObj.r*2*Math.PI);
+////                    cEl_ctx.translate(-chrObj.xy[0],-chrObj.xy[1]);
+//                    
+//                }else{
+//                    cEl_ctx.fillText(chrObj.chr,chrObj.xy[0],chrObj.xy[1]);
+//                }
+//                if(boolDrawSelection)cEl_ctx.restore();
+//            }
+//        }else{
+//            if(chrObj.pr)cEl_ctx.fillText(chrObj.chr,chrObj.xy[0],chrObj.xy[1]);
+//        }
+//        
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,true,0);
+//        return err;
+//    }
+//}
+//
+//function draw_chr_selection(chrObj,cEl_Selection,cEl_ctx){
+//    
+//    try{
+//        
+//        cEl_ctx.fillStyle = cEl_Selection.style["background-color"];
+//        cEl_ctx.fillRect(chrObj.xy[0],chrObj.xy[1]-chrObj.fs*0.8,chrObj.w,chrObj.fs);
+//        cEl_ctx.fillStyle = cEl_Selection.style.color;
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,true,0);
+//        return err;
+//    }    
+//}
+//
+////function oldShapeDraw(cEl,boolDrawCp,cEl_layer){
 //    
 //    
 //    var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];

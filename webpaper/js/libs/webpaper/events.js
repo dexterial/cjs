@@ -265,7 +265,7 @@ function handleMouse(evt) {
                 
                 handleTextSelection(eventholder);
                 
-                //handleContextMenu(eventholder);
+                handleContextMenu(eventholder);
                 
                 //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
                 //cdebug(eventholder.hover)();

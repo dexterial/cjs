@@ -802,12 +802,11 @@ function set_text_path(cEl){
             case "box-fill":
                 
                 //cdebug(cEl.data.values.vertical,false,false,0);
-                
-                var path;
                 if(cEl.data.values.vertical){
                     if(cEl.data.values.temp.path){
                         cEl.data.values.temp.path.removeSegments();
                     }else{
+                        //cdebug("new")();
                         cEl.data.values.temp.path = new paper.Path;
                     }
                     cEl.data.values.temp.path.add([cEl.bounds.x + cEl.bounds.width/2, cEl.bounds.y ],
@@ -817,13 +816,13 @@ function set_text_path(cEl){
                         cEl.data.values.temp.path.removeSegments();
                     }else{
                         cEl.data.values.temp.path = new paper.Path;
+                        //cdebug("new")();
                     }
                     
                     cEl.data.values.temp.path.add([cEl.bounds.x, cEl.bounds.y + cEl.bounds.height/2],
                         [cEl.bounds.x + cEl.bounds.width,cEl.bounds.y  + cEl.bounds.height/2]);
-                    
                 }
-                
+                cEl.data.values.temp.path.name = cEl.parentName + "_" + cEl.name + ".L";
             break;
             case "path":
                 
@@ -841,104 +840,6 @@ function set_text_path(cEl){
 }
 
 
-
-//function draw_chr(chrObj,charpos,cEl_ctx,cEl_Selection,boolHasSelection){
-//    
-//    try{
-//        
-////        alphabetic font proportions, total of 1.5
-////        -0.3
-////        1
-////        1.05
-////        1.2
-//
-//        if(boolHasSelection){
-//            
-//            
-//            if(chrObj.pr){
-//                var boolIsNotMatched = true;
-//                var boolDrawSelection = false;
-//                // check if in char @ position
-//                if(boolIsNotMatched){
-//                    for (var i=0, len = cEl_Selection.charspos.length; i < len; i++){
-//                        if(cEl_Selection.charspos[i] === charpos){
-//                            boolIsNotMatched =true;
-//                            boolDrawSelection = true;
-//                            break;
-//                        }
-//                    }
-//                }
-////                // check if in word @ position
-////                if(boolIsNotMatched){
-////                    for (var i=0, len = cEl_Selection.wordspos.length; i < len; i++){
-////                        if(cEl_Selection.wordspos[i] === chrObj.pp + "_" + chrObj.sc){
-////                            boolIsNotMatched =true;
-////                            boolDrawSelection = true;
-////                            break;
-////                        }
-////                    }
-////                }
-////                // check if in word
-////                if(boolIsNotMatched){
-////                    for (var i=0, len = cEl_Selection.wordspos.length; i < len; i++){
-////                        if(cEl_Selection.wordspos[i] === chrObj.sc){
-////                            boolIsNotMatched =true;
-////                            boolDrawSelection = true;
-////                            break;
-////                        }
-////                    }
-////                }
-////                // check if in paragraph
-////                if(boolIsNotMatched){
-////                    for (var i=0, len = cEl_Selection.paragraphspos.length; i < len; i++){
-////                        if(cEl_Selection.paragraphspos[i] === chrObj.pp){
-////                            boolIsNotMatched =true;
-////                            boolDrawSelection = true;
-////                            break;
-////                        }
-////                    }
-////                }
-//                if(boolDrawSelection){
-//                    cEl_ctx.save();
-//                    draw_chr_selection(chrObj,cEl_Selection,cEl_ctx);
-//                }
-//                if(chrObj.r){
-//                    
-////                    cEl_ctx.translate(chrObj.xy[0],chrObj.xy[1]);
-////                    cEl_ctx.rotate(chrObj.r*2*Math.PI);
-////                    cEl_ctx.translate(-chrObj.xy[0],-chrObj.xy[1]);
-//                    
-//                }else{
-//                    cEl_ctx.fillText(chrObj.chr,chrObj.xy[0],chrObj.xy[1]);
-//                }
-//                if(boolDrawSelection)cEl_ctx.restore();
-//            }
-//        }else{
-//            if(chrObj.pr)cEl_ctx.fillText(chrObj.chr,chrObj.xy[0],chrObj.xy[1]);
-//        }
-//        
-//
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,true,0);
-//        return err;
-//    }
-//}
-//
-//function draw_chr_selection(chrObj,cEl_Selection,cEl_ctx){
-//    
-//    try{
-//        
-//        cEl_ctx.fillStyle = cEl_Selection.style["background-color"];
-//        cEl_ctx.fillRect(chrObj.xy[0],chrObj.xy[1]-chrObj.fs*0.8,chrObj.w,chrObj.fs);
-//        cEl_ctx.fillStyle = cEl_Selection.style.color;
-//        
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,true,0);
-//        return err;
-//    }    
-//}
 
 
 
@@ -1177,10 +1078,10 @@ function toRadians (angle) {
 
 
 
-function drawTextAlongPath(cEl,i,offset,cEl_pageText){
+function drawTextAlongPath(cEl,index,offset,cEl_pageText){
     
     try{
-        //var i = 0;
+        var i = index;
         //var j = 0;
         //var offset=0;
         var lines = cEl.data.values.temp.lines3;
@@ -1204,33 +1105,32 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
         }
 
 
-        var showCP = false;
+        var showCP = true;
         //if(showCP){
             //console.log("start " + i);
             //path.strokeColor = "rgba(111,111,111,0.3)";
             path.selected = true;
-            path.name = cEl.parentName + "_" + cEl.name + ".L";
+            
         //}
         var charsCount = lines.length;
         //charsCount = 10;
         //cdebug("start " +paper.project.activeLayer.children.length)();
-        if(cEl.data.indexes){
-            //cdebug(cEl.data.values.default)();
-            //cdebug(cEl.data.indexes)();
-            //cdebug(paper.project.activeLayer.children[cEl.data.indexes.start+1])();
-            //cdebug(paper.project.activeLayer.children[cEl.data.indexes.end-1])();
-            if(cEl.data.indexes.changed){
-                var removedChars = paper.project.activeLayer.removeChildren(cEl.data.indexes.start,cEl.data.indexes.end);
-                //cdebug(removedChars.length + " " + cEl.parentName + "_" + cEl.name + " val " + cEl.data.values.default)();
-            }
-            
-            
-        }
+//        if(cEl.data.indexes){
+//            cdebug(cEl.data.values.default)();
+//            //cdebug(cEl.data.indexes)();
+//            cdebug(paper.project.activeLayer.children[cEl.data.indexes.start])();
+//            cdebug(paper.project.activeLayer.children[cEl.data.indexes.end])();
+//            if(cEl.data.indexes.changed){
+//                //var removedChars = paper.project.activeLayer.removeChildren();
+//                //var removedChars = paper.project.activeLayer.removeChildren(cEl.data.indexes.start,cEl.data.indexes.end);
+//                //cdebug(removedChars.length + " " + cEl.parentName + "_" + cEl.name + " val " + cEl.data.values.default)();
+//            }
+//        }
 
         //cdebug("after remove " +paper.project.activeLayer.children.length)();
 
         var startIndex = paper.project.activeLayer.children.length;
-        var boolChanged = false;
+        var boolChanged = showCP;
         
 //        cdebug(path.curves)();
         
@@ -1239,7 +1139,7 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
             var curveLen = curve.length;
             
 
-            for(var charObj, charFont, charSymbolContainer; i < charsCount; i ++){
+            for(var charObj, charFont, charSymbolContainer; i < charsCount; i++){
                 charObj = lines[i];
                 charFont = cEl_pageText.charsFontsObj[charObj.f.id];
                 charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
@@ -1285,33 +1185,25 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
                             if(!location){
                                 offset = 0;
                                 break;
+                            }else{
+                                charObj.angle = 0;//toDegrees(Math.atan2(tan.y,tan.x));
+                                charObj.point = location.point; //new paper.Point(location.point.x - charObj.w/2,location.point.y - charObj.fs*0.2);
+                                
                             }
 
 
-                            charObj.angle = 0;//toDegrees(Math.atan2(tan.y,tan.x));
-                            charObj.point = location.point; //new paper.Point(location.point.x - charObj.w/2,location.point.y - charObj.fs*0.2);
+                            
                         }
 
                         //cdebug(charObj.point)();
-                        boolChanged = true;
+                        //boolChanged = true;
                         drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,charFont,charSymbolContainer);
 
                         //cEl.data.index = 
-
-                        if(showCP){
-                            var pathPoint1 = new paper.Path.Circle({
-                                center: location.point,
-                                radius: 1,
-                                fillColor: 'green',
-                                name:cEl.parentName + "_" + cEl.name + ".MP_" + i
-                            });
-                            var pathPoint2 = new paper.Path.Circle({
-                                center: charObj.point,
-                                radius: 1,
-                                fillColor: 'red',
-                                name:cEl.parentName + "_" + cEl.name + ".LR_" + i
-                            });
-                        }
+                        
+                        //cdebug(location.point.x)();
+                        
+                        
 
                     //    path.lastPos = i;
 
@@ -1323,13 +1215,14 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
                     //}
                 }
             }
-            if(showCP){
-                var pathPoint = new paper.Path.Circle({
-                    center: curve.point1,
-                    radius: 2,
-                    fillColor: 'black'
-                });
-            }
+//            if(showCP){
+//                var pathPoint3 = new paper.Path.Line({
+//                    from: [curve.point1.x - 5, curve.point1.y - 5],
+//                    to: [curve.point1.x + 5, curve.point1.y + 5],
+//                    strokeColor: 'black',
+//                    name:cEl.parentName + "_" + cEl.name + ".S_" + i
+//                });
+//            }
             //break;
         }
         cEl.data.indexes = {
@@ -1338,7 +1231,7 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
             "changed":boolChanged
         };
         //cdebug(cEl.data.indexes)();
-        //cdebug("after add " +paper.project.activeLayer.children.length)();
+//        cdebug("after add " +paper.project.activeLayer.children.length)();
         //cdebug(cEl.data.indexes)();
         //path.lastPos = startPos;
         if(showCP){
@@ -1354,9 +1247,12 @@ function drawTextAlongPath(cEl,i,offset,cEl_pageText){
 }
 
 
-function drawLines(){
+function upsertCP(cpPath,bool){
+    
+    
     
 }
+
 
 function drawChar(charObj,name,charFont,charSymbolContainer){
    
@@ -1367,10 +1263,33 @@ function drawChar(charObj,name,charFont,charSymbolContainer){
         //cdebug(charSymbol)();
 
         //var textItem = new paper.SymbolItem(charSymbol);
-
-        var textItem = charSymbol.place(charObj.point);
-        textItem.rotate = charObj.angle;
-        textItem.name = name;
+        
+        if(!charObj.path){
+            charObj.path = charSymbol.place(charObj.point);
+            charObj.path.name = name;
+        }else{
+            charObj.path.position = charObj.point;
+        }
+        
+        charObj.path.rotation = charObj.angle;
+        //charObj.path.selected = true;
+        
+//        if(showCP){            
+//            var pathPoint1 = new paper.Path.Line({
+//                from: charObj.point,
+//                to: [charObj.point.x + 5, charObj.point.y + 5],
+//                strokeColor: 'green',
+//                name:cEl.parentName + "_" + cEl.name + ".MP_" + i
+//            });
+//            var pathPoint2 = new paper.Path.Line({
+//                from: charObj.point,
+//                to: [charObj.point.x - 5, charObj.point.y - 5],
+//                strokeColor: 'red',
+//                name:cEl.parentName + "_" + cEl.name + ".LR_" + i
+//            });
+//        }
+        
+        
         //cdebug(paper.project.children.length)();
 
         //definition.fillColor = "red";
