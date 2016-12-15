@@ -69,6 +69,36 @@
 			// Use the arcTo command to draw cloudy lines
 			path2.arcTo(event.point);
 		};
+                
+                var text = new PointText(new Point(200, 50));
+                text.justification = 'center';
+                text.fillColor = 'black';
+                text.content = 'The contents of the point text';
+                
+                var cppath = new Group()
+
+                cppath.addChild(new Path.Circle({
+                            center: new Point(50, 50),
+                            radius: 30
+                        }));
+                cppath.addChild(new Path.Circle({
+                            center: new Point(50, 50),
+                            radius: 21
+                        }));
+                
+                cppath.addChild(new PointText({
+                            point: new Point(150, 50),
+                            content: "A"
+                        }));
+                
+
+                cppath.fillColor= 'green';
+                cppath.selected= true;
+                
+                text.content = cppath.children.length
+                
+                
+                
 	}
 </script>
 </head>

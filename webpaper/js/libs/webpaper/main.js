@@ -334,6 +334,7 @@ function detectIE() {
 //    return newConsole("");
 //});
 
+
 /**
  * Function cdebug
  * Description This function
@@ -349,14 +350,20 @@ var cdebug = function() {
     //0-msg, 1-clearMe, 2-boolConsole, 3-intConsoleNo
     try {
         var d = new Date();
-        var intConsoleNo = arguments[3] ? arguments[3] :1;
+        var intConsoleNo = arguments[3] ? arguments[3] :0;
         var dl = window["GLOBAL_delay" + intConsoleNo];
         var strDelay  =  Math.abs(d.getTime() - dl.getTime());
         strDelay = String("00000" + strDelay).slice(-5);
         var strNow =  [d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()];
         strNow =  String("00" + strNow[0]).slice(-2) + ":" + String("00" + strNow[1]).slice(-2) + ":" + String("00" + strNow[2]).slice(-2) + ":" + String("000" + strNow[3]).slice(-3);
 
-        var cEl_debug = window["editorPage_stats_log"+intConsoleNo];
+        var cEl_debug = window["logger"+intConsoleNo];
+        if(!cEl_debug){
+            cEl_debug = paper.projects[1].getItem({name:"log"+intConsoleNo});
+            window["logger"+intConsoleNo] = cEl_debug;
+            //console.log(JSON.stringify(cEl_debug));
+        }
+        
         var msg = arguments[0];
         if(kind(msg)==="Object" || kind(msg)==="Array"){
             msg = JSON.stringify(msg);
@@ -372,23 +379,18 @@ var cdebug = function() {
             if(strMsgOld && (strMsgOld.length>GLOBAL_debugger_maxlen))clearMe = true;
 
             if (clearMe){
-                if(clearMe)console.API.clear();
+                //if(clearMe)console.API.clear();
                 strMsg = strNow + "(" + strDelay + "): " + msg + "\\n" + strNow + "(" + strDelay + ")";
             }else{
                 //make append text function
                 strMsg =  strNow + "(" + strDelay + "): " + msg + "\\n" + strMsgOld;
             }
-
-            if(cEl_debug.data.values.temp){
-                //set_cEl_text(cEl_debug, strMsg);
-                cEl_debug.data.values.temp.valueOld = null;
-                cEl_debug.data.values.text = strMsg;
-                //cEl_debug.shape.redraw = true;
-                cEl_debug.style.redraw = true;
-                window[cEl_debug.parentName].shape.redraw = true;
-                drawChildren(cEl_debug);
-
-            }
+            
+            
+            set_cEl_text(cEl_debug,strMsg);
+            
+            //draw_cEl_text(cEl_debug,strMsg);
+            
         }else{
             if(GLOBAL_debugger){
                 boolConsole = true;
@@ -1151,6 +1153,8 @@ function draw_cEl_project(cEl){
         //setGetProject(cEl,cEl.name);
         projectSwitch(cEl.name);
         
+        
+        
         //paper.project.activeLayer.removeChildren();
         //paper.project.activeLayer.removeChildren();
 
@@ -1256,6 +1260,10 @@ function draw_cEl_project(cEl){
         //cdebug(cEl.shape.left)();
         
         var cEl_canv = cEl.view.element;
+        
+        //cEl_canv.width = cEl.shape.w;
+        //cEl_canv.height = cEl.shape.h;
+        
         if(cEl.style.calc["box-shadow"])cEl_canv.style.boxShadow = cEl.style.calc["box-shadow"];
 //        //console.log(JSON.stringify(cEl.style.calc));
         cEl_canv.style.border = "solid " + cEl.style.calc["border-top-width"] + " " + cEl.style.calc["border-top-color"] ;
@@ -1561,7 +1569,7 @@ function cEl_postsets(cEl,boolDrawCp){
     try{
         switch(cEl.data.type){
             case "text":
-                draw_cEl_text(cEl,boolDrawCp);
+                draw_cEl_text(cEl);
                 return true;
             break;
             default:
@@ -2526,6 +2534,7 @@ function executeFunctionByName2(fname , args){
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
+        cdebug(fname,false,false,3)();
         return err;
     }
 }

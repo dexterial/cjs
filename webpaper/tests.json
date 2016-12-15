@@ -17,9 +17,17 @@
     },
     "clipboard":{},
     "text":{
-        "chars":"0123456789 -",
-        "words":["0","1","2","3","4","5","6","7","8","9"," ","-","00","000","0000"],
-        "charsSelection":{"name":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
+        "chars":"",
+        "words":[],
+        "charsSelection":{
+            "name":null,
+            "cr":{"pos":0,"vis":false,"left":true},
+            "style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},
+            "charspos":[],
+            "chars":[],
+            "wordspos":[],
+            "paragraphspos":[]
+        },
         "charsWidths":{},
         "charsFontsMd5":{},
         "charsFontsObj":[]
@@ -125,7 +133,14 @@
                         "name":"test2",
                         "scale":[1,1],
                         "type":"path"
-                    }
+                    },
+                    "customStyle":[
+                        {"style":{"font-size":"5em","color":"green"},"chars":["O","o"]},
+                        {"style":{"color":"red"},"charspos":[0,1,2,3]},
+                        {"style":{"color":"blue"},"wordspos":["0_4",0,1]},
+                        {"style":{"font-size":"1em","color":"red"},"wordspos":[5]},
+                        {"style":{"color":"grey"},"paragraphspos":[0]}
+                    ]
                 }
             }
         },

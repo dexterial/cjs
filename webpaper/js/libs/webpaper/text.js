@@ -16,7 +16,7 @@
 
 
 
-function draw_cEl_text(cEl,boolDrawCp){
+function draw_cEl_text(cEl,strNewText){
     
     try{ 
 
@@ -27,25 +27,19 @@ function draw_cEl_text(cEl,boolDrawCp){
         }
         
         var cEl_pageText = paper.data.text;
-
-        if(cEl.style.redraw || boolNotSet){
-            // set the css attributes for text box
-            set_cEl_text_css(cEl,cEl_pageText,true);
-
-
-            if(set_cEl_text(cEl)){
-                //cEl.data.values.temp.lines2 = {"0":{}};
-                cEl_set_wordMap3(cEl);
-                
-            }
+        
+        if(cEl.style.redraw || boolNotSet)set_cEl_text_css(cEl,cEl_pageText,true);
+        
+        set_cEl_text(cEl,strNewText);
+            
+        if(cEl.data.values.temp.reset){
+            //cEl.data.values.temp.lines2 = {"0":{}};
+            cEl_set_wordMap3(cEl);
             cEl_set_chr_metrics(cEl,cEl_pageText);
+            draw_cEl_lines3(cEl,cEl_pageText);
+            cEl.data.values.temp.reset = false;
         }
-        // draw the text
-        //cdebug(cEl.data.values.temp.lines3)();
         
-        draw_cEl_lines3(cEl,cEl_pageText);
-        
-        //cdebug(paper.project.activeLayer.children.length)();
 
     } catch (e) {
         var err = listError(e);
@@ -61,7 +55,7 @@ function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
         //console.log("before " + cEl.style.calc.color);
         //console.log("apply  " + addStyle.color);
         if(addStyle){
-            cEl.style.calc2 = $.extend(false,cEl.style.calc,addStyle);
+            cEl.style.calc2 = $.extend(true,cEl.style.calc,addStyle);
         }else{
             cEl.style.calc2 = cEl.style.calc;
         }
@@ -86,9 +80,8 @@ function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
         
         
         //var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
-        var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
-
-        return setGetFontObj(cEl_pageText,fontText,styleObj,boolReturnId);
+        
+        return setGetFontObj(cEl_pageText,styleObj,boolReturnId);
         
         //return styleObj;
         
@@ -112,43 +105,47 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
         if(cEl.data.values.customStyle){
             // todo pre-compute style map,
             //[{"style":{"font-size":"1em"},"chars":["0","1","3","4"]}];
+            
+            
             for(var i = 0, maxLen = cEl.data.values.customStyle.length, customStyle;i < maxLen;i++){
                 customStyle = cEl.data.values.customStyle[i];
-                customStyle.f = $.extend(true,customStyle.f,set_cEl_font_css(cEl,cEl_pageText,customStyle.style,boolReturnId));
+                var font = set_cEl_font_css(cEl,cEl_pageText,customStyle.style,boolReturnId);
                 //if(customStyle.style.color)console.log("after  " + cEl.style.calc.color);
                 if(customStyle.paragraphspos){
                     if(!cEl.data.values.temp.styleMap.paragraphspos)cEl.data.values.temp.styleMap.paragraphspos = {};
                     for(var j = 0,maxLen2 = customStyle.paragraphspos.length;j < maxLen2;j++){
-                        //console.log(customStyle.paragraphs[j]);
-                        cEl.data.values.temp.styleMap.paragraphspos[customStyle.paragraphspos[j]] = customStyle.f;
+                        //console.log(customStyle.paragraphspos);
+                        cEl.data.values.temp.styleMap.paragraphspos[customStyle.paragraphspos[j]] = font;
                         
                     }
-                }
+                }else
                 if(customStyle.wordspos){
                     if(!cEl.data.values.temp.styleMap.wordspos)cEl.data.values.temp.styleMap.wordspos = {};
                     for(var j = 0,maxLen2 = customStyle.wordspos.length;j < maxLen2;j++){
                         //console.log(customStyle.wordspos[j]);
-                        cEl.data.values.temp.styleMap.wordspos[customStyle.wordspos[j]] = customStyle.f;
+                        cEl.data.values.temp.styleMap.wordspos[customStyle.wordspos[j]] = font;
                         
                     }
-                }
+                }else
                 if(customStyle.charspos){
                     if(!cEl.data.values.temp.styleMap.charspos)cEl.data.values.temp.styleMap.charspos = {};
                     for(var j = 0,maxLen2 = customStyle.charspos.length;j < maxLen2;j++){
-                        cEl.data.values.temp.styleMap.charspos[customStyle.charspos[j]] = customStyle.f;
+                        cEl.data.values.temp.styleMap.charspos[customStyle.charspos[j]] = font;
                     }
-                }
+                }else
                 if(customStyle.chars){
                     if(!cEl.data.values.temp.styleMap.chars)cEl.data.values.temp.styleMap.chars = {};
                     for(var j = 0,maxLen2 = customStyle.chars.length;j < maxLen2;j++){
                         //console.log(customStyle.strings[j]);
-                        cEl.data.values.temp.styleMap.chars[customStyle.chars[j]] = customStyle.f;
+                        cEl.data.values.temp.styleMap.chars[customStyle.chars[j]] = font;
                         
                     }
                 }
             }
             //{"chars":{"0":{"font-size":"1em"},"1":{"font-size":"1em"},"3":{"font-size":"1em"},"4":{"font-size":"1em"}},"lines":{},"default":{"id":2,"val":"italic 12px sans-serif"}}
         }
+        
+        cdebug(cEl.data.values.temp.styleMap)();
         
       
         cEl.data.values.temp.style.textAlign = cEl.style.calc["text-align"] ? cEl.style.calc["text-align"] : "justify"; 
@@ -203,39 +200,38 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
 function set_cEl_text(cEl,strNewText){
     
     try{
+        //console.log(strNewText + " vs " + cEl.data.values.temp.valueOld);
 
-//        switch(cEl.data.values.pattern){
-//            case "box-fill":
                 if(!cEl.data.values.text)cEl.data.values.text= cEl.data.values.default;
-                
-                
-                
                 var strValAct = cEl.data.values.text;
+                
                 // if not set then set the old value to same value and continue to calc
                 if(cEl.data.values.temp && !cEl.data.values.temp.valueOld){
-                    
                     cEl.data.values.temp.valueOld = strValAct;
-//                    cEl.data.values.temp.len = strValAct.length || -1;
+                    cEl.data.values.temp.reset = true;
                     return true;
-                }else  if(cEl.data.values.temp){
-                    // if is set then
+                }else if(cEl.data.values.temp){
+                    //console.log(strNewText + " vs " + cEl.data.values.temp.valueOld);
+                    // if is set then reset only if is different from old value
                     if(typeof strNewText !== "undefined"){
                         // if is same value go to end since it was precalculated
-                        if(!strNewText === strValAct){
+                        if(strNewText !== strValAct){
+                            
+                           //console.log(strNewText + " vs " + cEl.data.values.temp.valueOld);
                             // if new value in town then replace value and continue to calc
                             cEl.data.values.text = strNewText;
                             cEl.data.values.temp.valueOld = strValAct;
-//                            if(strNewText){
-//                                cEl.data.values.temp.len = strNewText.length ;
-//                            }else{
-//                                cEl.data.values.temp.len = -1;    
-//                            }
+                            cEl.data.values.temp.reset = true;
+                            //cEl.style.redraw = true;
+                            //cEl.shape.redraw = true;
+                            
                             return true;
                         }
+                    }else{
+                        
                     }
                 }
-//            break;    
-//        }
+
         return false;
 
     } catch (e) {
@@ -256,7 +252,10 @@ function cEl_set_wordMap3(cEl){
         var text = cEl.data.values.text;
         var lines = cEl.data.values.temp.lines3;
         var styleMap = cEl.data.values.temp.styleMap;
-        var charObj = {"chr":"n","f":null,"wp":true,"pp":true,"nl":true,"sc":false,"print":false};
+        
+//        cdebug(styleMap)();
+        
+        var charObj = {"chr":"n","f":null,"wp":0,"pp":0,"nl":true,"sc":false,"print":false};
         pushChar(charObj,lines,styleMap,false);
         
         /// change here to detect words and create text Map of words by unique chars indexes
@@ -296,9 +295,9 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
                     charObj.pos++ ;
                     
                     charObj.sc = false;
-                    charObj.pp = true;
+                    charObj.pp++;
                     charObj.nl = true;
-                    charObj.wp = true;
+                    charObj.wp = 0;
                     
                     charObj.chr = charNext;
                     pushChar(charObj,lines,styleMap,false);
@@ -316,36 +315,36 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
         }else if(charObj.chr === " "){
             charObj.print = true;
             charObj.sc = true;
-            charObj.pp = false;
+            //charObj.pp = false;
             charObj.nl = true;
             
             pushChar(charObj,lines,styleMap,true);
             charObj.sc = false;
-            charObj.wp = true;
+            charObj.wp++;
         // word character
         }else if(/[a-zA-Z_0-9]/.test(charObj.chr)){
         
             charObj.print = true;
-            charObj.pp = false;
+            //charObj.pp = false;
             
             pushChar(charObj,lines,styleMap,true);
             
-            charObj.wp = false;
+            //charObj.wp = false;
             charObj.sc = false;
             charObj.nl = false;
 
         // break for all other characters
         }else{
             charObj.print = true;
-            charObj.wp = true;
-            charObj.pp = false;
+            //charObj.wp++;
+            //charObj.pp = false;
             
             pushChar(charObj,lines,styleMap,true);
             
             charObj.sc = false;
             
             charObj.nl = false;
-            
+            charObj.wp++;
         }
         
         
@@ -365,6 +364,8 @@ function pushChar(charObj,lines,styleMap,boolSetStyle){
         }
         lines.push({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.print});
         
+        //cdebug({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.print})();
+        
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -377,6 +378,8 @@ function set_charObj_style(styleMap,charObj){
     try{
         
         var charFont = styleMap.charspos != null && styleMap.charspos[charObj.pos] ? styleMap.charspos[charObj.pos]:null;
+        
+        
         
 //        if(charFont){
 //            // set custom chars styles
@@ -398,6 +401,8 @@ function set_charObj_style(styleMap,charObj){
 //            charObj.f = styleMap.default;
 //        }
         
+        //cdebug(charObj.pp + "_" + charObj.wp)();
+        
         switch(true){
             // set custom chars Selection styles
             case (charFont):
@@ -407,18 +412,20 @@ function set_charObj_style(styleMap,charObj){
             case (styleMap.chars != null && styleMap.chars[charObj.chr] != null):
                 charObj.f = styleMap.chars[charObj.chr];
             break;
-//            // set custom wordspos styles on specific paragraph "wordId_paragraphId"
-//            case (styleMap.wordspos != null && styleMap.wordspos[charObj.sc + "_" + charObj.pp] != null):
-//                charObj.f = styleMap.wordspos[charObj.sc + "_" + charObj.pp];
-//            break;
-//            // set custom wordspos styles
-//            case (styleMap.wordspos != null && styleMap.wordspos[charObj.wp] != null):
-//                charObj.f = styleMap.wordspos[charObj.sc];
-//            break;
-//            // set custom chars for specific paragraph
-//            case (styleMap.paragraphspos != null && styleMap.paragraphspos[charObj.pp] != null):
-//                charObj.f = styleMap.paragraphspos[charObj.pp];
-//            break;
+            // set custom wordspos styles on specific paragraph "wordId_paragraphId"
+            case (styleMap.wordspos != null && styleMap.wordspos[charObj.pp + "_" + charObj.wp] != null):
+                
+                //cdebug(styleMap.wordspos[charObj.pp + "_" + charObj.wp])();
+                charObj.f = styleMap.wordspos[charObj.pp + "_" + charObj.wp];
+            break;
+            // set custom wordspos styles
+            case (styleMap.wordspos != null && styleMap.wordspos[charObj.wp] != null):
+                charObj.f = styleMap.wordspos[charObj.wp];
+            break;
+            // set custom chars for specific paragraph
+            case (styleMap.paragraphspos != null && styleMap.paragraphspos[charObj.pp] != null):
+                charObj.f = styleMap.paragraphspos[charObj.pp];
+            break;
             // set default chars styles
             default:
                 charObj.f = styleMap.default;
@@ -443,9 +450,9 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
 
         for(var i = 0, chrObj, charStyle,charWidth; i< len;i++){
             chrObj = lines[i];
-            
+            //cdebug(chrObj.f.id)();
             charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
-            //cdebug(cEl_pageText.charsFontsObj)();
+            
             
             //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
             
@@ -642,10 +649,13 @@ function cEl_set_chr_metrics(cEl,cEl_pageText){
 //}
 
 
-function setGetFontObj(cEl_pageText,fontText,fontObj,boolReturnId){
+function setGetFontObj(cEl_pageText,styleObj,boolReturnId){
     
     try{
+        
+        var fontText =  styleObj.fontSize + styleObj.fontStyle + styleObj.fontWeight + styleObj.fontFamily + styleObj.color;
         var md5Font =  md5(fontText);
+        
         var fontObjRet = cEl_pageText.charsFontsMd5[md5Font];
         var fontObjId = -1;
         if(!fontObjRet){
@@ -660,11 +670,11 @@ function setGetFontObj(cEl_pageText,fontText,fontObj,boolReturnId){
 //            fontObj.fontSize = parseInt(cEl_ctx.font.match(/\d+px/));
             
             fontObjId = cEl_pageText.charsFontsObj.length;//Object.keys(cEl_pageText.charsFontsMd5).length;
-            cEl_pageText.charsFontsObj.push(fontObj);
+            cEl_pageText.charsFontsObj.push(styleObj);
             fontObjRet = {"id":fontObjId}; //,"val":md5Font
             cEl_pageText.charsFontsMd5[md5Font] = fontObjRet;
             if(boolReturnId)return fontObjRet;
-            return fontObj;
+            return styleObj;
         }else{
             if(boolReturnId)return fontObjRet ;//cEl_pageText.charsFonts[md5Font];
             return cEl_pageText.charsFontsObj[fontObjRet.name];
@@ -800,33 +810,28 @@ function set_text_path(cEl){
 
         switch(cEl.data.values.pattern){
             case "box-fill":
-                
+                setTextPathObj(cEl);
+                setTextContainer(cEl);
                 //cdebug(cEl.data.values.vertical,false,false,0);
                 if(cEl.data.values.vertical){
-                    if(cEl.data.values.temp.path){
-                        cEl.data.values.temp.path.removeSegments();
-                    }else{
-                        //cdebug("new")();
-                        cEl.data.values.temp.path = new paper.Path;
-                    }
+
                     cEl.data.values.temp.path.add([cEl.bounds.x + cEl.bounds.width/2, cEl.bounds.y ],
                         [cEl.bounds.x + cEl.bounds.width/2, cEl.bounds.y  + cEl.bounds.height]);
+                        
                 }else{
-                    if(cEl.data.values.temp.path){
-                        cEl.data.values.temp.path.removeSegments();
-                    }else{
-                        cEl.data.values.temp.path = new paper.Path;
-                        //cdebug("new")();
-                    }
-                    
+
                     cEl.data.values.temp.path.add([cEl.bounds.x, cEl.bounds.y + cEl.bounds.height/2],
                         [cEl.bounds.x + cEl.bounds.width,cEl.bounds.y  + cEl.bounds.height/2]);
+                        
                 }
-                cEl.data.values.temp.path.name = cEl.parentName + "_" + cEl.name + ".L";
+                
+                
+
             break;
             case "path":
                 
                 cEl.data.values.temp.path = cEl;
+                setTextContainer(cEl);
                 
             break;    
         }
@@ -839,8 +844,39 @@ function set_text_path(cEl){
     }
 }
 
+function setTextContainer(cEl){
+    try{
+        
+        if(cEl.data.values.temp.textContainer){
+            cEl.data.values.temp.textContainer.removeChildren();
+        }else{
+            cEl.data.values.temp.textContainer = new paper.Group;
+            cEl.data.values.temp.textContainer.name = cEl.parentName + "_" + cEl.name + ".T";
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,true,0);
+        return err;
+    }
+}
 
-
+function setTextPathObj(cEl){
+    try{
+        
+        if(cEl.data.values.temp.path){
+            cEl.data.values.temp.path.removeSegments();
+        }else{
+            cEl.data.values.temp.path = new paper.Path;
+            cEl.data.values.temp.path.name = cEl.parentName + "_" + cEl.name + ".L";
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,true,0);
+        return err;
+    }
+}
 
 
 function getCharPos(lines,xy){
@@ -1085,7 +1121,11 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
         //var j = 0;
         //var offset=0;
         var lines = cEl.data.values.temp.lines3;
+        
+        //cdebug(lines,false,false,0)();
+        
         var path = cEl.data.values.temp.path;
+        var textContainer = cEl.data.values.temp.textContainer;
 
         // TODO do something about this part
         switch(cEl.data.values.temp.style.textAlign){
@@ -1109,7 +1149,7 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
         //if(showCP){
             //console.log("start " + i);
             //path.strokeColor = "rgba(111,111,111,0.3)";
-            path.selected = true;
+//            path.selected = true;
             
         //}
         var charsCount = lines.length;
@@ -1132,7 +1172,7 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
         var startIndex = paper.project.activeLayer.children.length;
         var boolChanged = showCP;
         
-//        cdebug(path.curves)();
+        //cdebug(textContainer)();
         
         for(var j=0;j<path.curves.length;j++){
             var curve = path.curves[j];
@@ -1197,7 +1237,7 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
 
                         //cdebug(charObj.point)();
                         //boolChanged = true;
-                        drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,charFont,charSymbolContainer);
+                        drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,textContainer,charSymbolContainer);
 
                         //cEl.data.index = 
                         
@@ -1231,8 +1271,10 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
             "changed":boolChanged
         };
         //cdebug(cEl.data.indexes)();
-//        cdebug("after add " +paper.project.activeLayer.children.length)();
+        //cdebug(cEl.name + " after add " +paper.project.activeLayer.children.length,false,0)();
         //cdebug(cEl.data.indexes)();
+        //cdebug(textContainer.children.length,false,false,1)();
+        //cdebug(textContainer.children.length)();
         //path.lastPos = startPos;
         if(showCP){
             //console.log("end " + i);
@@ -1254,24 +1296,43 @@ function upsertCP(cpPath,bool){
 }
 
 
-function drawChar(charObj,name,charFont,charSymbolContainer){
+function drawChar(charObj,name,textContainer,charSymbolContainer){
    
     try{
         //cdebug(charFont)();
         var charSymbol = charSymbolContainer.symbol;
-
-        //cdebug(charSymbol)();
-
-        //var textItem = new paper.SymbolItem(charSymbol);
+//
+////        //cdebug(charSymbol)();
+////
+//        var textItem = new paper.SymbolItem(charSymbol,{insert: false});
+//        
+        var textItem = textContainer.addChild(new paper.SymbolItem(charSymbol));
+        textItem.position = charObj.point;
+        textItem.rotation = charObj.angle;
+        //textContainer.lastChildren();
+//        
+//        textContainer.addChild(new PointText({
+//            content: charObj.chr,
+//            point: charObj.point
+//        }));
         
-        if(!charObj.path){
-            charObj.path = charSymbol.place(charObj.point);
-            charObj.path.name = name;
-        }else{
-            charObj.path.position = charObj.point;
-        }
         
-        charObj.path.rotation = charObj.angle;
+        //cdebug(textContainer.children.length)();
+        
+//        textContainer.addChild(new paper.SymbolItem(charSymbol));
+        
+        //if(charObj.path)charObj.path.remove();
+        
+//        if(!charObj.path){
+//            charObj.path = charSymbol.place(charObj.point);
+//            charObj.path.name = name;
+//        }else{
+//            //charObj.path = charSymbol;
+//            charObj.path.position = charObj.point;
+//            charObj.path.content= charObj.chr;
+//        }
+        
+//        charObj.path.rotation = charObj.angle;
         //charObj.path.selected = true;
         
 //        if(showCP){            
@@ -1310,13 +1371,6 @@ function drawChar(charObj,name,charFont,charSymbolContainer){
 //        var textItem = new paper.PointText({
 //            content: charObj.chr,
 //            point: charObj.point
-////            fillColor: charFont.color,
-////            rotation: charObj.angle,
-////            fontSize:charObj.fs,
-////            fontStyle:charFont.fontStyle,
-////            fontWeight: charFont.fontWeight,
-////            name:name,
-////            selected:false
 //        });
 
 

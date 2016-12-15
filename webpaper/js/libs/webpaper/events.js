@@ -270,7 +270,7 @@ function handleMouse(evt) {
                 //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
                 //cdebug(eventholder.hover)();
                 
-                //drawProjects(paper);
+                drawProjects(paper,true);
                 //paper.view.draw();
                 //renderer(eventholder.canvReset);
                 
@@ -389,13 +389,18 @@ function handleTouch(evt) {
 function handleTextSelection(eventholder){
     
     try{
-        if(!eventholder.active.name)return false;
-        var cEl = window[eventholder.active.name];
+
+        if(!eventholder.active.oldObj)return false;
+        
+        var cEl = eventholder.active.oldObj;
         if(cEl.data.type !== "text")return false;
+        
+        //cdebug(cEl.name,false,false,0)();
+        
         var btnPressed = eventholder.keys.which ? eventholder.keys.which : eventholder.keys.button;
         var clickCount = eventholder.keys.detail;
         
-        //cdebug(eventholder,true);
+        
         switch(eventholder.type){
             case "mousedown":
             case "touchstart":
@@ -1008,10 +1013,10 @@ function setContextMenu(cEl_canv){
 function resetTextSelection(cEl){
     
     try{
-        
+       
         setCarret(false);
-        if(window[cEl.pageId]){
-            var cEl_Selection = window[cEl.pageId].text.charsSelection;
+        if(paper){
+            var cEl_Selection = paper.data.text.charsSelection;
             cEl_Selection.charspos = [];
             cEl_Selection.chars = [];
             cEl_Selection.wordspos = [];
@@ -1030,8 +1035,8 @@ function selection_actions(cEl, xy, actionNo, boolReset){
         
         var lines = cEl.data.values.temp.lines3;
         var len = lines.length;
-        var cEl_Selection = window[cEl.pageId].text.charsSelection;
-        var cEl_layer = window[cEl.pageId + "_" + cEl.layerId];
+        var cEl_Selection = paper.data.text.charsSelection;
+        var cEl_layer = paper.project;
         
         cEl_Selection.name = cEl.parentName  + "_" + cEl.name;
         
@@ -1167,7 +1172,10 @@ function selection_actions(cEl, xy, actionNo, boolReset){
 
         }    
         //cEl.style.redraw = true;
-        cEl_layer.shape.redraw = true;
+        //cEl_layer.shape.redraw = true;
+        
+        //cdebug(cEl_Selection.charspos)();
+        
         return true;
         
     } catch (e) {
@@ -1179,7 +1187,8 @@ function selection_actions(cEl, xy, actionNo, boolReset){
 
 function testEvents(cEl,eventName){
     
-    cdebug("testEvents: <" + eventName + "> on <" + cEl.parentName + "_" + cEl.name + ">",true);
+    cdebug("testEvents: <" + eventName + "> on <" + cEl.parentName + "_" + cEl.name + ">",false,false,1)();
+    //cdebug("testEvents: <" + eventName + "> on <" + cEl.parentName + "_" + cEl.name + ">",true,true,0)();
     
 //cdebug(window["eventholder"]);
 //    cdebug(cEl.hover);
