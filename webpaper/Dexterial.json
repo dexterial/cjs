@@ -69,17 +69,17 @@
         "t-10":{"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.3]}},
         "t-11":{"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.7]}},
         
-        "tl-1":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.15,0.3]}, "data":{"values":{"vertical":true}}},
-        "tl-2":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.15,0.7]}, "data":{"values":{"vertical":true}}},
+        "tl-1":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.15,0.3]}, "data":{"reset":true,"values":{"vertical":true}}},
+        "tl-2":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.15,0.7]}, "data":{"reset":true,"values":{"vertical":true}}},
         
-        "tl-3":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.45,0.15]}, "data":{"values":{"vertical":false}}},
-        "tl-4":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.45,0.85]}, "data":{"values":{"vertical":false}}},
+        "tl-3":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.45,0.15]}, "data":{"reset":true,"values":{"vertical":false}}},
+        "tl-4":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.45,0.85]}, "data":{"reset":true,"values":{"vertical":false}}},
         
-        "tl-5":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.55,0.15]}, "data":{"values":{"vertical":false}}},
-        "tl-6":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.55,0.85]}, "data":{"values":{"vertical":false}}},
+        "tl-5":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.55,0.15]}, "data":{"reset":true,"values":{"vertical":false}}},
+        "tl-6":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.69,0.09],"masspoint":[0.55,0.85]}, "data":{"reset":true,"values":{"vertical":false}}},
         
-        "tl-7":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.3]}, "data":{"values":{"vertical":true}}},
-        "tl-8":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.7]}, "data":{"values":{"vertical":true}}}
+        "tl-7":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.3]}, "data":{"reset":true,"values":{"vertical":true}}},
+        "tl-8":{"data":{"values":{"temp":null}},"shape":{"redraw":true,"scale":[0.09,0.39],"masspoint":[0.85,0.7]}, "data":{"reset":true,"values":{"vertical":true}}}
     },
     "shapes":{
         "rectangle-tl":[[0,0],[1,0],[1,1],[0,1]],

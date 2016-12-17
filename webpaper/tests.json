@@ -125,7 +125,7 @@
                     "default_":"ABCDEFG",
                     "default__":"A B c D E F G H I J K L m n o p q r s t u v w x y z 1234567890 A B c D E F G H I J K L m n o p q r s t u v w x y z",
                     "default":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
-                    "editable":false,
+                    "editable":true,
                     "vertical":false,
                     "pattern":"path",
                     "shape":{
@@ -139,7 +139,7 @@
                         {"style":{"color":"red"},"charspos":[0,1,2,3]},
                         {"style":{"color":"blue"},"wordspos":["0_4",0,1]},
                         {"style":{"font-size":"1em","color":"red"},"wordspos":[5]},
-                        {"style":{"color":"grey"},"paragraphspos":[0]}
+                        {"style":{"color":"grey","font-size":"1.2em"},"paragraphspos":[0]}
                     ]
                 }
             }

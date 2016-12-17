@@ -1545,14 +1545,19 @@ function cEl_presets(cEl,cEl_page){
         // reset states
         if(cEl.states){
             var stateNames = getKeys(cEl.states);
-            //cdebug(stateNames)(); 
-            for(var i=0,cEl_stateId,cEl_state;i< stateNames.length; i++){
+
+            for(var i=0,cEl_stateId,cEl_state,cEl_actState;i< stateNames.length; i++){
 
                 if(cEl.states[stateNames[i]] && cEl_page.state[stateNames[i]]){
-
-                    cEl_stateId = cEl.states[stateNames[i]][cEl_page.state[stateNames[i]][0]];
+                    
+                    cEl_actState = cEl_page.state[stateNames[i]][0];
+                    cEl_stateId = cEl.states[stateNames[i]][cEl_actState];
                     cEl_state = cEl_page.states[cEl_stateId];
-                    cEl = $.extend(true,cEl,cEl_state);
+                    
+                    if(!cEl.states[stateNames[i]]["_prev"] || (cEl.states[stateNames[i]]["_prev"]!==cEl_stateId)){
+                        cEl = $.extend(true,cEl,cEl_state);
+                        cEl.states[stateNames[i]]["_prev"] = cEl_stateId;
+                    }
                 }
             }
         }

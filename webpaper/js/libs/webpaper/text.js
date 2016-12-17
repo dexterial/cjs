@@ -28,16 +28,19 @@ function draw_cEl_text(cEl,strNewText){
         
         var cEl_pageText = paper.data.text;
         
-        if(cEl.style.redraw || boolNotSet)set_cEl_text_css(cEl,cEl_pageText,true);
+        if(cEl.style.redraw || boolNotSet){
+            set_cEl_text_css_styleMap(cEl,cEl_pageText,true);
+            set_cEl_text_css(cEl);
+        }
         
         set_cEl_text(cEl,strNewText);
             
-        if(cEl.data.values.temp.reset){
-            //cEl.data.values.temp.lines2 = {"0":{}};
+        if(cEl.data.reset){
+            
             cEl_set_wordMap3(cEl);
             cEl_set_chr_metrics(cEl,cEl_pageText);
             draw_cEl_lines3(cEl,cEl_pageText);
-            cEl.data.values.temp.reset = false;
+            cEl.data.reset = false;
         }
         
 
@@ -55,7 +58,7 @@ function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
         //console.log("before " + cEl.style.calc.color);
         //console.log("apply  " + addStyle.color);
         if(addStyle){
-            cEl.style.calc2 = $.extend(true,cEl.style.calc,addStyle);
+            cEl.style.calc2 = $.extend(false,cEl.style.calc,addStyle);
         }else{
             cEl.style.calc2 = cEl.style.calc;
         }
@@ -92,20 +95,17 @@ function set_cEl_font_css(cEl,cEl_pageText,addStyle,boolReturnId){
     }
 }
 
-function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
-    
+
+function set_cEl_text_css_styleMap(cEl,cEl_pageText,boolReturnId){
     try{
-        //cdebug(cEl)();
+        
         if(!cEl.data.values.temp.style)cEl.data.values.temp.style = {};
         if(!cEl.data.values.temp.styleMap)cEl.data.values.temp.styleMap = {"default":null};
-        
-        cEl.data.values.temp.styleMap.default = $.extend(true,cEl.data.values.temp.styleMap.default,set_cEl_font_css(cEl,cEl_pageText,null,boolReturnId));
-        //cEl.data.values.temp.styleMap.default = set_cEl_font_css(cEl,cEl_pageText,null,boolReturnId);
+        cEl.data.values.temp.styleMap.default = $.extend(false,cEl.data.values.temp.styleMap.default,set_cEl_font_css(cEl,cEl_pageText,null,boolReturnId));
         
         if(cEl.data.values.customStyle){
             // todo pre-compute style map,
             //[{"style":{"font-size":"1em"},"chars":["0","1","3","4"]}];
-            
             
             for(var i = 0, maxLen = cEl.data.values.customStyle.length, customStyle;i < maxLen;i++){
                 customStyle = cEl.data.values.customStyle[i];
@@ -114,11 +114,9 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
                 if(customStyle.paragraphspos){
                     if(!cEl.data.values.temp.styleMap.paragraphspos)cEl.data.values.temp.styleMap.paragraphspos = {};
                     for(var j = 0,maxLen2 = customStyle.paragraphspos.length;j < maxLen2;j++){
-                        //console.log(customStyle.paragraphspos);
                         cEl.data.values.temp.styleMap.paragraphspos[customStyle.paragraphspos[j]] = font;
-                        
                     }
-                }else
+                }
                 if(customStyle.wordspos){
                     if(!cEl.data.values.temp.styleMap.wordspos)cEl.data.values.temp.styleMap.wordspos = {};
                     for(var j = 0,maxLen2 = customStyle.wordspos.length;j < maxLen2;j++){
@@ -126,13 +124,13 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
                         cEl.data.values.temp.styleMap.wordspos[customStyle.wordspos[j]] = font;
                         
                     }
-                }else
+                }
                 if(customStyle.charspos){
                     if(!cEl.data.values.temp.styleMap.charspos)cEl.data.values.temp.styleMap.charspos = {};
                     for(var j = 0,maxLen2 = customStyle.charspos.length;j < maxLen2;j++){
                         cEl.data.values.temp.styleMap.charspos[customStyle.charspos[j]] = font;
                     }
-                }else
+                }
                 if(customStyle.chars){
                     if(!cEl.data.values.temp.styleMap.chars)cEl.data.values.temp.styleMap.chars = {};
                     for(var j = 0,maxLen2 = customStyle.chars.length;j < maxLen2;j++){
@@ -145,13 +143,24 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
             //{"chars":{"0":{"font-size":"1em"},"1":{"font-size":"1em"},"3":{"font-size":"1em"},"4":{"font-size":"1em"}},"lines":{},"default":{"id":2,"val":"italic 12px sans-serif"}}
         }
         
-        cdebug(cEl.data.values.temp.styleMap)();
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+function set_cEl_text_css(cEl){
+    
+    try{
+        //cdebug(cEl)();
+
         
-      
+        //cdebug(cEl.data.values.temp.styleMap)();
+        
         cEl.data.values.temp.style.textAlign = cEl.style.calc["text-align"] ? cEl.style.calc["text-align"] : "justify"; 
         cEl.data.values.temp.style.textIndent = cEl.style.calc["text-indent"] ? size2px(cEl.style.calc["text-indent"]) : 0;
         cEl.data.values.temp.style.textShadow = cEl.style.calc["text-shadow"] ? getShadowObj(cEl.style.calc["text-shadow"]) : null;
-        
         
         cEl.data.values.temp.style.lineBottom = cEl.bounds.y + cEl.bounds.height;
         cEl.data.values.temp.style.lineBottom = cEl.style.calc["padding-bottom"] ? cEl.data.values.temp.style.lineBottom - size2px(cEl.style.calc["padding-bottom"],false) : cEl.data.values.temp.style.lineBottom;
@@ -163,31 +172,10 @@ function set_cEl_text_css(cEl,cEl_pageText,boolReturnId){
         cEl.data.values.temp.style.lineLeft = cEl.style.calc["padding-left"] ? cEl.data.values.temp.style.lineLeft + size2px(cEl.style.calc["padding-left"],false) : cEl.data.values.temp.style.lineLeft;
         
         cEl.data.values.temp.style.lineTop = cEl.bounds.y;
-        
-//        cEl.data.values.temp.style.lineBottom = cEl.shape.temp.cpBorder.y1;
-//        cEl.data.values.temp.style.lineBottom = cEl.style.calc["padding-bottom"] ? cEl.data.values.temp.style.lineBottom - size2px(cEl.style.calc["padding-bottom"],false) : cEl.data.values.temp.style.lineBottom;
-//        
-//        cEl.data.values.temp.style.lineRight = cEl.shape.temp.cpBorder.x1;
-//        cEl.data.values.temp.style.lineRight = cEl.style.calc["padding-right"] ? cEl.data.values.temp.style.lineRight - size2px(cEl.style.calc["padding-right"],false) : cEl.data.values.temp.style.lineRight;
-//
-//        cEl.data.values.temp.style.lineLeft = cEl.shape.temp.cpBorder.x;
-//        cEl.data.values.temp.style.lineLeft = cEl.style.calc["padding-left"] ? cEl.data.values.temp.style.lineLeft + size2px(cEl.style.calc["padding-left"],false) : cEl.data.values.temp.style.lineLeft;
-//        
-//        cEl.data.values.temp.style.lineTop = cEl.shape.temp.cpBorder.y;
-//        cEl.data.values.temp.style.lineTop = cEl.style.calc["padding-top"] ? cEl.data.values.temp.style.lineTop + size2px(cEl.style.calc["padding-top"],false) : cEl.data.values.temp.style.lineTop;
+        cEl.data.values.temp.style.lineTop = cEl.style.calc["padding-top"] ? cEl.data.values.temp.style.lineTop + size2px(cEl.style.calc["padding-top"],false) : cEl.data.values.temp.style.lineTop;
         
         cEl.data.values.temp.style.lineHeight = cEl.style.calc["line-height"] ? size2px(cEl.style.calc["line-height"]) : 10;
-        
-//        if (cEl.data.values.vertical){
-//            var trans = cEl.data.values.temp.style.lineBottom;
-//            cEl.data.values.temp.style.lineBottom = cEl.data.values.temp.style.lineRight;
-//            cEl.data.values.temp.style.lineRight = trans;
-//
-//            trans = cEl.data.values.temp.style.lineLeft;
-//            cEl.data.values.temp.style.lineLeft = cEl.data.values.temp.style.lineTop;
-//            cEl.data.values.temp.style.lineTop = trans;
-//        }
-        
+
         return true;
         
     } catch (e) {
@@ -208,7 +196,7 @@ function set_cEl_text(cEl,strNewText){
                 // if not set then set the old value to same value and continue to calc
                 if(cEl.data.values.temp && !cEl.data.values.temp.valueOld){
                     cEl.data.values.temp.valueOld = strValAct;
-                    cEl.data.values.temp.reset = true;
+                    cEl.data.reset = true;
                     return true;
                 }else if(cEl.data.values.temp){
                     //console.log(strNewText + " vs " + cEl.data.values.temp.valueOld);
@@ -221,7 +209,7 @@ function set_cEl_text(cEl,strNewText){
                             // if new value in town then replace value and continue to calc
                             cEl.data.values.text = strNewText;
                             cEl.data.values.temp.valueOld = strValAct;
-                            cEl.data.values.temp.reset = true;
+                            cEl.data.reset = true;
                             //cEl.style.redraw = true;
                             //cEl.shape.redraw = true;
                             
@@ -379,7 +367,7 @@ function set_charObj_style(styleMap,charObj){
         
         var charFont = styleMap.charspos != null && styleMap.charspos[charObj.pos] ? styleMap.charspos[charObj.pos]:null;
         
-        
+        //cdebug(styleMap.charsSelection)();
         
 //        if(charFont){
 //            // set custom chars styles
@@ -402,6 +390,8 @@ function set_charObj_style(styleMap,charObj){
 //        }
         
         //cdebug(charObj.pp + "_" + charObj.wp)();
+        
+        //cdebug(charFont)();
         
         switch(true){
             // set custom chars Selection styles
@@ -654,12 +644,14 @@ function setGetFontObj(cEl_pageText,styleObj,boolReturnId){
     try{
         
         var fontText =  styleObj.fontSize + styleObj.fontStyle + styleObj.fontWeight + styleObj.fontFamily + styleObj.color;
+        
         var md5Font =  md5(fontText);
         
         var fontObjRet = cEl_pageText.charsFontsMd5[md5Font];
         var fontObjId = -1;
         if(!fontObjRet){
             
+            //cdebug(md5Font + " " + fontText)();
             
             // this to reset the font property, maybe use a string replace "normal" with "", should be faster i think
 //            cEl_ctx.font = fontObj.fontCanvas;
@@ -814,7 +806,8 @@ function set_text_path(cEl){
                 setTextContainer(cEl);
                 //cdebug(cEl.data.values.vertical,false,false,0);
                 if(cEl.data.values.vertical){
-
+                    
+                    //cdebug(cEl.data.values.temp.style)();
                     cEl.data.values.temp.path.add([cEl.bounds.x + cEl.bounds.width/2, cEl.bounds.y ],
                         [cEl.bounds.x + cEl.bounds.width/2, cEl.bounds.y  + cEl.bounds.height]);
                         
@@ -879,45 +872,84 @@ function setTextPathObj(cEl){
 }
 
 
-function getCharPos(lines,xy){
+//function getCharPos(lines,xy){
+//    try{
+//        //if(!startPos || startPos === -1)startPos = 0;
+//        // do a direct search
+//        
+//        cdebug(xy)();
+//        
+//        
+//        var pos=0;
+//        var boolLeft = false;
+//        for(var i = 0, chrObj,offsetXY,actY=0,boolYset=false,len = lines.length; i<len;i++){
+//            pos = i;
+//            chrObj = lines[i];
+//            if(chrObj.point){
+//
+//                offsetXY = [-chrObj.w/2,0];
+//
+//                if(chrObj.point.y>xy[1]+offsetXY[1]){
+//                    pos = i;
+//                    if(!boolYset){
+//                        boolYset = true;
+//                        actY = chrObj.point.y;
+//                    }
+//                    if(chrObj.point.x>xy[0]+offsetXY[0]){
+//                        pos = i;
+//                        boolLeft =true;
+//                        break;
+//                    }
+//                }
+//                
+//                if(boolYset){
+//                    //cdebug(actY > chrObj.xy[1],false,true);
+//                    if(actY < chrObj.point.y){
+//                        pos = i-1;
+//                        boolLeft = false;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        //cdebug(lines[pos],true,true);
+//        //cdebug({"pos":pos,"left":boolLeft},false,true)();
+//        return {"pos":pos,"left":boolLeft};
+//                            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+function getCharPos2(textGroup,xy){
     try{
-        //if(!startPos || startPos === -1)startPos = 0;
+        //if(!startPos || startPos === -1)startPos = 0;alert(hit.item.name);
         // do a direct search
-        var pos=0;
-        var boolLeft = false;
-        for(var i = 0, chrObj,offsetXY,actY=0,boolYset=false,len = lines.length; i<len;i++){
-            pos = i;
-            chrObj = lines[i];
-            if(chrObj.point){
-
-                offsetXY = [-chrObj.w/2,0];
-
-                if(chrObj.point.y>xy[1]+offsetXY[1]){
-                    pos = i;
-                    if(!boolYset){
-                        boolYset = true;
-                        actY = chrObj.point.y;
-                    }
-                    if(chrObj.point.x>xy[0]+offsetXY[0]){
-                        pos = i;
-                        boolLeft =true;
-                        break;
-                    }
-                }
-                
-                if(boolYset){
-                    //cdebug(actY > chrObj.xy[1],false,true);
-                    if(actY < chrObj.point.y){
-                        pos = i-1;
-                        boolLeft = false;
-                        break;
-                    }
-                }
-            }
+        var hitOptions = {
+            match: function test(hit){if(typeof hit.item.name !== "undefined")return true;},
+            segments: true,
+            stroke: true,
+            fill: true,
+            tolerance: 5
+        };
+////        
+////        
+        var hits = paper.project.hitTest(xy,hitOptions);
+        //var hits = textGroup.hitTest(xy);
+        
+        
+        if(hits && hits.item.name){
+            
+//            cdebug(hits)();
+            //cdebug(hits.item.index + " vs " + hits.item.name)();
+            //return {"valid":true,"pos":hits.item.index,"left":true};
+            return {"valid":true,"pos":hits.item.name,"left":false,"obj":hits.item};
+        }else{
+            return {"valid":false};
         }
-        //cdebug(lines[pos],true,true);
-        //cdebug({"pos":pos,"left":boolLeft},false,true)();
-        return {"pos":pos,"left":boolLeft};
+            
                             
     } catch (e) {
         var err = listError(e);
@@ -926,35 +958,44 @@ function getCharPos(lines,xy){
     }
 }
 
-function setCarret(boolShowCarret,chrObj,boolCrLeft) {
+function setCarret(cEl_Selection,boolShowCarret) {
     
     try{
         var d;
         
-        //cdebug(chrObj,true,true);
-        //cdebug(boolShowCarret,false,true);
-        d = document.getElementById("editorPage_carret_div");
+        d = document.getElementById("carret_div");
+        
+        
         
         if(boolShowCarret){
             
+            var chrObj = cEl_Selection.cr.obj;
+//            cdebug(chrObj.rotation)();
+//            cdebug(chrObj.position)();
+//            cdebug(chrObj.definition.item.fontSize)();
             
-            d.style.fontSize = (chrObj.fs)+'px';
-
-            if(boolCrLeft){
-                d.style.left = (chrObj.xy[0])+'px';
+            d.style.position = "absolute";
+            d.style.fontSize = chrObj.definition.item.fontSize+'px';
+            
+            //cdebug(chrObj.definition.fontSize+'px')();
+            
+            if(cEl_Selection.cr.left){
+                d.style.left = chrObj.position.x+'px';
             }else{
-                d.style.left = (chrObj.xy[0]+chrObj.w)+'px';
+                d.style.left = chrObj.position.x+'px';
             }
-            d.style.top = (chrObj.xy[1]-chrObj.fs*0.8)+'px';
-
-
-            //d.style.width = (chrObj.w)+'px';
-    //        d.style.width = (chrObj.w) + 'px';
-    //        d.style.maxWidth = (chrObj.w)+'px';
-            d.style.width = 1 + 'px';
-            d.style.maxWidth = 1 +'px';
-            d.style.height = (chrObj.fs)+'px';
-            d.style.maxHeight = (chrObj.fs)+'px';
+            
+            d.style.top = (chrObj.position.y - chrObj.definition.item.fontSize/2)+'px';
+            //d.style.top = (chrObj.xy[1]-chrObj.fs*0.8)+'px';
+//
+//
+//            //d.style.width = (chrObj.w)+'px';
+//    //        d.style.width = (chrObj.w) + 'px';
+//    //        d.style.maxWidth = (chrObj.w)+'px';
+            d.style.width = 10 + 'px';
+            d.style.maxWidth = 10 +'px';
+//            d.style.height = (chrObj.fs)+'px';
+//            d.style.maxHeight = (chrObj.fs)+'px';
             d.style.visibility = "visible";
             d.focus();
         }else{
@@ -1169,19 +1210,37 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
 
         //cdebug("after remove " +paper.project.activeLayer.children.length)();
 
-        var startIndex = paper.project.activeLayer.children.length;
-        var boolChanged = showCP;
+//        var startIndex = paper.project.activeLayer.children.length;
+//        var boolChanged = showCP;
         
-        //cdebug(textContainer)();
+        
+        
+        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl.parentName + "_" + cEl.name));
+        var boolHasCarret = boolHasSelection && cEl.data.values.editable;
+        var carretIndex = cEl_pageText.charsSelection.cr.pos;
+        //cdebug(boolHasSelection)();
+        //if(boolHasSelection)cdebug(cEl_pageText.charsSelection)();
         
         for(var j=0;j<path.curves.length;j++){
             var curve = path.curves[j];
             var curveLen = curve.length;
             
 
-            for(var charObj, charFont, charSymbolContainer; i < charsCount; i++){
+            for(var charObj, charFont, charSymbolContainer,boolSelected; i < charsCount; i++){
                 charObj = lines[i];
+                
+                
+                
+
+
+
+                boolSelected = boolHasSelection;
+                if(boolSelected)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
+                
+                
                 charFont = cEl_pageText.charsFontsObj[charObj.f.id];
+                
+                
                 charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
 
 
@@ -1237,8 +1296,11 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
 
                         //cdebug(charObj.point)();
                         //boolChanged = true;
-                        drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,textContainer,charSymbolContainer);
+                        //drawChar(charObj,cEl.parentName + "_" + cEl.name + ".P_" + i,textContainer,charSymbolContainer,boolSelected);
+                        drawChar(charObj,i,textContainer,charSymbolContainer,boolSelected,boolHasCarret && carretIndex === i);
 
+
+                        
                         //cEl.data.index = 
                         
                         //cdebug(location.point.x)();
@@ -1265,11 +1327,18 @@ function drawTextAlongPath(cEl,index,offset,cEl_pageText){
 //            }
             //break;
         }
-        cEl.data.indexes = {
-            "start":startIndex,
-            "end":paper.project.activeLayer.children.length,
-            "changed":boolChanged
-        };
+        
+        
+        // and finally set carret
+        
+        
+        
+        
+//        cEl.data.indexes = {
+//            "start":startIndex,
+//            "end":paper.project.activeLayer.children.length,
+//            "changed":boolChanged
+//        };
         //cdebug(cEl.data.indexes)();
         //cdebug(cEl.name + " after add " +paper.project.activeLayer.children.length,false,0)();
         //cdebug(cEl.data.indexes)();
@@ -1296,7 +1365,7 @@ function upsertCP(cpPath,bool){
 }
 
 
-function drawChar(charObj,name,textContainer,charSymbolContainer){
+function drawChar(charObj,name,textContainer,charSymbolContainer,boolSelected,boolHasCarret){
    
     try{
         //cdebug(charFont)();
@@ -1309,6 +1378,42 @@ function drawChar(charObj,name,textContainer,charSymbolContainer){
         var textItem = textContainer.addChild(new paper.SymbolItem(charSymbol));
         textItem.position = charObj.point;
         textItem.rotation = charObj.angle;
+        textItem.name = name;
+        
+        
+        if(boolSelected){
+            //cdebug(charObj)();
+                textContainer.addChild(new paper.Path.Rectangle({
+                    from: [charObj.point.x - charObj.w/2, charObj.point.y-charObj.fs/2],
+                    to: [charObj.point.x + charObj.w/2, charObj.point.y+charObj.fs/2],
+//                    strokeColor : "rgba(111,111,111,1)",
+                    fillColor : "rgba(111,111,111,0.2)",
+                    rotation:charObj.angle
+                }));
+
+            
+            //var path = new Path.Rectangle(rectangle);
+            //path.strokeColor = 'black';
+            
+//            textSelectionItem.position = charObj.point;
+//            textSelectionItem.rotation = charObj.angle;
+            //textSelectionItem.name = name + "_1";
+            //cdebug(textSelectionItem)();
+        }
+        
+        if(boolHasCarret){
+            
+            textContainer.addChild(new paper.Path.Line({
+                    from: [charObj.point.x , charObj.point.y-charObj.fs/2],
+                    to: [charObj.point.x , charObj.point.y+charObj.fs/2],
+                    strokeColor : "gray",
+                    rotation:charObj.angle
+                }));
+        }
+        
+        //textItem.selected = boolSelected;
+        
+        
         //textContainer.lastChildren();
 //        
 //        textContainer.addChild(new PointText({

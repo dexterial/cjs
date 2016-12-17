@@ -602,15 +602,17 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
 //            }else{
                 //eventholder.retObj = {"id":null,"nostop":true,"all":[]};
                 var hitOptions = {
-                    class:paper.Path,
-                    segments: false,
-                    stroke: false,
+//                    class:paper.Path,
+                    match: function test(hit){if(hit.item.name)return true;},
+                    segments: true,
+                    stroke: true,
                     fill: true,
                     tolerance: 5
                 };
                 var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
                 
                 if(hitObject){
+                    //cdebug(hitObject.item.name)();
                     eventholder.retObj = hitObject.item;
                 }else{
                     eventholder.retObj = paper.project;
@@ -938,8 +940,6 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
             } 
         }
         
-        
-        
 
     } catch (e) {
         var err = listError(e);
@@ -1013,9 +1013,9 @@ function setContextMenu(cEl_canv){
 function resetTextSelection(cEl){
     
     try{
-       
-        setCarret(false);
-        if(paper){
+       //cdebug(cEl.name)();
+        
+        if(cEl.data.type === "text"){
             var cEl_Selection = paper.data.text.charsSelection;
             cEl_Selection.charspos = [];
             cEl_Selection.chars = [];
@@ -1028,6 +1028,8 @@ function resetTextSelection(cEl){
         return err;
     }    
 }
+
+
 
 function selection_actions(cEl, xy, actionNo, boolReset){
     
@@ -1042,27 +1044,32 @@ function selection_actions(cEl, xy, actionNo, boolReset){
         
         if(boolReset)cEl_Selection.charspos = [];
         
+        //cdebug(cEl.data.values.temp.textContainer)();
+        
         var cr,startPos,endPos,chrObj;
 
         switch(true){
             //move carret top
             case actionNo === 38:
                 chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos(lines,[chrObj.xy[0],chrObj.xy[1]-1.5*chrObj.fs]);
-                if(lines[cr.pos].xy){
-                    cEl_Selection.cr.pos = cr.pos;
-                    cEl_Selection.cr.left = cr.left;
-                }
+                cr = getCharPos2(cEl.data.values.temp.textContainer,[chrObj.xy[0],chrObj.xy[1]-1.5*chrObj.fs]);
+                if(!cr.valid)break;                
+//                if(lines[cr.pos].xy){
+//                    cEl_Selection.cr.pos = cr.pos;
+//                    cEl_Selection.cr.left = cr.left;
+//                }
+                setCarret(cEl_Selection,true);
             break;
             //move carret bottom
             case actionNo === 40:
                 chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos(lines,[chrObj.xy[0],chrObj.xy[1]+0.75*chrObj.fs]);
-                if(lines[cr.pos].xy){
-                    cEl_Selection.cr.pos = cr.pos;
-                    cEl_Selection.cr.left = cr.left;
-                }
-                
+                cr = getCharPos2(cEl.data.values.temp.textContainer,[chrObj.xy[0],chrObj.xy[1]+0.75*chrObj.fs]);
+                if(!cr.valid)break; 
+//                if(lines[cr.pos].xy){
+//                    cEl_Selection.cr.pos = cr.pos;
+//                    cEl_Selection.cr.left = cr.left;
+//                }
+                setCarret(cEl_Selection,true);
             break;
             //move carret right
             case actionNo === 39:
@@ -1072,6 +1079,8 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 }else if(cEl_Selection.cr.pos === lines.length-1){
                     cEl_Selection.cr.left = false;
                 }
+                setCarret(cEl_Selection,true);
+                
             break;
             //move carret left
             case actionNo === 37:
@@ -1080,59 +1089,86 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 if(cEl_Selection.cr.pos > 0 && lines[cEl_Selection.cr.pos-1].xy){
                     cEl_Selection.cr.pos--;
                 }
+                setCarret(cEl_Selection,true);
+                
             break;
             // reset temp selection
             case actionNo === -2:
                 
                 cEl_Selection.temp = null;
+                cEl.data.reset = true;
+                
                 
             break;
             // select on mouse move and pressed
             case actionNo === -1:
                 
-                cr = getCharPos(lines,xy);
+                
+                //cr = getCharPos(lines,xy);
+                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                if(!cr.valid)break;
+                    
                 startPos =cr.pos;
                 endPos =cr.pos;
-                
+
+                //cdebug(cr.valid + " " + cr.pos)();
+
                 if(!cEl_Selection.temp)cEl_Selection.temp = $.extend(true,[],cEl_Selection.charspos);
 
                 cEl_Selection.charspos = mergeIntArrays(cEl_Selection.temp,getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left));
-                        
+                //cdebug(cEl_Selection.charspos)();
+                
             break;
             // move carret on mouse down
             case actionNo === 1:
                 
-                cr = getCharPos(lines,xy);
+                //cr = getCharPos(lines,xy);
+                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                if(!cr.valid)break;
+                
+
                 startPos =cr.pos;
                 endPos =cr.pos;
+
+                cEl_Selection.cr = cr;
                 
-                cEl_Selection.cr.pos = cr.pos;
-                cEl_Selection.cr.left = cr.left;
+                //setCarret(cEl_Selection,true);
                 
             break;
             // select word
             case actionNo === 2:
                 
-                cr = getCharPos(lines,xy);
+                //cr = getCharPos(lines,xy);
+                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                if(!cr.valid)break;
+                
+                //cdebug(cr.pos + " vs " + cEl_Selection.cr.pos)();
+                
+                chrObj = lines[cEl_Selection.cr.pos];
+                
                 startPos =cr.pos;
                 endPos =cr.pos;
                 if(cr.pos===-1)cr.pos = 0;
 
-                //cdebug(lines[cr.pos],true,true);
                 for(var j = cr.pos; j>-1;j--){
-                    if(lines[j].wp || lines[j].sc){
-                        startPos = j;
+                    if(lines[j].wp!==chrObj.wp){
+                        if(lines[j].sc){
+                            startPos = j+1;
+                        }else{
+                            startPos = j;
+                        }
                         break;
                     }
                 }
                 endPos = len-1;
                 for(var j = cr.pos+1; j<len;j++){
-                    if(lines[j].wp){
-                        if(lines[j].sc){
-                            endPos = j;
-                        }else{
-                            endPos = j-1;
-                        }
+                    if(lines[j].wp!==chrObj.wp){
+                        //cdebug(lines[j].sc)();
+//                        if(lines[j].sc){
+                            endPos = j-2;
+//                        }else{
+//                            endPos = j-2;
+//                        }
                         break;
                     }
                 }
@@ -1143,20 +1179,30 @@ function selection_actions(cEl, xy, actionNo, boolReset){
             // select paragraph
             case actionNo === 3:  
                 
-                cr = getCharPos(lines,xy);
+                //cr = getCharPos(lines,xy);
+                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                if(!cr.valid)break;
+                
                 startPos =cr.pos;
                 endPos =cr.pos;
                 
+                chrObj = lines[cEl_Selection.cr.pos];
+                //cdebug(lines)();
+                
+                
                 if(cr.pos===-1)cr.pos = 0;
                 for(var j = cr.pos; j>-1;j--){
-                    if(lines[j].pp){
+                    if(chrObj.pp === 0){
+                        startPos = 0;
+                        break;
+                    }else if(lines[j].pp!==chrObj.pp){
                         startPos = j;
                         break;
                     }
                 }
                 endPos = len-1;
                 for(var j = cr.pos+1; j<len;j++){
-                    if(lines[j].pp){
+                    if(lines[j].pp!==chrObj.pp){
                         endPos = j-1;
                         break;
                     }
@@ -1170,11 +1216,11 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(0,len-1));
             break;
 
-        }    
-        //cEl.style.redraw = true;
+        }
+        if(cEl_Selection.charspos.length>0)cEl.data.reset = true;
         //cEl_layer.shape.redraw = true;
         
-        //cdebug(cEl_Selection.charspos)();
+        //cdebug(cEl_Selection.charspos,true,true,0)();
         
         return true;
         
