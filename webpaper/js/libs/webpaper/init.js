@@ -20,7 +20,7 @@ var editorFile = 'editor.json';
 
 
 var loadedFile = 'Dexterial.json';
-var loadedFile = 'tests.json';
+//var loadedFile = 'tests.json';
 //var loadedFile = 'editor.json';
 var loadcanvas = 0;
 var boolEditMode = false;

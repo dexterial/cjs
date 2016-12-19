@@ -403,7 +403,7 @@ function get_cEl_properties(cEl,property){
     try{
         if(!cEl)return "ZZZZ";
         switch (property) {
-            case "shape":
+            case "group":
                 //return JSON.stringify(cEl.shape,['id','type','scale','masspoint','detection','rotation']);
                 return JSON.stringify(cEl.shape);
             break;
@@ -488,7 +488,7 @@ function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
                 "parentName":page.name + "_" + cEl_layer.name,
                 "tab":22,
                 "class":"btnBlue1",
-                "tag":"shape",
+                "tag":"group",
                 "visible":true,"enabled":false,"focus":false,"hover":false,"active":false,
                 "events":null,
                 "loaded":false,

@@ -22,7 +22,7 @@
         "charsSelection":{
             "name":null,
             "cr":{"pos":0,"vis":false,"left":true},
-            "style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},
+            "style":{"color":"rgb(255,0,0)","background-color":"rgba(51,143,255,0.4)"},
             "charspos":[],
             "chars":[],
             "wordspos":[],
@@ -103,9 +103,9 @@
     },
     "elements":{
         "text1":{
-            "class":"contextitems",
+            "class":"btnGreen",
             "pageId":"editorPage",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousedown":"testEvents2(this)"
@@ -180,7 +180,7 @@
         "contextitems":{
             "class":"contextitems",
             "pageId":"editorPage",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{},
             "shape":{

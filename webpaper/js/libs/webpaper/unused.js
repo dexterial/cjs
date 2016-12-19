@@ -582,7 +582,7 @@
 //                }
 //                
 //            break;
-//            case "shape": //draw shape
+//            case "group": //draw shape
 //                
 //                if(pageId){
 //                    cEl.pageId = pageId;
@@ -2279,7 +2279,7 @@
 //    var tempSizer;
 //    var tempElType = tempEl.tag;
 //    switch(tempElType){
-//        case "shape":
+//        case "group":
 //        case "label":
 //            //console.log("draw 0 " + boolResetMe);
 //            var boolUpdateMe = tempEl.cRepaint;

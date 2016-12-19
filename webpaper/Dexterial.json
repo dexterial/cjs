@@ -98,7 +98,7 @@
     "elements":{
         "text1":{
             "class":"contextitems",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -164,7 +164,7 @@
         },
         "contextitems":{
             "class":"contextitems",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{},
             "shape":{
@@ -214,7 +214,7 @@
         },
         "tabs":{
             "class":"test",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
@@ -360,7 +360,7 @@
             ]
         },
         "tab":{
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "shape":{
                 "redraw":true,
@@ -377,7 +377,7 @@
             }
         },
         "tablabel":{
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
@@ -399,7 +399,7 @@
         },
         "txtInput1":{
             "class":"textStuff",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -428,7 +428,7 @@
         },
         "btnHeart1":{
             "class":"btnBlue1",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -452,7 +452,7 @@
         },
         "btnAdd1":{
             "class":"btnRed1",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -476,7 +476,7 @@
         },
         "btnMinus1":{
             "class":"btnRed1",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -500,7 +500,7 @@
         },
         "btnArrow1":{
             "class":"btnBlue1",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -524,7 +524,7 @@
         },
         "btnArrow2":{
             "class":"btnBlue1",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -548,7 +548,7 @@
         },
         "btnTriangle1":{
             "class":"btnBlue2",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mouseup":"setState(this)"
@@ -569,7 +569,7 @@
         },
         "btnOk1":{
             "class":"btnGreen",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mouseup":"save_changes(this)"
@@ -589,7 +589,7 @@
         },
         "btnRound1":{
             "class":"btnGreen",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",
@@ -613,7 +613,7 @@
         },
         "btnSqr1":{
             "class":"btnGreen",
-            "tag":"shape",
+            "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mouseup":"setState(this)"

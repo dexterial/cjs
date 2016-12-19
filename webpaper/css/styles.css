@@ -38,7 +38,7 @@ input::-moz-focus-inner {
     font-family: Arial;
     font-size: 3rem;
     background-color: rgba(218,165,32,1);
-    /*background-image: url("graphics/test.jpg");*/
+    background-image: url("graphics/test.jpg");
     border-width: 1px;
     border-color: rgb(218,165,32);
     box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);
@@ -83,9 +83,9 @@ input::-moz-focus-inner {
 .test{
 /*    font-family: Arial;
     font-size: 0.9rem;*/
-    background-color:rgba(255,255,222,1);
+    /*background-color:rgba(255,255,222,1);*/
     
-    /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");*/
+    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
 /*    border-color:rgba(170,221,170,0.7);
     border-width: 5px;*/
 /*    border-color: #aff;used for textshade color

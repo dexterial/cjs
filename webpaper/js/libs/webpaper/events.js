@@ -80,47 +80,6 @@ function loadEvents() {
 }
 
 
-function retCElId(eventholder,hitOptions,defaultID){
-    
-    try{
-        
-        
-        
-        
-//        if(!hitResult){
-////            cdebug(paper.project.view.bounds,false,false,0);
-////            cdebug(paper.project.view.center,false,false,0);
-//            //cdebug(eventholder.targetId,false,false,0);
-//            //cdebug(eventholder,false,false,0);
-//            // BUGGY
-//            //eventholder.retObj.name = eventholder.pageId;
-//            eventholder.retObj = null;
-//            
-//        }else{
-//            if(eventholder.retObj.nostop && hitResult){
-//                //if(retObj.name && cElId.search(retObj.name)===-1){
-//                if(hitResult.item.name){
-//                    //cdebug(hitResult.item.name,true,false,0)();
-//                    
-//                    eventholder.retObj = hitResult.item;
-//                    //cdebug(eventholder.retObj.name,true,false,0)();
-//                    
-//                }else{
-//                    eventholder.retObj.name = cElId;
-//                }
-//            }
-//        }
-        
-        return true;
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-};
-
-
 globalTool = new paper.Tool();
 globalTool.onMouseDown = handleMouse;
 globalTool.onMouseMove = handleMouse;
@@ -132,6 +91,7 @@ globalTool.onKeyUp = handleKeys;
 //tool1.onMouseDrag = function(event) {
 //        path.add(event.point);
 //}
+
 
 
 function testLayer(){
@@ -258,14 +218,23 @@ function handleMouse(evt) {
             case "mousedown":
                 
                 
+                //cdebug(eventholder.retObj.name + " vs " + eventholder.actObj.name)();
+                //cdebug(paper.project.activeLayer.children.length)();
+                
                 //cdebug(evt.detail,true);
                 updateEventHolder(eventholder,false,true,true);
                 
                 handleCSSEvents_mouse(eventholder,false,true,true);
                 
+                
+                setCarret(null,null,false);
+                
                 handleTextSelection(eventholder);
                 
                 handleContextMenu(eventholder);
+                
+                
+                
                 
                 //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
                 //cdebug(eventholder.hover)();
@@ -331,7 +300,7 @@ function handleTouch(evt) {
         if(!evtType){return false;}
         
         // prevent default events
-        disableEvent(evt);
+        //disableEvent(evt);
         
         // preload event in custom eventholder
         var eventholder = window["eventholder"];
@@ -352,6 +321,8 @@ function handleTouch(evt) {
                 updateEventHolder(eventholder,false,true,true);
                 
                 handleCSSEvents_mouse(eventholder,false,true,true);      
+                
+                //setCarret(null,null,false);
                 
                 handleTextSelection(eventholder);
                 
@@ -393,7 +364,9 @@ function handleTextSelection(eventholder){
         if(!eventholder.active.oldObj)return false;
         
         var cEl = eventholder.active.oldObj;
-        if(cEl.data.type !== "text")return false;
+        if(cEl.data.type !== "text"){
+            return false;
+        }
         
         //cdebug(cEl.name,false,false,0)();
         
@@ -406,24 +379,24 @@ function handleTextSelection(eventholder){
             case "touchstart":
                 if(btnPressed === 1){
                     
-                    selection_actions(cEl, eventholder.metrics.xy, clickCount,!eventholder.keys.ctrlKey);
+                    selection_actions(cEl, eventholder, clickCount,!eventholder.keys.ctrlKey);
                 }
                 if(btnPressed === 3){
 
-                    selection_actions(cEl, eventholder.metrics.xy, clickCount, false);
+                    selection_actions(cEl, eventholder, clickCount, false);
                 }
                     
             break;
             case "mousemove":
             case "touchmove":
                 if(btnPressed === 1){
-                    selection_actions(cEl, eventholder.metrics.xy, -1, false);
+                    selection_actions(cEl, eventholder, -1, false);
                 }
             break;
             case "mouseup":
             case "touchend":
                 if(btnPressed === 1){
-                    selection_actions(cEl, eventholder.metrics.xy, -2, false);
+                    selection_actions(cEl, eventholder, -2, false);
                 }
             break;
         }
@@ -603,7 +576,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 //eventholder.retObj = {"id":null,"nostop":true,"all":[]};
                 var hitOptions = {
 //                    class:paper.Path,
-                    match: function test(hit){if(hit.item.name)return true;},
+//                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
                     segments: true,
                     stroke: true,
                     fill: true,
@@ -611,12 +584,21 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 };
                 var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
                 
-                if(hitObject){
+                if(hitObject && hitObject.item.parent.parent){
+                    var name = hitObject.item.name;
                     //cdebug(hitObject.item.name)();
-                    eventholder.retObj = hitObject.item;
+                    
+                    eventholder.retObj = hitObject.item.parent.parent;
+                    eventholder.actObj = hitObject.item;
+                    
                 }else{
                     eventholder.retObj = paper.project;
+                    eventholder.actObj = paper.project;
                 }
+                
+                
+                
+                
                 //cdebug(eventholder.retObj.name)();
                 
                 //retCElId(eventholder,"_" + eventholder.pageId + "_" + eventholder.layerId);
@@ -624,7 +606,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 //cdebug(eventholder.retObj)();
                 
                 //eventholder.composedid = eventholder.retObj.name;
-                eventholder.currentid = eventholder.retObj.parentName + "_" + eventholder.retObj.name.split(".")[0];
+                eventholder.currentid = eventholder.retObj.name;
 //            }
         }
 
@@ -858,7 +840,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
             //  hover reset for old focus element 
             if(eventholder.hover && eventholder.hover.resetold){
                 cEl = eventholder.hover.oldObj;
-//                cdebug("->>>" + cEl.name)();
+                //cdebug("->>>" + cEl.name)();
 //                if(cEl){
 //                    //cdebug(eventholder.hover.id)();
                     cEl.hover = false;
@@ -937,6 +919,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 cEl.shape.redraw = true;
                 runEval(cEl,"activeon");
                 resetCursor(cEl);
+                
             } 
         }
         
@@ -1031,10 +1014,10 @@ function resetTextSelection(cEl){
 
 
 
-function selection_actions(cEl, xy, actionNo, boolReset){
+function selection_actions(cEl, eventholder, actionNo, boolReset){
     
     try{
-        
+        var xy = eventholder.metrics.xy;
         var lines = cEl.data.values.temp.lines3;
         var len = lines.length;
         var cEl_Selection = paper.data.text.charsSelection;
@@ -1052,24 +1035,24 @@ function selection_actions(cEl, xy, actionNo, boolReset){
             //move carret top
             case actionNo === 38:
                 chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos2(cEl.data.values.temp.textContainer,[chrObj.xy[0],chrObj.xy[1]-1.5*chrObj.fs]);
+                cr = getCharPos2(eventholder,"top");
                 if(!cr.valid)break;                
 //                if(lines[cr.pos].xy){
 //                    cEl_Selection.cr.pos = cr.pos;
 //                    cEl_Selection.cr.left = cr.left;
 //                }
-                setCarret(cEl_Selection,true);
+                //setCarret(eventholder,cEl_Selection,true);
             break;
             //move carret bottom
             case actionNo === 40:
                 chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos2(cEl.data.values.temp.textContainer,[chrObj.xy[0],chrObj.xy[1]+0.75*chrObj.fs]);
+                cr = getCharPos2(eventholder,"bottom");
                 if(!cr.valid)break; 
 //                if(lines[cr.pos].xy){
 //                    cEl_Selection.cr.pos = cr.pos;
 //                    cEl_Selection.cr.left = cr.left;
 //                }
-                setCarret(cEl_Selection,true);
+                //setCarret(eventholder,cEl_Selection,true);
             break;
             //move carret right
             case actionNo === 39:
@@ -1079,7 +1062,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 }else if(cEl_Selection.cr.pos === lines.length-1){
                     cEl_Selection.cr.left = false;
                 }
-                setCarret(cEl_Selection,true);
+                //setCarret(eventholder,cEl_Selection,true);
                 
             break;
             //move carret left
@@ -1089,7 +1072,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 if(cEl_Selection.cr.pos > 0 && lines[cEl_Selection.cr.pos-1].xy){
                     cEl_Selection.cr.pos--;
                 }
-                setCarret(cEl_Selection,true);
+                //setCarret(eventholder,cEl_Selection,true);
                 
             break;
             // reset temp selection
@@ -1105,16 +1088,16 @@ function selection_actions(cEl, xy, actionNo, boolReset){
                 
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                     
                 startPos =cr.pos;
                 endPos =cr.pos;
 
-                //cdebug(cr.valid + " " + cr.pos)();
-
                 if(!cEl_Selection.temp)cEl_Selection.temp = $.extend(true,[],cEl_Selection.charspos);
-
+                
+                //cdebug(getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left))();
+                
                 cEl_Selection.charspos = mergeIntArrays(cEl_Selection.temp,getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left));
                 //cdebug(cEl_Selection.charspos)();
                 
@@ -1123,7 +1106,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
             case actionNo === 1:
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                 
 
@@ -1132,24 +1115,26 @@ function selection_actions(cEl, xy, actionNo, boolReset){
 
                 cEl_Selection.cr = cr;
                 
-                //setCarret(cEl_Selection,true);
+                //setCarret(eventholder,cEl_Selection,true);
                 
             break;
             // select word
             case actionNo === 2:
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
+                
                 
                 //cdebug(cr.pos + " vs " + cEl_Selection.cr.pos)();
                 
                 chrObj = lines[cEl_Selection.cr.pos];
                 
-                startPos =cr.pos;
-                endPos =cr.pos;
-                if(cr.pos===-1)cr.pos = 0;
-
+//                cdebug(cr)();
+//                cdebug(lines)();
+//                cdebug(chrObj)();
+                
+                startPos = 0;
                 for(var j = cr.pos; j>-1;j--){
                     if(lines[j].wp!==chrObj.wp){
                         if(lines[j].sc){
@@ -1180,7 +1165,7 @@ function selection_actions(cEl, xy, actionNo, boolReset){
             case actionNo === 3:  
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(cEl.data.values.temp.textContainer,xy);
+                cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                 
                 startPos =cr.pos;
@@ -1231,6 +1216,137 @@ function selection_actions(cEl, xy, actionNo, boolReset){
     }    
 }
 
+
+function getCharPos2(eventholder,type){
+    try{
+        //if(!startPos || startPos === -1)startPos = 0;alert(hit.item.name);
+        var actObjName = eventholder.actObj.name;
+        var indexTP = actObjName.indexOf(".P_");
+        
+        // TODO add top, bottom, left & right validation
+        
+        if(indexTP === -1)return {"valid":false};
+        
+        switch(type){
+            case "point":
+                return {
+                    "valid":true,
+                    "pos":~~actObjName.substring(indexTP+3),
+                    "left":false
+                };
+            break;
+            case "top":
+                return {
+                    "valid":true,
+                    "pos":~~actObjName.substring(indexTP+3),
+                    "left":false
+                };
+            break;
+            case "bottom":
+                return {
+                    "valid":true,
+                    "pos":~~actObjName.substring(indexTP+3),
+                    "left":false
+                };
+            break;
+        }
+
+//        if(hits && hits.item.name){
+//            
+////            cdebug(hits)();
+//            //cdebug(hits.item.index + " vs " + hits.item.name)();
+//            //return {"valid":true,"pos":hits.item.index,"left":true};
+//            return {"valid":true,"pos":hits.item.name,"left":false,"obj":hits.item};
+//        }else{
+            
+//        }
+            
+                            
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+function pasteContext(cEl){
+    try{
+        cdebug("not implemented")();
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+function copyContext(cEl){
+    try{
+        cdebug("not implemented")();
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }   
+}
+
+function setCarret(eventholder,cEl_Selection,boolShowCarret) {
+    
+    try{
+        
+        //var d = paper.project.cr;
+        
+        //cdebug(boolShowCarret)();
+        
+        if(boolShowCarret){
+            
+            //TODO move stuff from other places if fesible
+            
+//            d.visible = true;
+//            var charObj = eventholder.actObj.definition.item;
+////            cdebug(d.segments)();
+////            cdebug(charObj)();
+//            
+//            //charObj.selected = true;
+//            
+////            textContainer.addChild(new paper.Path.Line({
+//////                    from: [charObj.point.x , charObj.point.y-charObj.fs/2],
+//////                    to: [charObj.point.x , charObj.point.y+charObj.fs/2],
+//////                    strokeColor : "gray",
+//////                    rotation:charObj.angle,
+//////                    name:name
+//////                }));
+//
+//            d.segments[0].point = [eventholder.metrics.xy[0] , eventholder.metrics.xy[1]-10];
+//            d.segments[1].point = [eventholder.metrics.xy[0] , eventholder.metrics.xy[1]+10];
+//            d.rotation = charObj.angle;
+//            //cdebug(d.segments[0].point.x)();
+////            //cdebug(chrObj.definition.fontSize+'px')();
+////            
+////            if(cEl_Selection.cr.left){
+////                d.style.left = chrObj.position.x+'px';
+////            }else{
+////                d.style.left = chrObj.position.x+'px';
+////            }
+////            
+////            d.style.top = (chrObj.position.y - chrObj.definition.item.fontSize/2)+'px';
+//            //d.style.top = (chrObj.xy[1]-chrObj.fs*0.8)+'px';
+
+        }else{
+            //carret.visible = false;
+            if(carret){
+                carret.remove();
+                carret = null;
+            }
+            //cdebug("here",true,true,0);
+//            d.visible = false;
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
 function testEvents(cEl,eventName){
     
     cdebug("testEvents: <" + eventName + "> on <" + cEl.parentName + "_" + cEl.name + ">",false,false,1)();
@@ -1258,7 +1374,7 @@ function testEvents(cEl,eventName){
 function testEvents2(cEl,eventName){
     //alert(cEl.name);
     
-    //cdebug(currentid.name);
+    //cdebug(cEl.name)();
 //    var cEl = window[currentid];
 //    //cEl.shape.redraw = true;
 //    drawChildren(cEl,true);

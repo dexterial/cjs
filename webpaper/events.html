@@ -97,7 +97,10 @@
                 
                 text.content = cppath.children.length
                 
-                
+                paper.project.view.onFrame = function(event) {
+			// On each frame, rotate the path by 3 degrees:
+			text.rotate(3);
+		}
                 
 	}
 </script>
