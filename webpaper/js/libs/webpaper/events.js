@@ -57,12 +57,12 @@ function loadEvents() {
 ////        if (window.addEventListener) window.addEventListener("keypress", handleKeys, false);
 ////        else if (window.attachEvent) window.attachEvent("onkeypress", handleKeys);
 //        //touch events
-//        if (window.addEventListener) window.addEventListener("touchstart",handleTouch, false);
-//        else if (window.attachEvent) window.attachEvent("ontouchstart", handleTouch);
-//        if (window.addEventListener) window.addEventListener("touchmove", handleTouch, false);
-//        else if (window.attachEvent) window.attachEvent("ontouchmove", handleTouch);
-//        if (window.addEventListener) window.addEventListener("touchend", handleTouch, false);
-//        else if (window.attachEvent) window.attachEvent("ontouchend", handleTouch);
+        if (window.addEventListener) window.addEventListener("touchstart",handleTouch, false);
+        else if (window.attachEvent) window.attachEvent("ontouchstart", handleTouch);
+        if (window.addEventListener) window.addEventListener("touchmove", handleTouch, false);
+        else if (window.attachEvent) window.attachEvent("ontouchmove", handleTouch);
+        if (window.addEventListener) window.addEventListener("touchend", handleTouch, false);
+        else if (window.attachEvent) window.attachEvent("ontouchend", handleTouch);
         
         // error events
 //        if (window.addEventListener) window.addEventListener("error", function(e) {cdebug(e);}, false);
@@ -295,9 +295,13 @@ function handleMouse(evt) {
 function handleTouch(evt) {
     
     try {
+        
+        //alert(evt.type);
+        
         var evtType = evt.type;
         // exit if not event
         if(!evtType){return false;}
+        
         
         // prevent default events
         //disableEvent(evt);
@@ -309,9 +313,10 @@ function handleTouch(evt) {
         // exit if not valid event
         if (eventholder.noevent){return false;};
         
-        var cEl = window[eventholder.currentid];
-        //cdebug(cEl.name,true);
-        runEval(cEl,evtType);
+        //cdebug(eventholder.currentid)();
+        //var cEl = window[eventholder.currentid];
+        
+        runEval(eventholder.retObj,evtType);
         
         switch(evtType){
             case "touchstart":
@@ -322,12 +327,13 @@ function handleTouch(evt) {
                 
                 handleCSSEvents_mouse(eventholder,false,true,true);      
                 
-                //setCarret(null,null,false);
+                setCarret(null,null,false);
                 
                 handleTextSelection(eventholder);
                 
                 handleContextMenu(eventholder);
-
+                
+                drawProjects(paper,true);
 //                runEval(cEl,evtType);
             break;
             case "touchmove":
@@ -336,6 +342,9 @@ function handleTouch(evt) {
                 handleCSSEvents_mouse(eventholder,true,false,false);
                 
                 handleTextSelection(eventholder);
+                
+                
+                drawProjects(paper,true);
    
 //                runEval(cEl,evtType);
             break;
@@ -345,6 +354,8 @@ function handleTouch(evt) {
 //                handleCSSEvents_mouse(false,false,false);
                 
                 handleTextSelection(eventholder);
+                
+                drawProjects(paper,true);
                 
             break;
         };
@@ -464,13 +475,24 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
     try{
         // prefill default event stuff
         
+        //alert("preSetEventHolder");
+        
         eventholder.type = paperevt.type;
         eventholder.callerType = evtCallerType;
-        var evt = paperevt.event;
+        var evt;
+        if(evtCallerType === "touch"){
+            evt = paperevt;
+            //disableEvent(evt);
+        }else{
+            evt = paperevt.event;
+            //alert("here");
+            //paperevt.stop();
+        }
+                
         
         //disableEvent(evt);
         
-        paperevt.stop();
+        //
 
         var targetId = evt.target.id;
         
