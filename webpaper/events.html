@@ -75,7 +75,7 @@
                 text.fillColor = 'black';
                 text.content = 'The contents of the point text';
                 
-                var cppath = new Group()
+                var cppath = new Group();
 
                 cppath.addChild(new Path.Circle({
                             center: new Point(50, 50),
@@ -87,7 +87,7 @@
                         }));
                 
                 cppath.addChild(new PointText({
-                            point: new Point(150, 50),
+                            point: new Point(100, 70),
                             content: "A"
                         }));
                 
@@ -95,11 +95,31 @@
                 cppath.fillColor= 'green';
                 cppath.selected= true;
                 
-                text.content = cppath.children.length
+                var pathCP = new CompoundPath();
+                pathCP.addChildren([
+                        new Path({
+                            segments: [[20, 20]]
+                        }),
+                        new Path.Line({
+                            from: new Point(50, 10),
+                            to: new Point(150, 10)
+                        }),
+                        new Path.Line({
+                            from: new Point(50, 20),
+                            to: new Point(150, 20)
+                        }),
+                        new Path.Line({
+                            from: new Point(50, 30),
+                            to: new Point(150, 30)
+                        })
+                    ]);
+                pathCP.strokeColor= 'black';
+                
+                cppath.children[2].content = pathCP.children[1].segments;
                 
                 paper.project.view.onFrame = function(event) {
 			// On each frame, rotate the path by 3 degrees:
-			text.rotate(3);
+			//text.rotate(1);
 		}
                 
 	}

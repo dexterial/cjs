@@ -103,7 +103,7 @@
     },
     "elements":{
         "text1":{
-            "class":"btnGreen",
+            "class":"testLabel",
             "pageId":"editorPage",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
@@ -111,10 +111,7 @@
                 "mousedown":"testEvents2(this)"
             },
             "shape":{
-                "redraw":true,
-                "name":"test2",
-                "scale":[1,1],
-                "type":"bezier"
+                "redraw":true
             },
             "states":{
                 "global":{"default":"global-enabled"}
@@ -125,17 +122,8 @@
                     "default_":"ABCDEFG",
                     "default__":"A B c D E F G H I J K L m n o p q r s t u v w x y z 1234567890 A B c D E F G H I J K L m n o p q r s t u v w x y z",
                     "default":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
-                    "editable":true,
-                    "vertical":false,
-                    "pattern":"path",
-                    "shape":{
-                        "redraw":true,
-                        "name":"test2",
-                        "scale":[1,1],
-                        "type":"path"
-                    },
                     "customStyle":[
-                        {"style":{"font-size":"5em","color":"green"},"chars":["O","o"]},
+                        {"style":{"font-size":"2em","color":"green"},"chars":["O","o"]},
                         {"style":{"color":"red"},"charspos":[0,1,2,3]},
                         {"style":{"color":"blue"},"wordspos":["0_4",0,1]},
                         {"style":{"font-size":"1em","color":"red"},"wordspos":[5]},
@@ -232,7 +220,31 @@
         {
             "name":"main","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
             "children":[
-                {"name":"test1","elId":"text1","tab":1,"shape":{"masspoint":[0.5,0.5]},"data":{"values":{"shape":{"masspoint":[0.5,0.5]}}}}
+                {"name":"test1","elId":"text1","tab":1,"shape":{"masspoint":[0.5,0.5],"scale":[1,1],"name":"test2","type":"bezier"},"data":{"values":{
+                    "editable":true,
+                    "vertical":false,
+                    "pattern":"path"
+                    }}},
+                {"name":"test2","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                    "editable":true,
+                    "vertical":false,
+                    "pattern":"box-fill"
+                    }}},
+                {"name":"test3","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                    "editable":true,
+                    "vertical":true,
+                    "pattern":"box-fill"
+                    }}},
+                {"name":"test2a","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                    "editable":true,
+                    "vertical":false,
+                    "pattern":"box-fill"
+                    }}},
+                {"name":"test3a","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                    "editable":true,
+                    "vertical":true,
+                    "pattern":"box-fill"
+                    }}}
             ]
         },
         {

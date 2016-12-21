@@ -21,7 +21,7 @@
     "text":{
         "chars":"0123456789 -",
         "words":["0","1","2","3","4","5","6","7","8","9"," ","-","00","000","0000"],
-        "charsSelection":{"name":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(51,143,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
+        "charsSelection":{"name":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(151,243,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
         "charsWidths":{},
         "charsFontsMd5":{},
         "charsFontsObj":[]
@@ -261,6 +261,26 @@
                                 }
                             },
                             "data":{"values":{"default":"DEXTERIAL"}}
+                        },
+                        {"name":"tabTLLabel2","elId":"tablabel","tab":1,"class":"label1",
+                            "shape":{
+                                "flipXY":[false,false],
+                                "redraw":true,"scale":[0.69,0.49],
+                                "masspoint":[0.45,0.45]
+                            },
+                            "rules":{
+                                "tabstate":"r2"
+                            },
+                            "states":{
+                                "tabstate":{
+                                    "normal":"ct3",
+                                    "foldedTL":"ct2",
+                                    "foldedTR":"ct3",
+                                    "foldedBR":"ct3",
+                                    "foldedBL":"ct3"
+                                }
+                            },
+                            "data":{"values":{"default":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr."}}
                         }
                     ]
                 },
@@ -398,7 +418,7 @@
             }
         },
         "txtInput1":{
-            "class":"textStuff",
+            "class":"testLabel2",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{

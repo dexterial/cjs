@@ -748,27 +748,6 @@
                             "txtInput5":{"val":"other stuff","eval":false}
                         }
                     }
-                },{
-                    "name":"list2","elId":"list1","tab":0,"shape":{"masspoint":[0.52,0.12],"scale":[0.032,0.12]},
-                    "data":{
-                        "index":"txtInput1",
-                        "values":{
-                            "label1":{"val":"Canvas Element","eval":false},
-                            "txtInput0":{
-                                "val":"editorPage_fabric.data.editIndex","eval":true,
-                                "out_id":"txtInputObj","out_val":"get_cEl_properties(window[editorPage_fabric.data.editIndex],'general')","out_eval":true
-                            },
-                            "txtInput1":{
-                                "val":".shape","eval":false,
-                                "out_id":"txtInputObj","out_val":"get_cEl_properties(window[editorPage_fabric.data.editIndex],'shape')","out_eval":true
-                            },
-                            "txtInput2":{"val":".events","eval":false},
-                            "txtInput3":{"val":".rules","eval":false},
-                            "txtInput4":{"val":".style","eval":false},
-                            "txtInput5":{"val":"other stuff","eval":false}
-                        }
-                    }
-                    
                 }
             ]
         },
