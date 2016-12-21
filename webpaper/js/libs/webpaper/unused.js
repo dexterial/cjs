@@ -1,4 +1,56 @@
 
+//function getCharPos(lines,xy){
+//    try{
+//        //if(!startPos || startPos === -1)startPos = 0;
+//        // do a direct search
+//        
+//        cdebug(xy)();
+//        
+//        
+//        var pos=0;
+//        var boolLeft = false;
+//        for(var i = 0, chrObj,offsetXY,actY=0,boolYset=false,len = lines.length; i<len;i++){
+//            pos = i;
+//            chrObj = lines[i];
+//            if(chrObj.point){
+//
+//                offsetXY = [-chrObj.w/2,0];
+//
+//                if(chrObj.point.y>xy[1]+offsetXY[1]){
+//                    pos = i;
+//                    if(!boolYset){
+//                        boolYset = true;
+//                        actY = chrObj.point.y;
+//                    }
+//                    if(chrObj.point.x>xy[0]+offsetXY[0]){
+//                        pos = i;
+//                        boolLeft =true;
+//                        break;
+//                    }
+//                }
+//                
+//                if(boolYset){
+//                    //cdebug(actY > chrObj.xy[1],false,true);
+//                    if(actY < chrObj.point.y){
+//                        pos = i-1;
+//                        boolLeft = false;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        //cdebug(lines[pos],true,true);
+//        //cdebug({"pos":pos,"left":boolLeft},false,true)();
+//        return {"pos":pos,"left":boolLeft};
+//                            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+
 
 //function draw_chr(chrObj,charpos,cEl_ctx,cEl_Selection,boolHasSelection){
 //    

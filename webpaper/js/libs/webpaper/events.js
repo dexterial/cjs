@@ -144,11 +144,12 @@ function handleKeys(evt) {
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"keyboard");
         
-        if(!eventholder.active.name)return false;
         
-        
-        var cElName = eventholder.active.name;
-        var cEl = window[cElName];
+
+        //if(eventholder.noevent)return false;
+        if(!eventholder.active.oldObj)return false;
+       
+        //var cElName = eventholder.active.name;
         
         switch(evtType){
             
@@ -156,23 +157,31 @@ function handleKeys(evt) {
                 //cdebug(eventholder)();
                 handleCSSEvents_keys(eventholder,evt);
                 
-                runEval(cEl,evtType) ;
+                runEval(eventholder.active.oldObj,evtType) ;
+                
+                drawProjects(paper,true);
+                
             break;
             case "keypress":
                 
                 handleCSSEvents_keys(eventholder,evt);
                 
                 //alert(evt.keyCode);
-                runEval(cEl,evtType) ;
+                runEval(eventholder.active.oldObj,evtType) ;
                 //evt.preventDefault();
                 //evt.stopPropagation();
+                
+                drawProjects(paper,true);
+                
             break;
             case "keyup":
                 //cdebug([evtType,kind(evt.target)]);
                 
                 handleCSSEvents_keys(eventholder,evt);
                 
-                runEval(cEl,evtType);
+                runEval(eventholder.active.oldObj,evtType);
+                
+                drawProjects(paper,true);
             break;
         };
         
@@ -394,7 +403,7 @@ function handleTextSelection(eventholder){
                 }
                 if(btnPressed === 3){
 
-                    selection_actions(cEl, eventholder, clickCount, false);
+                    selection_actions(cEl, eventholder, clickCount, true);
                 }
                     
             break;
@@ -760,75 +769,75 @@ function handleCSSEvents_keys(eventholder,evt) {
     
     try{
         
-//        switch(eventholder.type){
-//            
-//            case "keydown":
-//                //cdebug(eventholder.keys.chr);
-//                switch(eventholder.keys.chr){
-//                    case 37:
-//                    case 38:
-//                    case 39:
-//                    case 40:    
-//                        move_chars(eventholder);
-//                        evt.preventDefault();
-//                    break;
-//                    case 8:
-//                    case 46:
-//                        delete_chars(eventholder);
-//                        evt.preventDefault();
-//                    break;
-//                    case 9:
-//                        updateEventHolder(eventholder,false,true,false);
-//                        handleCSSEvents_mouse(eventholder,false,true,false);
-//                        evt.preventDefault();
-//                    break;
-//                    case 13:
-//                        updateEventHolder(eventholder,false,false,true);
-//                        handleCSSEvents_mouse(eventholder,false,false,true);
-//
-//                    break;
-//                    case 27:
-//                        evt.preventDefault();
-//                    break;
-//                    case 86:
-//                    case 118:    
-//                        if(evt.ctrlKey){
-//                            handlePaste(evt);
-//                        }
-//                    break;
-//                    default:
-//                        //evt.preventDefault();
-//                        //insert_chars(eventholder,true);
-//                    break;
-//                }
-//                
-//            break;
-//            case "keypress":
-//                
-//                switch(eventholder.keys.chrVal){
-//                    
-//                    default:
-//                        
-//                        edit_chars(eventholder,true);
-//                        evt.preventDefault();
-//                    break;
-//                }
-//                
-//            break;
-//            case "keyup":
-//                
-//                switch(evt.keyCode){
-//                    case 86:
-//                    case 118:
-//                        if(evt.ctrlKey){
-//                            handlePaste(evt);
-//                        }
-//                    break;
-//                }
-//                
-//                
-//            break;
-//        };
+        switch(eventholder.type){
+            
+            case "keydown":
+                //cdebug(eventholder.keys.chr);
+                switch(eventholder.keys.chr){
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 40:    
+                        move_chars(eventholder);
+                        evt.preventDefault();
+                    break;
+                    case 8:
+                    case 46:
+                        delete_chars(eventholder);
+                        evt.preventDefault();
+                    break;
+                    case 9:
+                        updateEventHolder(eventholder,false,true,false);
+                        handleCSSEvents_mouse(eventholder,false,true,false);
+                        evt.preventDefault();
+                    break;
+                    case 13:
+                        updateEventHolder(eventholder,false,false,true);
+                        handleCSSEvents_mouse(eventholder,false,false,true);
+
+                    break;
+                    case 27:
+                        evt.preventDefault();
+                    break;
+                    case 86:
+                    case 118:    
+                        if(evt.ctrlKey){
+                            handlePaste(evt);
+                        }
+                    break;
+                    default:
+                        //evt.preventDefault();
+                        //insert_chars(eventholder,true);
+                    break;
+                }
+                
+            break;
+            case "keypress":
+                
+                switch(eventholder.keys.chrVal){
+                    
+                    default:
+                        
+                        edit_chars(eventholder,true);
+                        evt.preventDefault();
+                    break;
+                }
+                
+            break;
+            case "keyup":
+                
+                switch(evt.keyCode){
+                    case 86:
+                    case 118:
+                        if(evt.ctrlKey){
+                            handlePaste(evt);
+                        }
+                    break;
+                }
+                
+                
+            break;
+        };
         
         return true;
         
@@ -1039,6 +1048,9 @@ function resetTextSelection(cEl){
 function selection_actions(cEl, eventholder, actionNo, boolReset){
     
     try{
+        
+        //cdebug(actionNo)();
+        
         var xy = eventholder.metrics.xy;
         var lines = cEl.data.values.temp.lines3;
         var len = lines.length;
@@ -1047,9 +1059,13 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
         
         cEl_Selection.name = cEl.parentName  + "_" + cEl.name;
         
-        if(boolReset)cEl_Selection.charspos = [];
+        if(boolReset){
+            cEl_Selection.charspos = [];
+            if(cEl_Selection.selObj)cEl_Selection.selObj.data.reset = true;
+            cEl_Selection.selObj = cEl;
+        }
         
-        //cdebug(cEl.data.values.temp.textContainer)();
+        var boolForce = false;
         
         var cr,startPos,endPos,chrObj;
 
@@ -1064,6 +1080,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
 //                    cEl_Selection.cr.left = cr.left;
 //                }
                 //setCarret(eventholder,cEl_Selection,true);
+                boolForce = true;
             break;
             //move carret bottom
             case actionNo === 40:
@@ -1075,34 +1092,40 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
 //                    cEl_Selection.cr.left = cr.left;
 //                }
                 //setCarret(eventholder,cEl_Selection,true);
+                boolForce = true;
             break;
             //move carret right
             case actionNo === 39:
                 
-                if(cEl_Selection.cr.pos < lines.length-1 && lines[cEl_Selection.cr.pos+1].xy){
+                //cdebug(cEl_Selection.cr.pos)();
+                
+                
+                if(cEl_Selection.cr.pos < lines.length-1){
                     cEl_Selection.cr.pos++;
                 }else if(cEl_Selection.cr.pos === lines.length-1){
                     cEl_Selection.cr.left = false;
                 }
-                //setCarret(eventholder,cEl_Selection,true);
                 
+                //cdebug(cEl_Selection.cr.pos)();
+                
+                //setCarret(eventholder,cEl_Selection,true);
+                boolForce = true;
             break;
             //move carret left
             case actionNo === 37:
                 
                 if(!cEl_Selection.cr.left)cEl_Selection.cr.left = true;
-                if(cEl_Selection.cr.pos > 0 && lines[cEl_Selection.cr.pos-1].xy){
+                if(cEl_Selection.cr.pos > 0){
                     cEl_Selection.cr.pos--;
                 }
                 //setCarret(eventholder,cEl_Selection,true);
-                
+                boolForce = true;
             break;
             // reset temp selection
             case actionNo === -2:
                 
                 cEl_Selection.temp = null;
-                cEl.data.reset = true;
-                
+                boolForce = true;
                 
             break;
             // select on mouse move and pressed
@@ -1224,7 +1247,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
             break;
 
         }
-        if(cEl_Selection.charspos.length>0)cEl.data.reset = true;
+        if(boolForce || cEl_Selection.charspos.length>0)cEl.data.reset = true;
         //cEl_layer.shape.redraw = true;
         
         //cdebug(cEl_Selection.charspos,true,true,0)();
