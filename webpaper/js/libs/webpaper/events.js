@@ -1263,7 +1263,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                         break;
                     }
                 }
-                endPos = len-1;
+                endPos = eol-1;
                 for(var j = cr.pos+1; j<eol;j++){
                     if(lines[j].pp!==chrObj.pp){
                         endPos = j-1;
