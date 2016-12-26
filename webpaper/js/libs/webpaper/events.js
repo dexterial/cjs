@@ -85,7 +85,7 @@ globalTool.onMouseDown = handleMouse;
 globalTool.onMouseMove = handleMouse;
 globalTool.onMouseUp = handleMouse;
 globalTool.onKeyDown = handleKeys;
-globalTool.onKeyPressed = handleKeys;
+//globalTool.onKeyPress = handleKeys;
 globalTool.onKeyUp = handleKeys;
 
 //tool1.onMouseDrag = function(event) {
@@ -807,7 +807,8 @@ function handleCSSEvents_keys(eventholder,evt) {
                     break;
                     default:
                         //evt.preventDefault();
-                        //insert_chars(eventholder,true);
+                        edit_chars(eventholder,true);
+                        evt.preventDefault();
                     break;
                 }
                 
@@ -859,7 +860,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //            cdebug(eventholder.canvReset,false,false,0);
 //        }
 //        for(var i = 0, len = eventholder.canvReset.length; i<len; i++){
-//            window[eventholder.canvReset[i]].shape.redraw = true;
+//            window[eventholder.canvReset[i]].reset.layout_shape = true;
 //        }
         //}
         
@@ -875,8 +876,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //                if(cEl){
 //                    //cdebug(eventholder.hover.id)();
                     cEl.hover = false;
-                    cEl.style.redraw = true;
-                    cEl.shape.redraw = true;
+                    cEl.reset.layout_css = true;
+                    cEl.reset.layout_shape = true;
                     runEval(cEl,"hoveroff");
 //                }
             }
@@ -892,8 +893,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 
                 //cEl = window[eventholder.currentid];
                 cEl.hover = true;
-                cEl.style.redraw = true;
-                cEl.shape.redraw = true;
+                cEl.reset.layout_css = true;
+                cEl.reset.layout_shape = true;
                 runEval(cEl,"hoveron");
                 resetCursor(cEl);
             }
@@ -905,8 +906,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 cEl = eventholder.focus.oldObj;
 //                if(cEl){
                     cEl.focus = false;
-                    cEl.style.redraw = true;
-                    cEl.shape.redraw = true;
+                    cEl.reset.layout_css = true;
+                    cEl.reset.layout_shape = true;
                     runEval(cEl,"focusoff");
 //                    resetCursor(cEl);
 //                }
@@ -918,8 +919,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 
                 cEl = eventholder.retObj;
                 cEl.focus = true;
-                cEl.style.redraw = true;
-                cEl.shape.redraw = true;
+                cEl.reset.layout_css = true;
+                cEl.reset.layout_shape = true;
                 runEval(cEl,"focuson");
                 resetCursor(cEl);
             }
@@ -931,8 +932,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 cEl = eventholder.active.oldObj;
 //                if(cEl){
                     cEl.active = false;
-                    cEl.style.redraw = true;
-                    cEl.shape.redraw = true;
+                    cEl.reset.layout_css = true;
+                    cEl.reset.layout_shape = true;
                     runEval(cEl,"activeoff");
                     resetTextSelection(cEl);
                     //resetCursor(cEl);
@@ -946,8 +947,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 
                 cEl = eventholder.retObj;
                 cEl.active = true;
-                cEl.style.redraw = true;
-                cEl.shape.redraw = true;
+                cEl.reset.layout_css = true;
+                cEl.reset.layout_shape = true;
                 runEval(cEl,"activeon");
                 resetCursor(cEl);
                 
@@ -988,13 +989,13 @@ function handleContextMenu(eventholder){
             var xy = eventholder.metrics.xy;
             
             project_context.shape.masspoint = cEl_edit_MP(page_context,xy,page_context.shape.scale);
-            project_context.shape.redraw = true;
+            project_context.reset.layout_shape = true;
             
             page_context.data.context = true;
             
         }else{
             project_context.visible = false;
-            project_context.shape.redraw = true;
+            project_context.reset.layout_shape = true;
             
             page_context.data.context = false;
         }
@@ -1035,6 +1036,7 @@ function resetTextSelection(cEl){
             cEl_Selection.chars = [];
             cEl_Selection.wordspos = [];
             cEl_Selection.paragraphspos = [];
+            cEl.reset.selection = true;
         }
     } catch (e) {
         var err = listError(e);
@@ -1050,18 +1052,16 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
     try{
         
         //cdebug(actionNo)();
-        
-        var xy = eventholder.metrics.xy;
+
         var lines = cEl.data.values.temp.lines3;
-        var len = lines.length;
+        var eol = cEl.data.values.temp.eol;
         var cEl_Selection = paper.data.text.charsSelection;
-        var cEl_layer = paper.project;
         
         cEl_Selection.name = cEl.parentName  + "_" + cEl.name;
         
         if(boolReset){
             cEl_Selection.charspos = [];
-            if(cEl_Selection.selObj)cEl_Selection.selObj.data.reset = true;
+            if(cEl_Selection.selObj)cEl_Selection.selObj.reset.selection = true;
             cEl_Selection.selObj = cEl;
         }
         
@@ -1096,30 +1096,63 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
             break;
             //move carret right
             case actionNo === 39:
-                
-                //cdebug(cEl_Selection.cr.pos)();
-                
-                
-                if(cEl_Selection.cr.pos < lines.length-1){
-                    cEl_Selection.cr.pos++;
-                }else if(cEl_Selection.cr.pos === lines.length-1){
-                    cEl_Selection.cr.left = false;
+
+                var i = cEl_Selection.cr.pos;
+                for(var boolParagraph = false;i<eol;i++){
+                    chrObj = lines[i+1];
+                    if(!chrObj)break;
+                    if(cEl_Selection.cr.left){
+                        cEl_Selection.cr.left = false;
+                        boolForce = true;
+                        break;
+                    }
+                    
+                    if(chrObj.pr){
+                        if(cEl_Selection.cr.pos < eol-1){
+                            if(boolParagraph){
+                                cEl_Selection.cr.left = true;
+                            }
+
+                            cEl_Selection.cr.pos=i+1;
+                            boolForce = true;
+                            break;
+                        }
+                    }else{
+                        if(chrObj.chr==="n" && !cEl_Selection.cr.left){
+                            boolParagraph = true;
+                            boolForce = true;
+                        }
+                    }
                 }
                 
-                //cdebug(cEl_Selection.cr.pos)();
-                
-                //setCarret(eventholder,cEl_Selection,true);
-                boolForce = true;
             break;
             //move carret left
             case actionNo === 37:
-                
-                if(!cEl_Selection.cr.left)cEl_Selection.cr.left = true;
-                if(cEl_Selection.cr.pos > 0){
-                    cEl_Selection.cr.pos--;
+                var i = cEl_Selection.cr.pos;
+                for(var boolParagraph = false;i>0;i--){
+                    chrObj = lines[i-1];
+                    
+                    if(!chrObj)break;
+                    //cdebug(chrObj.chr)();
+                    if(chrObj.pr){
+                        if(cEl_Selection.cr.pos > 0){
+                            if(boolParagraph){
+                                break;
+                            }
+                            if(cEl_Selection.cr.left)cEl_Selection.cr.left = false;
+                            cEl_Selection.cr.pos=i-1;
+                            boolForce = true;
+                            break;
+                        }
+                    }else{
+                        if(chrObj.chr==="n" && !cEl_Selection.cr.left){
+                            cEl_Selection.cr.left = true;
+                            boolParagraph = true;
+                            boolForce = true;
+                        }
+                    }
                 }
-                //setCarret(eventholder,cEl_Selection,true);
-                boolForce = true;
+                
             break;
             // reset temp selection
             case actionNo === -2:
@@ -1190,8 +1223,8 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                         break;
                     }
                 }
-                endPos = len-1;
-                for(var j = cr.pos+1; j<len;j++){
+                endPos = eol-1;
+                for(var j = cr.pos+1; j<eol;j++){
                     if(lines[j].wp!==chrObj.wp){
                         //cdebug(lines[j].sc)();
 //                        if(lines[j].sc){
@@ -1231,7 +1264,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                     }
                 }
                 endPos = len-1;
-                for(var j = cr.pos+1; j<len;j++){
+                for(var j = cr.pos+1; j<eol;j++){
                     if(lines[j].pp!==chrObj.pp){
                         endPos = j-1;
                         break;
@@ -1243,12 +1276,12 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
             break;
             // select all text
             case (actionNo > 3 && actionNo < 8):
-                cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(0,len-1));
+                cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(0,eol-1));
             break;
 
         }
-        if(boolForce || cEl_Selection.charspos.length>0)cEl.data.reset = true;
-        //cEl_layer.shape.redraw = true;
+        if(boolForce || cEl_Selection.charspos.length>0)cEl.reset.selection = true;
+        //cEl_layer.reset.layout_shape = true;
         
         //cdebug(cEl_Selection.charspos,true,true,0)();
         
@@ -1261,6 +1294,31 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
     }    
 }
 
+function getCharCRLeft(xy,bounds){
+    try{
+        
+//        cdebug(bounds.topLeft.getDistance(new paper.Point(xy)))();
+//        cdebug(bounds.bottomLeft.getDistance(new paper.Point(xy)))();
+//        cdebug(bounds.topRight.getDistance(new paper.Point(xy)))();
+//        cdebug(bounds.bottomRight.getDistance(new paper.Point(xy)))();
+//        
+//        cdebug(xy)();
+////        
+//        cdebug(bounds.topLeft.getDistance(new paper.Point(xy)) + " << vs >> " + bounds.topRight.getDistance(new paper.Point(xy)))();
+        
+        
+        if( bounds.topLeft.getDistance(new paper.Point(xy))<bounds.topRight.getDistance(new paper.Point(xy))){
+            return true;
+        }else{
+            return false;
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
 function getCharPos2(eventholder,type){
     try{
@@ -1272,12 +1330,15 @@ function getCharPos2(eventholder,type){
         
         if(indexTP === -1)return {"valid":false};
         
+//        eventholder.actObj.selected = true;
+        
         switch(type){
             case "point":
+                
                 return {
                     "valid":true,
                     "pos":~~actObjName.substring(indexTP+3),
-                    "left":false
+                    "left":getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds)
                 };
             break;
             case "top":
@@ -1421,7 +1482,7 @@ function testEvents2(cEl,eventName){
     
     //cdebug(cEl.name)();
 //    var cEl = window[currentid];
-//    //cEl.shape.redraw = true;
+//    //cEl.reset.layout_shape = true;
 //    drawChildren(cEl,true);
     
 }

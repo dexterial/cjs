@@ -70,10 +70,17 @@
 			path2.arcTo(event.point);
 		};
                 
+                
                 var text = new PointText(new Point(200, 50));
                 text.justification = 'center';
                 text.fillColor = 'black';
                 text.content = 'The contents of the point text';
+                
+                
+                tool2.onMouseMove = function(event) {
+			// Use the arcTo command to draw cloudy lines
+			text.content = (event.point);
+		};
                 
                 var cppath = new Group();
 
@@ -120,7 +127,18 @@
                 paper.project.view.onFrame = function(event) {
 			// On each frame, rotate the path by 3 degrees:
 			//text.rotate(1);
-		}
+		};
+                
+                var text2 = new PointText({
+                    point:new Point(50, 100),
+                    content:'test',
+                    visible:false
+                });
+                console.log(text2.exportJSON());
+                //text2.justification = 'center';
+                //text2.selected = true;
+                //text2.content = "ZZZZZZZZZ";
+                //text2.fillColor = 'black';
                 
 	}
 </script>

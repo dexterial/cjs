@@ -117,7 +117,7 @@ function remloadedPage(cEl,pageId){
                 if(!window[pageId])return false;
                 delete window[pageId];
                 window["editorPage_fabric"].children = [];
-                window["editorPage_fabric"].shape.redraw = true;
+                window["editorPage_fabric"].reset.layout_shape = true;
             break;
             case "canvas": //draw canvas element
                 //console.log(pageId + "_" + cEl.name + "_project");
@@ -208,7 +208,7 @@ function resetEditorCEls(fabric,preview) {
                     fabric.children[i].events = null;
                     fabric.children[i].states = null;
                     fabric.children[i].shape = preview.children[i].shape;
-                    fabric.children[i].shape.redraw = true;
+                    fabric.children[i].reset.layout_shape = true;
                     resetEditorCEls(fabric.children[i],preview.children[i]);
                 //}
             }
@@ -638,7 +638,8 @@ function setGetPage(cEl){
         paper.tag = cEl.tag;
         paper.class = cEl.class;
         
-        //cdebug(paper.tag)();
+
+        
         
         paper.shape = $.extend(true,{},cEl.shape);
         paper.style = $.extend(true,{},cEl.style);
@@ -654,7 +655,8 @@ function setGetPage(cEl){
             "shapes" : $.extend(true,{},cEl.shapes),
             "elements" : $.extend(true,{},cEl.elements)
         };
-        paper.loaded = true;
+        
+        paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
         
         return paper;
     
@@ -739,6 +741,8 @@ function setGetProject(cEl,parentName){
 //            strokeColor: 'black'
 //        });
 //        project.cr.name = "test";
+        
+        project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
         
         return project;
         
@@ -842,7 +846,20 @@ function setGetShape(cEl,parentName){
         // add holder of text symbols            cEl_group.children[2]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TP";
-
+        
+        // add holder of text selection          cEl_group.children[3]
+        tempShape = cEl_group.addChild(new paper.Group());
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TS";
+        
+        switch(cEl.data.type){
+            case "text":
+                cEl_group.data.values.temp = {};
+            break;
+            default:
+            break;
+        }
+        cEl_group.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
+        
         return cEl_group;
         
     } catch (e) {
@@ -971,7 +988,7 @@ function drawProjects(cEl,boolRedraw){
         
         //if(!cEl)return true;
         var boolAllIsWell = true;
-        //if(cEl.tag === "layer"){boolRedraw = cEl.shape.redraw;};
+        //if(cEl.tag === "layer"){boolRedraw = cEl.reset.layout_shape;};
         boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
         
         
@@ -1024,7 +1041,7 @@ function drawProjects(cEl,boolRedraw){
 //    try{
 //        //if(!cEl)return true;
 //        var boolAllIsWell = true;
-//        if(cEl.tag === "layer"){boolRedraw = cEl.shape.redraw;};
+//        if(cEl.tag === "layer"){boolRedraw = cEl.reset.layout_shape;};
 //        boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
 //        
 //        var boolHasChildren = cEl.children ? true: false;
@@ -1052,39 +1069,39 @@ function draw_cEl(cEl,boolRedraw){
             
             case "page":
                 
-                if(!cEl.shape.redraw){return true;};
+                if(!cEl.reset.layout_shape){return true;};
                 
-                if(cEl.style.redraw){
+                if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
                 
                 draw_cEl_page(cEl);
                 //cdebug(cEl.shape)();
-                cEl.shape.redraw = false;
+                cEl.reset.layout_shape = false;
             
             break;
             case "project": //draw page element
-                if(!cEl.shape.redraw){return true;};
+                if(!cEl.reset.layout_shape){return true;};
                 //cdebug("draw project " + cEl.name)();
 //                cdebug("draw page " + cEl.name,true,false,2)();
                 // compute style
-                if(cEl.style.redraw){
+                if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
                 draw_cEl_project(cEl);
                 
-                cEl.shape.redraw = false;
+                cEl.reset.layout_shape = false;
             break;
             case "layer": //draw canvas element
-//                if(!cEl.shape.redraw){return true;};
+//                if(!cEl.reset.layout_shape){return true;};
 //                
-//                if(cEl.style.redraw){
+//                if(cEl.reset.layout_css){
 //                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
 //                }
 //                
 //                //cdebug("draw canvas")();
 //                draw_cEl_layer(cEl);
-//                cEl.style.redraw = false;
+//                cEl.reset.layout_css = false;
             break;
             case "group": //draw group
                 
@@ -1094,24 +1111,24 @@ function draw_cEl(cEl,boolRedraw){
 //              
 
                 if(boolRedraw){
-                    //cEl.shape.redraw = true;
+                    //cEl.reset.layout_shape = true;
                 }else{
-                    if(!cEl.shape.redraw){
+                    if(!cEl.reset.layout_shape){
                         return true;
                     };
                 }
                 // compute style
-                if(cEl.style.redraw){
+                if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
                 }
                 
                 //cdebug(cEl.shape)();
                 
-////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.shape.redraw,false,false,2)();
+////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
                 draw_cEl_group(cEl);
-                cEl.shape.redraw = false;
-                cEl.style.redraw = false;
-                //cdebug("END draw shape " + cEl.name + " , redraw " + cEl.shape.redraw,false,false,2)();
+                cEl.reset.layout_shape = false;
+                cEl.reset.layout_css = false;
+                //cdebug("END draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
             break;
         }
         
@@ -1176,7 +1193,7 @@ function draw_cEl_project(cEl_project){
     
     try {
         
-        if(!cEl_project.shape.redraw){return true;};
+        if(!cEl_project.reset.layout_shape){return true;};
         if(!cEl_project.visible){
             //cdebug("not visible")();
             cEl_project.view.element.style.visibility = "hidden";
@@ -1235,7 +1252,7 @@ function draw_cEl_project(cEl_project){
         
         
         
-        //if(!cEl_project.shape.redraw){return true;};
+        //if(!cEl_project.reset.layout_shape){return true;};
         
 //        var cEl_canv = document.getElementById(cEl_project.name + "_project");
 //        
@@ -1248,7 +1265,7 @@ function draw_cEl_project(cEl_project){
 //        
 //        if(!cEl_project.visible && cEl_project.loaded){
 //            if(cEl_canv.style.visibility !== "hidden")cEl_canv.style.visibility = "hidden";
-//            cEl_project.shape.redraw = false;
+//            cEl_project.reset.layout_shape = false;
 //            return true;
 //        }else{
 //            if(cEl_canv.style.visibility !== "visible")cEl_canv.style.visibility = "visible";
@@ -1431,7 +1448,7 @@ function draw_cEl_layer(cEl) {
         }
         
         //if(boolImgLoaded || boolRedraw)
-        cEl.shape.redraw = false;
+        cEl.reset.layout_shape = false;
         
     } catch (e) {
         var err = listError(e,true);
@@ -1457,14 +1474,14 @@ function draw_cEl_group(cEl_group) {
         if(!cEl_layer.debug){
             if(!cEl_group.visible || !cEl_layer.visible){
                 //cdebug(cEl_group.name)();
-                cEl_group.shape.redraw = false;
+                cEl_group.reset.layout_shape = false;
                 return true;
             };
         }
         
         
         
-        //if(cEl.shape.redraw === true){
+        //if(cEl.reset.layout_shape === true){
           
 
         var boolDrawCp = false;
@@ -1773,7 +1790,7 @@ function setStyle_cEl(cEl) {
         cEl.style.hover = {};
         cEl.style.active = {};
         cEl.style.focus = {};
-        cEl.style.redraw = true;
+        cEl.reset.layout_css = true;
         
         if(!GLOBAL_styles["#" + cEl_fullId]){
             // just make an entry inside the main Global style variable
@@ -1831,7 +1848,7 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
             cEl.style.calc = $.extend(true,cEl.style.calc,cEl.style.active.calc);
         };
         
-        cEl.style.redraw = false;
+        cEl.reset.layout_css = false;
         
         return true;
     } catch (e) {
@@ -1942,7 +1959,7 @@ function setState(cEl_caller,stateName){
 //        cdebug(cEl_page.state[stateName], false,true,0);
 
         var cEl_layer = cEl_caller.project;
-        cEl_layer.shape.redraw = true;
+        cEl_layer.reset.layout_shape = true;
         
         return true;
         
@@ -1960,7 +1977,7 @@ function reset_shape_stuff(cEl,boolParent,boolMP,boolRedraw,boolPoints){
         
         if(boolParent){
             if(boolMP)cEl.shape.masspoint = null;
-            if(boolRedraw)cEl.shape.redraw = true;
+            if(boolRedraw)cEl.reset.layout_shape = true;
             if(boolPoints)cEl.shape.points = null;
         }
         if (cEl.children){

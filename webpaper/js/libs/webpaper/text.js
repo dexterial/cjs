@@ -20,77 +20,43 @@ function draw_cEl_text(cEl_group,strNewText){
     
     try{ 
 
-        var boolNotSet = false;
-        if(!cEl_group.data.values.temp){
-            cEl_group.data.values.temp = {};
-            boolNotSet = true;
-        }
-        
         var cEl_pageText = paper.data.text;
+        //cdebug(cEl_group.reset)();
         
-        if(cEl_group.style.redraw || boolNotSet){
+        if(cEl_group.reset.text_css){
             set_cEl_text_css_styleMap(cEl_group,cEl_pageText,true);
             set_cEl_text_css(cEl_group);
-            
         }
-        
+
+
         set_cEl_text(cEl_group,strNewText);
-        cEl_set_wordMap3(cEl_group);
-        cEl_set_chr_metrics(cEl_group,cEl_pageText);
-            
-        if(cEl_group.data.reset){
-            //cdebug(cEl_group.name)();
+        
+        
+        if(cEl_group.reset.text_shape){
             set_text_path(cEl_group,false);
+        }
+        
             
+        if(cEl_group.reset.text){
+            cEl_set_wordMap3(cEl_group);
+        }
+        
+        
+        if(cEl_group.reset.text || cEl_group.reset.text_shape){
+            cEl_group.children[2].removeChildren();
             draw_cEl_lines3(cEl_group,cEl_pageText);
-            cEl_group.data.reset = false;
+        }
+        if(cEl_group.reset.selection){
+            cEl_group.children[3].removeChildren();
+            drawTextSelection(cEl_group,cEl_pageText);
+            drawTextCarret(cEl_group,cEl_pageText);
         }
         
+        cEl_group.reset.text = false;
+        cEl_group.reset.text_shape = false;
+        cEl_group.reset.text_css = false;
+        cEl_group.reset.selection = false;
 
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-
-function set_cEl_font_css(cEl_group,cEl_pageText,addStyle,boolReturnId){
-    
-    try{
-        //console.log("before " + cEl_group.style.calc.color);
-        //console.log("apply  " + addStyle.color);
-        if(addStyle){
-            cEl_group.style.calc2 = $.extend(false,cEl_group.style.calc,addStyle);
-        }else{
-            cEl_group.style.calc2 = cEl_group.style.calc;
-        }
-        var styleObj = {};
-        //cdebug(window[cEl_group.pageId].shape.scale,false,true,0);
-        //cdebug(cEl_group.name + " " + cEl_group.style.calc2["font-size"],false,true,0);
-        styleObj.fontSize = size2px(cEl_group.style.calc2["font-size"],false,paper.shape.scale[1]);
-        styleObj.fontStyle = cEl_group.style.calc2["font-style"] ? cEl_group.style.calc2["font-style"] : "normal";
-        styleObj.fontVariant = cEl_group.style.calc2["font-variant"] ? cEl_group.style.calc2["font-variant"] : "normal";
-        styleObj.fontWeight = cEl_group.style.calc2["font-weight"] ? cEl_group.style.calc2["font-weight"] : "normal";
-        styleObj.fontFamily = cEl_group.style.calc2["font-family"] ? cEl_group.style.calc2["font-family"] : "Arial";
-        
-//        styleObj.fontCanvas = styleObj.fontStyle + " " + styleObj.fontVariant + " ";
-//        styleObj.fontCanvas += styleObj.fontWeight + " " + styleObj.fontSize + "px ";
-//        styleObj.fontCanvas += styleObj.fontFamily;
-        
-        styleObj.letterSpacing = cEl_group.style.calc2["letter-spacing"] ? size2px(cEl_group.style.calc2["letter-spacing"],false) : 0;
-        styleObj.color = cEl_group.style.calc2["color"] ? cEl_group.style.calc2["color"] : "rgba(0,0,0,1)";
-        styleObj.wordSpacing = cEl_group.style.calc2["word-spacing"] ? size2px(cEl_group.style.calc2["word-spacing"],false) : 0;
-        
-        // text positioning
-        
-        
-        //var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
-        
-        return setGetFontObj(cEl_pageText,styleObj,boolReturnId);
-        
-        //return styleObj;
-        
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -104,7 +70,7 @@ function set_cEl_text_css_styleMap(cEl_group,cEl_pageText,boolReturnId){
         
         //cdebug("here")();
         
-        if(!cEl_group.data.values.temp.style)cEl_group.data.values.temp.style = {};
+        
         if(!cEl_group.data.values.temp.styleMap)cEl_group.data.values.temp.styleMap = {"default":null};
         cEl_group.data.values.temp.styleMap.default = $.extend(false,cEl_group.data.values.temp.styleMap.default,set_cEl_font_css(cEl_group,cEl_pageText,null,boolReturnId));
         
@@ -155,12 +121,56 @@ function set_cEl_text_css_styleMap(cEl_group,cEl_pageText,boolReturnId){
     }
 }
 
+function set_cEl_font_css(cEl_group,cEl_pageText,addStyle,boolReturnId){
+    
+    try{
+        //console.log("before " + cEl_group.style.calc.color);
+        //console.log("apply  " + addStyle.color);
+        if(addStyle){
+            cEl_group.style.calc2 = $.extend(false,cEl_group.style.calc,addStyle);
+        }else{
+            cEl_group.style.calc2 = cEl_group.style.calc;
+        }
+        var styleObj = {};
+        //cdebug(window[cEl_group.pageId].shape.scale,false,true,0);
+        //cdebug(cEl_group.name + " " + cEl_group.style.calc2["font-size"],false,true,0);
+        styleObj.fontSize = size2px(cEl_group.style.calc2["font-size"],false,paper.shape.scale[1]);
+        styleObj.fontStyle = cEl_group.style.calc2["font-style"] ? cEl_group.style.calc2["font-style"] : "normal";
+        styleObj.fontVariant = cEl_group.style.calc2["font-variant"] ? cEl_group.style.calc2["font-variant"] : "normal";
+        styleObj.fontWeight = cEl_group.style.calc2["font-weight"] ? cEl_group.style.calc2["font-weight"] : "normal";
+        styleObj.fontFamily = cEl_group.style.calc2["font-family"] ? cEl_group.style.calc2["font-family"] : "Arial";
+        
+//        styleObj.fontCanvas = styleObj.fontStyle + " " + styleObj.fontVariant + " ";
+//        styleObj.fontCanvas += styleObj.fontWeight + " " + styleObj.fontSize + "px ";
+//        styleObj.fontCanvas += styleObj.fontFamily;
+        
+        styleObj.letterSpacing = cEl_group.style.calc2["letter-spacing"] ? size2px(cEl_group.style.calc2["letter-spacing"],false) : 0;
+        styleObj.color = cEl_group.style.calc2["color"] ? cEl_group.style.calc2["color"] : "rgba(0,0,0,1)";
+        styleObj.wordSpacing = cEl_group.style.calc2["word-spacing"] ? size2px(cEl_group.style.calc2["word-spacing"],false) : 0;
+        
+        // text positioning
+        
+        
+        //var fontText =  md5(styleObj.letterSpacing + styleObj.color + styleObj.wordSpacing + styleObj.lineHeight + styleObj.fontCanvas);
+        
+        return setGetFontObj(cEl_pageText,styleObj,boolReturnId);
+        
+        //return styleObj;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+
 function set_cEl_text_css(cEl_group){
     
     try{
         //cdebug(cEl)();
 
-        
+        if(!cEl_group.data.values.temp.style)cEl_group.data.values.temp.style = {};
         //cdebug(cEl_group.style.calc["font-size"])();
         
         cEl_group.data.values.temp.style.textAlign = cEl_group.style.calc["text-align"] ? cEl_group.style.calc["text-align"] : "justify"; 
@@ -197,7 +207,7 @@ function set_cEl_text(cEl_group,strNewText){
                 // if not set then set the old value to same value and continue to calc
                 if(cEl_group.data.values.temp && !cEl_group.data.values.temp.valueOld){
                     cEl_group.data.values.temp.valueOld = strValAct;
-                    cEl_group.data.reset = true;
+                    cEl_group.reset.text = true;
                     return true;
                 }else if(cEl_group.data.values.temp){
                     //console.log(strNewText + " vs " + cEl_group.data.values.temp.valueOld);
@@ -210,10 +220,7 @@ function set_cEl_text(cEl_group,strNewText){
                             // if new value in town then replace value and continue to calc
                             cEl_group.data.values.text = strNewText;
                             cEl_group.data.values.temp.valueOld = strValAct;
-                            cEl_group.data.reset = true;
-                            //cEl_group.style.redraw = true;
-                            //cEl_group.shape.redraw = true;
-                            
+                            cEl_group.reset.text = true;
                             return true;
                         }
                     }else{
@@ -234,27 +241,26 @@ function set_cEl_text(cEl_group,strNewText){
 function cEl_set_wordMap3(cEl_group){
     
     try{
-
+        
         cEl_group.data.values.temp.lines3 = [];
         cEl_group.data.values.temp.chars = {};
         
         var text = cEl_group.data.values.text;
-        var lines = cEl_group.data.values.temp.lines3;
-        var styleMap = cEl_group.data.values.temp.styleMap;
+        
         
 //        cdebug(styleMap)();
         
-        var charObj = {"chr":"n","f":null,"wp":0,"pp":0,"nl":true,"sc":false,"print":false};
-        pushChar(charObj,lines,styleMap,false);
+        var charObj = {"chr":"n","f":null,"wp":0,"pp":0,"nl":true,"sc":false,"pr":false};
+        pushChar(charObj,cEl_group,false);
         
         /// change here to detect words and create text Map of words by unique chars indexes
         for(var i=0, len = text.length;i < len;i++){
             charObj.chr = text[i];
             charObj.pos = i;
             if(i < len-1){
-                set_charObj_line(charObj,lines,styleMap,text[i+1]);
+                set_charObj_line(charObj,cEl_group,text[i+1]);
             }else{
-                set_charObj_line(charObj,lines,styleMap,false);
+                set_charObj_line(charObj,cEl_group,false);
             }
             i = charObj.pos;
         };
@@ -271,16 +277,17 @@ function cEl_set_wordMap3(cEl_group){
 
 
 
-function set_charObj_line(charObj,lines,styleMap,charNext){    
+function set_charObj_line(charObj,cEl_group,charNext){    
     try{
-            
+        
+        
         // case is nonprintable character
         if(charNext && charObj.chr === "\\"){
             
             switch(charNext){
                 case "n":
                 case "r":
-                    charObj.print = false;
+                    charObj.pr = false;
                     charObj.pos++ ;
                     
                     charObj.sc = false;
@@ -289,34 +296,34 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
                     charObj.wp = 0;
                     
                     charObj.chr = charNext;
-                    pushChar(charObj,lines,styleMap,false);
+                    pushChar(charObj,cEl_group,false);
                     
                 break;
 //                case "t":
 //                    // TODO add tabulation logic
 //                break;
                 default:
-                    charObj.print = true;
-                    pushChar(charObj,lines,styleMap,true);
+                    charObj.pr = true;
+                    pushChar(charObj,cEl_group,true);
                 break;
             }
         // case is space
         }else if(charObj.chr === " "){
-            charObj.print = true;
+            charObj.pr = true;
             charObj.sc = true;
             //charObj.pp = false;
             charObj.nl = true;
             
-            pushChar(charObj,lines,styleMap,true);
+            pushChar(charObj,cEl_group,true);
             charObj.sc = false;
             charObj.wp++;
         // word character
         }else if(/[a-zA-Z_0-9]/.test(charObj.chr)){
         
-            charObj.print = true;
+            charObj.pr = true;
             //charObj.pp = false;
             
-            pushChar(charObj,lines,styleMap,true);
+            pushChar(charObj,cEl_group,true);
             
             //charObj.wp = false;
             charObj.sc = false;
@@ -324,11 +331,11 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
 
         // break for all other characters
         }else{
-            charObj.print = true;
+            charObj.pr = true;
             //charObj.wp++;
             //charObj.pp = false;
             
-            pushChar(charObj,lines,styleMap,true);
+            pushChar(charObj,cEl_group,true);
             
             charObj.sc = false;
             
@@ -344,14 +351,47 @@ function set_charObj_line(charObj,lines,styleMap,charNext){
     }
 }
 
-function pushChar(charObj,lines,styleMap,boolSetStyle){
+function pushChar(charObj,cEl_group,boolSetStyle){
     try{
+        
+        var lines = cEl_group.data.values.temp.lines3;
+        var styleMap = cEl_group.data.values.temp.styleMap;
+        
         if(boolSetStyle){
             set_charObj_style(styleMap,charObj);
         }else{
             charObj.f = styleMap.default;
         }
-        lines.push({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.print});
+        
+        //cdebug(charObj.f)();
+        var cEl_pageText = paper.data.text;
+        var charStyle = cEl_pageText.charsFontsObj[charObj.f.id];
+        
+       
+         
+        if(charObj.pr){
+            var charWidth = setGetCharWidth(cEl_pageText,charObj.chr,charObj.f.id,charStyle);
+            
+            charObj.fc = charWidth.fc;
+            charObj.symbol = charWidth.symbol;
+            charObj.w = charWidth.w;
+            charObj.fs = charStyle.fontSize;
+            charObj.ls = charStyle.letterSpacing;
+        }else{
+            charObj.fc = null;
+            charObj.symbol = null;
+            charObj.w = 0;
+            charObj.fs = charStyle.fontSize;
+            charObj.ls = 0;
+        }
+        
+        //cdebug(charObj.chr)();
+        
+        //var charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
+        //cdebug(charFont)();
+        
+        lines.push($.extend(false,{},charObj));
+        //lines.push({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.pr});
         
         //cdebug({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.print})();
         
@@ -435,31 +475,20 @@ function cEl_set_chr_metrics(cEl_group,cEl_pageText){
     
     try{
         
-        var lines = cEl_group.data.values.temp.lines3;
-        var len = lines.length;
-        if(!lines)return false;
-
-        for(var i = 0, chrObj, charStyle,charWidth; i< len;i++){
-            chrObj = lines[i];
-            //cdebug(chrObj.f.id)();
-            charStyle = cEl_pageText.charsFontsObj[chrObj.f.id];
-            
-            
-            //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
-            
-            if(chrObj.pr){
-                charWidth = setGetCharWidth(cEl_pageText,chrObj.chr,chrObj.f.id,charStyle);
-                chrObj.fc = charWidth.fc;
-                chrObj.w = charWidth.w;
-                chrObj.fs = charStyle.fontSize;
-                chrObj.ls = charStyle.letterSpacing;
-            }else{
-                chrObj.fc = null;
-                chrObj.w = 0;
-                chrObj.fs = charStyle.fontSize;
-                chrObj.ls = 0;
-            }
-        }
+//        var lines = cEl_group.data.values.temp.lines3;
+//        var len = lines.length;
+//        if(!lines)return false;
+//
+//        for(var i = 0, charObj, charStyle,charWidth; i< len;i++){
+//            charObj = lines[i];
+//            //cdebug(charObj.f.id)();
+//            //charStyle = cEl_pageText.charsFontsObj[charObj.f.id];
+//            
+//            
+//            //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
+//            
+//            
+//        }
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -480,12 +509,15 @@ function delete_chars(eventholder){
 
         if(delete_selection(cEl_group,cEl_pageText)){
             // do nada
-            cdebug("delete selection " + eventholder.keys.chr)();
+            //cdebug("delete selection " + eventholder.keys.chr)();
+            
+            
+            
             
         }else if(eventholder.keys.chr === 8 ){
             if(cEl_pageText.charsSelection.cr.pos > 0){
                 
-                cdebug("delete reverse " + eventholder.keys.chr)();
+                //cdebug("delete reverse " + eventholder.keys.chr)();
                 
                 if(cEl_pageText.charsSelection.cr.left){
                     cEl_pageText.charsSelection.cr.pos--;
@@ -494,12 +526,13 @@ function delete_chars(eventholder){
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
-                cEl_group.data.reset = true;
+                cEl_group.reset.text_shape = true;
+                cEl_group.reset.selection = true;
             }
             
         }else if(eventholder.keys.chr === 46 ){
             
-            cdebug("delete current " + eventholder.keys.chr)();
+            //cdebug("delete current " + eventholder.keys.chr)();
             
             if(cEl_pageText.charsSelection.cr.pos < cEl_group.data.values.temp.lines3.length-1){
                 
@@ -511,14 +544,16 @@ function delete_chars(eventholder){
                     cEl_pageText.charsSelection.cr.left = true;
                     cEl_pageText.charsSelection.cr.pos++;
                 }
-                cEl_group.data.reset = true;
+                cEl_group.reset.selection = true;
+                cEl_group.reset.text_shape = true;
             } else if(cEl_pageText.charsSelection.cr.pos === cEl_group.data.values.temp.lines3.length-1){
                 if(cEl_pageText.charsSelection.cr.left){
                     cEl_pageText.charsSelection.cr.left = false;
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
-                cEl_group.data.reset = true;
+                cEl_group.reset.text_shape = true;
+                cEl_group.reset.selection = true;
             }
             
         }
@@ -547,6 +582,10 @@ function delete_selection(cEl_group,cEl_pageText){
             }
             cEl_pageText.charsSelection.charspos = [];
             cEl_pageText.charsSelection.cr.pos = delPos-1;
+            
+            cEl_group.reset.text_shape = true;
+            cEl_group.reset.selection = true;
+            
             return true;
         }else{
             return false;
@@ -563,51 +602,53 @@ function edit_chars(eventholder,boolAppend){
     
     try{
         
+        cdebug(eventholder.active.oldObj.name)();
+        
         var cEl_group = eventholder.active.oldObj;
         if(!cEl_group || cEl_group.data.type!=="text" || !cEl_group.data.values.editable)return false;
-        
-        var cEl_layer = paper.project;
+       
         var cEl_pageText = paper.data.text;
+        delete_selection(cEl_group,cEl_pageText);
         
-        delete_selection(cEl_group,cEl_layer,cEl_pageText);
-        
-        var chrObj ,newCarObj;
+        var charObj ,newCarObj;
         if(boolAppend){
             if(cEl_pageText.charsSelection.cr.pos > -1){
 
-                chrObj = cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos];
+                charObj = cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos];
                 var charCode = eventholder.keys.chr;
                 var charVal = eventholder.keys.chrVal;
 
                 // TODO account for special keys
-                //cdebug("<" + charVal + ">" + charCode,true,true);
+                cdebug("< " + charVal + " >" + charCode,true,true)();
+                
+                newCarObj = {};
+                
+//                newCarObj = {
+//                    "chr":charVal,
+//                    "f":charObj.f,
+//                    "wp":false,
+//                    "pp":false,
+//                    "pr":true,
+//                    "fs":charObj.fs,
+//                    "ls":charObj.ls
+//                };
+////                if(charVal!==charObj.chr){
+////
+////                }else{
+//                    newCarObj.w = charObj.w;
+////                }
+//                newCarObj.sc = (charVal === " ");
+//                newCarObj.nl = (charCode === 13);
+//                if(newCarObj.nl){
+//                    newCarObj.chr = "n";
+//                    newCarObj.pr = false;
+//                    newCarObj.pp = true;
+//                };
 
-                newCarObj = {
-                    "chr":charVal,
-                    "f":chrObj.f,
-                    "wp":false,
-                    "pp":false,
-                    "pr":true,
-                    "fs":chrObj.fs,
-                    "ls":chrObj.ls
-                };
-//                if(charVal!==chrObj.chr){
-//
-//                }else{
-                    newCarObj.w = chrObj.w;
-//                }
-                newCarObj.sc = (charVal === " ");
-                newCarObj.nl = (charCode === 13);
-                if(newCarObj.nl){
-                    newCarObj.chr = "n";
-                    newCarObj.pr = false;
-                    newCarObj.pp = true;
-                };
-
-                cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,0,newCarObj);
+                //cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,0,newCarObj);
                 cEl_pageText.charsSelection.cr.pos++;
                 
-                cEl_layer.shape.redraw = true;
+                cEl_group.reset.text_shape = true;
             } 
         }
         //cdebug(cEl_pageText.charsSelection.cr.pos,false,true);
@@ -649,17 +690,6 @@ function setGetFontObj(cEl_pageText,styleObj,boolReturnId){
         var fontObjRet = cEl_pageText.charsFontsMd5[md5Font];
         var fontObjId = -1;
         if(!fontObjRet){
-            
-            //cdebug(md5Font + " " + fontText)();
-            
-            // this to reset the font property, maybe use a string replace "normal" with "", should be faster i think
-//            cEl_ctx.font = fontObj.fontCanvas;
-//            cEl_ctx.fillStyle = fontObj.color;
-//            
-//            fontObj.fontCanvas = cEl_ctx.font;
-//            fontObj.color = cEl_ctx.fillStyle;
-//            fontObj.fontSize = parseInt(cEl_ctx.font.match(/\d+px/));
-            
             fontObjId = cEl_pageText.charsFontsObj.length;//Object.keys(cEl_pageText.charsFontsMd5).length;
             cEl_pageText.charsFontsObj.push(styleObj);
             fontObjRet = {"id":fontObjId}; //,"val":md5Font
@@ -802,9 +832,6 @@ function set_text_path(cEl_group,boolShowTextLines){
         
         var text_path_name =  cEl_group.children[1].name;
         
-        
-        cEl_group.children[2].removeChildren();
-        
         switch(cEl_group.data.values.pattern){
             case "box-fill":
                 
@@ -924,13 +951,13 @@ function set_linePars(line,linePars,boolPP){
               
         linePars.fs = 0;
         
-        for(var k = startPos, retIndex = 0,retIndex2= 0,chrObj,chrWidth,chrVal,boolVeryLongWord, boolWordChange;k < endPos;k++){
+        for(var k = startPos, retIndex = 0,retIndex2= 0,charObj,chrWidth,chrVal,boolVeryLongWord, boolWordChange;k < endPos;k++){
 
-            chrObj = line[k];
-            intWordPos = chrObj.wp;
-            chrWidth = chrObj.w;
-            chrVal = chrObj.chr;
-            linePars.fs = Math.max(chrObj.fs,linePars.fs);
+            charObj = line[k];
+            intWordPos = charObj.wp;
+            chrWidth = charObj.w;
+            chrVal = charObj.chr;
+            linePars.fs = Math.max(charObj.fs,linePars.fs);
             
             //zzz+=line[k][0];
             if(intwordX > linePars.maxX){
@@ -961,7 +988,7 @@ function set_linePars(line,linePars,boolPP){
                     break;
                     intWordWidth = 0;
                 }else{
-                    if(chrObj.sc){
+                    if(charObj.sc){
                         intWordWidth+= linePars.swd + linePars.ls;
                     }else{
                         intWordWidth+= chrWidth + linePars.ls;
@@ -971,16 +998,16 @@ function set_linePars(line,linePars,boolPP){
                 
             }else{
                 // reset return index after new word found
-                if(chrObj.sc){ //intWordPos !== intWordPosPrev
+                if(charObj.sc){ //intWordPos !== intWordPosPrev
                     
                     boolWordChange = true;
                     retIndex = k;
                     intWordWidth = 0;
                     intSpaceCount++;
-                    intwordX+= linePars.swd + chrObj.ls;
+                    intwordX+= linePars.swd + charObj.ls;
                     linePars.eos = linePars.maxX - intwordX;
                 }else{
-                    intwordX+= chrWidth + chrObj.ls;
+                    intwordX+= chrWidth + charObj.ls;
                 }
 
             }
@@ -1042,13 +1069,15 @@ var carret;
 
 
 
-function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
+function drawTextAlongPath(cEl_group,index,offset){
     
     try{
         var i = index;
         //var j = 0;
         //var offset=0;
         var lines = cEl_group.data.values.temp.lines3;
+        
+        //cdebug(lines)();
         
         //cdebug(cEl_group.name)();
         
@@ -1076,7 +1105,7 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
 
         var charsCount = lines.length;
         
-        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
+//        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
         
         var metricsObj = {
           curveLen:0,
@@ -1089,28 +1118,29 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
         var curve = text_path.curves[j];
         metricsObj.curveLen = curve.length;
 
-        for(var charObj, charFont, charSymbolContainer,boolSelected; i < charsCount; i++){
+        for(var charObj,boolSelected; i < charsCount; i++){
             charObj = lines[i];
             //cdebug(i + " of " + charsCount + " is " + charObj.chr)();
             if( charObj.w > 0 ){
 
-                boolSelected = boolHasSelection;
-                if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
+//                boolSelected = boolHasSelection;
+//                if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
+                //boolSelected = true;
+                //charFont = cEl_pageText.charsFontsObj[charObj.f.id];
 
-                charFont = cEl_pageText.charsFontsObj[charObj.f.id];
-                charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
 
-
-                if(setCharPos(charObj,charFont,curve,metricsObj)){
+                if(setCharPos(charObj,curve,metricsObj)){
                     //cdebug(cEl_pageText.charsSelection.style)();
-                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
+//                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
 
                     //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children[2],charSymbolContainer,boolSelected);
-                    drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children[2],charSymbolContainer);
+                    drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children[2],boolSelected);
                 }else{
                               
                     j++;
-                    if(!text_path.curves[j])break;
+                    if(!text_path.curves[j]){
+                        break;
+                    }
                     curve = text_path.curves[j];
                     metricsObj.curveLen = curve.length;
                     // skip back and repeat positioning
@@ -1120,14 +1150,16 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
             }else if(i>0){
 
                 j++;
-                if(!text_path.curves[j])break;
+                if(!text_path.curves[j]){
+                    break;
+                }
                 metricsObj.offset = metricsObj.indent;
                 curve = text_path.curves[j];
                 metricsObj.curveLen = curve.length;
             }
 
         }
-            
+        cEl_group.data.values.temp.eol = i;    
         return i;
         
     } catch (e) {
@@ -1137,8 +1169,136 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
     }
 }
 
+function drawTextSelection(cEl_group,cEl_pageText){
+    
+    try{
+        var i = 0;
+        //var j = 0;
+        //var offset=0;
+        var lines = cEl_group.data.values.temp.lines3;
+        var charsCount = lines.length;
+        
+        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
+        var boolHasSelection = (boolHasSelection && cEl_pageText.charsSelection.charspos.length > 0);
+        
+        
+        for(var charObj,boolSelected; i < charsCount; i++){
+            charObj = lines[i];
+            //cdebug(i + " of " + charsCount + " is " + charObj.chr)();
+            if( charObj.w > 0 ){
+                boolSelected = boolHasSelection;
+                if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
+                if(boolSelected){
+                    cEl_group.children[3].addChild(new paper.Path.Rectangle({
+                        from: [charObj.point.x - charObj.w/2, charObj.point.y-charObj.fs/2],
+                        to: [charObj.point.x + charObj.w/2, charObj.point.y+charObj.fs/2],
+                        fillColor : cEl_pageText.charsSelection.style["background-color"],
+                        rotation:charObj.angle,
+                        name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
+                    }));
+                }   
+            }
 
-function setCharPos(charObj,charFont,curve,metricsObj){
+        }
+        return true;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,true,0);
+        return err;
+    }
+}
+
+function drawTextCarret(cEl_group,cEl_pageText){
+    
+    try{
+        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
+        if(!boolHasSelection) return false;
+        
+        var lines = cEl_group.data.values.temp.lines3;
+        var charObj;
+        var offset;
+        if(cEl_group.data.values.editable){
+            charObj = lines[cEl_pageText.charsSelection.cr.pos];
+            if(charObj){
+                
+                
+                //charObj.selected = true;
+                if(cEl_pageText.charsSelection.cr.left){
+                    offset = -charObj.w/2;
+                }else{
+                    offset = +charObj.w/2;
+                }
+                
+                carret = cEl_group.children[3].addChild(new paper.Path.Line({
+                    from: [charObj.point.x + offset, charObj.point.y-charObj.fs/2],
+                    to: [charObj.point.x + offset, charObj.point.y+charObj.fs/2],
+                    strokeColor : cEl_pageText.charsSelection.style["color"],
+                    data:cEl_pageText.charsSelection.style,
+                    name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + cEl_pageText.charsSelection.cr.pos
+                }));
+                
+                carret.rotate(charObj.angle, charObj.point);
+                
+                //cdebug(window["carret"].name)();
+                    //cEl_pageText.charsSelection.style["color"]
+                paper.project.view.onFrame = function(event) {
+                    if(carret){
+
+//                                    if(carret.strokeColor.red<1){
+//                                        carret.strokeColor.red = 1;
+//                                    }else{
+//                                        carret.strokeColor.red+=0.05;
+//                                    }
+//                                    if(carret.strokeColor.green<1){
+//                                        carret.strokeColor.green = 0;
+//                                    }else{
+//                                        carret.strokeColor.green+=0.05;
+//                                    }
+//                                    if(carret.strokeColor.blue<1){
+//                                        carret.strokeColor.blue = 0;
+//                                    }else{
+//                                        carret.strokeColor.blue+=0.05;
+//                                    }
+
+//                                    if(carret.strokeColor.saturation<0){
+//                                        carret.strokeColor.saturation = 1 ;// = cEl_pageText.charsSelection.style["color"];
+//                                    }else{
+//                                        carret.strokeColor.saturation-= 0.025;
+//                                    }
+                        if(carret.strokeColor.lightness>1){
+                            carret.strokeColor = carret.data.color;
+                        }else{
+                            carret.strokeColor.lightness+= 0.015;
+                        }
+
+                        //cdebug(carret.strokeColor.saturation)();
+
+                        // On each frame, rotate the path by 3 degrees:
+                        //carret.strokeColor = "red";
+                        //cEl_pageText.charsSelection.style["color"] = "red";
+                        //cdebug(carret.strokeColor)();
+                        //carret.segments[0].point = [carret.segments[0].point.x-1,carret.segments[0].point.y-1];
+                        //carret.strokeColor.hue+= 1;
+                    }
+                }; 
+            //paper.project.view.autoUpdate();
+
+            }
+        }    
+            
+            
+            
+        return true;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,true,0);
+        return err;
+    }
+}
+
+function setCharPos(charObj,curve,metricsObj){
     try{
         
         if(!metricsObj.vertical){
@@ -1157,12 +1317,12 @@ function setCharPos(charObj,charFont,curve,metricsObj){
 
                 charObj.angle = tan.angle;//toDegrees(Math.atan2(tan.y,tan.x));
                 charObj.point = location.point;//new paper.Point(location.point.x - charObj.w/2,location.point.y + charObj.fs*0.2);
-                metricsObj.offset = metricsObj.offset + charObj.w/2 + charFont.letterSpacing;
+                metricsObj.offset = metricsObj.offset + charObj.w/2 + charObj.ls;
                 //cdebug("char end")();
             }
         }else{
 
-            metricsObj.offset += charObj.fs + charFont.letterSpacing;//*1.2
+            metricsObj.offset += charObj.fs + charObj.ls;//*1.2
             var location = curve.getLocationAt(metricsObj.offset);
             if(!location){
                 metricsObj.offset = metricsObj.indent;
@@ -1186,70 +1346,7 @@ function drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i){
     try{
         
         if(boolSelected){
-            cEl_group.children[2].addChild(new paper.Path.Rectangle({
-                from: [charObj.point.x - charObj.w/2, charObj.point.y-charObj.fs/2],
-                to: [charObj.point.x + charObj.w/2, charObj.point.y+charObj.fs/2],
-                fillColor : cEl_pageText.charsSelection.style["background-color"],
-                rotation:charObj.angle,
-                name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
-            }));
-        }
-
-        if(cEl_group.data.values.editable && i===cEl_pageText.charsSelection.cr.pos){
-            carret = cEl_group.children[2].addChild(new paper.Path.Line({
-                    from: [charObj.point.x , charObj.point.y-charObj.fs/2],
-                    to: [charObj.point.x , charObj.point.y+charObj.fs/2],
-                    strokeColor : cEl_pageText.charsSelection.style["color"],
-                    data:cEl_pageText.charsSelection.style,
-                    rotation:charObj.angle,
-                    name:cEl_group.parentName + "_" + cEl_group.name + ".CR_"+i
-                }));
-                //
-            //cdebug(window["carret"].name)();
-                //cEl_pageText.charsSelection.style["color"]
-            paper.project.view.onFrame = function(event) {
-                if(carret){
-
-//                                    if(carret.strokeColor.red<1){
-//                                        carret.strokeColor.red = 1;
-//                                    }else{
-//                                        carret.strokeColor.red+=0.05;
-//                                    }
-//                                    if(carret.strokeColor.green<1){
-//                                        carret.strokeColor.green = 0;
-//                                    }else{
-//                                        carret.strokeColor.green+=0.05;
-//                                    }
-//                                    if(carret.strokeColor.blue<1){
-//                                        carret.strokeColor.blue = 0;
-//                                    }else{
-//                                        carret.strokeColor.blue+=0.05;
-//                                    }
-
-//                                    if(carret.strokeColor.saturation<0){
-//                                        carret.strokeColor.saturation = 1 ;// = cEl_pageText.charsSelection.style["color"];
-//                                    }else{
-//                                        carret.strokeColor.saturation-= 0.025;
-//                                    }
-                    if(carret.strokeColor.lightness>1){
-                        carret.strokeColor = carret.data.color;
-                    }else{
-                        carret.strokeColor.lightness+= 0.015;
-                    }
-
-                    //cdebug(carret.strokeColor.saturation)();
-
-                    // On each frame, rotate the path by 3 degrees:
-                    //carret.strokeColor = "red";
-                    //cEl_pageText.charsSelection.style["color"] = "red";
-                    //cdebug(carret.strokeColor)();
-                    //carret.segments[0].point = [carret.segments[0].point.x-1,carret.segments[0].point.y-1];
-                    //carret.strokeColor.hue+= 1;
-                }
-            }; 
-            //paper.project.view.autoUpdate();
-
-
+            
         }
     
     } catch (e) {
@@ -1260,13 +1357,13 @@ function drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i){
 }
 
 
-function drawChar(charObj,name,textContainer,charSymbolContainer,boolSelected,boolHasCarret){
+function drawChar(charObj,name,textContainer,boolSelected){
    
     try{
-        //cdebug(charFont)();
-        var charSymbol = charSymbolContainer.symbol;
+        
+        //var charSymbol = charObj.symbol;
 
-        var textItem = textContainer.addChild(new paper.SymbolItem(charSymbol));
+        var textItem = textContainer.addChild(new paper.SymbolItem(charObj.symbol));
         textItem.position = charObj.point;
         textItem.rotation = charObj.angle;
         textItem.name = name;

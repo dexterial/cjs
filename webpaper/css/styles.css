@@ -127,7 +127,7 @@ input::-moz-focus-inner {
     border-width: 1px;
     color:rgba(255,255,255,0.7);
 /*    font-style:italic;*/
-    cursor:pointer;
+    cursor:text;
     padding: 5px;
     padding-top: 5px;
     text-align:justify;
@@ -148,7 +148,6 @@ input::-moz-focus-inner {
 }
 .testLabel:active{
     background-color:rgba(255,255,255,0.7);
-    cursor:progress;
 }
 
 .tabRed{
