@@ -656,7 +656,7 @@ function setGetPage(cEl){
             "elements" : $.extend(true,{},cEl.elements)
         };
         
-        paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
+        paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
         
         return paper;
     
@@ -742,7 +742,7 @@ function setGetProject(cEl,parentName){
 //        });
 //        project.cr.name = "test";
         
-        project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
+        project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
         
         return project;
         
@@ -858,7 +858,7 @@ function setGetShape(cEl,parentName){
             default:
             break;
         }
-        cEl_group.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true};
+        cEl_group.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
         
         return cEl_group;
         

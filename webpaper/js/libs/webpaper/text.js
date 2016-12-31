@@ -42,7 +42,7 @@ function draw_cEl_text(cEl_group,strNewText){
         }
         
         
-        if(cEl_group.reset.text || cEl_group.reset.text_shape){
+        if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw){
             cEl_group.children[2].removeChildren();
             draw_cEl_lines3(cEl_group,cEl_pageText);
         }
@@ -56,6 +56,7 @@ function draw_cEl_text(cEl_group,strNewText){
         cEl_group.reset.text_shape = false;
         cEl_group.reset.text_css = false;
         cEl_group.reset.selection = false;
+        cEl_group.reset.text_draw = false;
 
     } catch (e) {
         var err = listError(e);
@@ -510,10 +511,7 @@ function delete_chars(eventholder){
         if(delete_selection(cEl_group,cEl_pageText)){
             // do nada
             //cdebug("delete selection " + eventholder.keys.chr)();
-            
-            
-            
-            
+            qqq
         }else if(eventholder.keys.chr === 8 ){
             if(cEl_pageText.charsSelection.cr.pos > 0){
                 
@@ -526,7 +524,7 @@ function delete_chars(eventholder){
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
-                cEl_group.reset.text_shape = true;
+                cEl_group.reset.text_draw = true;
                 cEl_group.reset.selection = true;
             }
             
@@ -544,15 +542,15 @@ function delete_chars(eventholder){
                     cEl_pageText.charsSelection.cr.left = true;
                     cEl_pageText.charsSelection.cr.pos++;
                 }
+                cEl_group.reset.text_draw = true;
                 cEl_group.reset.selection = true;
-                cEl_group.reset.text_shape = true;
             } else if(cEl_pageText.charsSelection.cr.pos === cEl_group.data.values.temp.lines3.length-1){
                 if(cEl_pageText.charsSelection.cr.left){
                     cEl_pageText.charsSelection.cr.left = false;
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
-                cEl_group.reset.text_shape = true;
+                cEl_group.reset.text_draw = true;
                 cEl_group.reset.selection = true;
             }
             
@@ -583,7 +581,7 @@ function delete_selection(cEl_group,cEl_pageText){
             cEl_pageText.charsSelection.charspos = [];
             cEl_pageText.charsSelection.cr.pos = delPos-1;
             
-            cEl_group.reset.text_shape = true;
+            cEl_group.reset.text_draw = true;
             cEl_group.reset.selection = true;
             
             return true;
@@ -1363,10 +1361,10 @@ function drawChar(charObj,name,textContainer,boolSelected){
         
         //var charSymbol = charObj.symbol;
 
-        var textItem = textContainer.addChild(new paper.SymbolItem(charObj.symbol));
-        textItem.position = charObj.point;
-        textItem.rotation = charObj.angle;
-        textItem.name = name;
+        charObj.textItem = textContainer.addChild(new paper.SymbolItem(charObj.symbol));
+        charObj.textItem.position = charObj.point;
+        charObj.textItem.rotation = charObj.angle;
+        charObj.textItem.name = name;
         
         
         //textItem.selected = boolSelected;
