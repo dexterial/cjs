@@ -85,7 +85,6 @@ globalTool.onMouseDown = handleMouse;
 globalTool.onMouseMove = handleMouse;
 globalTool.onMouseUp = handleMouse;
 globalTool.onKeyDown = handleKeys;
-//globalTool.onKeyPress = handleKeys;
 globalTool.onKeyUp = handleKeys;
 
 //tool1.onMouseDrag = function(event) {
@@ -162,17 +161,17 @@ function handleKeys(evt) {
                 drawProjects(paper,true);
                 
             break;
-            case "keypress":
-                
-                handleCSSEvents_keys(eventholder,evt);
-                
-                //alert(evt.keyCode);
-                runEval(eventholder.active.oldObj,evtType) ;
-                //evt.preventDefault();
-                //evt.stopPropagation();
-                
-                drawProjects(paper,true);
-                
+//            case "keypress":
+//                
+//                handleCSSEvents_keys(eventholder,evt);
+//                
+//                //alert(evt.keyCode);
+//                runEval(eventholder.active.oldObj,evtType) ;
+//                //evt.preventDefault();
+//                //evt.stopPropagation();
+//                
+//                drawProjects(paper,true);
+//                
             break;
             case "keyup":
                 //cdebug([evtType,kind(evt.target)]);
@@ -765,6 +764,19 @@ function updateEventHolder(eventholder,boolHover,boolFocus,boolActive) {
     }
 };
 
+
+function isPrintableJS(keycode){
+    var valid = 
+        (keycode > 47 && keycode < 58)   || // number keys
+        (keycode === 32)   || // spacebar & return key(s) (if you want to allow carriage returns)
+        (keycode > 64 && keycode < 91)   || // letter keys
+        (keycode > 95 && keycode < 112)  || // numpad keys
+        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+        (keycode > 218 );   // [\]' (in order) //&& keycode < 223
+
+    return valid;
+}
+
 function handleCSSEvents_keys(eventholder,evt) {
     
     try{
@@ -772,7 +784,14 @@ function handleCSSEvents_keys(eventholder,evt) {
         switch(eventholder.type){
             
             case "keydown":
-                //cdebug(eventholder.keys.chr);
+                //cdebug(eventholder.keys.chr)();
+                if (evt.character){ //&& eventholder.keys.chr<127
+                    //evt.preventDefault();
+                    edit_chars(eventholder,true);
+                    evt.preventDefault();
+                    return true;
+                }
+                //cdebug(evt)();
                 switch(eventholder.keys.chr){
                     case 37:
                     case 38:
@@ -805,26 +824,28 @@ function handleCSSEvents_keys(eventholder,evt) {
                             handlePaste(evt);
                         }
                     break;
-                    default:
-                        //evt.preventDefault();
-                        edit_chars(eventholder,true);
-                        evt.preventDefault();
-                    break;
-                }
-                
-            break;
-            case "keypress":
-                
-                switch(eventholder.keys.chrVal){
-                    
-                    default:
+                    case 16:
+                    case 17:
                         
-                        edit_chars(eventholder,true);
-                        evt.preventDefault();
+                        // do nada
+                        
                     break;
+                    
                 }
                 
             break;
+//            case "keypress":
+//                cdebug("keypress : " + eventholder.keys.chr)();
+//                switch(eventholder.keys.chrVal){
+//                    
+//                    default:
+//                        
+//                        edit_chars(eventholder,true);
+//                        evt.preventDefault();
+//                    break;
+//                }
+//                
+//            break;
             case "keyup":
                 
                 switch(evt.keyCode){
@@ -1187,7 +1208,8 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                 
-
+                //cdebug(cr)();
+                
                 startPos =cr.pos;
                 endPos =cr.pos;
 
@@ -1334,11 +1356,16 @@ function getCharPos2(eventholder,type){
         
         switch(type){
             case "point":
-                
+                var pos = ~~actObjName.substring(indexTP+3);
+                var left = getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds);
+                if(left&&pos>1){
+                    left = false;
+                    pos--;
+                }
                 return {
                     "valid":true,
-                    "pos":~~actObjName.substring(indexTP+3),
-                    "left":getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds)
+                    "pos":pos,
+                    "left":left
                 };
             break;
             case "top":

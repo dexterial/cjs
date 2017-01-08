@@ -39,9 +39,9 @@ input::-moz-focus-inner {
     font-size: 3rem;
     background-color: rgba(218,165,32,1);
     background-image: url("graphics/test.jpg");
-    border-width: 1px;
+/*    border-width: 1px;
     border-color: rgb(218,165,32);
-    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);
+    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);*/
 }
 .contextitems{
     font-family: Arial;
@@ -120,14 +120,14 @@ input::-moz-focus-inner {
 /*    my-hover-color:#9aabb;*/
     /*cursor:text;*/
     font-family : sans-serif;
-    font-size: 1.5em;
+    font-size: 3em;
     font-weight:bold;
     background-color: rgba(255,255,255,0.2);
     border-color: rgba(255,255,255,0.4);
     border-width: 1px;
     color:rgba(255,255,255,0.7);
 /*    font-style:italic;*/
-    cursor:text;
+    cursor:pointer;
     padding: 5px;
     padding-top: 5px;
     text-align:justify;
@@ -266,6 +266,7 @@ input::-moz-focus-inner {
     padding-top: 2px;
     text-align:left;
     font-weight:normal;
+    cursor:text
 }
 .textStuff{
 /*    my-hover-color:#9aabb;*/
@@ -286,6 +287,7 @@ input::-moz-focus-inner {
     word-spacing : 0px;
     text-indent: 10px;
     transition: width 2s, height 4s;
+    cursor:text
 }
 .textStuff:hover{
 
@@ -316,6 +318,7 @@ input::-moz-focus-inner {
     padding-left: 15px;
     color:#000;
     text-align:justify;
+    cursor:text
 }
 .btnGreen{
     font-family: Arial;

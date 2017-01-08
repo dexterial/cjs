@@ -845,11 +845,11 @@ function setGetShape(cEl,parentName){
         
         // add holder of text symbols            cEl_group.children[2]
         tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TP";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TS";
         
         // add holder of text selection          cEl_group.children[3]
         tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TS";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TP";
         
         switch(cEl.data.type){
             case "text":

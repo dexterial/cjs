@@ -22,7 +22,7 @@
         "charsSelection":{
             "name":null,
             "cr":{"pos":0,"vis":false,"left":true},
-            "style":{"color":"rgb(255,0,0)","background-color":"rgba(51,143,255,0.4)"},
+            "style":{"color":"rgb(255,0,0)","background-color":"rgb(51,143,255)"},
             "charspos":[],
             "chars":[],
             "wordspos":[],
@@ -161,8 +161,8 @@
                 "type":"list"
             },
             "children":[
-                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.01]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
-                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.35]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
+                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
+                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.45]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
             ]
         },
         "contextitems":{
