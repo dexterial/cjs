@@ -1336,14 +1336,8 @@ function draw_cEl_project(cEl_project){
                 url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
                 cEl_project.bkgImg = new Image();
                 cEl_project.bkgImg.src = url;
-                
-            
                 //cdebug(cEl_project.name + " <<< " + url + " start on " + paper.project.name)();
 
-    //            
-
-    //            // TODO , add more logic from css with scale "auto" stuff
-            
                 cEl_project.bkgImg.onload = function(){
 //
 //    //                var scaleX = paper.view.bounds.width/raster.width;
@@ -1353,22 +1347,22 @@ function draw_cEl_project(cEl_project){
                     //drawProjects(paper,true);
                     projectSwitch(cEl_project.name);
                     //cdebug("done >>> on " + paper.project.name)();
-                    cEl_project.bkgRaster = new paper.Raster(cEl_project.bkgImg,new paper.Point(0,0));
-                    cEl_project.bkgRaster.name = cEl_project.parentName + "_" + cEl_project.name + "_BKG";
                     
-                    
-                    cEl_project.bkgRaster.fitBounds(cEl_project.view.bounds,true);
-                    cEl_project.bkgRaster.onLoad = function(){
-                        cEl_project.bkgRaster.sendToBack();
+                    var bkg = cEl_project.activeLayer.children[0].addChild(new paper.Raster(cEl_project.bkgImg,new paper.Point(0,0)));
+                    //var bkg = cEl_project.activeLayer.children[0].children[0];
+                    bkg.name = cEl_project.parentName + "_" + cEl_project.name + "_BKG";
+                    bkg.fitBounds(cEl_project.view.bounds,true);
+                    bkg.onLoad = function(){
+                        //cEl_project.bkgRaster.sendToBack();
                     };
                     
                 };
             }else{
-                cEl_project.bkgRaster.drawImage(cEl_project.bkgImg,new paper.Point(0,0));
-                    cEl_project.bkgRaster.fitBounds(cEl_project.view.bounds,true);
-                    cEl_project.bkgRaster.onLoad = function(){
-                        cEl_project.bkgRaster.sendToBack();
-                    };
+//                cEl_project.bkgRaster.drawImage(cEl_project.bkgImg,new paper.Point(0,0));
+//                    cEl_project.bkgRaster.fitBounds(cEl_project.view.bounds,true);
+//                    cEl_project.bkgRaster.onLoad = function(){
+//                        cEl_project.bkgRaster.sendToBack();
+//                    };
             }
         }
 

@@ -14,70 +14,174 @@
 //Copyright 2016 Dan Ionel Blaguiescu (dan.blaguiescu@dexterial.com)
 
 
-function editor_keydown(cEl_layer) {
+var editorTool = new paper.Tool();
+editorTool.onMouseDown = editor_handleMouse;
+editorTool.onMouseMove = editor_handleMouse;
+editorTool.onMouseUp = editor_handleMouse;
+editorTool.onKeyDown = editor_handleKeys;
+editorTool.onKeyUp = editor_handleKeys;
+
+
+function editor_handleKeys(evt) {
+    
+    try{
+        
+        var evtType = evt.type;
+        var eventholder = window["eventholder"];
+        preSetEventHolder(eventholder,evt,"keyboard");
+        if(!eventholder.active.oldObj)return false;
+
+        switch(evtType){
+            
+            case "keydown":
+                
+                
+                
+                editor_keydown(evt);
+                
+                drawProjects(paper,true);
+                
+                
+            break;
+            case "keyup":
+                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
+                    // check edit mode combination CTRL + SHIFT + "E" or "e"
+                    if(editMode(eventholder))return true;
+                }
+                
+                editor_keyup(evt);
+                
+                drawProjects(paper,true);
+                
+                
+            break;
+        };
+        
+        //paper.view.draw();
+        
+        return true;
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+};
+
+function editor_handleMouse(evt) {
+    
+    try{
+        var evtType = evt.type;
+        // exit if not event
+        if(!evtType){
+            return false;
+        }
+        
+        switch(evtType){
+            
+            case "mousedown":
+                //cdebug("mousedown")();
+                
+                editor_mousedown(evt);
+                
+                drawProjects(paper,true);
+
+            break;
+            case "mouseup":
+                
+                drawProjects(paper,true);
+
+            break;
+            case "mousemove":
+                
+                drawProjects(paper,true);
+
+            break;
+            case "mouseout":
+                
+                drawProjects(paper,true);
+                
+            break;
+        };
+        
+        
+        
+        return true;
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+};
+
+
+
+
+function editor_keydown(evt) {
 
     try{
         //var cEl_layer = window[cEl.layerId];
         //var eventholder = window["eventholder"];
         //cdebug(window.event.keyCode);
-        
-        var eventholder = window["eventholder"];
-        
-        switch (cEl_layer.name) {
-            case "fabric":
-                //cdebug("editor_keydown START state " + cEl_layer.data.state,true);
-                //cdebug(eventholder.keys);
-                switch (cEl_layer.data.state) {
-                    case "editlimbo":
-                        switch(eventholder.keys.keyCode){
-                            case 38:
-                                keyAdjustments(cEl_layer, [1,-1]);
-                            break;
-                            case 40:
-                                keyAdjustments(cEl_layer, [1,1]);
-                            break;
-                            case 37:
-                                keyAdjustments(cEl_layer, [0,-1]);
-                            break;
-                            case 39:
-                                keyAdjustments(cEl_layer, [0,1]);
-                            break;
-                            case 27:
-                                
-                                undoLastCpEdit(cEl_layer,0,true);
-                                
-                            break;
-                        }
-                        return true;
-                    break;
-                    case "edit":
-                    case "pre":
-                        switch(eventholder.keys.keyCode){
-                            case 38:
-                                cEl_editIndex(cEl_layer, false, true);
-                            break;
-                            case 40:
-                                cEl_editIndex(cEl_layer, true, true);
-                            break;
-                            case 37:
-                                cEl_editIndex(cEl_layer, false, false);
-                            break;
-                            case 39:
-                                cEl_editIndex(cEl_layer, true, false);
-                            break;
-                            case 27:
-                                //undoLastCpEdit(cEl_layer,0);
-                                saveLastCpEdit(cEl_layer,"pre",true);
-                            break;
-//                            case 13: //edit children index
-//                                cEl_editIndexParent(cEl_layer,eventholder.keys.shiftKey);
+//        
+//        var eventholder = window["eventholder"];
+//        
+//        switch (cEl_layer.name) {
+//            case "fabric":
+//                //cdebug("editor_keydown START state " + cEl_layer.data.state,true);
+//                //cdebug(eventholder.keys);
+//                switch (cEl_layer.data.state) {
+//                    case "editlimbo":
+//                        switch(eventholder.keys.keyCode){
+//                            case 38:
+//                                keyAdjustments(cEl_layer, [1,-1]);
 //                            break;
-                        }
-                    break;
-                }
-//                cdebug("editor_keydown START state " + cEl_layer.data.state,true)();
-            break;
-        }
+//                            case 40:
+//                                keyAdjustments(cEl_layer, [1,1]);
+//                            break;
+//                            case 37:
+//                                keyAdjustments(cEl_layer, [0,-1]);
+//                            break;
+//                            case 39:
+//                                keyAdjustments(cEl_layer, [0,1]);
+//                            break;
+//                            case 27:
+//                                
+//                                undoLastCpEdit(cEl_layer,0,true);
+//                                
+//                            break;
+//                        }
+//                        return true;
+//                    break;
+//                    case "edit":
+//                    case "pre":
+//                        switch(eventholder.keys.keyCode){
+//                            case 38:
+//                                cEl_editIndex(cEl_layer, false, true);
+//                            break;
+//                            case 40:
+//                                cEl_editIndex(cEl_layer, true, true);
+//                            break;
+//                            case 37:
+//                                cEl_editIndex(cEl_layer, false, false);
+//                            break;
+//                            case 39:
+//                                cEl_editIndex(cEl_layer, true, false);
+//                            break;
+//                            case 27:
+//                                //undoLastCpEdit(cEl_layer,0);
+//                                saveLastCpEdit(cEl_layer,"pre",true);
+//                            break;
+////                            case 13: //edit children index
+////                                cEl_editIndexParent(cEl_layer,eventholder.keys.shiftKey);
+////                            break;
+//                        }
+//                    break;
+//                }
+////                cdebug("editor_keydown START state " + cEl_layer.data.state,true)();
+//            break;
+//        }
         return false;
     } catch (e) {
         var err = listError(e);
@@ -88,7 +192,7 @@ function editor_keydown(cEl_layer) {
 
 
 
-function editor_keyup(cEl_layer) {
+function editor_keyup(evt) {
 
     try{
         //var cEl_layer = window[cEl.layerId];
@@ -96,25 +200,25 @@ function editor_keyup(cEl_layer) {
         //cdebug(eventholder.event.shiftKey)();
         //cdebug(window.event.shiftKey)();
 
-        switch (cEl_layer.name) {
-            case "fabric":
-
-//                //cdebug("editor_keyup state " + cEl_layer.data.state)();
-//                var cEl_page = window["editorPage"];
-//                var cEl = window[cEl_layer.data.editIndex];
-//                switch (cEl_layer.data.state) {
-//                    case 2:
-//                        
-//                        switch(window.event.keyCode){
-////                            case 13:
-////                                return resetState(cEl_layer, cEl, cEl_layer.data.editIndex);
-////                            break;
-//                        }
-//                    break;
-//                }
-
-            break;
-        }
+//        switch (cEl_layer.name) {
+//            case "fabric":
+//
+////                //cdebug("editor_keyup state " + cEl_layer.data.state)();
+////                var cEl_page = window["editorPage"];
+////                var cEl = window[cEl_layer.data.editIndex];
+////                switch (cEl_layer.data.state) {
+////                    case 2:
+////                        
+////                        switch(window.event.keyCode){
+//////                            case 13:
+//////                                return resetState(cEl_layer, cEl, cEl_layer.data.editIndex);
+//////                            break;
+////                        }
+////                    break;
+////                }
+//
+//            break;
+//        }
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -196,23 +300,30 @@ function editor_wheel(cEl_layer) {
     }
 }
 
-function editor_mousedown(cEl_layer) {
+function editor_mousedown(evt) {
 
     try{
         
         //var cEl_page = window[cEl_layer.pageId];
-        //var cEl_layer = window[cEl.layerId];
+        var eventholder = window["eventholder"];
+        preSetEventHolder(eventholder,evt,"mouse");
+        if(!eventholder.active.oldObj)return false;
+        
+        var cEl_layer = paper.project;
         if(!cEl_layer.data.state){
             cEl_layer.data.state = "pre";
+            cEl_layer.data.editIndex = 0;
         }
         
+        
+        cdebug(cEl_layer.activeLayer.children[1].name)();
 
         switch (cEl_layer.name) {
 //            case "preview":
 //            break;
 //            case "tools":
 //            break;
-            case "fabric":
+            case "main":
                 cdebug("editor_mousedown START state " + cEl_layer.data.state + " at index " + cEl_layer.data.editIndex,true)();
                 switch (cEl_layer.data.state) {
                     case "edit":

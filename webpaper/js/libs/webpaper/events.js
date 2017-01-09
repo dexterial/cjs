@@ -80,12 +80,14 @@ function loadEvents() {
 }
 
 
-globalTool = new paper.Tool();
+var globalTool = new paper.Tool();
 globalTool.onMouseDown = handleMouse;
 globalTool.onMouseMove = handleMouse;
 globalTool.onMouseUp = handleMouse;
 globalTool.onKeyDown = handleKeys;
 globalTool.onKeyUp = handleKeys;
+paper.activeTool = "globalTool";
+
 
 //tool1.onMouseDrag = function(event) {
 //        path.add(event.point);
@@ -154,6 +156,10 @@ function handleKeys(evt) {
             
             case "keydown":
                 //cdebug(eventholder)();
+                
+                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
+                    return true;
+                }
                 handleCSSEvents_keys(eventholder,evt);
                 
                 runEval(eventholder.active.oldObj,evtType) ;
@@ -172,9 +178,14 @@ function handleKeys(evt) {
 //                
 //                drawProjects(paper,true);
 //                
-            break;
+//            break;
             case "keyup":
                 //cdebug([evtType,kind(evt.target)]);
+                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
+                    // check edit mode combination CTRL + SHIFT + "E" or "e"
+                    if(editMode(eventholder))return true;
+                }
+                
                 
                 handleCSSEvents_keys(eventholder,evt);
                 
@@ -207,23 +218,19 @@ function handleMouse(evt) {
         
         // prevent default events
         //disableEvent(evt);
-        
         // preload event in custom eventholder
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"mouse");
         
+
         // exit if not valid event
         if (eventholder.noevent){return false;};
-        
-        //cdebug(eventholder.currentid)();
-        //var cEl = window[eventholder.currentid];
-        
-        
         runEval(eventholder.retObj,evtType);
         
         switch(evtType){
             
             case "mousedown":
+                
                 
                 
                 //cdebug(eventholder.retObj.name + " vs " + eventholder.actObj.name)();
@@ -616,7 +623,8 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 
                 if(hitObject && hitObject.item.parent.parent){
                     var name = hitObject.item.name;
-                    //cdebug(hitObject.item.name)();
+                    cdebug(paper.project.name)();
+                    cdebug(hitObject.item.parent.parent.className)();
                     
                     eventholder.retObj = hitObject.item.parent.parent;
                     eventholder.actObj = hitObject.item;
@@ -777,6 +785,28 @@ function isPrintableJS(keycode){
     return valid;
 }
 
+function editMode(eventholder){
+    try{
+        
+        if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E"){
+            if(paper.activeTool === "globalTool"){
+                cdebug("editorTool")();
+                editorTool.activate();
+                paper.activeTool = "editorTool";
+            }else{
+                cdebug("globalTool")();
+                globalTool.activate();
+                paper.activeTool = "globalTool";
+            }
+            return true;
+        }
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
 function handleCSSEvents_keys(eventholder,evt) {
     
     try{
@@ -785,12 +815,15 @@ function handleCSSEvents_keys(eventholder,evt) {
             
             case "keydown":
                 //cdebug(eventholder.keys.chr)();
+                //cdebug(eventholder.keys)();
+                
                 if (evt.character){ //&& eventholder.keys.chr<127
                     //evt.preventDefault();
                     edit_chars(eventholder,true);
                     evt.preventDefault();
                     return true;
                 }
+                
                 //cdebug(evt)();
                 switch(eventholder.keys.chr){
                     case 37:
@@ -888,8 +921,6 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
         var cEl;
         if(boolHover){
             
-            
-            
             //  hover reset for old focus element 
             if(eventholder.hover && eventholder.hover.resetold){
                 cEl = eventholder.hover.oldObj;
@@ -905,8 +936,8 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
             // new hover set
             if(eventholder.hover && eventholder.hover.reset){
                 
-                //cdebug("+>>>" + eventholder.retObj.name)();
-                
+                //if(!eventholder.retObj.name)cdebug(eventholder.retObj)();
+
                 eventholder.hover.id = eventholder.currentid;
                 eventholder.hover.oldObj = eventholder.retObj;
                 
