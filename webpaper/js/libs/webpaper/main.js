@@ -672,7 +672,7 @@ function projectSwitch(toProject){
     try {
         
         if(paper.project && paper.project.name && paper.project.name===toProject){
-            return true;//paper.project;
+            return paper.project;//paper.project;
         }
         
         var projects = paper.projects;
@@ -683,6 +683,34 @@ function projectSwitch(toProject){
                 return projects[i];
             }
         }
+        return null;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }  
+}
+
+function layerSwitch(toLayer){
+    try {
+        
+        if(paper.project.activeLayer && paper.project.activeLayer.name && paper.project.activeLayer.name===toLayer){
+            return paper.project.activeLayer;//paper.project;
+        }
+        
+        var layers = paper.project.layers;
+        for(var i = 0; i<layers.length; i++){
+            if(layers[i].name && layers[i].name === toLayer){
+                
+                cdebug("layer switch from "+ paper.project.activeLayer.name + " to " + layers[i].name)();
+                
+                layers[i].activate();
+                
+                return layers[i];
+            }
+        }
+        
         return null;
         
     } catch (e) {
@@ -708,7 +736,7 @@ function setGetProject(cEl,parentName){
         
         paper.setup(cEl_canv);
         project = paper.project;
-        
+        cdebug("load project " + parentName + "_" + cEl.name)();
         //var project = paper.project;
         
         //var project = paper.project;
@@ -717,6 +745,8 @@ function setGetProject(cEl,parentName){
         
         project.name = cEl.name;
         project.parentName = parentName;
+        project.projectName = paper.project.name;
+        
         project.tag = cEl.tag;
         project.class = cEl.class;
         
@@ -732,15 +762,8 @@ function setGetProject(cEl,parentName){
         project.shape = $.extend(true,{},cEl.shape);
         
         // add group holder                      cEl_group.children[0]
-        var tempShape = new paper.Group();
-        tempShape.name = project.parentName + "_" + project.name + ".G_BKG";
-        
-//        project.cr = new paper.Path.Line({
-//            from: [20, 20],
-//            to: [80, 80],
-//            strokeColor: 'black'
-//        });
-//        project.cr.name = "test";
+//        var tempShape = new paper.Group();
+//        tempShape.name = project.parentName + "_" + project.name + ".reserved1";
         
         project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
         
@@ -753,50 +776,58 @@ function setGetProject(cEl,parentName){
     }
 } 
 
-//function setGetLayer(cEl){
-//    
-//    try {
-//        var layers = paper.project.layers;
-//        var actLayer = paper.project.activeLayer;
-//        for(var i = 0; i<layers.length; i++){
-//            if(layers[i].name && layers[i].name === cEl.name){
-//                if(actLayer.name && actLayer.name!==cEl.name){
-//                    if(layers[i].visible){
-//                        cdebug(" layer change from " + actLayer.name + " to " + layers[i].name)();
-//                        layers[i].activate();
-//                    } 
-//                }
-//                return layers[i];
-//            }
-//        }
-//        
-//        var layer = new Layer;
-//        layer.name = cEl.name;
-//        layer.tab = cEl.tab;
-//        layer.debug = cEl.debug;
-//        
-//        layer.tag = cEl.tag;
-//        layer.class = cEl.class;
-//        
-//        layer.visible = cEl.visible;
-//        layer.focus = cEl.focus;
-//        layer.hover = cEl.hover;
-//        layer.active = cEl.active;
-//        
-//        layer.shape = cEl.shape;
-//        
-//        paper.project.addLayer(layer);
-//        //layer.activate();
-//        
-//        
-//        return layer;
-//        
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return false;
-//    }
-//} 
+function setGetLayer(cEl,parentName){
+    
+    try {
+       
+        var layer = layerSwitch(cEl.name);
+        if(layer)return layer;
+        
+        if(!paper.project.activeLayer.name && paper.project.layers.length===1){
+            layer = paper.project.activeLayer;
+        }else{
+            layer = paper.project.addLayer(new paper.Layer);
+            layer.activate();
+        }
+        cdebug("load layer " + parentName + "_" + cEl.name )();
+        
+        layer.debug = cEl.debug;
+        layer.tab = cEl.tab;
+        
+        layer.name = cEl.name;
+        layer.parentName = parentName;
+        layer.projectName = paper.project.name;
+        layer.layerName = cEl.name;
+        
+        layer.tag = cEl.tag;
+        layer.class = cEl.class;
+        
+        
+        layer.visible = cEl.visible;
+        layer.focus = cEl.focus;
+        layer.hover = cEl.hover;
+        layer.active = cEl.active;
+        
+        layer.style = $.extend(true,{},cEl.style);
+        layer.events = $.extend(true,{},cEl.events);
+        layer.data = $.extend(true,{},cEl.data);
+        layer.shape = $.extend(true,{},cEl.shape);
+        
+        // add group holder                      cEl_group.children[0]
+        var tempShape = new paper.Group();
+        tempShape.name = layer.parentName + "_" + layer.name + ".G_BKG";
+        
+        layer.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
+        
+
+        return layer;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return false;
+    }
+} 
 
 
 function setGetShape(cEl,parentName){
@@ -825,6 +856,9 @@ function setGetShape(cEl,parentName){
         cEl_group.name = cEl.name;
         cEl_group.parentName = parentName;
         cEl_group.projectName = paper.project.name;
+        cEl_group.layerName = paper.project.activeLayer.name;
+        
+        cdebug("load group " + parentName + "_" + cEl.name + " on " + cEl_group.layerName)();
         
         var tempShape,tempPath;
         
@@ -908,42 +942,18 @@ function pre_load_children(cEl,parentName){
             
             case "project": //draw page element
                 
-                cEl.parentName = parentName;
-                
-                // attach project.name to paper global scope
+                //cEl.parentName = parentName;
                 var project = setGetProject(cEl,parentName);
-                
-                //cdebug(paper.projects.length + " setup project " + cEl.name)();
-                
                 setStyle_cEl(project);
-                
-                // add parentName
-                
-
-//                var path = new paper.Path.Rectangle([75, 75], [100, 100]);
-//		path.strokeColor = 'black';
-//                path.name ="zzz";
-//
-//                var items = project.getItem({
-//                    "id" :1
-//                });
-//                cdebug(items)();
-
-                //cdebug(paper.project.name)();
-                
-                
                 project.loaded = true;
                 
             break;
             case "layer": //draw canvas element
                 
-//                var layer = setGetLayer(cEl);
-//                //cdebug(paper.project.layers)();
-//                layer.parentName = parentName;
-//                
-//                setStyle_cEl(layer);
-//                
-//                layer.loaded = true;
+                //cEl.parentName = parentName;
+                var layer = setGetLayer(cEl,parentName);
+                setStyle_cEl(layer);
+                layer.loaded = true;
                 
             break;
             case "group": //draw shape
@@ -1002,16 +1012,15 @@ function drawProjects(cEl,boolRedraw){
         
         if(boolHasProjects){
             for(var i = 0;i < cEl.projects.length; i++){
-//                if(cEl.projects[i].visible){
+//                if(cEl.visible){
                     boolAllIsWell = (boolAllIsWell && drawProjects(cEl.projects[i],boolRedraw));
 //                }
             };
-            
         }
 
         if(boolHasLayers){
             for(var i = 0;i < cEl.layers.length; i++){
-//                if(cEl.layers[i].visible){
+//                if(cEl.visible){
                     boolAllIsWell = (boolAllIsWell && drawProjects(cEl.layers[i],boolRedraw));
 //                }
             };
@@ -1020,9 +1029,9 @@ function drawProjects(cEl,boolRedraw){
         if(boolHasChildren){
             for(var i = 0;i < cEl.children.length; i++){
                 //cdebug(cEl.children[i].name)();
-//                if(cEl.children[i].visible){
+                if(cEl.visible){
                     boolAllIsWell = (boolAllIsWell && drawProjects(cEl.children[i],boolRedraw));
-//                }
+                }
             };
         }
         
@@ -1093,15 +1102,15 @@ function draw_cEl(cEl,boolRedraw){
                 cEl.reset.layout_shape = false;
             break;
             case "layer": //draw canvas element
-//                if(!cEl.reset.layout_shape){return true;};
-//                
-//                if(cEl.reset.layout_css){
-//                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
-//                }
-//                
-//                //cdebug("draw canvas")();
-//                draw_cEl_layer(cEl);
-//                cEl.reset.layout_css = false;
+                if(!cEl.reset.layout_shape){return true;};
+                
+                if(cEl.reset.layout_css){
+                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
+                }
+                
+                //cdebug("draw canvas")();
+                draw_cEl_layer(cEl);
+                cEl.reset.layout_shape = false;
             break;
             case "group": //draw group
                 
@@ -1330,41 +1339,41 @@ function draw_cEl_project(cEl_project){
         
         //cdebug("start")();
         
-        if(cEl_project.style.calc["background-image"]){
-            if(!cEl_project.bkgImg){
-                var url = cEl_project.style.calc["background-image"];
-                url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
-                cEl_project.bkgImg = new Image();
-                cEl_project.bkgImg.src = url;
-                //cdebug(cEl_project.name + " <<< " + url + " start on " + paper.project.name)();
-
-                cEl_project.bkgImg.onload = function(){
+//        if(cEl_project.style.calc["background-image"]){
+//            if(!cEl_project.bkgImg){
+//                var url = cEl_project.style.calc["background-image"];
+//                url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
+//                cEl_project.bkgImg = new Image();
+//                cEl_project.bkgImg.src = url;
+//                //cdebug(cEl_project.name + " <<< " + url + " start on " + paper.project.name)();
 //
-//    //                var scaleX = paper.view.bounds.width/raster.width;
-//    //                var scaleY = paper.view.bounds.height/raster.height;
-//    //                raster.scale([scaleX,scaleY]);
-//                //raster.fitBounds(cEl_project.view.bounds,true);
-                    //drawProjects(paper,true);
-                    projectSwitch(cEl_project.name);
-                    //cdebug("done >>> on " + paper.project.name)();
-                    
-                    var bkg = cEl_project.activeLayer.children[0].addChild(new paper.Raster(cEl_project.bkgImg,new paper.Point(0,0)));
-                    //var bkg = cEl_project.activeLayer.children[0].children[0];
-                    bkg.name = cEl_project.parentName + "_" + cEl_project.name + "_BKG";
-                    bkg.fitBounds(cEl_project.view.bounds,true);
-                    bkg.onLoad = function(){
-                        //cEl_project.bkgRaster.sendToBack();
-                    };
-                    
-                };
-            }else{
-//                cEl_project.bkgRaster.drawImage(cEl_project.bkgImg,new paper.Point(0,0));
-//                    cEl_project.bkgRaster.fitBounds(cEl_project.view.bounds,true);
-//                    cEl_project.bkgRaster.onLoad = function(){
-//                        cEl_project.bkgRaster.sendToBack();
+//                cEl_project.bkgImg.onload = function(){
+////
+////    //                var scaleX = paper.view.bounds.width/raster.width;
+////    //                var scaleY = paper.view.bounds.height/raster.height;
+////    //                raster.scale([scaleX,scaleY]);
+////                //raster.fitBounds(cEl_project.view.bounds,true);
+//                    //drawProjects(paper,true);
+//                    projectSwitch(cEl_project.name);
+//                    //cdebug("done >>> on " + paper.project.name)();
+//                    
+//                    var bkg = cEl_project.activeLayer.children[0].addChild(new paper.Raster(cEl_project.bkgImg,new paper.Point(0,0)));
+//                    //var bkg = cEl_project.activeLayer.children[0].children[0];
+//                    bkg.name = cEl_project.parentName + "_" + cEl_project.name + "_BKG";
+//                    bkg.fitBounds(cEl_project.view.bounds,true);
+//                    bkg.onLoad = function(){
+//                        //cEl_project.bkgRaster.sendToBack();
 //                    };
-            }
-        }
+//                    
+//                };
+//            }else{
+////                cEl_project.bkgRaster.drawImage(cEl_project.bkgImg,new paper.Point(0,0));
+////                    cEl_project.bkgRaster.fitBounds(cEl_project.view.bounds,true);
+////                    cEl_project.bkgRaster.onLoad = function(){
+////                        cEl_project.bkgRaster.sendToBack();
+////                    };
+//            }
+//        }
 
         
         
@@ -1382,68 +1391,153 @@ function draw_cEl_project(cEl_project){
 
 
 
-function draw_cEl_layer(cEl) {
+function draw_cEl_layer(cEl_layer) {
     
     try {
         
-        var layer = setGetLayer(cEl);
-        //cdebug("layer " + cEl.name)();
-        //cdebug(cEl.style.calc)();
         
-        if(cEl.style.calc["background-image"]){
-            var url = cEl.style.calc["background-image"];
-            url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
-            
-            cdebug(cEl.name + " >>> " + url + " start on " + paper.project.activeLayer.name)();
-            
-//            layer.addChild(new paper.Raster(url, paper.view.bounds.center));
-            
-//            // TODO , add more logic from css with scale "auto" stuff
-            var raster = new paper.Raster(url);
-            raster.sourceUrl = url;
-            raster.onLoad = function(){
-                
-//                var scaleX = paper.view.bounds.width/raster.width;
-//                var scaleY = paper.view.bounds.height/raster.height;
-//                raster.scale([scaleX,scaleY]);
-                //raster.fitBounds(paper.view.bounds.center,false);
-                setGetLayer(cEl);
-                cdebug(cEl.name + " >>> " + raster.sourceUrl +" end on " + paper.project.activeLayer.name)();
-                //boolImgLoaded=true;
-            };
-            
-            //new paper.Raster(image.dataURL,
-            //                    paper.view.bounds.center)
-            
-            
-            layer.addChild(raster);
-            
-            
-            //raster.width = 100;
-            //raster.height = 100;
-            
-            
-            
-            //raster
-            
-            
-//            if(!cEl.image){
-//                cEl.image = new Image();
-//                cEl.image.src = url;
-//            }else if(cEl.image.src !== url){
-//                cEl.image.src = url;
-//            }
-//            cEl.image.onload = function(){boolImgLoaded=true;};
-//            //console.log(cEl.style.calc["background-image"]);
-//            cEl_ctx.drawImage(cEl.image, 0, 0,cEl.shape.w,cEl.shape.h); //,cEl.shape.w,cEl.shape.h
-            boolRedraw = true;
-        }else{
-            boolRedraw = true;
+        
+        if(!cEl_layer.reset.layout_shape){return true;};
+        if(!cEl_layer.visible){
+            //cdebug("not visible")();
+            cEl_layer.visible = false;
+            cEl_layer.reset.layout_shape = false;
+            return true;
         }
         
-        //if(boolImgLoaded || boolRedraw)
-        cEl.reset.layout_shape = false;
+        //projectSwitch(cEl_layer.projectName);
+        layerSwitch(cEl_layer.layerName);
         
+        
+        //cdebug("draw_cEl_layer " + cEl_layer.name)();
+        
+        //setGetProject(cEl,cEl_project.name);
+        
+        
+       
+        //cdebug(paper.shape)();
+        
+        var w = paper.shape.w;
+        var h = paper.shape.h;
+        
+        //setGetProject(cEl,cEl_project.parentName);
+        
+        
+        if (!cEl_layer.shape.points){
+            cEl_layer.shape.points = paper.data.shapes[cEl_layer.shape.name];
+        }
+        
+        var borderTop = cEl_layer.style.calc["border-top-width"] ? size2px(cEl_layer.style.calc["border-top-width"],false):0;
+        var borderRight = cEl_layer.style.calc["border-right-width"] ? size2px(cEl_layer.style.calc["border-right-width"],false):0;
+        var borderBottom = cEl_layer.style.calc["border-bottom-width"] ? size2px(cEl_layer.style.calc["border-bottom-width"],false):0;
+        var borderLeft = cEl_layer.style.calc["border-left-width"] ? size2px(cEl_layer.style.calc["border-left-width"],false):0;
+        
+//        cdebug(borderTop + " " +borderRight + " " +borderBottom + " " +borderLeft)();
+
+        w = w - borderRight - borderLeft;
+        h = h - borderTop - borderBottom;
+
+        
+
+
+        if(!cEl_layer.shape.w>0){
+            //cEl_project.shape.w = w;
+            cEl_layer.shape.w = Math.floor(w * cEl_layer.shape.scale[0] * Math.abs(cEl_layer.shape.points[2][0]-cEl_layer.shape.points[0][0])) ;
+        }; 
+        if(!cEl_layer.shape.h>0){
+            //cEl_project.shape.h = h;
+            cEl_layer.shape.h = Math.floor(h * cEl_layer.shape.scale[1] * Math.abs(cEl_layer.shape.points[2][1]-cEl_layer.shape.points[0][1])) ;
+        };
+        
+        cEl_layer.shape.left = Math.floor(w * cEl_layer.shape.masspoint[0] + cEl_layer.shape.w * cEl_layer.shape.points[0][0]) ;
+        cEl_layer.shape.top = Math.floor(h * cEl_layer.shape.masspoint[1] + cEl_layer.shape.h * cEl_layer.shape.points[0][1]) ;
+        
+        
+        
+        //if(!cEl_project.reset.layout_shape){return true;};
+        
+//        var cEl_canv = document.getElementById(cEl_project.name + "_project");
+//        
+//        //cdebug("here " +cEl_canv.id)();
+//        
+//        
+//        if(!cEl_canv){
+//            return false;
+//        }
+//        
+//        if(!cEl_project.visible && cEl_project.loaded){
+//            if(cEl_canv.style.visibility !== "hidden")cEl_canv.style.visibility = "hidden";
+//            cEl_project.reset.layout_shape = false;
+//            return true;
+//        }else{
+//            if(cEl_canv.style.visibility !== "visible")cEl_canv.style.visibility = "visible";
+//        }
+        
+        
+
+        //console.log(cEl_project.shape.w + " " + cEl_project.shape.h);
+//        cEl_project.shape.temp = {
+//            "cpBorder":{
+//                "x":cEl_project.shape.left + Math.floor(cEl_project.shape.w * cEl_project.shape.masspoint[0] + cEl_project.shape.w * cEl_project.shape.points[0][0]),
+//                "y":cEl_project.shape.top + Math.floor(cEl_project.shape.h * cEl_project.shape.masspoint[1] + cEl_project.shape.h * cEl_project.shape.points[0][1])
+//            }
+//        };
+//        cEl_project.shape.temp.cpBorder.x1=cEl_project.shape.temp.cpBorder.x+cEl_project.shape.w;
+//        cEl_project.shape.temp.cpBorder.y1=cEl_project.shape.temp.cpBorder.y+cEl_project.shape.h;
+        
+        // reset canvas on resize or move ???
+        
+        //cdebug(cEl_project.shape)();
+        
+        //cdebug(cEl_project.visible)();
+        
+        //cEl_project.visible = cEl_project.visible;
+        
+        
+        
+        //cEl_canv.contentEditable = true;
+
+
+        if(cEl_layer.style.calc["background-image"]){
+            if(!cEl_layer.bkgImg){
+                var url = cEl_layer.style.calc["background-image"];
+                url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
+                cEl_layer.bkgImg = new Image();
+                cEl_layer.bkgImg.src = url;
+                //cdebug(cEl_project.name + " <<< " + url + " start on " + paper.project.name)();
+
+                cEl_layer.bkgImg.onload = function(){
+//
+//    //                var scaleX = paper.view.bounds.width/raster.width;
+//    //                var scaleY = paper.view.bounds.height/raster.height;
+//    //                raster.scale([scaleX,scaleY]);
+//                //raster.fitBounds(cEl_project.view.bounds,true);
+                    //drawProjects(paper,true);
+                    layerSwitch(cEl_layer.name);
+                    //cdebug("done >>> on " + paper.project.name)();
+                    
+                    var bkg = cEl_layer.children[0].addChild(new paper.Raster(cEl_layer.bkgImg,new paper.Point(0,0)));
+                    //var bkg = cEl_project.activeLayer.children[0].children[0];
+                    bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG";
+                    //bkg.fitBounds(cEl_layer.view.bounds,true);
+                    bkg.onLoad = function(){
+                        //cEl_project.bkgRaster.sendToBack();
+                    };
+                    
+                };
+            }
+        }else if(cEl_layer.style.calc["background-color"]){
+            //cdebug(cEl_layer.children[0].name)();
+            var bkg = cEl_layer.children[0].addChild(new paper.Path.Rectangle(cEl_layer.bounds));
+            bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG";
+            bkg.fillColor = cEl_layer.style.calc["background-color"];
+        }
+        
+        //cEl_layer.bringToFront();
+        
+        
+        return true;
+
     } catch (e) {
         var err = listError(e,true);
         cdebug(err,false,false,3)();
@@ -1459,15 +1553,19 @@ function draw_cEl_group(cEl_group) {
         
         //cdebug(cEl.name,false,true,3)();
         projectSwitch(cEl_group.projectName);
+        //layerSwitch(cEl_group.layerName);
         
-        var cEl_layer = paper.project;
-        var cEl_page = paper.data;
+        var cEl_layer = paper.project.layers[cEl_group.layerName];
+        //cdebug(cEl_layer.name)();
         
-        cEl_presets(cEl_group,cEl_page);
+        var cEl_pageData = paper.data;
+        
+        cEl_presets(cEl_group,cEl_pageData);
         
         if(!cEl_layer.debug){
             if(!cEl_group.visible || !cEl_layer.visible){
                 //cdebug(cEl_group.name)();
+                cEl_group.visible = false;
                 cEl_group.reset.layout_shape = false;
                 return true;
             };
@@ -2650,7 +2748,8 @@ function resetCursor(cEl){
     
     try{
         //var actCanv = getSetHtmlEl(cEl);
-        //cdebug(cEl.pageId + "_" + cEl.layerId + "_project");
+        //cdebug(cEl.parentName + "_" + cEl.name + " on " + paper.project.activeLayer.name)();
+        
         
         if(cEl.tag!=="page"){
             //cdebug(cEl.style.calc["cursor"])();
@@ -2661,6 +2760,9 @@ function resetCursor(cEl){
         //}
         return true;
     } catch (e) {
+        
+        //cdebug(cEl.style.default)();
+        
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;

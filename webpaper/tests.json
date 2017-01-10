@@ -134,7 +134,7 @@
         },
         "contextlayer":{
             "class":"contextmenu",
-            "tag":"project",
+            "tag":"layer",
             "visible":false,
             "enabled":true,
             "focus":false,
@@ -196,6 +196,27 @@
         },
         "layer1":{
             "class":"test",
+            "tag":"layer",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "events":{
+                "mouseout":"testEvents2(this,'mouseout')",
+                "mousedown":"testEvents(this,'mousedown')",
+                "mouseup":"testEvents2(this,'mouseup')"
+            },
+            "shape":{
+                "redraw":true,
+                "name":"rectangle-tl",                
+                "type":"poligon"
+            },
+            "states":{
+                "global":{"default":"global-enabled"}
+            },
+            "data":{
+                "type":"layer"
+            }
+        },
+        "project1":{
+            "class":"test",
             "tag":"project",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -218,40 +239,45 @@
     },
     "children":[
         {
-            "name":"main","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
+            "name":"main","elId":"project1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
             "children":[
-                {"name":"test1","elId":"text1","tab":1,"shape":{"masspoint":[0.5,0.5],"scale":[1,1],"name":"test2","type":"bezier"},"data":{"values":{
-                    "editable":true,
-                    "vertical":false,
-                    "pattern":"path"
-                    }}},
-                {"name":"test2","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
-                    "editable":true,
-                    "vertical":false,
-                    "pattern":"box-fill"
-                    }}},
-                {"name":"test3","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
-                    "editable":true,
-                    "vertical":true,
-                    "pattern":"box-fill"
-                    }}},
-                {"name":"test2a","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
-                    "editable":true,
-                    "vertical":false,
-                    "pattern":"box-fill"
-                    }}},
-                {"name":"test3a","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
-                    "editable":true,
-                    "vertical":true,
-                    "pattern":"box-fill"
-                    }}}
+                {
+                    "name":"data1","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
+                    "children":[
+                        {"name":"test1","elId":"text1","tab":1,"shape":{"masspoint":[0.5,0.5],"scale":[1,1],"name":"test2","type":"bezier"},"data":{"values":{
+                            "editable":true,
+                            "vertical":false,
+                            "pattern":"path"
+                            }}},
+                        {"name":"test2","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                            "editable":true,
+                            "vertical":false,
+                            "pattern":"box-fill"
+                            }}},
+                        {"name":"test3","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                            "editable":true,
+                            "vertical":true,
+                            "pattern":"box-fill"
+                            }}},
+                        {"name":"test2a","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                            "editable":true,
+                            "vertical":false,
+                            "pattern":"box-fill"
+                            }}},
+                        {"name":"test3a","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                            "editable":true,
+                            "vertical":true,
+                            "pattern":"box-fill"
+                            }}}
+                    ]
+                },
+                {
+                    "name":"context","elId":"contextlayer","tab":1,
+                    "children":[
+                        {"name":"contextlist","elId":"contextlist","tab":0}
+                    ]
+                }
             ]
-        },
-        {
-            "name":"context","elId":"contextlayer","tab":3,
-            "children":[
-                {"name":"contextlist","elId":"contextlist","tab":0}
-            ]    
         }
     ]
 }

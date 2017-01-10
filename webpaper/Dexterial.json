@@ -128,7 +128,7 @@
         },
         "contextlayer":{
             "class":"contextmenu",
-            "tag":"project",
+            "tag":"layer",
             "visible":false,
             "enabled":true,
             "focus":false,
@@ -187,7 +187,7 @@
         },
         "layer1":{
             "class":"test",
-            "tag":"project",
+            "tag":"layer",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mousemove":"testEvents2(this,'mousemove')",

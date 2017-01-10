@@ -592,19 +592,19 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             
             var arrTargetId = targetId.split("_");
             
-            
-            
             if(arrTargetId.length === 4){
                 eventholder.pageId = arrTargetId[1];
-                eventholder.layerId = arrTargetId[2];
+                eventholder.projectId = arrTargetId[2];
                 eventholder.tag = arrTargetId[3];
             }
+            eventholder.layerId = paper.project.activeLayer.name;
             
             //cdebug(eventholder.layerId + " vs " + paper.project.name)();
             
-            if(eventholder.layerId !== paper.project.name)projectSwitch(eventholder.layerId);
-            
-            
+            if(eventholder.projectId !== paper.project.name){
+                cdebug("here switch")();
+                projectSwitch(eventholder.projectId);
+            }
 //            if(targetId  === "editorPage_carret_div"){
 //            // just retrieve it from the event store and update metrics a little bit
 ////                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
@@ -623,8 +623,8 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 
                 if(hitObject && hitObject.item.parent.parent){
                     var name = hitObject.item.name;
-                    cdebug(paper.project.name)();
-                    cdebug(hitObject.item.parent.parent.className)();
+                    //cdebug(paper.project.name)();
+                    //cdebug(hitObject.item.parent.parent.className)();
                     
                     eventholder.retObj = hitObject.item.parent.parent;
                     eventholder.actObj = hitObject.item;
@@ -634,8 +634,15 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                     eventholder.actObj = paper.project;
                 }
                 
+                //cdebug(eventholder.retObj.layerName)();
+                eventholder.layerId = eventholder.retObj.layerName;
                 
-                
+                if(eventholder.layerId !== paper.project.activeLayer.name){
+                    //cdebug("here switch layer from " + eventholder.layerId + " to " + paper.project.activeLayer.name)();
+                    layerSwitch(eventholder.layerId);
+                    //cdebug("layer is now " + paper.project.activeLayer.name)();
+                    
+                }
                 
                 //cdebug(eventholder.retObj.name)();
                 
@@ -1024,36 +1031,41 @@ function handleContextMenu(eventholder){
         //cdebug(eventholder.metrics,true);
         
         if(eventholder.layerId === "context")return true;
-        var page_context = paper;
-        if(!page_context.data.context && eventholder.keys.which !== 3)return true;
+        var page = paper;
+        
+        
+        if(!page.data.context && eventholder.keys.which !== 3)return true;
         //if(eventholder.keys.which !== 3)return true;
         
         
         //cdebug("handleContextMenu  " + eventholder.pageId)();
         
-        var project_context = projectSwitch("context");//paper.project ;//window[eventholder.pageId + "_context"];
+        var project_context = page.project.layers["context"];
         
-        
-        if(eventholder.keys.which === 3 && !project_context.debug){
-            project_context.visible = true;
+        if(eventholder.keys.which === 3){
             
+            project_context.visible = true;
+            project_context.activate();
             
             var xy = eventholder.metrics.xy;
             
-            project_context.shape.masspoint = cEl_edit_MP(page_context,xy,page_context.shape.scale);
+            project_context.shape.masspoint = cEl_edit_MP(page,xy,page.shape.scale);
             project_context.reset.layout_shape = true;
+            project_context.reset.layout_css = true;
             
-            page_context.data.context = true;
+            page.data.context = true;
+            
+            //draw_cEl(project_context);
             
         }else{
             project_context.visible = false;
             project_context.reset.layout_shape = true;
             
-            page_context.data.context = false;
+            page.data.context = false;
         }
         
         //renderer([eventholder.pageId]);
-        //draw_cEl_project(layer_context);
+        
         
         return true;
         
