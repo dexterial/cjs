@@ -653,7 +653,8 @@ function setGetPage(cEl){
             "state" : $.extend(true,{},cEl.state),
             "states" : $.extend(true,{},cEl.states),
             "shapes" : $.extend(true,{},cEl.shapes),
-            "elements" : $.extend(true,{},cEl.elements)
+            "elements" : $.extend(true,{},cEl.elements),
+            "menus" : $.extend(true,{},cEl.menus)
         };
         
         paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
@@ -703,7 +704,7 @@ function layerSwitch(toLayer){
         for(var i = 0; i<layers.length; i++){
             if(layers[i].name && layers[i].name === toLayer){
                 
-                cdebug("layer switch from "+ paper.project.activeLayer.name + " to " + layers[i].name)();
+                //cdebug("layer switch from "+ paper.project.activeLayer.name + " to " + layers[i].name)();
                 
                 layers[i].activate();
                 
@@ -858,7 +859,7 @@ function setGetShape(cEl,parentName){
         cEl_group.projectName = paper.project.name;
         cEl_group.layerName = paper.project.activeLayer.name;
         
-        cdebug("load group " + parentName + "_" + cEl.name + " on " + cEl_group.layerName)();
+        //cdebug("load group " + parentName + "_" + cEl.name + " on " + cEl_group.layerName)();
         
         var tempShape,tempPath;
         
@@ -1087,6 +1088,7 @@ function draw_cEl(cEl,boolRedraw){
                 draw_cEl_page(cEl);
                 //cdebug(cEl.shape)();
                 cEl.reset.layout_shape = false;
+                cEl.reset.layout_css = false;
             
             break;
             case "project": //draw page element
@@ -1100,6 +1102,8 @@ function draw_cEl(cEl,boolRedraw){
                 draw_cEl_project(cEl);
                 
                 cEl.reset.layout_shape = false;
+                cEl.reset.layout_css = false;
+                
             break;
             case "layer": //draw canvas element
                 if(!cEl.reset.layout_shape){return true;};
@@ -1111,6 +1115,7 @@ function draw_cEl(cEl,boolRedraw){
                 //cdebug("draw canvas")();
                 draw_cEl_layer(cEl);
                 cEl.reset.layout_shape = false;
+                cEl.reset.layout_css = false;
             break;
             case "group": //draw group
                 
@@ -1120,12 +1125,13 @@ function draw_cEl(cEl,boolRedraw){
 //              
 
                 if(boolRedraw){
-                    //cEl.reset.layout_shape = true;
-                }else{
-                    if(!cEl.reset.layout_shape){
-                        return true;
-                    };
+                    cEl.reset.layout_shape = true;
                 }
+//                else{
+//                    if(!cEl.reset.layout_shape){
+//                        return true;
+//                    };
+//                }
                 // compute style
                 if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
@@ -1137,6 +1143,7 @@ function draw_cEl(cEl,boolRedraw){
                 draw_cEl_group(cEl);
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
+                
                 //cdebug("END draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
             break;
         }
@@ -1493,10 +1500,31 @@ function draw_cEl_layer(cEl_layer) {
         
         //cEl_project.visible = cEl_project.visible;
         
-        
+        //cdebug(cEl_layer.children[0].children.length)();
         
         //cEl_canv.contentEditable = true;
-
+        
+        
+        if(cEl_layer.style.calc["background-color"]){
+            var bkg = cEl_layer.children[0].children[0];
+            if(!bkg){
+                bkg = cEl_layer.children[0].addChild(new paper.Path.Rectangle({point: [cEl_layer.shape.left, cEl_layer.shape.top],size: [cEl_layer.shape.w, cEl_layer.shape.h]}));
+                bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG.C";
+            }else{
+                //cdebug("update position")();
+                //cdebug(bkg)();
+                bkg.position = [cEl_layer.shape.left+cEl_layer.shape.w/2,cEl_layer.shape.top+cEl_layer.shape.h/2];
+                //bkg.position = [cEl_layer.shape.left,cEl_layer.shape.top];
+//              
+//                  bkg.y = cEl_layer.shape.top;
+//                bkg.width = cEl_layer.shape.w;
+//                bkg.height = cEl_layer.shape.h;
+            }
+            //if(cEl_layer.reset.layout_css){
+                bkg.fillColor = cEl_layer.style.calc["background-color"];
+            //}
+            
+        }
 
         if(cEl_layer.style.calc["background-image"]){
             if(!cEl_layer.bkgImg){
@@ -1518,7 +1546,7 @@ function draw_cEl_layer(cEl_layer) {
                     
                     var bkg = cEl_layer.children[0].addChild(new paper.Raster(cEl_layer.bkgImg,new paper.Point(0,0)));
                     //var bkg = cEl_project.activeLayer.children[0].children[0];
-                    bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG";
+                    bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG.I";
                     //bkg.fitBounds(cEl_layer.view.bounds,true);
                     bkg.onLoad = function(){
                         //cEl_project.bkgRaster.sendToBack();
@@ -1526,11 +1554,6 @@ function draw_cEl_layer(cEl_layer) {
                     
                 };
             }
-        }else if(cEl_layer.style.calc["background-color"]){
-            //cdebug(cEl_layer.children[0].name)();
-            var bkg = cEl_layer.children[0].addChild(new paper.Path.Rectangle(cEl_layer.bounds));
-            bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG";
-            bkg.fillColor = cEl_layer.style.calc["background-color"];
         }
         
         //cEl_layer.bringToFront();
@@ -1549,11 +1572,11 @@ function draw_cEl_group(cEl_group) {
     
     try {
         
-        //cdebug(cEl.name + " vs " + cEl.visible)();
+        //cdebug(cEl_group.name + " vs " + cEl_group.visible)();
         
         //cdebug(cEl.name,false,true,3)();
         projectSwitch(cEl_group.projectName);
-        //layerSwitch(cEl_group.layerName);
+        
         
         var cEl_layer = paper.project.layers[cEl_group.layerName];
         //cdebug(cEl_layer.name)();
@@ -1571,54 +1594,53 @@ function draw_cEl_group(cEl_group) {
             };
         }
         
+        layerSwitch(cEl_group.layerName);
         
-        
-        //if(cEl.reset.layout_shape === true){
+        if(cEl_group.reset.layout_shape){
           
 
-        var boolDrawCp = false;
+            var boolDrawCp = false;
 
-        //cdebug(cEl.shape.rotation,false,true,3)();
-        
-        //cdebug(cEl_layer.name +  " >>>  " + cEl.name +  " on " + cEl.projectName)();
-        
-        cEl_setPaperPath(cEl_group, cEl_group.shape, true, false);
-        
-        var fillColor, strokeColor, lineWidth;
-//        if(cEl_layer.debug){
-//            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
-//            var cEl_index = window[editIndex];
-//            boolDrawCp = cEl_index ? true : false;
-//            
-//            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
-//            if(boolDrawCp){
-//                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
-//                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
-//                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
-//            }else{
-//                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
-//                lineWidth = 1;
-//                strokeColor = "rgba(0,0,0,0.5)";
-//            }
-//        }else{
-            fillColor = cEl_group.style.calc["background-color"];
-            lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
-            strokeColor = cEl_group.style.calc["border-top-color"];
-//        }
-        
-        if(fillColor){
-            //cdebug(cEl.children[0].children[0])();
-            cEl_group.children[0].children[0].fillColor = fillColor;
-        }
-        if(strokeColor){
-            cEl_group.children[0].children[0].strokeColor = strokeColor;
-            cEl_group.children[0].children[0].strokeWidth = lineWidth;
+            //cdebug(cEl.shape.rotation,false,true,3)();
+
+            //cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + cEl_group.projectName)();
+
+            cEl_setPaperPath(cEl_group, cEl_group.shape, true, false);
         }
         
+        if(cEl_group.reset.layout_css){
         
-        
-        //var cEl_canv = window[cEl.pageId + "_" + cEl.layerId + "_project"];
-        //var cEl_ctx = cEl_canv.getContext('2d');
+            var fillColor, strokeColor, lineWidth;
+    //        if(cEl_layer.debug){
+    //            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
+    //            var cEl_index = window[editIndex];
+    //            boolDrawCp = cEl_index ? true : false;
+    //            
+    //            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
+    //            if(boolDrawCp){
+    //                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
+    //                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
+    //                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
+    //            }else{
+    //                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
+    //                lineWidth = 1;
+    //                strokeColor = "rgba(0,0,0,0.5)";
+    //            }
+    //        }else{
+                fillColor = cEl_group.style.calc["background-color"];
+                lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
+                strokeColor = cEl_group.style.calc["border-top-color"];
+    //        }
+
+            if(fillColor){
+                //cdebug(cEl.children[0].children[0])();
+                cEl_group.children[0].children[0].fillColor = fillColor;
+            }
+            if(strokeColor){
+                cEl_group.children[0].children[0].strokeColor = strokeColor;
+                cEl_group.children[0].children[0].strokeWidth = lineWidth;
+            }
+        }
         cEl_postsets(cEl_group,boolDrawCp);
         //cdebug(paper.project.activeLayer.children.length)();
         
@@ -1921,9 +1943,7 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
         
         //cdebug(state_global,false,true,0);
         //precompute style from global container
-        
-        
-        
+
         cEl.style.default.calc = $.extend(true,{},cEl.style.default.tag,cEl.style.default.class,cEl.style.default.name,cEl.style.custom);
         cEl.style.calc = $.extend(true,objKeysDefs,cEl.style.default.calc);
         
@@ -1939,8 +1959,6 @@ function set_cEl_Calc_Style(cEl,objKeysDefs){
             cEl.style.active.calc = $.extend(true,{},cEl.style.active.tag,cEl.style.active.class,cEl.style.active.name);
             cEl.style.calc = $.extend(true,cEl.style.calc,cEl.style.active.calc);
         };
-        
-        cEl.reset.layout_css = false;
         
         return true;
     } catch (e) {
@@ -2050,8 +2068,8 @@ function setState(cEl_caller,stateName){
 //        cdebug(stateFrom + " vs " + stateTo, false,true,0);
 //        cdebug(cEl_page.state[stateName], false,true,0);
 
-        var cEl_layer = cEl_caller.project;
-        cEl_layer.reset.layout_shape = true;
+        //var cEl_layer = cEl_caller.project;
+        //cEl_layer.reset.layout_shape = true;
         
         return true;
         
@@ -2231,7 +2249,10 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
             cEl_path.removeSegments();
         }
         
-        var cEl_layer = paper.project;
+        var cEl_layer = paper.project.layers[cEl_group.layerName];
+        
+        
+        
         //var cEl_parent = cEl.parent;
         var cEl_page = paper.data;
         
@@ -2239,7 +2260,7 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
             shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl_group.shape.name]);
         }
         
-        //cdebug(cEl.shape.name)();
+        
         
         var points = shapeContainer.points;
         var pointsLen = points.length;
@@ -2256,7 +2277,9 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
         scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
         
         var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
-
+        
+        
+        
         if(!shapeContainer.masspoint){
             shapeContainer.masspoint = $.extend(true,[],cEl_layer.shape.masspoint);
         }
@@ -2271,14 +2294,16 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
             //cdebug(parentMp)();
             
             shapeContainer.masspoint = [cEl_layer.shape.scale[0]*parentCp[0] + parentMp[0] + shapeContainer.parentoffsetMp.x, cEl_layer.shape.scale[1]*parentCp[1] + parentMp[1] + shapeContainer.parentoffsetMp.y];
+        }else{
+            //shapeContainer.masspoint = [cEl_layer.masspoint[0] + cEl_group.masspoint[0],cEl_layer.masspoint[1]+cEl_group.masspoint[1]];
         }
         
-        shapeContainer.temp.cpMp = [wF*shapeContainer.masspoint[0], hF*shapeContainer.masspoint[1] ,3];
+        shapeContainer.temp.cpMp = [cEl_layer.shape.left + wF*shapeContainer.masspoint[0] ,cEl_layer.shape.top + hF*shapeContainer.masspoint[1] ,3];
         
         cpMP = shapeContainer.temp.cpMp;
         //cElPath.name = cEl.parentName + "_" + cEl.name;
         
-        
+        //cdebug(cpMP)();
         
         switch(shapeContainer.type){
 

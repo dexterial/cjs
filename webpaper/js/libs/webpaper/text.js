@@ -32,7 +32,7 @@ function draw_cEl_text(cEl_group,strNewText){
         set_cEl_text(cEl_group,strNewText);
         
         
-        if(cEl_group.reset.text_shape){
+        if(cEl_group.reset.text_shape || cEl_group.reset.layout_shape){ //
             set_text_path(cEl_group,false);
         }
         
@@ -46,7 +46,7 @@ function draw_cEl_text(cEl_group,strNewText){
             drawTextSelection(cEl_group,cEl_pageText);
         }
         
-        if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw){
+        if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
             cEl_group.children[3].removeChildren();
             draw_cEl_lines3(cEl_group,cEl_pageText);
         }

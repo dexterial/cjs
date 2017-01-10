@@ -132,39 +132,105 @@ function handleKeys(evt) {
     
     try{
         
-        var evtType = evt.type;
-        
         //cdebug(evt.type,false,true);
         // prevent default events
         // evt.preventDefault();    
         //evt.stopPropagation();
         
         //cdebug(getProperties(evt),true);
-        
-        
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"keyboard");
         
-        
-
         //if(eventholder.noevent)return false;
         if(!eventholder.active.oldObj)return false;
-       
-        //var cElName = eventholder.active.name;
+
+        return globalEvents(eventholder);
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+};
+
+function globalEvents(eventholder){
+    
+    try{
         
-        switch(evtType){
+        runEval(eventholder.retObj,eventholder.type);
+        
+        switch(eventholder.type){
             
+            case "mousedown":
+                //cdebug(eventholder.retObj.name + " vs " + eventholder.actObj.name)();
+                //cdebug(paper.project.activeLayer.children.length)();
+                
+                //cdebug(evt.detail,true);
+                updateEventHolder(eventholder,false,true,true);
+                
+                handleCSSEvents_mouse(eventholder,false,true,true);
+                
+                
+                setCarret(null,null,false);
+                
+                handleTextSelection(eventholder);
+                
+                handleContextMenu(eventholder);
+                
+                //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
+                //cdebug(eventholder.hover)();
+                
+                drawProjects(paper,false);
+                //paper.view.draw();
+                //renderer(eventholder.canvReset);
+                
+            break;
+            case "mouseup":
+                
+                handleTextSelection(eventholder);
+                
+                drawProjects(paper,false);
+                //renderer(eventholder.canvReset);
+                
+            break;
+            case "mousemove":
+                
+                updateEventHolder(eventholder,true,false,false);
+                // CSS enabled events
+                handleCSSEvents_mouse(eventholder,true,false,false);
+                
+                handleTextSelection(eventholder);
+   
+//                paper.view.draw();
+                drawProjects(paper,false);
+                //cdebug(eventholder.targetId + " " + paper.project.name,true,true)();
+                //cdebug(eventholder.canvReset,true,true)();
+                //renderer(eventholder.canvReset);
+                
+            break;
+            case "mouseout":
+                
+                updateEventHolder(eventholder,true,false,false);
+                // CSS enabled events
+                handleCSSEvents_mouse(true,false,false);
+                
+                handleTextSelection(eventholder);
+                
+                //renderer(eventholder.canvReset);
+                drawProjects(paper,false);
+                
+            break;
             case "keydown":
                 //cdebug(eventholder)();
                 
                 if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
                     return true;
                 }
-                handleCSSEvents_keys(eventholder,evt);
+                handleCSSEvents_keys(eventholder);
                 
-                runEval(eventholder.active.oldObj,evtType) ;
+                runEval(eventholder.active.oldObj,eventholder.type) ;
                 
-                drawProjects(paper,true);
+                drawProjects(paper,false);
                 
             break;
 //            case "keypress":
@@ -187,118 +253,41 @@ function handleKeys(evt) {
                 }
                 
                 
-                handleCSSEvents_keys(eventholder,evt);
+                handleCSSEvents_keys(eventholder);
                 
-                runEval(eventholder.active.oldObj,evtType);
+                runEval(eventholder.active.oldObj,eventholder.type);
                 
-                drawProjects(paper,true);
+                drawProjects(paper,false);
             break;
         };
+        return true;        
         
-        //paper.view.draw();
-        
-        return true;
-    
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;
     }
-};
-
+    
+}
 
 function handleMouse(evt) {
     
     try{
-        var evtType = evt.type;
-        // exit if not event
-        if(!evtType){
-            return false;
-        }
+//        var evtType = evt.type;
+//        // exit if not event
+//        if(!evtType){
+//            return false;
+//        }
         
         // prevent default events
         //disableEvent(evt);
         // preload event in custom eventholder
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"mouse");
-        
-
         // exit if not valid event
         if (eventholder.noevent){return false;};
-        runEval(eventholder.retObj,evtType);
         
-        switch(evtType){
-            
-            case "mousedown":
-                
-                
-                
-                //cdebug(eventholder.retObj.name + " vs " + eventholder.actObj.name)();
-                //cdebug(paper.project.activeLayer.children.length)();
-                
-                //cdebug(evt.detail,true);
-                updateEventHolder(eventholder,false,true,true);
-                
-                handleCSSEvents_mouse(eventholder,false,true,true);
-                
-                
-                setCarret(null,null,false);
-                
-                handleTextSelection(eventholder);
-                
-                handleContextMenu(eventholder);
-                
-                
-                
-                
-                //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
-                //cdebug(eventholder.hover)();
-                
-                drawProjects(paper,true);
-                //paper.view.draw();
-                //renderer(eventholder.canvReset);
-                
-            break;
-            case "mouseup":
-                
-                handleTextSelection(eventholder);
-                
-                drawProjects(paper,true);
-                //renderer(eventholder.canvReset);
-                
-            break;
-            case "mousemove":
-                
-                updateEventHolder(eventholder,true,false,false);
-                // CSS enabled events
-                handleCSSEvents_mouse(eventholder,true,false,false);
-                
-                handleTextSelection(eventholder);
-   
-//                paper.view.draw();
-                drawProjects(paper,true);
-                //cdebug(eventholder.targetId + " " + paper.project.name,true,true)();
-                //cdebug(eventholder.canvReset,true,true)();
-                //renderer(eventholder.canvReset);
-                
-            break;
-            case "mouseout":
-                
-                updateEventHolder(eventholder,true,false,false);
-                // CSS enabled events
-                handleCSSEvents_mouse(true,false,false);
-                
-                handleTextSelection(eventholder);
-                
-                //renderer(eventholder.canvReset);
-                drawProjects(paper,true);
-                
-            break;
-        };
-        
-        
-        
-        return true;
+        return globalEvents(eventholder);
     
     } catch (e) {
         var err = listError(e);
@@ -348,7 +337,7 @@ function handleTouch(evt) {
                 
                 handleContextMenu(eventholder);
                 
-                drawProjects(paper,true);
+                drawProjects(paper,false);
 //                runEval(cEl,evtType);
             break;
             case "touchmove":
@@ -359,7 +348,7 @@ function handleTouch(evt) {
                 handleTextSelection(eventholder);
                 
                 
-                drawProjects(paper,true);
+                drawProjects(paper,false);
    
 //                runEval(cEl,evtType);
             break;
@@ -370,7 +359,7 @@ function handleTouch(evt) {
                 
                 handleTextSelection(eventholder);
                 
-                drawProjects(paper,true);
+                drawProjects(paper,false);
                 
             break;
         };
@@ -560,7 +549,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 eventholder.keys.key = evt.key;
                 eventholder.keys.location = evt.location;
                 //custom
-                eventholder.keys.chr =  eventholder.keys.which || eventholder.keys.keyCode;
+                eventholder.keys.chr =  evt.character || eventholder.keys.which || eventholder.keys.keyCode;
                 eventholder.keys.chrVal = String.fromCharCode(eventholder.keys.chr);
             break;
             case "wheel":
@@ -797,13 +786,28 @@ function editMode(eventholder){
         
         if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E"){
             if(paper.activeTool === "globalTool"){
-                cdebug("editorTool")();
+                
+                var menuTriggered = handleMenuLayer(eventholder,"editTool1",true);
+                if (menuTriggered){
+                    var xy = [5,5];
+                    
+                    
+                    menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+                    menuTriggered.reset.layout_shape = true;
+                    drawProjects(menuTriggered,true);
+                };
+                
+                //cdebug("editorTool")();
                 editorTool.activate();
                 paper.activeTool = "editorTool";
+                
             }else{
-                cdebug("globalTool")();
+                //cdebug("globalTool")();
                 globalTool.activate();
                 paper.activeTool = "globalTool";
+                
+                handleMenuLayer(eventholder,"editTool1",false);
+                
             }
             return true;
         }
@@ -814,7 +818,7 @@ function editMode(eventholder){
     }
 }
 
-function handleCSSEvents_keys(eventholder,evt) {
+function handleCSSEvents_keys(eventholder) {
     
     try{
         
@@ -824,10 +828,10 @@ function handleCSSEvents_keys(eventholder,evt) {
                 //cdebug(eventholder.keys.chr)();
                 //cdebug(eventholder.keys)();
                 
-                if (evt.character){ //&& eventholder.keys.chr<127
+                if (eventholder.keys.chr){ //&& eventholder.keys.chr<127
                     //evt.preventDefault();
                     edit_chars(eventholder,true);
-                    evt.preventDefault();
+                    //evt.preventDefault();
                     return true;
                 }
                 
@@ -838,17 +842,17 @@ function handleCSSEvents_keys(eventholder,evt) {
                     case 39:
                     case 40:    
                         move_chars(eventholder);
-                        evt.preventDefault();
+//                        evt.preventDefault();
                     break;
                     case 8:
                     case 46:
                         delete_chars(eventholder);
-                        evt.preventDefault();
+//                        evt.preventDefault();
                     break;
                     case 9:
                         updateEventHolder(eventholder,false,true,false);
                         handleCSSEvents_mouse(eventholder,false,true,false);
-                        evt.preventDefault();
+//                        evt.preventDefault();
                     break;
                     case 13:
                         updateEventHolder(eventholder,false,false,true);
@@ -856,12 +860,12 @@ function handleCSSEvents_keys(eventholder,evt) {
 
                     break;
                     case 27:
-                        evt.preventDefault();
+//                        evt.preventDefault();
                     break;
                     case 86:
                     case 118:    
-                        if(evt.ctrlKey){
-                            handlePaste(evt);
+                        if(eventholder.keys.ctrlKey){
+                            //handlePaste(evt);
                         }
                     break;
                     case 16:
@@ -888,11 +892,11 @@ function handleCSSEvents_keys(eventholder,evt) {
 //            break;
             case "keyup":
                 
-                switch(evt.keyCode){
+                switch(eventholder.keys.chr){
                     case 86:
                     case 118:
-                        if(evt.ctrlKey){
-                            handlePaste(evt);
+                        if(eventholder.keys.ctrlKey){
+                            //handlePaste(evt);
                         }
                     break;
                 }
@@ -936,7 +940,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //                    //cdebug(eventholder.hover.id)();
                     cEl.hover = false;
                     cEl.reset.layout_css = true;
-                    cEl.reset.layout_shape = true;
+                    //cEl.reset.layout_shape = true;
                     runEval(cEl,"hoveroff");
 //                }
             }
@@ -953,7 +957,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 //cEl = window[eventholder.currentid];
                 cEl.hover = true;
                 cEl.reset.layout_css = true;
-                cEl.reset.layout_shape = true;
+                //cEl.reset.layout_shape = true;
                 runEval(cEl,"hoveron");
                 resetCursor(cEl);
             }
@@ -966,7 +970,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //                if(cEl){
                     cEl.focus = false;
                     cEl.reset.layout_css = true;
-                    cEl.reset.layout_shape = true;
+                    //cEl.reset.layout_shape = true;
                     runEval(cEl,"focusoff");
 //                    resetCursor(cEl);
 //                }
@@ -979,7 +983,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 cEl = eventholder.retObj;
                 cEl.focus = true;
                 cEl.reset.layout_css = true;
-                cEl.reset.layout_shape = true;
+                //cEl.reset.layout_shape = true;
                 runEval(cEl,"focuson");
                 resetCursor(cEl);
             }
@@ -992,7 +996,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
 //                if(cEl){
                     cEl.active = false;
                     cEl.reset.layout_css = true;
-                    cEl.reset.layout_shape = true;
+                    //cEl.reset.layout_shape = true;
                     runEval(cEl,"activeoff");
                     resetTextSelection(cEl);
                     //resetCursor(cEl);
@@ -1007,7 +1011,7 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
                 cEl = eventholder.retObj;
                 cEl.active = true;
                 cEl.reset.layout_css = true;
-                cEl.reset.layout_shape = true;
+                //cEl.reset.layout_shape = true;
                 runEval(cEl,"activeon");
                 resetCursor(cEl);
                 
@@ -1022,6 +1026,49 @@ function handleCSSEvents_mouse(eventholder,boolHover,boolFocus,boolActive) {
     }
 };
 
+function handleMenuLayer(eventholder,name,trigger){
+    try{
+        
+        if(eventholder.layerId === name)return false;
+        //var page = paper;
+
+        if(!paper.data.menus[name] && !trigger)return false;
+        
+        //cdebug("handle menu " + name + " trigger=" + trigger)();
+        
+        var menu = paper.project.layers[name];
+        
+        if(trigger){
+            
+            menu.visible = true;
+            menu.activate();
+            
+
+            //project_context.reset.layout_css = true;
+            
+            //cdebug(project_context.shape.masspoint)();
+            
+            paper.data.menus[name] = true;
+            
+            //cdebug("setviz handleContextMenu  " + eventholder.pageId)();
+            
+            return menu;
+            
+        }else if(menu.visible){
+            menu.visible = false;
+            //project_context.reset.layout_shape = true;
+            
+            paper.data.menus[name] = false;
+            
+            return false;
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
 function handleContextMenu(eventholder){
     try{
@@ -1029,45 +1076,21 @@ function handleContextMenu(eventholder){
         
         //cdebug(eventholder.layerId)();
         //cdebug(eventholder.metrics,true);
+        var menuTriggered = handleMenuLayer(eventholder,"context",(eventholder.keys.which === 3));
         
-        if(eventholder.layerId === "context")return true;
-        var page = paper;
+        //cdebug(menuTriggered)();
         
-        
-        if(!page.data.context && eventholder.keys.which !== 3)return true;
-        //if(eventholder.keys.which !== 3)return true;
-        
-        
-        //cdebug("handleContextMenu  " + eventholder.pageId)();
-        
-        var project_context = page.project.layers["context"];
-        
-        if(eventholder.keys.which === 3){
-            
-            project_context.visible = true;
-            project_context.activate();
-            
+        if (menuTriggered){
             var xy = eventholder.metrics.xy;
+            menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+            menuTriggered.reset.layout_shape = true;
             
-            project_context.shape.masspoint = cEl_edit_MP(page,xy,page.shape.scale);
-            project_context.reset.layout_shape = true;
-            project_context.reset.layout_css = true;
+            menuTriggered.bringToFront();
             
-            page.data.context = true;
-            
-            //draw_cEl(project_context);
-            
-        }else{
-            project_context.visible = false;
-            project_context.reset.layout_shape = true;
-            
-            page.data.context = false;
-        }
-        
-        //renderer([eventholder.pageId]);
+            drawProjects(menuTriggered,true);
+        };
         
         
-        return true;
         
     } catch (e) {
         var err = listError(e);
