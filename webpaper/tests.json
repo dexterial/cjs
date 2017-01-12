@@ -105,7 +105,6 @@
     "elements":{
         "text1":{
             "class":"testLabel",
-            "pageId":"editorPage",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -161,7 +160,7 @@
             }
         },
         "contextitems":{
-            "pageId":"editorPage",
+            "class":"contextitems",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{},
@@ -229,6 +228,60 @@
             "data":{
                 "type":"canvas"
             }
+        },
+        "editorBtn1":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "events":{},
+            "shape":{
+                "redraw":true,
+                "name":"rectangle-tl",                
+                "scale":[0.96,0.03],
+                "type":"poligon"
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "context":{
+                    "text":"ct1",
+                    "unfolded":"ct2",
+                    "unfoldedfull":"ct3"
+                }
+            },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "vertical":false,
+                    "pattern":"box-fill"
+                }
+            }
+        },
+        "editorBHeader1":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "events":{},
+            "shape":{
+                "redraw":true,
+                "name":"rectangle-tl",                
+                "scale":[1,0.025],
+                "type":"poligon"
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "context":{
+                    "text":"ct1",
+                    "unfolded":"ct2",
+                    "unfoldedfull":"ct3"
+                }
+            },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "vertical":false,
+                    "pattern":"box-fill"
+                }
+            }
         }
     },
     "children":[
@@ -272,8 +325,8 @@
                         {"name":"contextlist",
                             "elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"btnCopy","class":"contextitems","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
-                                {"name":"btnPaste","class":"contextitems","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.45]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
+                                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"Copy"}}},
+                                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.45]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"Paste"}}}
                             ]
                         }
                     ]
@@ -284,8 +337,9 @@
                     "children":[
                         {"name":"contextlist","elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"select","class":"btnGreen","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
-                                {"name":"colorPicker","class":"btnBlue1","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.45]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
+                                {"name":"header","class":"btnGreen","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"EDITOR"}}},
+                                {"name":"select","class":"btnBlue1","elId":"editorBtn1","tab":1,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
+                                {"name":"colorPicker","class":"btnBlue1","elId":"editorBtn1","tab":2,"shape":{"masspoint":[0.02,0.19]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
                             ]
                         }
                     ]

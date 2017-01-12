@@ -657,7 +657,7 @@ function setGetPage(cEl){
             "menus" : $.extend(true,{},cEl.menus)
         };
         
-        paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
+        paper.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true,"cursor":false};
         
         return paper;
     
@@ -737,7 +737,7 @@ function setGetProject(cEl,parentName){
         
         paper.setup(cEl_canv);
         project = paper.project;
-        cdebug("load project " + parentName + "_" + cEl.name)();
+//        cdebug("load project " + parentName + "_" + cEl.name)();
         //var project = paper.project;
         
         //var project = paper.project;
@@ -766,7 +766,7 @@ function setGetProject(cEl,parentName){
 //        var tempShape = new paper.Group();
 //        tempShape.name = project.parentName + "_" + project.name + ".reserved1";
         
-        project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
+        project.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true,"cursor":false};
         
         return project;
         
@@ -790,7 +790,7 @@ function setGetLayer(cEl,parentName){
             layer = paper.project.addLayer(new paper.Layer);
             layer.activate();
         }
-        cdebug("load layer " + parentName + "_" + cEl.name )();
+//        cdebug("load layer " + parentName + "_" + cEl.name )();
         
         layer.debug = cEl.debug;
         layer.tab = cEl.tab;
@@ -818,7 +818,7 @@ function setGetLayer(cEl,parentName){
         var tempShape = new paper.Group();
         tempShape.name = layer.parentName + "_" + layer.name + ".G_BKG";
         
-        layer.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true};
+        layer.reset = {"layout_shape":true,"layout_css":true,"text":true,"text_shape":true,"text_css":true,"selection":true,"text_draw":true,"cursor":false};
         
 
         return layer;
@@ -999,7 +999,9 @@ function drawProjects(cEl,boolRedraw){
         
         //if(!cEl)return true;
         var boolAllIsWell = true;
-        //if(cEl.tag === "layer"){boolRedraw = cEl.reset.layout_shape;};
+        
+        if(cEl.tag === "layer"){boolRedraw = cEl.reset.layout_shape;};
+        
         boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
         
         
@@ -1079,41 +1081,53 @@ function draw_cEl(cEl,boolRedraw){
             
             case "page":
                 
-                if(!cEl.reset.layout_shape){return true;};
+                
                 
                 if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
+                resetCursor(cEl);
+                if(!cEl.reset.layout_shape){return true;};
                 
                 draw_cEl_page(cEl);
                 //cdebug(cEl.shape)();
+                
+                
+                
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
             
             break;
             case "project": //draw page element
-                if(!cEl.reset.layout_shape){return true;};
-                //cdebug("draw project " + cEl.name)();
-//                cdebug("draw page " + cEl.name,true,false,2)();
                 // compute style
                 if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
+                resetCursor(cEl);
+                if(!cEl.reset.layout_shape){return true;};
+                //cdebug("draw project " + cEl.name)();
+//                cdebug("draw page " + cEl.name,true,false,2)();
+                
                 draw_cEl_project(cEl);
                 
+
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
                 
             break;
             case "layer": //draw canvas element
-                if(!cEl.reset.layout_shape){return true;};
+                
                 
                 if(cEl.reset.layout_css){
                     set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":"rgba(0,0,0,0)","border-top-width":"0px","border-top-color":"rgba(0,0,0,0.5)"});
                 }
+                resetCursor(cEl);
                 
+                if(!cEl.reset.layout_shape){return true;};
                 //cdebug("draw canvas")();
                 draw_cEl_layer(cEl);
+                
+                
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
             break;
@@ -1123,7 +1137,11 @@ function draw_cEl(cEl,boolRedraw){
 //                //perhaps load the image of the shape in a temp value of the cel.shape element and 
 //                //just repaint the canvas as the old time, that can speed up stuff.
 //              
-
+                // compute style
+                if(cEl.reset.layout_css){
+                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
+                }
+                resetCursor(cEl);
                 if(boolRedraw){
                     cEl.reset.layout_shape = true;
                 }
@@ -1132,15 +1150,15 @@ function draw_cEl(cEl,boolRedraw){
 //                        return true;
 //                    };
 //                }
-                // compute style
-                if(cEl.reset.layout_css){
-                    set_cEl_Calc_Style(cEl,{"cursor":"default","background-color":null,"border-top-width":"0px","border-top-color":null});
-                }
+                
                 
                 //cdebug(cEl.shape)();
                 
 ////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
                 draw_cEl_group(cEl);
+                
+                
+                
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
                 
@@ -1594,7 +1612,7 @@ function draw_cEl_group(cEl_group) {
             };
         }
         
-        layerSwitch(cEl_group.layerName);
+//        layerSwitch(cEl_group.layerName);
         
         if(cEl_group.reset.layout_shape){
           
@@ -2309,17 +2327,18 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
 
             case "poligon":// Poligon Shape Lines
 
-                x = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
-                y = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
+                x0 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0);
+                y0 = point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1);
 
-                cEl_path.moveTo(x, y);
+                cEl_path.moveTo(x0, y0);
                 
                 for(i = 1; i < pointsLen; i = i + 1){
                     x = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,0);
                     y = point_get_cpXY(points[i],scaleCP,cpMP,flipXY,1);
                     cEl_path.lineTo(x, y); 
                 }
-                //cElPath.closed = true;
+                cEl_path.lineTo(x0, y0); 
+                //cEl_path.closed = true;
                 
             break;
                 
@@ -2773,13 +2792,17 @@ function resetCursor(cEl){
     
     try{
         //var actCanv = getSetHtmlEl(cEl);
-        //cdebug(cEl.parentName + "_" + cEl.name + " on " + paper.project.activeLayer.name)();
+        //cdebug("resetCursor " + cEl.tag + "  " + cEl.parentName + "_" + cEl.name + " on " + paper.project.activeLayer.name)();
+//        cdebug("resetCursor " + cEl.tag)();
         
+        if(!cEl.reset.cursor)return false;
         
-        if(cEl.tag!=="page"){
+//        cdebug("resetCursor " + cEl.tag + "  " + cEl.parentName + "_" + cEl.name + " on " + paper.project.activeLayer.name)();
+        //if(cEl.tag!=="page"){
             //cdebug(cEl.style.calc["cursor"])();
             document.body.style.cursor = cEl.style.calc["cursor"];
-        }
+            cEl.reset.cursor = false;
+        //}
         //else{
             //window[cEl.pageId + "_" + cEl.layerId + "_project"].style.cursor = cEl.style.calc["cursor"];
         //}

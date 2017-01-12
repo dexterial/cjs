@@ -77,9 +77,8 @@ function editor_handleMouse(evt) {
 //            return false;
 //        }
 //        
-        var eventholder = window["eventholder"];
-        preSetEventHolder(eventholder,evt,"mouse");
-        if(!eventholder.active.oldObj)return false;
+        
+        //if(!eventholder.active.oldObj)return false;
         
         var cEl_project = paper.project;
         
@@ -87,38 +86,63 @@ function editor_handleMouse(evt) {
             case "editTool1":
             case "editTool2":
                 //cdebug("here")();
-                
+                var eventholder = window["eventholder"];
+                preSetEventHolder(eventholder,evt,"mouse");
                 return globalEvents(eventholder);
                 
             break;
             default:
-
+                
+                var eventholder = window["eventholder"];
+                preSetEventHolder(eventholder,evt,"mouse",true);
+                
                 switch(eventholder.type){
 
                     case "mousedown":
                         //cdebug("mousedown")();
 
+                        //eventholder.actObj.remove();
+                        
+                        
+                        
+                        updateEventHolder(eventholder,false,true,true);
+                        handleCSSEvents(eventholder,false,true,true,true);
+                        
+                        //cdebug(eventholder.actObj.name)();
+                        
                         editor_mousedown(eventholder);
 
-                        drawProjects(paper,true);
+                        drawProjects(paper.project,false);
+                        
+                        
+                        
 
                     break;
                     case "mouseup":
 
-                        drawProjects(paper,true);
+                        drawProjects(paper.project,false);
 
                     break;
                     case "mousemove":
-
-                        drawProjects(paper,true);
+                        
+                        
+                        updateEventHolder(eventholder,true,false,false);
+                        handleCSSEvents(eventholder,true,false,false);
+                        
+                        drawProjects(paper.project,false);
 
                     break;
-                    case "mouseout":
-
-                        drawProjects(paper,true);
-
-                    break;
+//                    case "mouseout":
+//
+//                        drawProjects(paper,true);
+//
+//                    break;
                 };
+                
+                
+                
+                //resetCursor(cEl_project.activeLayer);
+                
             break;
         }
         
@@ -323,7 +347,7 @@ function editor_mousedown(eventholder) {
         //var cEl_page = window[cEl_layer.pageId];
         
         
-        var cEl_layer = paper.project;
+        var cEl_layer = paper.project.activeLayer;
         if(!cEl_layer.data.workState){
             cEl_layer.data.workState = "pre";
             cEl_layer.data.editIndex = 0;
@@ -358,11 +382,33 @@ function editor_mousedown(eventholder) {
                     break;
                     case "pre":
                         
-                        paper.project.activeLayer.selected = false;
+                        //paper.project.activeLayer.selected = false;
                         
                         cEl_layer.data.workState = "editmaker";
                         paper.project.data.workLayer = cEl_layer;
-                        eventholder.retObj.fullySelected = true;
+                        //eventholder.actObj.fullySelected = true;
+                        
+                        switch (eventholder.actObj.className) {
+                            case "SymbolItem":
+                                var cEl_group = eventholder.actObj.parent.parent;
+                                cEl_group.children[1].selected = true;
+                                
+                                
+                            break;
+                            case "Path":
+                                eventholder.actObj.parent.selected = true;
+                            break;
+                            default:
+                                cdebug(eventholder.actObj.className)();
+                            break;
+                        }
+                        
+                        //
+                        
+                        
+                        //cEl_setCpCursor(cEl_layer);
+                        
+                        
                         
                         //cdebug("editor_mousedown END state " + paper.project.data.workLayer.name)();
                         
@@ -904,59 +950,68 @@ function cEl_setCpCursor(cEl_caller, boolReset) {
     
     try{
         
-        var cEl_layer = window[cEl_caller.pageId + "_fabric"];
+        var cEl_layer = cEl_caller;
         //if(cEl_layer.children.length===0 || cEl_layer.data.editIndex<0)return false;
         if(boolReset){
             cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"default"});
-            cEl_layer.style.redraw = true;
-            if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
+            //cEl_layer.reset.layout_css = true;
+            
             return true;
         }
         
-        var activeCp = window[cEl_layer.data.editIndex].shape.temp.activeCp;
-        switch (activeCp.value[2]) {
-            case 0:
-            case 1:
-            case 2:
-                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"crosshair"});
-                cEl_layer.style.redraw = true;
-            break;
-            case 3:
-                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
-                cEl_layer.style.redraw = true;
-            break;
-            case 4:
-                //actCanv.style.calc["cursor"] = "all-scroll";
-                switch (activeCp.value[5]) {
-                    case 0:
-                    case 2:
-                        cEl_layer.style.calc["cursor"] = "nw-resize";
-                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
-                        cEl_layer.style.redraw = true;
-                    break;
-                    case 1:
-                    case 3:
-                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
-                        cEl_layer.style.redraw = true;
-                    break;
-                }
-            break;
-            case 5:
-                switch (activeCp.value[5]) {
-
-                    case 0:
-                    case 2:
-                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
-                        cEl_layer.style.redraw = true;
-                    break;
-                    case 1:
-                    case 3:
-                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
-                        cEl_layer.style.redraw = true;
-                    break;
-                }
-            break;
-        }
+        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
+        cEl_layer.reset.cursor = true;
+        //resetCursor(cEl_caller);
+        
+        //cdebug()();
+        
+        //actCanv.style.calc["cursor"] = "all-scroll";
+        
+        
+//        var activeCp = window[cEl_layer.data.editIndex].shape.temp.activeCp;
+//        switch (activeCp.value[2]) {
+//            case 0:
+//            case 1:
+//            case 2:
+//                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"crosshair"});
+//                cEl_layer.style.redraw = true;
+//            break;
+//            case 3:
+//                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
+//                cEl_layer.style.redraw = true;
+//            break;
+//            case 4:
+//                //actCanv.style.calc["cursor"] = "all-scroll";
+//                switch (activeCp.value[5]) {
+//                    case 0:
+//                    case 2:
+//                        cEl_layer.style.calc["cursor"] = "nw-resize";
+//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
+//                        cEl_layer.style.redraw = true;
+//                    break;
+//                    case 1:
+//                    case 3:
+//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
+//                        cEl_layer.style.redraw = true;
+//                    break;
+//                }
+//            break;
+//            case 5:
+//                switch (activeCp.value[5]) {
+//
+//                    case 0:
+//                    case 2:
+//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
+//                        cEl_layer.style.redraw = true;
+//                    break;
+//                    case 1:
+//                    case 3:
+//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
+//                        cEl_layer.style.redraw = true;
+//                    break;
+//                }
+//            break;
+//        }
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -1652,19 +1707,24 @@ function selectButton(cEl){
     try{
         //cdebug("selectButton")();
         var cEl_layer = paper.project.data.workLayer;
-        
+        //cdebug(cEl_layer.name)();
         
         
         if(!cEl_layer){return false;};
         
         //cdebug(cEl_layer.name)();
-        layerSwitch(cEl_layer.name);
+        //layerSwitch(cEl_layer.name);
+        
+        cEl_setCpCursor(cEl_layer);
         
 //        paper.project.activeLayer.fullySelected = false;
-//        paper.project.activeLayer.selected = false;
+        cEl_layer.selected = false;
 //        
         cEl_layer.data.workState = "pre";
         cEl_layer.data.editIndex = 0;
+        
+        //paper.project.activeLayer.view.draw();
+        
         
         return true;    
     } catch (e) {
@@ -1682,4 +1742,52 @@ function colorButton(cEl){
         cdebug(err,false,false,3)();
         return err;
     }   
+}
+
+function moveMenu(cEl){
+    try{
+        
+        // TODO add event type and set it on mousedown also
+        
+        var eventholder = window["eventholder"];
+        
+        if(eventholder.keys.buttons===1){
+            
+            var menuTriggered = cEl.parent;
+            var xy = [eventholder.metrics.xy[0]-cEl.data.xtoffset[0],eventholder.metrics.xy[1]-cEl.data.xtoffset[1]];
+
+            menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+            menuTriggered.reset.layout_shape = true;
+            
+//            menuTriggered.position = xy;
+            
+            
+            
+        }else if(eventholder.keys.buttons===0){
+//            var menuTriggered = cEl.parent;
+//            cEl.data.xtoffset = [eventholder.metrics.xy[0]-menuTriggered.position.x,eventholder.metrics.xy[1]-menuTriggered.position.y];
+            cEl.data.xtoffset = [eventholder.metrics.xy[0]-cEl.bounds.topLeft.x,eventholder.metrics.xy[1]-cEl.bounds.topLeft.y];
+        }
+//        if(eventholder.keys.button)
+//        cdebug(cEl.name)();
+//        
+//        cdebug("notImplemented")();
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }   
+}
+
+function resetChildren(cEl){
+    try{
+        
+        
+        
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
 }
