@@ -1,6 +1,6 @@
 {
     "title": "Tests",
-    "name":"editorPage","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
+    "name":"testPage","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
     "class":"test",
     "shape":{
         "redraw":true,
@@ -134,7 +134,7 @@
         },
         "contextlayer":{
             "tag":"layer",
-            "visible":false,
+            "debug":false,
             "enabled":true,
             "focus":false,
             "hover":false,
@@ -188,6 +188,7 @@
             }
         },
         "layer1":{
+            "debug":false,
             "class":"test",
             "tag":"layer",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
@@ -211,7 +212,7 @@
         "project1":{
             "class":"test",
             "tag":"project",
-            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
                 "mouseout":"testEvents2(this,'mouseout')",
                 "mousedown":"testEvents(this,'mousedown')",
@@ -286,7 +287,7 @@
     },
     "children":[
         {
-            "name":"main","elId":"project1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
+            "name":"main","elId":"project1","visible":true,"tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
             "children":[
                 {
                     "name":"data1","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
@@ -319,7 +320,7 @@
                     ]
                 },
                 {
-                    "name":"context","elId":"contextlayer","class":"contextmenu","tab":1,
+                    "name":"context","elId":"contextlayer","visible":false,"class":"contextmenu","tab":1,
                     "shape":{"scale":[0.1,0.1]},
                     "children":[
                         {"name":"contextlist",
@@ -330,12 +331,16 @@
                             ]
                         }
                     ]
-                },
+                }
+            ]
+        },
+        {"name":"editor","elId":"project1","visible":false,"tab":0,"shape":{"masspoint":[0.05,0.05],"scale":[0.1,0.9]},
+            "children":[
                 {
-                    "name":"editTool1","elId":"contextlayer","class":"control","tab":2,
-                    "shape":{"scale":[0.1,0.9]},
+                    "name":"editTool1","elId":"contextlayer","visible":true,"class":"control","tab":2,
+                    "shape":{"scale":[1,1]},
                     "children":[
-                        {"name":"contextlist","elId":"contextlist","tab":0,
+                        {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
                                 {"name":"header","class":"btnGreen","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"EDITOR"}}},
                                 {"name":"select","class":"btnBlue1","elId":"editorBtn1","tab":1,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},

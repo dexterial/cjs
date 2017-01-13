@@ -693,6 +693,32 @@ function projectSwitch(toProject){
     }  
 }
 
+
+function projectGet(nameProject){
+    try {
+        
+        if(paper.project && paper.project.name && paper.project.name===nameProject){
+            return paper.project;//paper.project;
+        }
+        
+        var projects = paper.projects;
+        for(var i = 0; i<projects.length; i++){
+            //cdebug("found " + nameProject)();
+            if(projects[i].name && projects[i].name === nameProject){
+                
+                return projects[i];
+            }
+        }
+        return null;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }  
+}
+
+
 function layerSwitch(toLayer){
     try {
         
@@ -1001,6 +1027,7 @@ function drawProjects(cEl,boolRedraw){
         var boolAllIsWell = true;
         
         if(cEl.tag === "layer"){boolRedraw = cEl.reset.layout_shape;};
+        if(cEl.tag === "project"){boolRedraw = cEl.reset.layout_shape;};
         
         boolAllIsWell = (boolAllIsWell && draw_cEl(cEl,boolRedraw));
         
@@ -1329,7 +1356,7 @@ function draw_cEl_project(cEl_project){
         cEl_project.view.viewSize.height = cEl_project.shape.h;
         
         
-        
+        //cdebug(cEl_project.view.center)();
         
 
         //cEl_canv.width = cEl_project.shape.w;
@@ -1354,6 +1381,10 @@ function draw_cEl_project(cEl_project){
         cEl_canv.style.border = "solid " + cEl_project.style.calc["border-top-width"] + " " + cEl_project.style.calc["border-top-color"] ;
         cEl_canv.style.left = cEl_project.shape.left + "px";
         cEl_canv.style.top =  cEl_project.shape.top + "px";
+        
+//        cdebug(cEl_project.name)();
+//        cdebug(cEl_project.shape)();
+        
         
         //cEl_canv.style.border = "solid 1px blue";//cEl_canv.cStyle["border"];
 
@@ -1592,11 +1623,13 @@ function draw_cEl_group(cEl_group) {
         
         //cdebug(cEl_group.name + " vs " + cEl_group.visible)();
         
-        //cdebug(cEl.name,false,true,3)();
-        projectSwitch(cEl_group.projectName);
         
         
-        var cEl_layer = paper.project.layers[cEl_group.layerName];
+        
+        var cEl_project = projectGet(cEl_group.projectName);
+        //cdebug(cEl_project.name)();
+        
+        var cEl_layer = cEl_project.layers[cEl_group.layerName];
         //cdebug(cEl_layer.name)();
         
         var cEl_pageData = paper.data;
@@ -1613,10 +1646,10 @@ function draw_cEl_group(cEl_group) {
         }
         
 //        layerSwitch(cEl_group.layerName);
-        
+//            projectSwitch(cEl_group.projectName);
         if(cEl_group.reset.layout_shape){
           
-
+            cEl_project.activate();
             var boolDrawCp = false;
 
             //cdebug(cEl.shape.rotation,false,true,3)();

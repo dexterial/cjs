@@ -385,7 +385,7 @@ function editor_mousedown(eventholder) {
                         //paper.project.activeLayer.selected = false;
                         
                         cEl_layer.data.workState = "editmaker";
-                        paper.project.data.workLayer = cEl_layer;
+                        paper.data.workLayer = cEl_layer;
                         //eventholder.actObj.fullySelected = true;
                         
                         switch (eventholder.actObj.className) {
@@ -1706,8 +1706,8 @@ function drawGrid(cEl_canvas){
 function selectButton(cEl){
     try{
         //cdebug("selectButton")();
-        var cEl_layer = paper.project.data.workLayer;
-        //cdebug(cEl_layer.name)();
+        var cEl_layer = paper.data.workLayer;
+//        cdebug(cEl_layer.name)();
         
         
         if(!cEl_layer){return false;};
@@ -1753,20 +1753,23 @@ function moveMenu(cEl){
         
         if(eventholder.keys.buttons===1){
             
-            var menuTriggered = cEl.parent;
-            var xy = [eventholder.metrics.xy[0]-cEl.data.xtoffset[0],eventholder.metrics.xy[1]-cEl.data.xtoffset[1]];
+            //cdebug(cEl.projectName)();
+            //cdebug(cEl.data.xyoffset)();
+            
+            var menuTriggered = paper.project;
+            var xy = [eventholder.metrics.xyAbs[0]-cEl.data.xyoffset[0],eventholder.metrics.xyAbs[1]-cEl.data.xyoffset[1]];
 
-            menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+            menuTriggered.shape.masspoint = [menuTriggered.shape.scale[0]*xy[0]/menuTriggered.shape.w,menuTriggered.shape.scale[1]*xy[1]/menuTriggered.shape.h];
             menuTriggered.reset.layout_shape = true;
-            
-//            menuTriggered.position = xy;
-            
             
             
         }else if(eventholder.keys.buttons===0){
 //            var menuTriggered = cEl.parent;
 //            cEl.data.xtoffset = [eventholder.metrics.xy[0]-menuTriggered.position.x,eventholder.metrics.xy[1]-menuTriggered.position.y];
-            cEl.data.xtoffset = [eventholder.metrics.xy[0]-cEl.bounds.topLeft.x,eventholder.metrics.xy[1]-cEl.bounds.topLeft.y];
+//            cEl.data.xtoffset = [eventholder.metrics.xy[0]-cEl.bounds.topLeft.x,eventholder.metrics.xy[1]-cEl.bounds.topLeft.y];
+
+            
+            cEl.data.xyoffset = [eventholder.metrics.xy[0]-cEl.bounds.topLeft.x,eventholder.metrics.xy[1]-cEl.bounds.topLeft.y];
         }
 //        if(eventholder.keys.button)
 //        cdebug(cEl.name)();

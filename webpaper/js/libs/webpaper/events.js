@@ -440,6 +440,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         
         eventholder.targetId = targetId;
         
+        //projectSwitch(cEl_group.projectName);
+
+        
         //cdebug(eventholder.targetId)();
         
         //cdebug(projects.length,false,false,0);
@@ -523,14 +526,16 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
                 eventholder.projectId = arrTargetId[2];
                 eventholder.tag = arrTargetId[3];
             }
+            
+            
+            //cdebug(eventholder.projectId + " vs " + paper.project.name)();
+            
+            //if(eventholder.projectId !== paper.project.name){
+                projectSwitch(eventholder.projectId);
+            //}
             eventholder.layerId = paper.project.activeLayer.name;
             
-            //cdebug(eventholder.layerId + " vs " + paper.project.name)();
             
-            if(eventholder.projectId !== paper.project.name){
-                cdebug("here switch")();
-                projectSwitch(eventholder.projectId);
-            }
 //            if(targetId  === "editorPage_carret_div"){
 //            // just retrieve it from the event store and update metrics a little bit
 ////                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
@@ -738,14 +743,15 @@ function editMode(eventholder){
         if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E"){
             if(paper.activeTool === "globalTool"){
                 
-                var menuTriggered = handleMenuLayer(eventholder,"editTool1",true);
+                var menuTriggered = handleMenuProject(eventholder,"editor",true);
                 if (menuTriggered){
-                    var xy = [5,5];
-                    
-                    
-                    menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+                    var xy = [10,10];
+                    //menuTriggered.activate();
+//                    cdebug(menuTriggered.name)();
+//                    menuTriggered.
+                    menuTriggered.shape.masspoint = cEl_edit_MP(paper,xy,paper.shape.scale);
                     menuTriggered.reset.layout_shape = true;
-                    drawProjects(menuTriggered,true);
+//                    drawProjects(menuTriggered,true);
                 };
                 
                 //cdebug("editorTool")();
@@ -757,7 +763,7 @@ function editMode(eventholder){
                 globalTool.activate();
                 paper.activeTool = "globalTool";
                 
-                handleMenuLayer(eventholder,"editTool1",false);
+                handleMenuProject(eventholder,"editor",false);
                 
             }
             return true;
@@ -986,9 +992,11 @@ function handleMenuLayer(eventholder,name,trigger){
 
         if(!paper.data.menus[name] && !trigger)return false;
         
-        //cdebug("handle menu " + name + " trigger=" + trigger)();
+//        cdebug("handleMenuLayer " + name + " trigger=" + trigger)();
         
         var menu = paper.project.layers[name];
+        
+        if(!menu)return false;
         
         if(trigger){
             
@@ -1021,6 +1029,54 @@ function handleMenuLayer(eventholder,name,trigger){
         return err;
     }
 }
+
+function handleMenuProject(eventholder,name,trigger){
+    try{
+        
+        if(eventholder.projectId === name)return false;
+        //var page = paper;
+
+        if(!paper.data.menus[name] && !trigger)return false;
+        
+//        cdebug("handleMenuProject " + name + " trigger=" + trigger)();
+//        cdebug(paper.projects[1].name)();
+        
+        var menu = projectGet(name);
+        
+        if(!menu)return false;
+        
+        if(trigger){
+            
+            menu.visible = true;
+            menu.activate();
+            
+            
+            //project_context.reset.layout_css = true;
+            
+            //cdebug(project_context.shape.masspoint)();
+            
+            paper.data.menus[name] = true;
+            
+            //cdebug("setviz handleContextMenu  " + eventholder.pageId)();
+            
+            return menu;
+            
+        }else if(menu.visible){
+            menu.visible = false;
+            //project_context.reset.layout_shape = true;
+            
+            paper.data.menus[name] = false;
+            
+            return false;
+        }
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
 
 function handleContextMenu(eventholder){
     try{
