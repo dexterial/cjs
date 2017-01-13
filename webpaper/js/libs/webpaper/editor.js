@@ -127,7 +127,17 @@ function editor_handleMouse(evt) {
                         
                         
                         updateEventHolder(eventholder,true,false,false);
-                        handleCSSEvents(eventholder,true,false,false);
+                        handleCSSEvents(eventholder,true,false,false,true);
+                        
+                        
+                        if(paper.data.workObject && eventholder.keys.buttons ===1){
+                            
+                           paper.data.workObject.shape.masspoint = cEl_edit_MP(paper.data.workObject.parent,eventholder.metrics.xy,paper.data.workObject.parent.shape.scale);
+                           paper.data.workObject.reset.layout_shape =true;
+                            //cdebug(paper.data.workObject.name)(); 
+                        }
+                        
+                        
                         
                         drawProjects(paper.project,false);
 
@@ -388,16 +398,21 @@ function editor_mousedown(eventholder) {
                         paper.data.workLayer = cEl_layer;
                         //eventholder.actObj.fullySelected = true;
                         
+                        cdebug(eventholder.actObj.name)();
+                        
                         switch (eventholder.actObj.className) {
+                            
                             case "SymbolItem":
-                                var cEl_group = eventholder.actObj.parent.parent;
-                                cEl_group.children[1].selected = true;
-                                
-                                
-                            break;
                             case "Path":
-                                eventholder.actObj.parent.selected = true;
+                                var cEl_group = eventholder.actObj.parent.parent;
+                                cEl_group.selected = true;
+                                paper.data.workObject = cEl_group;
+                                
+                                
                             break;
+//                            case "Path":
+//                                eventholder.actObj.parent.selected = true;
+//                            break;
                             default:
                                 cdebug(eventholder.actObj.className)();
                             break;
