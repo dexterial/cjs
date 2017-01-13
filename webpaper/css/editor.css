@@ -1,0 +1,376 @@
+html {
+    font-size: 12px;
+}
+.editorPage_carret_div {
+    outline: 0;
+    vertical-align:top;
+    position:absolute;
+    z-index:100;
+    overflow:hidden;
+    background-color:rgba(0,0,255,0);
+    visibility: hidden;
+}
+.editorPage_carret_div :focus{
+    outline: none;
+}
+input::-moz-focus-inner {
+    border: 0;
+}
+
+.background{
+    /*    font-family: Arial;
+        font-size: 0.9rem;*/
+    background-color:rgba(255,255,222,1);
+
+    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
+    /*    border-color:rgba(170,221,170,0.7);
+        border-width: 5px;*/
+    /*    border-color: #aff;used for textshade color
+        border-width: 1px;used for textshade width
+        font-style: italic;
+        border:thin dotted #FF0000;*/
+}
+
+.toolKit{
+    /*    font-family: Arial;
+        font-size: 0.9rem;*/
+    background-color:#cccccc;
+
+    /*    border-color: #aff;used for textshade color
+        border-width: 1px;used for textshade width
+        font-style: italic;
+        border:thin dotted #FF0000;*/
+}
+.contextmenu{
+    font-family: Arial;
+    font-size: 3rem;
+    background-color: rgba(218,165,32,1);
+    /*background-image: url("graphics/test.jpg");*/
+    border-width: 1px;
+    border-color: rgb(218,165,32);
+    box-shadow:3px 3px 3px 0px rgba(218,165,32,0.5);
+}
+.contextitems{
+    font-family: Arial;
+    font-size: 3rem;
+    background-color: rgba(255,255,255,0.7);
+    box-shadow:0px 0px 6px 6px rgba(255,255,255,0.9);
+    text-shadow:1px 1px 3px rgba(218,165,32,1);
+    padding: 2px;
+    cursor:pointer;
+}
+
+.contextitems:hover{
+    /*    font-family: Arial;
+        font-size: 0.9rem;*/
+    background-color: rgba(255,255,255,1);
+
+}
+
+.bakground{
+    /*    font-family: Arial;
+        font-size: 0.9rem;*/
+    background-color:rgba(255,255,222,1);
+
+    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
+    /*    border-color:rgba(170,221,170,0.7);
+        border-width: 5px;*/
+    /*    border-color: #aff;used for textshade color
+        border-width: 1px;used for textshade width
+        font-style: italic;
+        border:thin dotted #FF0000;*/
+}
+
+
+.label{
+    /*    my-hover-color:#9aabb;*/
+    /*cursor:text;*/
+    font-family : sans-serif;
+    font-size: 3em;
+    font-weight:bold;
+    background-color: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.4);
+    border-width: 1px;
+    color:rgba(255,255,255,0.7);
+    /*    font-style:italic;*/
+    cursor:text;
+    padding: 5px;
+    padding-top: 5px;
+    text-align:justify;
+    text-shadow: 2px 2px 2px rgba(0,0,0,1);
+    letter-spacing : 1px;
+    word-spacing : 10px;
+    text-indent: 10px;
+    transition: width 2s, height 4s;
+}
+
+
+.label:hover{
+    background-color:rgba(255,255,255,0.5);
+}
+.label:focus{
+
+}
+.label:active{
+    background-color:rgba(255,255,255,0.7);
+}
+
+
+.header{
+    font-family: Arial;
+    font-size: 10px;
+    background-color:rgba(170,221,170,0.7);
+    border-color:rgba(170,221,170,0.7);
+    border-width: 1px;
+    padding: 1px;
+    text-align:left;
+    color:#fff;
+    font-style: italic;
+    font-weight:normal;
+    cursor:move;
+
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+#main{
+    position:absolute;
+    top:0px;
+    width: 100%;
+    height: 100%;
+    min-width: 640px;
+    z-index: 1;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+.draggable{
+    border-radius: 1%;
+    display: inline-block;
+}
+
+.select{
+    width: 35px;
+    height: 35px;
+    background-image: url("../interface&more/icons/move_tool_icon.png");
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-top:5px;
+}
+
+.select:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.select:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.select:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.eyedropper{
+    width: 35px;
+    height: 35px;
+    background-image: url("../interface&more/icons/eyedropper_icon.png");
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.eyedropper:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.eyedropper:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.eyedropper:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+
+.more{
+    width: 35px;
+    height: 35px;
+    background-image: url("../interface&more/icons/add.png");
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.more:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.more:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.more:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.text{
+    width: 35px;
+    height: 35px;
+    background-image: url("../interface&more/icons/text_icon.png");
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.text:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.text:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.text:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+
+.colors{
+    width: 35px;
+    height: 35px;
+    background-image: url("../interface&more/icons/colours.png");
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.colors:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+.colors:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+.colors:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.menu{
+    width: 99.5%;
+    height: 12%;
+    margin-top: 0.5%;
+    margin-right: 0.2%;
+    background-color: #663300;
+    float: right;
+}
+
+.menu:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+
+.menu:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+
+.menu:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.toolsPreview{
+    width: 79.5%;
+    height: 85%;
+    margin-top: 0.5%;
+    display: inline-block;
+}
+
+.toolsPreview:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+
+.toolsPreview:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+
+.toolsPreview:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.toolsBox{
+    width: 3.5%;
+    height: 80%;
+}
+
+.toolsBox:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+
+.toolsBox:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+
+.toolsBox:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}
+
+.editBox{
+    width: 96%;
+    height: 100%;
+    background-color: #0000dd;
+    float: right;
+}
+
+.editBox:hover{
+    background-color:rgba(170,170,221,0.7);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+}
+
+.editBox:active{
+    background-color:rgba(170,170,221,1);
+    box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
+    cursor:default;
+}
+
+.editBox:focus{
+    font-family: Arial;
+    font-size: 11px;
+    color:#fff;
+}

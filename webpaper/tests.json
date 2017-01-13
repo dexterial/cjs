@@ -1,7 +1,7 @@
 {
     "title": "Tests",
     "name":"testPage","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
-    "class":"test",
+    "class":"background",
     "shape":{
         "redraw":true,
         "tab":-1,
@@ -104,7 +104,7 @@
     },
     "elements":{
         "text1":{
-            "class":"testLabel",
+            "class":"label",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -189,7 +189,7 @@
         },
         "layer1":{
             "debug":false,
-            "class":"test",
+            "class":"background",
             "tag":"layer",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -210,7 +210,7 @@
             }
         },
         "project1":{
-            "class":"test",
+            "class":"background",
             "tag":"project",
             "enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -337,14 +337,14 @@
         {"name":"editor","elId":"project1","visible":false,"tab":0,"shape":{"masspoint":[0.05,0.05],"scale":[0.1,0.9]},
             "children":[
                 {
-                    "name":"editTool1","elId":"contextlayer","visible":true,"class":"control","tab":2,
+                    "name":"editTool1","elId":"contextlayer","visible":true,"class":"toolKit","tab":2,
                     "shape":{"scale":[1,1]},
                     "children":[
                         {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"header","class":"btnGreen","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"EDITOR"}}},
-                                {"name":"select","class":"btnBlue1","elId":"editorBtn1","tab":1,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
-                                {"name":"colorPicker","class":"btnBlue1","elId":"editorBtn1","tab":2,"shape":{"masspoint":[0.02,0.19]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
+                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"EDITOR"}}},
+                                {"name":"select","class":"select","elId":"editorBtn1","tab":1,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
+                                {"name":"colorPicker","class":"colors","elId":"editorBtn1","tab":2,"shape":{"masspoint":[0.02,0.19]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
                             ]
                         }
                     ]
