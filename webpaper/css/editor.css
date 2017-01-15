@@ -152,6 +152,7 @@ html, body {
 }
 
 .select{
+    background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
     background-image: url("../interface&more/icons/move_tool_icon.png");
@@ -204,6 +205,7 @@ html, body {
 
 
 .more{
+    background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
     background-image: url("../interface&more/icons/add.png");
@@ -229,6 +231,7 @@ html, body {
 }
 
 .text{
+    background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
     background-image: url("../interface&more/icons/text_icon.png");
@@ -255,6 +258,7 @@ html, body {
 
 
 .colors{
+    background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
     background-image: url("../interface&more/icons/colours.png");
@@ -280,6 +284,7 @@ html, body {
 }
 
 .menu{
+    background-color:rgba(170,170,221,0.5);
     width: 99.5%;
     height: 12%;
     margin-top: 0.5%;
@@ -306,6 +311,7 @@ html, body {
 }
 
 .toolsPreview{
+    background-color:rgba(170,170,221,0.5);
     width: 79.5%;
     height: 85%;
     margin-top: 0.5%;
@@ -330,6 +336,7 @@ html, body {
 }
 
 .toolsBox{
+    background-color:rgba(170,170,221,0.5);
     width: 3.5%;
     height: 80%;
 }
@@ -352,6 +359,7 @@ html, body {
 }
 
 .editBox{
+    background-color:rgba(170,170,221,0.5);
     width: 96%;
     height: 100%;
     background-color: #0000dd;

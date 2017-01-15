@@ -900,8 +900,9 @@ function set_text_path(cEl_group,boolShowTextLines){
             case "path":
                 
 //                if(cEl_path.name!==text_path.name){
-                    cEl_group.children[1].children[0] = cEl_group.children[0].children[0];
-                    cEl_group.children[1].children[0].name = text_path_name;
+//                    cEl_group.children[1].children[0] = cEl_group.children[0].children[0];
+                    cEl_setPaperPath(cEl_group,cEl_group.children[1], cEl_group.shape, true, false);
+//                    cEl_group.children[1].children[0].name = text_path_name;
                     
                     if(boolShowTextLines){
                         cEl_group.children[1].selected = true;

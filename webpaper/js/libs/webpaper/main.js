@@ -1656,7 +1656,7 @@ function draw_cEl_group(cEl_group) {
 
             //cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + cEl_group.projectName)();
 
-            cEl_setPaperPath(cEl_group, cEl_group.shape, true, false);
+            cEl_setPaperPath(cEl_group,cEl_group.children[0].children[0], cEl_group.shape, true, false);
         }
         
         if(cEl_group.reset.layout_css){
@@ -2274,7 +2274,7 @@ function checkPath2D( ) {
     }
 }
 
-function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
+function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSetCP){
     //'use strict';
     try{
         //var shapeContainer = cEl.shape;
@@ -2293,7 +2293,7 @@ function cEl_setPaperPath(cEl_group, shapeContainer, boolReset, boolSetCP){
         var scaleCP=[1,1];
         
         //cdebug(cEl_group.children[0].children[0])();
-        var cEl_path = cEl_group.children[0].children[0];
+//        var cEl_path = cEl_group.children[0].children[0];
         
         
         if(cEl_path.segments){
