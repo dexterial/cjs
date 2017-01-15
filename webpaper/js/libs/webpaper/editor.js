@@ -103,6 +103,7 @@ function editor_handleMouse(evt) {
 
                         //eventholder.actObj.remove();
                         
+                        cdebug(eventholder.metrics.delta)();
                         
                         
                         updateEventHolder(eventholder,false,true,true);
@@ -132,9 +133,14 @@ function editor_handleMouse(evt) {
                         
                         if(paper.data.workObject && eventholder.keys.buttons ===1){
                             
-                           paper.data.workObject.shape.masspoint = cEl_edit_MP(paper.data.workObject.parent,eventholder.metrics.xy,paper.data.workObject.parent.shape.scale);
-                           paper.data.workObject.reset.layout_shape =true;
-                            //cdebug(paper.data.workObject.name)(); 
+//                           paper.data.workObject.shape.masspoint = cEl_edit_MP(paper.data.workObject.parent,eventholder.metrics.xy,paper.data.workObject.parent.shape.scale);
+//                           paper.data.workObject.reset.layout_shape =true;
+//                            cdebug(paper.data.workObject.position)();
+//                            cdebug(eventholder.metrics.delta)(); 
+
+//                            cdebug(paper.data.workObject.name)();
+                            
+                            paper.data.workObject.position = new paper.Point([paper.data.workObject.position.x + eventholder.metrics.delta.x,paper.data.workObject.position.y + eventholder.metrics.delta.y]);
                         }
                         
                         
@@ -398,13 +404,14 @@ function editor_mousedown(eventholder) {
                         paper.data.workLayer = cEl_layer;
                         //eventholder.actObj.fullySelected = true;
                         
-                        cdebug(eventholder.actObj.name)();
+//                        cdebug(eventholder.actObj.name)();
                         
                         switch (eventholder.actObj.className) {
                             
                             case "SymbolItem":
                             case "Path":
                                 var cEl_group = eventholder.actObj.parent.parent;
+                                //cEl_group.selected = true;
                                 cEl_group.selected = true;
                                 paper.data.workObject = cEl_group;
                                 
@@ -1773,9 +1780,10 @@ function moveMenu(cEl){
             
             var menuTriggered = paper.project;
             var xy = [eventholder.metrics.xyAbs[0]-cEl.data.xyoffset[0],eventholder.metrics.xyAbs[1]-cEl.data.xyoffset[1]];
+            
 
-            menuTriggered.shape.masspoint = [menuTriggered.shape.scale[0]*xy[0]/menuTriggered.shape.w,menuTriggered.shape.scale[1]*xy[1]/menuTriggered.shape.h];
-            menuTriggered.reset.layout_shape = true;
+//            menuTriggered.shape.masspoint = [menuTriggered.shape.scale[0]*xy[0]/menuTriggered.shape.w,menuTriggered.shape.scale[1]*xy[1]/menuTriggered.shape.h];
+//            menuTriggered.reset.layout_shape = true;
             
             
         }else if(eventholder.keys.buttons===0){

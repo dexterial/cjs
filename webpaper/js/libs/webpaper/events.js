@@ -423,9 +423,11 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         var evt;
         if(evtCallerType === "touch"){
             evt = paperevt;
+            
             //disableEvent(evt);
         }else{
             evt = paperevt.event;
+            
             //alert("here");
             //paperevt.stop();
         }
@@ -460,7 +462,12 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         switch(evtCallerType){
             case "touch":
                 //dom2
-                //if(evt.touches[0]){
+                if(eventholder.metrics.xy){
+                    var oldPoint = new paper.Point(eventholder.metrics.xy);
+                    eventholder.metrics.delta = oldPoint.getDistance([evt.changedTouches[0].clientX,evt.changedTouches[0].clientY]);
+                }else{
+                    eventholder.metrics.delta =null;
+                }
                 
                 eventholder.metrics.xy = [evt.changedTouches[0].clientX,evt.changedTouches[0].clientY];
                 eventholder.metrics.xyAbs = [evt.changedTouches[0].pageX - evt.changedTouches[0].target.offsetLeft,evt.offsetY = evt.changedTouches[0].pageY - evt.changedTouches[0].target.offsetTop];
@@ -473,6 +480,15 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
             break;
             case "mouse":
                 //dom2
+                
+//                if(eventholder.metrics.xy){
+//                    var oldPoint = new paper.Point(eventholder.metrics.xy);
+//                    eventholder.metrics.delta = oldPoint.getDistance([evt.changedTouches[0].clientX,evt.changedTouches[0].clientY]);
+//                }else{
+//                    eventholder.metrics.delta =null;
+//                }
+                eventholder.metrics.delta = paperevt.delta;
+                
                 eventholder.metrics.xy = [evt.offsetX ,evt.offsetY];
                 eventholder.metrics.xyAbs = [evt.clientX,evt.clientY];
                 
