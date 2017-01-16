@@ -182,6 +182,7 @@
                 "type":"text",
                 "values":{
                     "editable":false,
+                    "noselect":true,
                     "vertical":false,
                     "pattern":"box-fill"
                 }
@@ -237,7 +238,7 @@
             "shape":{
                 "redraw":true,
                 "name":"rectangle-tl",                
-                "scale":[0.96,0.03],
+                "scale":[0.03,0.03],
                 "type":"poligon"
             },
             "states":{
@@ -252,6 +253,7 @@
                 "type":"text",
                 "values":{
                     "editable":false,
+                    "noselect":true,
                     "vertical":false,
                     "pattern":"box-fill"
                 }
@@ -279,9 +281,31 @@
                 "type":"text",
                 "values":{
                     "editable":false,
+                    "noselect":true,
                     "vertical":false,
                     "pattern":"box-fill"
                 }
+            }
+        },
+        "btnMinus1":{
+            "tag":"group",
+            "visible":true,
+            "enabled":true,
+            "focus":false,
+            "hover":false,
+            "active":false,
+            "events":{},
+            "shape":{
+                "name":"minus1",                
+                "type":"poligon",
+                "scale":[0.0015,null],
+                "detection":"bordersquare"
+            },
+            "states":{
+                "global":{"default":"global-enabled"}
+            },
+            "data":{
+                "type":"button"
             }
         }
     },
@@ -308,7 +332,8 @@
                             "pattern":"box-fill"
                             }}},
                         {"name":"test2a","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
-                            "editable":true,
+                            "editable":false,
+                            "noselect":true,
                             "vertical":false,
                             "pattern":"box-fill"
                             }}},
@@ -334,7 +359,7 @@
                 }
             ]
         },
-        {"name":"editor","elId":"project1","visible":false,"tab":0,"shape":{"masspoint":[0.05,0.05],"scale":[0.1,0.9]},
+        {"name":"editor","elId":"project1","visible":true,"tab":0,"shape":{"masspoint":[0.05,0.05],"scale":[0.1,0.3]},
             "children":[
                 {
                     "name":"editTool1","elId":"contextlayer","visible":true,"class":"toolKit","tab":2,
@@ -342,9 +367,11 @@
                     "children":[
                         {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"EDITOR"}}},
-                                {"name":"select","class":"select","elId":"editorBtn1","tab":1,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
-                                {"name":"colorPicker","class":"colors","elId":"editorBtn1","tab":2,"shape":{"masspoint":[0.02,0.19]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
+                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"TOOLS"}}},
+                                {"name":"close","class":"btnRed1","elId":"btnMinus1","tab":1,"shape":{"masspoint":[0.09,0.01]},"events":{"mousedown":"editMode(eventholder,true)"}},
+                                {"name":"select","class":"select","elId":"editorBtn1","tab":2,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"selectButton(this)"},"data":{"values":{"default":"Select"}}},
+                                
+                                {"name":"colorPicker","class":"colors","elId":"editorBtn1","tab":3,"shape":{"masspoint":[0.02,0.19]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"Colors"}}}
                             ]
                         }
                     ]

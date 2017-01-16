@@ -40,8 +40,8 @@ function loadEvents() {
 ////        else if (window.attachEvent) window.attachEvent("onmouseup", handleMouse);
 ////        if (window.addEventListener) window.addEventListener("mouseout", handleMouse, false);
 ////        else if (window.attachEvent) window.attachEvent("onmouseout", handleMouse);
-//        if (window.addEventListener) window.addEventListener("wheel",handleWheel, false);
-//        else if (window.attachEvent) window.attachEvent("onwheel", handleWheel);
+        if (window.addEventListener) window.addEventListener("wheel",handleWheel, false);
+        else if (window.attachEvent) window.attachEvent("onwheel", handleWheel);
 //        
 //        //clipboard events
 //        //if (window.addEventListener) window.addEventListener("beforepaste", handleBeforePaste, false);
@@ -107,20 +107,14 @@ function handleWheel(evt) {
         evt.preventDefault();
         evt.stopPropagation();
 
-        var evtType = evt.type;
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"wheel");
-        
-        
-        if(!eventholder.active.name)return null;
-        var cElName = eventholder.active.name;
-        var cEl = window[cElName];
-          
-        switch(evtType){
-            case "wheel":
-                runEval(cEl,evtType) ;
-                break;
-            };
+
+        //if(eventholder.noevent)return false;
+        if(!eventholder.active.oldObj)return false;
+
+        return globalEvents(eventholder);
+
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -227,11 +221,24 @@ function globalEvents(eventholder){
                 //cdebug([evtType,kind(evt.target)]);
                 if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
                     // check edit mode combination CTRL + SHIFT + "E" or "e"
-                    if(editMode(eventholder))return true;
+                    if(editMode(eventholder)){
+                        drawProjects(paper,true);
+                        return true;
+                    }
+                        
                 }
                 
                 
                 handleCSSEvents_keys(eventholder);
+                
+                runEval(eventholder.active.oldObj,eventholder.type);
+                
+                drawProjects(paper,false);
+            break;
+
+            case "wheel":
+                
+//                cdebug(eventholder.wheel)();
                 
                 runEval(eventholder.active.oldObj,eventholder.type);
                 
@@ -421,7 +428,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         eventholder.type = paperevt.type;
         eventholder.callerType = evtCallerType;
         var evt;
-        if(evtCallerType === "touch"){
+        if(evtCallerType === "touch" || evtCallerType === "wheel"){
             evt = paperevt;
             
             //disableEvent(evt);
@@ -516,6 +523,12 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
                 eventholder.keys.buttons = evt.buttons;
                 
                 //dom2
+                if(eventholder.metrics.xy){
+                    var oldPoint = new paper.Point(eventholder.metrics.xy);
+                    eventholder.metrics.delta = oldPoint.getDistance([evt.offsetX,evt.offsetY]);
+                }else{
+                    eventholder.metrics.delta =null;
+                }
                 eventholder.metrics.xy = [evt.offsetX ,evt.offsetY];
                 eventholder.metrics.xyAbs = [evt.clientX,evt.clientY];
                 //dom3
@@ -753,11 +766,11 @@ function isPrintableJS(keycode){
     return valid;
 }
 
-function editMode(eventholder){
+function editMode(eventholder,boolForce){
     try{
         
-        if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E"){
-            if(paper.activeTool === "globalTool"){
+        if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E" || boolForce){
+            if(paper.activeTool === "globalTool" && !boolForce){
                 
                 var menuTriggered = handleMenuProject(eventholder,"editor",true);
                 if (menuTriggered){
@@ -775,7 +788,7 @@ function editMode(eventholder){
                 paper.activeTool = "editorTool";
                 
             }else{
-                //cdebug("globalTool")();
+//                cdebug("globalTool")();
                 globalTool.activate();
                 paper.activeTool = "globalTool";
                 
@@ -1049,12 +1062,14 @@ function handleMenuLayer(eventholder,name,trigger){
 function handleMenuProject(eventholder,name,trigger){
     try{
         
-        if(eventholder.projectId === name)return false;
+//        cdebug("handleMenuProject " + name + " trigger=" + trigger + " eventholder.projectId=" + eventholder.projectId)();
+        
+//        if(eventholder.projectId === name)return false;
         //var page = paper;
 
         if(!paper.data.menus[name] && !trigger)return false;
         
-//        cdebug("handleMenuProject " + name + " trigger=" + trigger)();
+        
 //        cdebug(paper.projects[1].name)();
         
         var menu = projectGet(name);
@@ -1079,7 +1094,8 @@ function handleMenuProject(eventholder,name,trigger){
             
         }else if(menu.visible){
             menu.visible = false;
-            //project_context.reset.layout_shape = true;
+            menu.reset.layout_shape = true;
+//            drawProjects(menu);
             
             paper.data.menus[name] = false;
             

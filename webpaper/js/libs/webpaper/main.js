@@ -891,26 +891,26 @@ function setGetShape(cEl,parentName){
         
         // add holder of path                    cEl_group.children[0]
         tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".S_CP";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG";
         
         //cdebug(tempShape)();
         // cEl_group.children[1].children[0]
         tempPath = tempShape.addChild(new paper.Path());
-        tempPath.name = cEl_group.parentName + "_" + cEl_group.name + ".S_CP_P";
+        tempPath.name = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG_Path";
         
         //cdebug(tempShape)();
         
         // add holder of text paths              cEl_group.children[1]
         tempShape = cEl_group.addChild(new paper.CompoundPath());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".T_CP";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".TextG_Path";
         
         // add holder of text symbols            cEl_group.children[2]
         tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TS";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".TextG_Selection";
         
         // add holder of text selection          cEl_group.children[3]
         tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".G_TP";
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".TextG_Symbols";
         
         switch(cEl.data.type){
             case "text":
@@ -1654,7 +1654,7 @@ function draw_cEl_group(cEl_group) {
 
             //cdebug(cEl.shape.rotation,false,true,3)();
 
-            //cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + cEl_group.projectName)();
+//            cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + cEl_group.projectName)();
 
             cEl_setPaperPath(cEl_group,cEl_group.children[0].children[0], cEl_group.shape, true, false);
         }
@@ -1682,7 +1682,7 @@ function draw_cEl_group(cEl_group) {
                 lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
                 strokeColor = cEl_group.style.calc["border-top-color"];
     //        }
-
+//            cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + fillColor)();
             if(fillColor){
                 //cdebug(cEl.children[0].children[0])();
                 cEl_group.children[0].children[0].fillColor = fillColor;
@@ -1814,14 +1814,16 @@ function cEl_presets(cEl,cEl_page){
 }
 
 
-function cEl_postsets(cEl,boolDrawCp){
+function cEl_postsets(cEl_group,boolDrawCp){
     try{
-        switch(cEl.data.type){
+        switch(cEl_group.data.type){
             case "text":
-                draw_cEl_text(cEl);
+                draw_cEl_text(cEl_group);
                 return true;
             break;
             default:
+//                cEl_group.selected=true;
+//                cdebug(cEl_group)();
                 return true;
             break;
         }
@@ -2323,6 +2325,8 @@ function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSet
         
         if(!shapeContainer.scale[1]){
             shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
+            
+            
         }
         
         scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];

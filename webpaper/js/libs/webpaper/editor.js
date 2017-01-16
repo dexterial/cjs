@@ -115,8 +115,6 @@ function editor_handleMouse(evt) {
 
                         drawProjects(paper.project,false);
                         
-                        
-                        
 
                     break;
                     case "mouseup":
@@ -131,21 +129,7 @@ function editor_handleMouse(evt) {
                         handleCSSEvents(eventholder,true,false,false,true);
                         
                         
-                        if(paper.data.workObject && eventholder.keys.buttons ===1){
-                            
-//                           paper.data.workObject.shape.masspoint = cEl_edit_MP(paper.data.workObject.parent,eventholder.metrics.xy,paper.data.workObject.parent.shape.scale);
-//                           paper.data.workObject.reset.layout_shape =true;
-//                            cdebug(paper.data.workObject.position)();
-//                            cdebug(eventholder.metrics.delta)(); 
-
-//                            cdebug(paper.data.workObject.name)();
-
-                            paper.data.workObject.translate(eventholder.metrics.delta);
-                            
-//                            paper.data.workObject.position = new paper.Point([paper.data.workObject.position.x + eventholder.metrics.delta.x,paper.data.workObject.position.y + eventholder.metrics.delta.y]);
-                        }
-                        
-                        
+                        editor_mousemove(eventholder);
                         
                         drawProjects(paper.project,false);
 
@@ -402,7 +386,7 @@ function editor_mousedown(eventholder) {
                         
                         //paper.project.activeLayer.selected = false;
                         
-                        cEl_layer.data.workState = "editmaker";
+                        
                         paper.data.workLayer = cEl_layer;
                         //eventholder.actObj.fullySelected = true;
                         
@@ -414,17 +398,18 @@ function editor_mousedown(eventholder) {
                             case "Path":
                                 var cEl_group = eventholder.actObj.parent.parent;
                                 //cEl_group.selected = true;
-                                cEl_group.selected = true;
+                                cEl_group.children[0].selected = true;
                                 paper.data.workObject = cEl_group;
                                 
 //                                cdebug(cEl_group.scaling)();
-                                
+                                cEl_layer.data.workState = "editmaker";
                                 
                             break;
 //                            case "Path":
 //                                eventholder.actObj.parent.selected = true;
 //                            break;
                             default:
+                                
                                 cdebug(eventholder.actObj.className)();
                             break;
                         }
@@ -453,41 +438,23 @@ function editor_mousedown(eventholder) {
 }
 
 
-function editor_mousemove(cEl_layer) {
+function editor_mousemove(eventholder) {
     try{
-        //cdebug(cEl,true)();
-        //var cEl_layer = window[cEl.layerId], cEl_page, cEl;
-        //cdebug(cEl_layer.metrics.xy)();
+        
+        var cEl_layer = paper.project.activeLayer;
+        if(!cEl_layer.data.workState){
+            cEl_layer.data.workState = "pre";
+            cEl_layer.data.editIndex = 0;
+        }
 
-        switch (cEl_layer.name) {
-    //            case "preview":
-    //            break;
-    //            case "tools":
-    //            break;
-            case "fabric":
-                //cdebug("editor_mousemove state " + cEl_layer.data.state)();
-//                switch (cEl_layer.data.state) {
-//                    case "editmove":
-//
-//                        cEl_editActiveCp(cEl_layer);
-//                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
-//                    break;
-//                    case "editlimbo":
-//                        cEl_layer.shape.redraw = true;
-//                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
-//                    break;
-//                    case "editmaker":
-//                        cEl_layer.data.state = "editmaker";
-//                        addDrawShape(cEl_layer,false);
-//                    break;
-//                }
-//                //cdebugObj(showProps(cEl_layer));
-//                break;
-    //            case "code":
-    //                if(arrActEl.length > 2){
-    //                    hover();
-    //                };
-    //            break;
+        switch (cEl_layer.data.workState) {
+                case "editmaker":
+
+                if(paper.data.workObject && eventholder.keys.buttons ===1){
+                    paper.data.workObject.translate(eventholder.metrics.delta);
+//                            paper.data.workObject.position = new paper.Point([paper.data.workObject.position.x + eventholder.metrics.delta.x,paper.data.workObject.position.y + eventholder.metrics.delta.y]);
+                }
+                break;
         }
     } catch (e) {
         var err = listError(e);
@@ -1734,7 +1701,7 @@ function selectButton(cEl){
         //cdebug("selectButton")();
         var cEl_layer = paper.data.workLayer;
 //        cdebug(cEl_layer.name)();
-        
+        paper.data.workObject = null;
         
         if(!cEl_layer){return false;};
         

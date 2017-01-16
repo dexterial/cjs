@@ -409,36 +409,7 @@ input::-moz-focus-inner {
     color:#fff;
 }
 
-.btnRed1{
-    font-family: Arial;
-    font-size: 10px;
-    background-color:rgba(221,170,120,0.7);
-    border-color:rgba(221,170,170,0.7);
-    border-width: 1px;
-    padding: 2px;
-    color:white;
-    font-style: italic;
-    text-align:justify;
-    font-weight:normal;
-    cursor:pointer;
-    
-    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
-}
-.btnRed1:hover{
-    background-color:rgba(221,170,120,0.6);
-    box-shadow:inset 2px 2px 17px rgba(221,170,120,0.7),7px 2px red;
-}
 
-.btnRed1:active{
-    
-    background-color:rgba(221,170,120,1);
-    box-shadow:inset 2px 2px 17px rgba(221,170,120,0.7),7px 2px red;
-    cursor:default;
-}
-.btnRed1:focus{
-    font-family: Arial;
-    font-size: 10px;
-}
 .hearts1{
     font-family: Arial;
     font-size: 1rem;

@@ -1173,30 +1173,59 @@ function drawTextAlongPath(cEl_group,index,offset){
 function drawTextSelection(cEl_group,cEl_pageText){
     
     try{
+        
+        var boolHasSelection = !cEl_group.data.values.noselect;
+        if(!boolHasSelection)return true;
+        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
+        if(!boolHasSelection)return true;
+        boolHasSelection = cEl_pageText.charsSelection.charspos.length > 0;
+        if(!boolHasSelection)return true;
+        
+        
+        
+        
+//        var charsCount = cEl_group.children[3].children.length;
+//        cEl_group.selected=false;
+//        for(var charObj,boolSelected; i < charsCount; i++){
+//            charObj = cEl_group.children[3].children[i];
+//            if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
+//            if(boolSelected){
+//                charObj.selected=true;
+//                var rect = cEl_group.children[2].addChild(new paper.Path.Rectangle({
+//                    from: [charObj.position.x - charObj.w/2, charObj.position.y-charObj.fs/2],
+//                    to: [charObj.position.x + charObj.w/2, charObj.position.y+charObj.fs/2],
+//                    fillColor : cEl_pageText.charsSelection.style["background-color"],
+//                    rotation:charObj.angle,
+//                    name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
+//                }));
+//                
+//            }
+//        }
+
         var i = 0;
-        //var j = 0;
-        //var offset=0;
         var lines = cEl_group.data.values.temp.lines3;
         var charsCount = lines.length;
-        
-        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
-        var boolHasSelection = (boolHasSelection && cEl_pageText.charsSelection.charspos.length > 0);
-        
-        
         for(var charObj,boolSelected; i < charsCount; i++){
             charObj = lines[i];
-            //cdebug(i + " of " + charsCount + " is " + charObj.chr)();
-            if( charObj.w > 0 ){
+            //cdebug(i + " of " + charsCount + " is " + charObj.point.position)();
+            
+            
+            if(charObj.pr){
+                
+//                cdebug(charObj.textItem)();
                 boolSelected = boolHasSelection;
                 if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
                 if(boolSelected){
+                    
+                    
                     var rect = cEl_group.children[2].addChild(new paper.Path.Rectangle({
-                        from: [charObj.point.x - charObj.w/2, charObj.point.y-charObj.fs/2],
-                        to: [charObj.point.x + charObj.w/2, charObj.point.y+charObj.fs/2],
+                        from: [charObj.textItem.position.x - charObj.w/2, charObj.textItem.position.y-charObj.fs/2],
+                        to: [charObj.textItem.position.x + charObj.w/2, charObj.textItem.position.y+charObj.fs/2],
                         fillColor : cEl_pageText.charsSelection.style["background-color"],
                         rotation:charObj.angle,
                         name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
                     }));
+                    
                     //rect.sendToBack();
                 }   
             }
@@ -1233,14 +1262,14 @@ function drawTextCarret(cEl_group,cEl_pageText){
                 }
                 
                 carret = cEl_group.children[2].addChild(new paper.Path.Line({
-                    from: [charObj.point.x + offset, charObj.point.y-charObj.fs/2],
-                    to: [charObj.point.x + offset, charObj.point.y+charObj.fs/2],
+                    from: [charObj.textItem.position.x + offset, charObj.textItem.position.y-charObj.fs/2],
+                    to: [charObj.textItem.position.x + offset, charObj.textItem.position.y+charObj.fs/2],
                     strokeColor : cEl_pageText.charsSelection.style["color"],
                     data:cEl_pageText.charsSelection.style,
                     name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + cEl_pageText.charsSelection.cr.pos
                 }));
                 
-                carret.rotate(charObj.angle, charObj.point);
+                carret.rotate(charObj.angle, charObj.textItem.position);
                 
                 //cdebug(window["carret"].name)();
                     //cEl_pageText.charsSelection.style["color"]
