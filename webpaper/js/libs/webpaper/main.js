@@ -912,6 +912,10 @@ function setGetShape(cEl,parentName){
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".TextG_Symbols";
         
+        // add holder of control points          cEl_group.children[4]
+        tempShape = cEl_group.addChild(new paper.Group());
+        tempShape.name = cEl_group.parentName + "_" + cEl_group.name + ".ControlG_Paths";
+        
         switch(cEl.data.type){
             case "text":
                 cEl_group.data.values.temp = {};
@@ -986,18 +990,18 @@ function pre_load_children(cEl,parentName){
             case "group": //draw shape
                 
                 
-                var shape = setGetShape(cEl,parentName);
+                var cEl_group = setGetShape(cEl,parentName);
                 
                 //paper.activeLayer.addChild();
                 
                 
                 
-                setStyle_cEl(shape);
+                setStyle_cEl(cEl_group);
                 
                 //cdebug(shape.parentName + "_" +shape.name)();
                 //cdebug(paper.project.activeLayer.getItem({"name":shape.name}))();
                 
-                shape.loaded = true;
+                cEl_group.loaded = true;
                 
             break; 
         }
@@ -1184,10 +1188,13 @@ function draw_cEl(cEl,boolRedraw){
 ////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
                 draw_cEl_group(cEl);
                 
-                
+                if(cEl.reset.debug){
+                    drawGroup_CP(cEl);
+                }
                 
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;
+                cEl.reset.debug = false;
                 
                 //cdebug("END draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
             break;
@@ -1657,42 +1664,58 @@ function draw_cEl_group(cEl_group) {
 //            cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + cEl_group.projectName)();
 
             cEl_setPaperPath(cEl_group,cEl_group.children[0].children[0], cEl_group.shape, true, false);
+            
+            
+            
         }
         
         if(cEl_group.reset.layout_css){
-        
-            var fillColor, strokeColor, lineWidth;
-    //        if(cEl_layer.debug){
-    //            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
-    //            var cEl_index = window[editIndex];
-    //            boolDrawCp = cEl_index ? true : false;
-    //            
-    //            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
-    //            if(boolDrawCp){
-    //                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
-    //                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
-    //                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
-    //            }else{
-    //                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
-    //                lineWidth = 1;
-    //                strokeColor = "rgba(0,0,0,0.5)";
-    //            }
-    //        }else{
-                fillColor = cEl_group.style.calc["background-color"];
-                lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
-                strokeColor = cEl_group.style.calc["border-top-color"];
-    //        }
-//            cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + fillColor)();
-            if(fillColor){
-                //cdebug(cEl.children[0].children[0])();
-                cEl_group.children[0].children[0].fillColor = fillColor;
+            // gradient & picture fill
+            if(cEl_group.style.calc["background-image"]){
+                var url = cEl_group.style.calc["background-image"];
+                if(url.indexOf("(")>0){
+                    fillGradient(cEl_group,url);
+                }
+//                cdebug(cEl_group.name + " >>> " + url)();
+                
+            }else{
+                // normal fill
+                var fillColor, strokeColor, lineWidth;
+        //        if(cEl_layer.debug){
+        //            var editIndex = cEl_layer.data.editIndex ? cEl_layer.data.editIndex : null;
+        //            var cEl_index = window[editIndex];
+        //            boolDrawCp = cEl_index ? true : false;
+        //            
+        //            boolDrawCp = boolDrawCp && (cEl_index.parentName + cEl_index.name === cEl.parentName + cEl.name);
+        //            if(boolDrawCp){
+        //                fillColor = cEl.style.default.calc["background-color"] ? cEl.style.default.calc["background-color"] : null;
+        //                lineWidth = cEl.style.default.calc["border-top-width"] ? cEl.style.default.calc["border-top-width"].replace("px",'') : 1;
+        //                strokeColor = cEl.style.default.calc["border-top-color"] ? cEl.style.default.calc["border-top-color"] : null;
+        //            }else{
+        //                fillColor = cEl.visible? "rgba(0,0,0,0.1)" : "rgba(255,0,0,0.1)";
+        //                lineWidth = 1;
+        //                strokeColor = "rgba(0,0,0,0.5)";
+        //            }
+        //        }else{
+                    fillColor = cEl_group.style.calc["background-color"];
+                    lineWidth = 1;//cEl.style.calc["border-top-width"].replace("px",'');
+                    strokeColor = cEl_group.style.calc["border-top-color"];
+        //        }
+    //            cdebug(cEl_layer.name +  " >>>  " + cEl_group.name +  " on " + fillColor)();
+                if(fillColor){
+                    //cdebug(cEl.children[0].children[0])();
+                    cEl_group.children[0].children[0].fillColor = fillColor;
+                }
             }
             if(strokeColor){
                 cEl_group.children[0].children[0].strokeColor = strokeColor;
                 cEl_group.children[0].children[0].strokeWidth = lineWidth;
             }
         }
+        
         cEl_postsets(cEl_group,boolDrawCp);
+        
+        
         //cdebug(paper.project.activeLayer.children.length)();
         
         return true;
@@ -1704,7 +1727,133 @@ function draw_cEl_group(cEl_group) {
 }
 
 
+function fillGradient(cEl_group,url){
+    try{
+        
+        var gradObj = getFunctionObj(url,false,null);
+        
+//        cdebug("fillGradient >>> " + cEl_group.name + " >>> " + url)();
+//        cdebug(gradObj)();
+        
+        var path = cEl_group.children[0].children[0];
+        switch(gradObj.fName){
+            case "linear-gradient":
+                
+                switch(gradObj.fArgs[0]){
+                    case "to right":
+                        var stops = gradObj.fArgs;
+                        stops.shift();
+//                        cdebug(stops)();
+                        path.fillColor= {
+                            "gradient": {
+                                "stops": stops
+                            },
+                            "origin": path.bounds.leftCenter,
+                            "destination": path.bounds.rightCenter
+                        };
+                    break;
+                    default:
+                        
+                        
+                        
+                        
+                    break;
+                }
+                
+                
+                
+            break;
+            
+        }
+        
+        
+        
+        
+        return true;
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
+
+function drawGroup_CP(cEl_group){
+    try{
+        
+        
+        cEl_group.children[4].removeChildren();
+        
+//        cdebug(cEl_group.name + "  vs   " + cEl_group.debug)();
+        
+        if(!cEl_group.debug)return true;
+        
+        var bounds = cEl_group.children[0].bounds;
+        
+        
+        var size,path,radius;
+        var color;
+        
+        radius = GLOBAL_editSize;
+        color = "rgba(111,111,111,0.4)";
+        
+        size = new Size(bounds.width-2*radius, radius/2);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topLeft.x+radius,bounds.topLeft.y],size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".borderTop";
+        
+        size = new Size(radius/2, bounds.height-2*radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topRight.x-radius/2,bounds.topRight.y+radius],size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".borderRight";
+        
+        size = new Size(-bounds.width+2*radius, radius/2);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.bottomRight.x-radius,bounds.bottomRight.y-radius/2],size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".borderBottom";
+        
+        size = new Size(radius/2, -bounds.height+2*radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.bottomLeft.x,bounds.bottomLeft.y-radius],size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".borderLeft";
+        
+        color = "rgba(111,111,111,0.7)";
+        
+        size = new Size(radius, radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.topLeft,size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".topLeft";
+        
+        size = new Size(-radius, radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.topRight,size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".topRight";
+        
+        size = new Size(-radius, -radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.bottomRight,size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".bottomRight";
+        
+        size = new Size(radius, -radius);
+        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.bottomLeft,size));
+        path.fillColor = color;
+        path.name = cEl_group.parentName + "_" + cEl_group.name + ".bottomLeft";
+        
+//        path = cEl_group.children[4].addChild(new paper.Path());
+//        path = cEl_setPaperPath(cEl_group,path,cEl_group.shape, true, false);
+//        path.name = cEl_group.parentName + "_" + cEl_group.name + ".pathShape";
+//        
+////        cdebug(path)();
+//        path.strokeColor = "rgba(111,55,55,1)";
+//        path.selected = true;
+        
+        return true;
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
 //cdebug(getShadowObj("5px 5px 7px 5px rgba(218,165,32,0.5),7px 7px 12px 7px rgba(32,165,218,0.5)"),false,true)();
 
@@ -1874,7 +2023,7 @@ function setStyleGlobal(GLOBAL_styles, cId, cClass, tag) {
                                 //addToGlobalStyle("{" + strCIdStyle + "}",cSSSelectors[x].selectorText);
                                 var ruleContainer = {};
                                 for (var keyname in ruleStyle){
-                                    //console.log(keyname);
+                                    //if(cClass==="colors" && ruleStyle[keyname] && ruleStyle[ruleStyle[keyname]])console.log(keyname + " >>> " + ruleStyle[keyname] + " >>> " + ruleStyle[ruleStyle[keyname]]);
                                     if(isNumber(keyname)){
                                         //console.log(strCIdStyle);
                                         //console.log(keyname + "  >>>>>>> " + ruleStyle[keyname]);
@@ -1928,7 +2077,7 @@ function addToGlobalStyle(GLOBAL_styles,strCIdStyle,selectorText) {
             objTemp[styleKey] = styleVal;
         }
         GLOBAL_styles[selectorText] = objTemp;
-        //console.log(objTemp);
+//        console.log(objTemp);
         
         return true;
     } catch (e) {
@@ -2310,10 +2459,12 @@ function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSet
         var cEl_page = paper.data;
         
         if (!shapeContainer.points){
-            shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl_group.shape.name]);
+            if(shapeContainer.type==="svg"){
+                shapeContainer.points = cEl_page.shapes[cEl_group.shape.name];
+            }else{
+                shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl_group.shape.name]);
+            }
         }
-        
-        
         
         var points = shapeContainer.points;
         var pointsLen = points.length;
@@ -2481,6 +2632,7 @@ function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSet
                         
                     break;
                 
+                
 //                for(i = 0; i < pointsLen - 4; i = i + 3){
 //
 //
@@ -2539,17 +2691,32 @@ function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSet
                 }
                 //cElPath.closed = true;
             break;
+            case "svg":// SVG  Shape Bezier Points
+                
+//                var svgOptions={
+//                  "expandShapes":true
+//                };
+//                
+//                points = "circle cx='40' cy='300' r='20' style='fill:orange;stroke:yellow;stroke-width:2px;stroke-dasharray:3px'";     
+//                cEl_path.importSVG(points,svgOptions);
+                
+//                cdebug(cEl_path)();
+                //cdebug(points)();
+                //cdebug(points)();
+            
+            break;
         };
         //cElPath.closePath();
 
-        if(boolSetCP){
-            cEl_path.selected = true;
+        if(cEl_group.shape.rotation){ //typeof cEl_group.shape.rotation !== "undefined"
+            cEl_path.rotate(cEl_group.shape.rotation,cpMP);
+            //cdebug(cEl_group.shape.rotation)();
         }
         
         //shapeContainer.temp.fp = [point_get_cpXY(points[0],scaleCP,cpMP,flipXY,0),point_get_cpXY(points[0],scaleCP,cpMP,flipXY,1)];
         
         //shapeContainer.path = cElPath;
-        return true;
+        return cEl_path;
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -2731,6 +2898,41 @@ function getIntArray(val1,val2,boolLeft){
     }
 }
 
+function getFunctionObj(strEval,boolEvalArgs,actEl){
+    try{
+        
+        var fctName = strEval.split("(")[0];
+        var args = strEval.split("(")[1];
+        var args = args.split(")")[0];
+        args = args.split(",");
+        
+//        cdebug(fctName)();
+        
+        if(boolEvalArgs){
+            for(var i = 0 ;i<args.length;i++){
+                if(args[i] === "this"){
+                    args[i] = actEl;
+                    //cdebug(args[i])();
+                }else{
+                    args[i] = eval(args[i]);
+                }
+                //cdebug(args[i])();
+            }
+        }else{
+            for(var i = 0 ;i<args.length;i++){
+                args[i] = trim(args[i]);
+            }
+        }
+        
+        return {"fName":fctName,"fArgs":args};
+        
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
 function runEval(actEl, evtType){
     
@@ -2741,34 +2943,11 @@ function runEval(actEl, evtType){
 
         if(strEval && actEl.enabled){
             
-            var fctName = strEval.split("(")[0];
-            var args = strEval.split("(")[1];
-            var args = args.split(")")[0];
-            args = args.split(",");
-            for(var i = 0 ;i<args.length;i++){
-                if(args[i] === "this"){
-                    args[i] = actEl;
-                    //cdebug(args[i])();
-                }else{
-                    args[i] = eval(args[i]);
-                }
-                //cdebug(args[i])();
-            }
-            //cdebug(args)();
-//            cdebug("runEval " + actEl.name + ", event " + strEval + ", evtType " + evtType + " >>> fctName:" + fctName + " args >>>" + args)();
-            
-//            
-//            if(actEl.tag==="canvas"){
-//                strEval = strEval.replace("this",actEl.pageId+"_"+actEl.name);
-//            }else if(actEl.tag==="page"){
-//                strEval = strEval.replace("this",actEl.pageId);
-//            }else{
-//                strEval = strEval.replace("this",actEl.parentName+"_"+actEl.name);
-//            };
+            var fctObj = getFunctionObj(strEval,true,actEl);
 //            return eval(strEval);
             
             //return window[fctName](args);
-            return executeFunctionByName2(fctName,args);
+            return executeFunctionByName2(fctObj);
         }
     } catch (e) {
         var err = listError(e);
@@ -2777,19 +2956,19 @@ function runEval(actEl, evtType){
     }
 }
 
-function executeFunctionByName2(fname , args){
+function executeFunctionByName2(fctObj){
     
     try{ 
-        var arr = fname.split('.');
+        var arr = fctObj.fName.split('.');
         var fn = window[ arr[0] ];
         for (var i = 1; i < arr.length; i++)
         { fn = fn[ arr[i] ]; }
-        return fn.apply(window, args);
+        return fn.apply(window, fctObj.fArgs);
     
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
-        cdebug(fname,false,false,3)();
+        cdebug(fctObj,false,false,3)();
         return err;
     }
 }
@@ -2916,4 +3095,59 @@ function trim(text){
         }
     }
     return text;
+}
+
+function sign1(x) {
+    return typeof x === 'number' ? x ? x < 0 ? -1 : 1 : x === x ? 1 : 1 : 1;
+}
+
+
+
+// Closure
+(function() {
+  // Decimal round
+  if (!Math.round10) {
+    Math.round10 = function(value, exp) {
+      return decimalAdjust('round', value, exp);
+    };
+  }
+  // Decimal floor
+  if (!Math.floor10) {
+    Math.floor10 = function(value, exp) {
+      return decimalAdjust('floor', value, exp);
+    };
+  }
+  // Decimal ceil
+  if (!Math.ceil10) {
+    Math.ceil10 = function(value, exp) {
+      return decimalAdjust('ceil', value, exp);
+    };
+  }
+})();
+
+/**
+   * Decimal adjustment of a number.
+   *
+   * @param {String}  type  The type of adjustment.
+   * @param {Number}  value The number.
+   * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+   * @returns {Number} The adjusted value.
+   */
+function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
 }

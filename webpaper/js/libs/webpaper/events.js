@@ -591,10 +591,12 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
 
                         eventholder.retObj = hitObject.item.parent.parent;
                         eventholder.actObj = hitObject.item;
+                        eventholder.actSegment = hitObject.segment;
 
                     }else{
                         eventholder.retObj = paper.project.activeLayer;
                         eventholder.actObj = paper.project.activeLayer;
+                        eventholder.actSegment = null;
                     }
                 
                 
@@ -774,11 +776,11 @@ function editMode(eventholder,boolForce){
                 
                 var menuTriggered = handleMenuProject(eventholder,"editor",true);
                 if (menuTriggered){
-                    var xy = [10,10];
+//                    var xy = [10,10];
                     //menuTriggered.activate();
 //                    cdebug(menuTriggered.name)();
 //                    menuTriggered.
-                    menuTriggered.shape.masspoint = cEl_edit_MP(paper,xy,paper.shape.scale);
+//                    menuTriggered.shape.masspoint = cEl_edit_MP(paper,xy,paper.shape.scale);
                     menuTriggered.reset.layout_shape = true;
 //                    drawProjects(menuTriggered,true);
                 };
@@ -1610,10 +1612,17 @@ function testEvents(cEl,eventName){
     
 }
 
-function testEvents2(cEl,eventName){
+function testEvents2(cEl){
     //alert(cEl.name);
     
     //cdebug(cEl.name)();
+    cdebug(cEl.style.calc2)();
+    
+//    cdebug(eventholder.actObj.name)();
+//    cdebug(eventholder.actObj.className)();
+//    cdebug(eventholder.actSegment)();
+//    eventholder.actObj.fullySelected = true;
+    
 //    var cEl = window[currentid];
 //    //cEl.reset.layout_shape = true;
 //    drawChildren(cEl,true);

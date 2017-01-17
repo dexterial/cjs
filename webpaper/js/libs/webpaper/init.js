@@ -29,3 +29,5 @@ var boolEditMode = false;
 var GLOBAL_rendertime = 50/3; // 50/3 = 60 fps
 var GLOBAL_debugger_maxlen = 2000;
 var GLOBAL_debugger = true;
+
+var GLOBAL_editSize = 10;

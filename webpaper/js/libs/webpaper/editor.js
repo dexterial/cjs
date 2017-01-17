@@ -118,7 +118,12 @@ function editor_handleMouse(evt) {
 
                     break;
                     case "mouseup":
-
+                        updateEventHolder(eventholder,true,false,false);
+                        handleCSSEvents(eventholder,true,false,false,true);
+                        
+                        
+                        editor_mouseup(eventholder);
+                        
                         drawProjects(paper.project,false);
 
                     break;
@@ -350,14 +355,15 @@ function editor_mousedown(eventholder) {
         
         
         var cEl_layer = paper.project.activeLayer;
-        if(!cEl_layer.data.workState){
-            cEl_layer.data.workState = "pre";
-            cEl_layer.data.editIndex = 0;
+        if(!paper.data.workState){
+            paper.data.workState = "pre";
+            paper.data.editIndex = 0;
         }
+        paper.data.workLayer = cEl_layer;
        
 
 //                cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
-                switch (cEl_layer.data.workState) {
+                switch (paper.data.workState) {
                     case "edit":
                         //if(cEl_layer.data.editIndex<0){return false;}
                         //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
@@ -376,7 +382,65 @@ function editor_mousedown(eventholder) {
                         
                         //GLOBAL_renderer = true;
                     break;
-                    case "editlimbo":
+                    case "add":
+//                        cdebug("here1")();
+                        
+                        paper.data.workObject = new paper.Path();
+                        paper.data.workObject.strokeColor = 'black';
+                        paper.data.workObject.fullySelected = true;
+                            
+                        
+                        
+                    break;
+                    case  "editlimbo" : // "editlimbo":
+                        
+                        //cEl_layer = paper.data.workLayer;
+                        var workObject_name = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
+                        var actObj_name = eventholder.actObj.name;
+                        if(actObj_name.indexOf(workObject_name)===0){
+//                            cdebug(actObj_name)();
+                            paper.data.workObjectHit = actObj_name;
+                            
+                            var bounds = paper.data.workObject.children[0].bounds;
+                            
+                            paper.data.workObjectBounds = {
+                                "x":bounds.x,
+                                "y":bounds.y,
+                                "width":bounds.width,
+                                "height":bounds.height,
+                                "top":bounds.top,
+                                "right":bounds.right,
+                                "bottom":bounds.bottom,
+                                "left":bounds.left,
+                                "topCenter":bounds.topCenter,
+                                "rightCenter":bounds.rightCenter,
+                                "bottomCenter":bounds.bottomCenter,
+                                "leftCenter":bounds.leftCenter,
+                                "topLeft":bounds.topLeft,
+                                "topRight":bounds.topRight,
+                                "bottomRight":bounds.bottomRight,
+                                "bottomLeft":bounds.bottomLeft,
+                                "sign":sign1(paper.data.workObject.children[0].matrix.a)
+                            };
+                            
+                            cEl_setCpCursor(cEl_layer,false,paper.data.workObjectHit);
+                            
+                            paper.data.workObject.children[0].applyMatrix = false;
+                            //paper.data.workObject.children[1].applyMatrix = false;
+                            eventholder.actObj.bringToFront();
+                            
+                            paper.data.workState = "edit";
+                            
+                        }else{
+                            paper.data.workObjectHit = false;
+                            paper.data.workObjectBounds = null;
+                        }
+                        
+                        
+                        
+//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"text"});
+//                        cEl_layer.reset.cursor = true;
+                        
 //                        cEl_project.data.state = "editmove";
 //                        cEl_editActiveCp(cEl_project);
 //                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
@@ -387,22 +451,28 @@ function editor_mousedown(eventholder) {
                         //paper.project.activeLayer.selected = false;
                         
                         
-                        paper.data.workLayer = cEl_layer;
+                        
                         //eventholder.actObj.fullySelected = true;
                         
-//                        cdebug(eventholder.actObj.name)();
                         
+                        //cdebug(eventholder.actObj.className)();
                         switch (eventholder.actObj.className) {
                             
                             case "SymbolItem":
                             case "Path":
                                 var cEl_group = eventholder.actObj.parent.parent;
-                                //cEl_group.selected = true;
-                                cEl_group.children[0].selected = true;
-                                paper.data.workObject = cEl_group;
+                                if(cEl_group.tag !== "group")break;
+                                cEl_group.debug = true;
+                                cEl_group.reset.debug = true;
                                 
-//                                cdebug(cEl_group.scaling)();
-                                cEl_layer.data.workState = "editmaker";
+                                //cEl_group.selected = true;
+//                                cEl_group.children[0].selected = true;
+                                paper.data.workObject = cEl_group;
+                                paper.data.workObjectHit = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG_Path";
+                                
+                                
+//                                cdebug(cEl_group.name)();
+                                paper.data.workState = "editlimbo";
                                 
                             break;
 //                            case "Path":
@@ -442,19 +512,48 @@ function editor_mousemove(eventholder) {
     try{
         
         var cEl_layer = paper.project.activeLayer;
-        if(!cEl_layer.data.workState){
-            cEl_layer.data.workState = "pre";
-            cEl_layer.data.editIndex = 0;
-        }
-
-        switch (cEl_layer.data.workState) {
-                case "editmaker":
-
-                if(paper.data.workObject && eventholder.keys.buttons ===1){
-                    paper.data.workObject.translate(eventholder.metrics.delta);
-//                            paper.data.workObject.position = new paper.Point([paper.data.workObject.position.x + eventholder.metrics.delta.x,paper.data.workObject.position.y + eventholder.metrics.delta.y]);
-                }
+//        if(!paper.data.workState){
+//            paper.data.workState = "pre";
+//            cEl_layer.data.editIndex = 0;
+//        }
+        if(!paper.data.workObject && !paper.data.workObjectHit )return false;
+        
+        //
+        
+        switch (paper.data.workState) {
+            case "add":
+                
+                if(eventholder.keys.buttons === 1 ){
+                        
+                    paper.data.workObject.add(eventholder.metrics.xy);
+                        
+                }        
                 break;
+            case "editlimbo":
+                
+                cEl_setCpCursor(cEl_layer,false,eventholder.actObj.name);    
+                //cdebug(eventholder.actObj.name)();
+
+            break;
+            case "edit":
+                if(eventholder.keys.buttons ===1 ){
+                    switch (paper.data.workObjectHit) {
+                        // move group
+    //                    case paper.data.workObject.parentName + "_" + paper.data.workObject.name + ".ShapeG_Path":
+    //                        
+    //                        paper.data.workObject.translate(eventholder.metrics.delta);
+    //                        
+    //                    break;
+
+                        default:
+
+                            calcGroupScale(cEl_layer);
+    //                        paper.data.workObject.translate(eventholder.metrics.delta);
+                        break;
+                    }
+
+                }
+            break;
         }
     } catch (e) {
         var err = listError(e);
@@ -463,67 +562,113 @@ function editor_mousemove(eventholder) {
     }
 }
 
-function editor_mouseup(cEl_layer) {
+function editor_mouseup(eventholder) {
     
     try{
-        //var cEl_layer = window[cEl.layerId];
+        
+        //var cEl_page = window[cEl_layer.pageId];
+        
+        
+        var cEl_layer = paper.project.activeLayer;
+        if(!paper.data.workState){
+            paper.data.workState = "pre";
+            cEl_layer.data.editIndex = 0;
+        }
+       
 
-        switch (cEl_layer.name) {
-            case "fabric":
-                
-                cdebug("editor_mouseup START state " + cEl_layer.data.state)();
-                switch (cEl_layer.data.state) {
-                    case "editmove":
-                        //var cEl_page = window[cEl_layer.pageId];
-                        var cEl = window[cEl_layer.data.editIndex];
-
-                        if(cEl.shape.temp.activeCp){
-                            
-                            cEl_setActiveCp(cEl_layer);
-                            //cEl_editActiveCp(cEl_layer);
-                            //cEl_setCpXY(cEl.shape.temp.activeCp,cEl_layer.metrics.xy);
-                            cEl_layer.data.state = "editlimbo";
-                            
-                        }else{
-                            cEl_layer.data.state = "edit";
-                            cEl_setCpCursor(cEl_layer,true);
-                            
-                            //cEl_layer.style.redraw = true;
-                            //redrawFabric(cEl_layer, cEl, cEl_layer.data.editIndex,true);
-                            
-//                            var e = $.Event('mousemove');
-//                            e.pageX = 11;
-//                            e.pageY = 12;
-//                            e.target = document.getElementById(cEl_layer.name + "_canvas");
-//                            window.dispatchEvent(e);
-                        }
-                        cEl_layer.shape.redraw = true;
-                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
+//                cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
+                switch (paper.data.workState) {
+                    case "edit":
+                        //if(cEl_layer.data.editIndex<0){return false;}
+                        //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
+//                        cdebug(cEl.shape.temp.activeCp)();
+//                        cdebug(cEl_layer.metrics.xy)();
+//                        if(cEl_setActiveCp(cEl_project)){
+//                            cEl_setCpCursor(cEl_project);
+//                            cEl_project.data.state = "editmove";
+//                            
+//                            cEl_storeRefPoints(cEl_project, true);
+//                            
+//                            //cEl_setCpXY(cEl.shape.temp.activeCp, cEl_layer.metrics.xy);
+//                            cEl_project.shape.redraw = true;
+//                            if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
+//                        };
+                        
+                        //GLOBAL_renderer = true;
+                        
+//                        cdebug(paper.data.workObject.children[0].matrix)();
+//                        cdebug(paper.data.workObject.children[0].position)();
+//                        cdebug(paper.data.editTool)();
+                        
+                        paper.data.workObject.children[0].applyMatrix = true;
+                        paper.data.workObject.reset.debug = true;
+                        
+                        paper.data.workState = "editlimbo";
+                        
                     break;
-                    case "editlimbo":
-                        //cEl_layer.data.state = "edit";
+                    case "add":
+//                        cdebug("here ADD")();
+                        if(paper.data.workObject.length===0)break;
+                        paper.data.workObject.selected = false;
+                        paper.data.workObject.closed = true;
+                        paper.data.workObject.simplify();
+                        
+                        paper.data.shapes["zzz"] = createAprox(cEl_layer,paper.data.workObject.segments,[0.5,0.5],5);
+//                        cdebug(paper.data.shapes["zzz"])();
+                        
+                        var cEl_group = {
+                            "name":"zzzz",
+                            "elId":"defaultNew",
+                            "tab":1,
+                            "debug":true,
+                            "shape":{
+                                "masspoint":[0.5,0.5],
+                                "scale":[1,1],
+                                "name":"zzz",
+                                "type":"bezier"
+                            } 
+                        };
+                        
+                        pre_load_children(cEl_group,cEl_layer.name);
+                        
+                        paper.data.workObject.remove();
+//                        paper.data.workObject = cEl_layer.getItem("");
+                        
+                        paper.data.workState = "pre";
 
                     break;
-                    case "editmaker":
+                    case  "editlimbo" : // "editlimbo":
                         
-                        addDrawShape(cEl_layer,true);
+                        //cEl_layer = paper.data.workLayer;
+//                        if(paper.data.workObject){
+                            
+
+//                            cdebug(paper.data.workObject.children[0].matrix)();
+
+//                            paper.data.workObject.children[0].applyMatrix = true;
+//                            paper.data.workObject.reset.debug = true;
+                            
+//                            cdebug(paper.data.workObject.children[0].matrix)();
+                            
+                            
+                            //cEl_setCpCursor(cEl_layer,"default");
+//                        }
                         
-                        var masspoint = [0.5,0.5];
-                        var reduction = 1;
-                        var delta = 0.02;
                         
-                        if(makeElPairs(cEl_layer,masspoint,reduction,delta)){
-                            cEl_layer.data.state = "edit";
-                        }else{
-                           cEl_layer.data.state = "pre";
-                        }
-                        cEl_layer.data.temp.drawPoints = null;
-                        cEl_layer.shape.redraw = true;
+//                        cdebug("here2")();
+
+                    break;
+                    case "pre":
+                        
+                        //paper.project.activeLayer.selected = false;
+                        
+                        
                     break;
                 }
-                cdebug("editor_mouseup END state " + cEl_layer.data.state)();
-            break;
-        }
+                //cdebug("editor_mousedown END state " + paper.project.data.workLayer)();
+                
+
+        return true;
     } catch (e) {
         var err = listError(e,true);
         cdebug(err,false,false,3)();
@@ -556,6 +701,119 @@ function editor_mouseout(cEl_layer) {
 
 }
 
+
+function calcGroupScale(cEl_layer){
+    try{
+        
+        var scaleX=1,scaleY=1,boolResetScale=false,scalePoint;
+        
+        var workObjectName = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
+        var hitObjName = paper.data.workObjectHit;
+                
+        switch (paper.data.workObjectHit) {
+
+            // scale left>right
+            case workObjectName + ".borderLeft":
+
+                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scalePoint = paper.data.workObjectBounds.rightCenter;
+            break;
+            // scale right>left
+            case workObjectName + ".borderRight":
+
+                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scalePoint = paper.data.workObjectBounds.leftCenter;
+            break;
+            // scale top>bottom
+            case workObjectName + ".borderTop":
+
+                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.bottomCenter;
+            break;
+            // scale bottom>top
+            case workObjectName + ".borderBottom":
+
+                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.topCenter;
+            break;
+
+            // scale topLeft>bottomRight
+            case workObjectName + ".topLeft":
+
+                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.bottomRight;
+            break;
+            // scale topRight>bottomLeft
+            case workObjectName + ".topRight":
+
+                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.bottomLeft;
+            break;
+            // scale bottomRight>topLeft
+            case workObjectName + ".bottomRight":
+
+                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.topLeft;
+            break;
+            // scale bottomLeft>topRight
+            case workObjectName + ".bottomLeft":
+
+                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
+                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
+                scalePoint = paper.data.workObjectBounds.topRight;
+            break;
+            default:
+                if(hitObjName.indexOf(workObjectName)===0){
+                    paper.data.workObject.translate(eventholder.metrics.delta);
+                    paper.data.editTool = "move";
+                }else{
+                    
+                }
+                
+                
+                return true;
+            break;
+        }
+        paper.data.editTool = "scale";
+        setGroupScale(paper.data.workObject,scaleX,scaleY,scalePoint);
+        return true;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }   
+}
+
+
+
+
+
+
+
+function setGroupScale(workObject,scaleX,scaleY,scalePoint){
+    try{
+        
+        workObject.children[0].scale(scaleX,scaleY, scalePoint);
+        workObject.children[1].scale(scaleX,scaleY, scalePoint);
+        workObject.children[4].scale(scaleX,scaleY, scalePoint);
+        workObject.reset.text_draw = true;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }    
+}
+
+
+//cdebug(sign1(-0))();
+
+
+
 function get_cEl_properties(cEl,property){
     
     try{
@@ -581,318 +839,9 @@ function get_cEl_properties(cEl,property){
     }    
 }
 
-function addDrawShape(cEl_layer, boolFinalise) {
-    
-    try{
-        
-        // TODO hmmm, move this to autoGLOBAL_renderering when drawing the canvas editor ( like the grid thingy )
-        var eventholder = window["eventholder"];
-        
-        if (!cEl_layer.data.temp || !cEl_layer.data.temp.drawPoints) {
-            cEl_layer.data.temp.drawPoints = [];
-        }
-        if (!cEl_layer.data.temp.drawPoints[0]) {
-            cEl_layer.data.temp.drawPoints[0] = [eventholder.metrics.xy[0],eventholder.metrics.xy[1]];
-        }
-        var lastItem = cEl_layer.data.temp.drawPoints.length;
-        var intLastPosX0, intLastPosY0;
-        intLastPosX0 = cEl_layer.data.temp.drawPoints[lastItem - 1][0];
-        intLastPosY0 = cEl_layer.data.temp.drawPoints[lastItem - 1][1];
-        
-        
-        var cEl_ctx = document.getElementById(cEl_layer.pageId + "_" + cEl_layer.layerId + "_canvas").getContext('2d');
-        cEl_ctx.beginPath();
-        cEl_ctx.moveTo(intLastPosX0, intLastPosY0);
-        if (boolFinalise) {
-            cEl_ctx.lineTo(cEl_layer.data.temp.drawPoints[0][0], cEl_layer.data.temp.drawPoints[0][1]);
-        } else {
-            cEl_ctx.lineTo(eventholder.metrics.xy[0], eventholder.metrics.xy[1]);
-            /// also add to the cEl_layer.data.temp.drawPoints array
-            cEl_layer.data.temp.drawPoints.push(eventholder.metrics.xy);
-        }
-
-        cEl_ctx.closePath();
-        cEl_ctx.strokeStyle = "rgba(150,150,150,0.7)";
-        cEl_ctx.lineWidth = 1;
-        cEl_ctx.stroke();
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
 
 
-function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
 
-    // clear fabric canvas
-    try{
-        
-        var arrAproxShape = createAprox(cEl_layer, reduction, delta, masspoint);
-        
-        
-        if (arrAproxShape.length > 6) {
-            
-            // add shape to page shapes
-            var shape_id = id_generator("sh", 8);
-            var page = window[cEl_layer.pageId];
-           
-            // create new element 
-            var cEl_id = id_generator("el", 8);
-            var cEl_new = {
-                "id":cEl_id,
-                "layerId":cEl_layer.name,
-                "pageId":page.name,
-                "parentName":page.name + "_" + cEl_layer.name,
-                "tab":22,
-                "class":"btnBlue1",
-                "tag":"group",
-                "visible":true,"enabled":false,"focus":false,"hover":false,"active":false,
-                "events":null,
-                "loaded":false,
-                "shape":{
-                    "redraw":true,
-                    "masspoint":masspoint,
-                    "id":shape_id,
-                    "type":"bezier",
-                    "scale":[1,1],
-                    "detection":"shape"
-                },
-                "data":{
-                    "type":"button"
-                }
-            };
-            
-            var cEl_new_load = $.extend(true,{},cEl_new);
-            
-            if(cEl_layer.children){
-                cEl_layer.children.push(cEl_new_load);
-            }else{
-                cEl_layer.children = [cEl_new_load];
-            }
-            
-            cEl_layer.data.editIndex = page.name + "_" + cEl_layer.name + "_" + cEl_id;
-            
-            
-            page.shapes[shape_id] = arrAproxShape;
-            cdebug(arrAproxShape,true,true,0)();
-            pre_load_children(cEl_new_load,cEl_layer.pageId,cEl_layer.name,cEl_layer.pageId + "_" +cEl_layer.name);
-            
-            if(loadedPageAct){
-                loadedPageAct.shapes[shape_id] = arrAproxShape;
-                var edit_layer = loadedPageAct.children[loadcanvas];
-                cEl_new.enabled = true;
-                edit_layer.children.push(cEl_new);
-                pre_load_children(cEl_new,edit_layer.pageId,edit_layer.name,edit_layer.pageId + "_" +edit_layer.name);
-                cEl_new_load.shape = cEl_new.shape;
-                //cdebug(edit_layer.name)();
-                
-            }
-            //cEl_layer.shape.redraw = true;
-            //GLOBAL_renderer = true;
-            
-            
-////      ctx.clearRect(0, 0, cEl_layer.cShape[3], cEl_layer.cShape[4]);
-////      var ctxPreview = retCanvCtxById(preview.cCanvId);
-////      ctxPreview.clearRect(0, 0, preview.cShape[3], preview.cShape[4]);
-//        //var arrAproxShape2 = createAprox(cEl_layer,2,2);
-//
-//        var zoomMax, lambda, half, iterations, tick, bool2Way;
-//        zoomMax = 1.5;
-//        lambda = 3;
-//        half = 10;
-//        iterations = 10;
-//        tick = 30;
-//        bool2Way = true;
-////
-////      zoomAround(arrActEl[2],preview,zoomMax,lambda,half,iterations,tick,true);
-//
-//        //var ojCreatorCounter = preview.cChildren.length + 1;
-//        var objName = id_generator("cObj_", 6);
-//        window[objName + "_edit"] = new cElement(objName + "_edit", "hearts2", "shape", "", 2, arrAproxShape, false, null, true, 1, cEl_layer.cId, cEl_layer.cId, [], null, null, objName, true);
-//        window[objName] = new cElement(objName, "hearts2", "shape", "background-color-edit-on:#aaaaaa;onmousemove:zoomAround('" + objName + "',preview," + zoomMax + "," + lambda + "," + half + "," + iterations + "," + tick + "," + bool2Way + ");", 2, arrAproxShape, true, null, true, 1, viewCanv.cId, viewCanv.cId, [], null, null, objName, true);
-//
-//        window[objName].cShapeObf = window[objName + "_edit"].cShapeObf;
-//
-//        localStorage.EditFocus = objName + "_edit";
-//
-//        //drawChildren(viewCanv);
-//        //drawChildren(cEl_layer, true);
-//        drawCP(window[objName + "_edit"]);
-//
-//        //saveMe();
-//        resetMe();
-//        cEl_layer.cValStore = [];
-            return true;
-        }
-        return false;
-    } catch (e) {
-            var err = listError(e);
-            cdebug(err,false,false,3)();
-        return err;
-    }
-
-}
-
-function createAprox (cEl_layer, reduction, delta, masspoint){
-    try{
-        if(!cEl_layer.data.temp)return [];
-        if(!delta){delta = 1;}
-        var deltaAct=0;
-        var drawArrayIn = cEl_layer.data.temp.drawPoints;
-        var drawLength = drawArrayIn.length;
-        var actRed = Math.floor(reduction*6);
-        if (actRed === 0){actRed = 1;} 
-        var drawArrayOut = [];
-        var last = drawLength - 6;
-        var lastArrOut = -1;
-        var boolCloseIt = false;
-        var master = 0;
-
-        for(var i = 0; i < drawLength; i++){
-            if(i%reduction===0){
-                if(master===6){master = 0;};
-
-                if(i > last){
-                    boolCloseIt = true;
-                }
-
-                // add elements only if aprox distance is greater then delta
-                if(lastArrOut > 0 && boolCloseIt===false){
-                    deltaAct = lineDelta(drawArrayOut[lastArrOut],[drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
-                    if( deltaAct >= delta){
-                        drawArrayOut.push([drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
-                        lastArrOut++;
-                        master++;
-                    }
-                }else{
-                    if (master === 0 && boolCloseIt){
-                        break;
-                    }else{
-                        drawArrayOut.push([drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
-                        lastArrOut++;
-                        master++;
-                    }
-                }    
-            }
-        }
-        return drawArrayOut;
-        } catch (e) {
-            var err = listError(e);
-            cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function cEl_editIndex(cEl_caller, boolNext, boolParent) {
-    
-    try {
-        var boolReset = false;
-        
-        cEl_caller = window["editorPage_fabric"];
-        
-        if(!cEl_caller.data.editIndex && cEl_caller.children){
-            boolReset = true;
-            
-            if(boolParent){
-                cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
-            }else{
-                if(boolNext){
-                    cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
-                }else{
-                    cEl_caller.data.editIndex = cEl_caller.children[cEl_caller.children.length-1].parentName + "_" + cEl_caller.children[cEl_caller.children.length-1].name;
-                }
-            }
-
-        }else if(cEl_caller.data.editIndex){
-            var cEl_actualIndex = window[cEl_caller.data.editIndex];
-            
-            if(boolParent){
-                if(!boolNext){
-                    if(window[cEl_actualIndex.parentName].tag!=="canvas"){
-                        cEl_caller.data.editIndex = cEl_actualIndex.parentName;
-                        boolReset = true;
-                    }
-                }else{
-                    if(cEl_actualIndex.children){
-                        cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
-                        boolReset = true;
-                    }
-                }
-            
-            }else{
-                
-
-                var cEl_lookInto = window[cEl_actualIndex.parentName];
-
-                //cdebug("here look into  " + cEl_lookInto.name)();
-                //cdebug("...of           " + cEl_caller.data.editIndex)();
-
-                if(boolNext){
-                    for(var i = 0;i<cEl_lookInto.children.length-1;i++){
-                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
-                            cEl_caller.data.editIndex = cEl_lookInto.children[i+1].parentName + "_" + cEl_lookInto.children[i+1].name;
-                            boolReset = true;
-                            break;
-                        }
-                    }
-                }else{
-                    for(var i = cEl_lookInto.children.length-1;i>0;i--){
-                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
-                            cEl_caller.data.editIndex = cEl_lookInto.children[i-1].parentName + "_" + cEl_lookInto.children[i-1].name;
-                            boolReset = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            //cdebug("... set to           " + cEl_caller.data.editIndex)();
-        }
-        if(boolReset){
-            cEl_caller.shape.redraw = true;
-            window["editorPage_control"].shape.redraw = true;
-        }
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-//function cEl_editIndexParent(cEl_caller, boolParent) {
-//    
-//    try {
-//        var boolReset = false;
-//        if(!cEl_caller.data.editIndex && cEl_caller.children){
-//            boolReset = true;
-//            cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
-//
-//        }else if(cEl_caller.data.editIndex){
-//            
-//            var cEl_actualIndex = window[cEl_caller.data.editIndex];
-//            
-//            if(boolParent){
-//                if(window[cEl_actualIndex.parentName].tag!=="canvas"){
-//                    cEl_caller.data.editIndex = cEl_actualIndex.parentName;
-//                    boolReset = true;
-//                }
-//            }else{
-//                if(cEl_actualIndex.children){
-//                    cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
-//                    boolReset = true;
-//                }
-//            }
-//        }
-//        if(boolReset){
-//            cEl_caller.shape.redraw = true;
-//            window["editorPage_control"].shape.redraw = true;
-//        }
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return err;
-//    }
-//}
 
 function undoLastCpEdit(cEl_caller, increment, boolResetActiveCp) {
     
@@ -939,72 +888,70 @@ function keyAdjustments(cEl_caller, increment){
     }
 }
 
-function cEl_setCpCursor(cEl_caller, boolReset) {
+function cEl_setCpCursor(cEl_layer, cursor,hitObjName) {
     
     try{
         
-        var cEl_layer = cEl_caller;
         //if(cEl_layer.children.length===0 || cEl_layer.data.editIndex<0)return false;
-        if(boolReset){
-            cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"default"});
-            //cEl_layer.reset.layout_css = true;
-            
+        if(cursor){
+            cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":cursor});
+            cEl_layer.reset.cursor = true;
             return true;
         }
         
-        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
+        if(!hitObjName)return false;
+        
+        var workObjectName = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
+        
+        switch (hitObjName) {
+
+            // scale left>right
+            case workObjectName + ".borderLeft":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
+            break;
+            // scale right>left
+            case workObjectName + ".borderRight":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
+            break;
+            // scale top>bottom
+            case workObjectName + ".borderTop":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
+            break;
+            // scale bottom>top
+            case workObjectName + ".borderBottom":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
+            break;
+            // scale topLeft>bottomRight
+            case workObjectName + ".topLeft":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
+            break;
+            // scale topRight>bottomLeft
+            case workObjectName + ".topRight":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
+            break;
+            // scale bottomRight>topLeft
+            case workObjectName + ".bottomRight":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
+            break;
+            // scale bottomLeft>topRight
+            case workObjectName + ".bottomLeft":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
+            break;
+            
+            default:
+                if(hitObjName.indexOf(workObjectName)===0){
+                    cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
+                }else{
+                    cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"default"});
+                }
+            break;
+        
+        }
+//        cdebug(paper.data.workObjectHit)();
+//        cdebug(cEl_layer.style.custom)();
+        
         cEl_layer.reset.cursor = true;
-        //resetCursor(cEl_caller);
         
-        //cdebug()();
-        
-        //actCanv.style.calc["cursor"] = "all-scroll";
-        
-        
-//        var activeCp = window[cEl_layer.data.editIndex].shape.temp.activeCp;
-//        switch (activeCp.value[2]) {
-//            case 0:
-//            case 1:
-//            case 2:
-//                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"crosshair"});
-//                cEl_layer.style.redraw = true;
-//            break;
-//            case 3:
-//                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
-//                cEl_layer.style.redraw = true;
-//            break;
-//            case 4:
-//                //actCanv.style.calc["cursor"] = "all-scroll";
-//                switch (activeCp.value[5]) {
-//                    case 0:
-//                    case 2:
-//                        cEl_layer.style.calc["cursor"] = "nw-resize";
-//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
-//                        cEl_layer.style.redraw = true;
-//                    break;
-//                    case 1:
-//                    case 3:
-//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
-//                        cEl_layer.style.redraw = true;
-//                    break;
-//                }
-//            break;
-//            case 5:
-//                switch (activeCp.value[5]) {
-//
-//                    case 0:
-//                    case 2:
-//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
-//                        cEl_layer.style.redraw = true;
-//                    break;
-//                    case 1:
-//                    case 3:
-//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
-//                        cEl_layer.style.redraw = true;
-//                    break;
-//                }
-//            break;
-//        }
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -1696,11 +1643,16 @@ function drawGrid(cEl_canvas){
 }
 
 
-function selectButton(cEl){
+function selectGroup(){
     try{
         //cdebug("selectButton")();
         var cEl_layer = paper.data.workLayer;
 //        cdebug(cEl_layer.name)();
+
+        if(paper.data.workObject && paper.data.workObject.reset){
+            paper.data.workObject.reset.debug = true;
+            paper.data.workObject.debug = false;
+        }
         paper.data.workObject = null;
         
         if(!cEl_layer){return false;};
@@ -1708,12 +1660,12 @@ function selectButton(cEl){
         //cdebug(cEl_layer.name)();
         //layerSwitch(cEl_layer.name);
         
-        cEl_setCpCursor(cEl_layer);
+//        cEl_setCpCursor(cEl_layer,"pointer");
         
 //        paper.project.activeLayer.fullySelected = false;
-        cEl_layer.selected = false;
+//        cEl_layer.selected = false;
 //        
-        cEl_layer.data.workState = "pre";
+        paper.data.workState = "pre";
         cEl_layer.data.editIndex = 0;
         
         //paper.project.activeLayer.view.draw();
@@ -1727,9 +1679,33 @@ function selectButton(cEl){
     }   
 }
 
+function addGroup(){
+    try{
+        //cdebug("addGroup")();
+        
+        paper.data.workState = "add";
+        
+        if(paper.data.workObject && paper.data.workObject.reset){
+            paper.data.workObject.reset.debug = true;
+            paper.data.workObject.debug = false;
+        }
+        paper.data.workObject = null;
+
+        return true;    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }   
+}
+
+
 function colorButton(cEl){
     try{
-        cdebug("notImplemented")();
+        
+//        cdebug(cEl.style.calc)();
+        alert("not implemented");
+        cdebug("not implemented")();
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -1792,6 +1768,26 @@ function resetChildren(cEl){
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+
+function createAprox (cEl_layer,segments, masspoint, rounding){
+    try{
+        
+        //cdebug(path.segments)();
+        var drawArrayIn = segments;
+        var drawLength = drawArrayIn.length;
+        var drawArrayOut = [];
+
+        for(var i = 0; i < drawLength; i++){
+            drawArrayOut.push([Math.round10(drawArrayIn[i].point.x/cEl_layer.shape.w-masspoint[0], -rounding),Math.round10(drawArrayIn[i].point.y/cEl_layer.shape.h-masspoint[1], -rounding)]);
+        }
+        return drawArrayOut;
+        } catch (e) {
+            var err = listError(e);
+            cdebug(err,false,false,3)();
         return err;
     }
 }

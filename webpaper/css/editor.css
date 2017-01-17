@@ -20,9 +20,9 @@ input::-moz-focus-inner {
 .background{
     /*    font-family: Arial;
         font-size: 0.9rem;*/
-    background-color:rgba(255,255,222,0.9);
+    background-color:rgba(155,155,155,0.5);
 
-    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
+    /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");*/
     /*    border-color:rgba(170,221,170,0.7);
         border-width: 5px;*/
     /*    border-color: #aff;used for textshade color
@@ -67,7 +67,7 @@ input::-moz-focus-inner {
 
 }
 
-.bakground{
+.background{
     /*    font-family: Arial;
         font-size: 0.9rem;*/
     background-color:rgba(255,255,222,1);
@@ -86,33 +86,35 @@ input::-moz-focus-inner {
     /*    my-hover-color:#9aabb;*/
     /*cursor:text;*/
     font-family : sans-serif;
-    font-size: 3em;
+    font-size: 1.5em;
     font-weight:bold;
     background-color: rgba(255,255,255,0.2);
     border-color: rgba(255,255,255,0.4);
     border-width: 1px;
     color:rgba(255,255,255,0.7);
     /*    font-style:italic;*/
-    cursor:text;
+    cursor:move;
     padding: 5px;
     padding-top: 5px;
     text-align:justify;
     text-shadow: 2px 2px 2px rgba(0,0,0,1);
     letter-spacing : 1px;
     word-spacing : 10px;
-    text-indent: 10px;
+    text-indent: 5px;
     transition: width 2s, height 4s;
 }
 
 
 .label:hover{
     background-color:rgba(255,255,255,0.5);
+    /*cursor:move;*/
 }
 .label:focus{
 
 }
 .label:active{
-    background-color:rgba(255,255,255,0.7);
+    /*background-color:rgba(255,255,255,0.7);*/
+    /*cursor:move;*/
 }
 
 
@@ -152,26 +154,30 @@ html, body {
 }
 
 .select{
+    font-family: Arial;
+    font-size: 1.2em;
+    padding-top: 10px;
+    padding-left: 2px;
+    color:rgba(255,255,255,1);
     cursor:pointer;
-    background-color:rgba(170,170,221,0.5);
+    background-color:rgba(100,100,221,0.5);
     width: 35px;
     height: 35px;
-    background-image: url("../interface&more/icons/move_tool_icon.png");
+/*    background-image: url("../interface&more/icons/move_tool_icon.png");
     background-repeat: no-repeat;
-    background-size: 32px 32px;
+    background-size: 32px 32px;*/
     margin-bottom: 5px;
     margin-left: 5px;
     margin-top:5px;
 }
 
 .select:hover{
-    background-color:rgba(170,170,221,0.7);
+    background-color:rgba(100,100,221,0.7);
     box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
 }
 .select:active{
-    background-color:rgba(170,170,221,1);
+    background-color:rgba(100,100,221,1);
     box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
-    cursor:default;
 }
 .select:focus{
     font-family: Arial;
@@ -183,9 +189,9 @@ html, body {
     cursor:pointer;
     width: 35px;
     height: 35px;
-    background-image: url("../interface&more/icons/eyedropper_icon.png");
+/*    background-image: url("../interface&more/icons/eyedropper_icon.png");
     background-repeat: no-repeat;
-    background-size: 32px 32px;
+    background-size: 32px 32px;*/
     margin-bottom: 5px;
     margin-left: 5px;
 }
@@ -210,9 +216,9 @@ html, body {
     background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
-    background-image: url("../interface&more/icons/add.png");
+/*    background-image: url("../interface&more/icons/add.png");
     background-repeat: no-repeat;
-    background-size: 32px 32px;
+    background-size: 32px 32px;*/
     margin-bottom: 5px;
     margin-left: 5px;
 }
@@ -236,9 +242,9 @@ html, body {
     background-color:rgba(170,170,221,0.5);
     width: 35px;
     height: 35px;
-    background-image: url("../interface&more/icons/text_icon.png");
+/*    background-image: url("../interface&more/icons/text_icon.png");
     background-repeat: no-repeat;
-    background-size: 32px 32px;
+    background-size: 32px 32px;*/
     margin-bottom: 5px;
     margin-left: 5px;
 }
@@ -261,22 +267,35 @@ html, body {
 
 .colors{
     cursor:pointer;
-    background-color:rgba(170,170,221,0.5);
+    /*background-color:rgba(170,170,221,0.5);*/
+    
+    background: rgba(170,170,221,0.5); /* For browsers that do not support gradients */
+    
+    background: -webkit-linear-gradient(left,red , yellow, green,cyan,  blue, magenta,red); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right,red , yellow, green ,cyan, blue, magenta,red); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right,red , yellow, green ,cyan, blue, magenta,red); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right,red , yellow, green ,cyan, blue, magenta,red);
+    
+/*    background: -webkit-repeating-linear-gradient(red, yellow 10%, green 20%);  For Safari 5.1 to 6.0 
+    background: -o-repeating-linear-gradient(red, yellow 10%, green 20%);  For Opera 11.1 to 12.0 
+    background: -moz-repeating-linear-gradient(red, yellow 10%, green 20%);  For Firefox 3.6 to 15 
+    background: repeating-linear-gradient(red, yellow 10%, green 20%);*/
+    
     width: 35px;
     height: 35px;
-    background-image: url("../interface&more/icons/colours.png");
+/*    background-image: url("../interface&more/icons/colours.png");
     background-repeat: no-repeat;
-    background-size: 32px 32px;
+    background-size: 32px 32px;*/
     margin-bottom: 5px;
     margin-left: 5px;
 }
 
 .colors:hover{
-    background-color:rgba(170,170,221,0.7);
+/*    background-color:rgba(170,170,221,0.7);*/
     box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
 }
 .colors:active{
-    background-color:rgba(170,170,221,1);
+    /*background-color:rgba(170,170,221,1);*/
     box-shadow:inset 2px 2px 17px rgba(170,170,221,0.7),7px 2px red;
     cursor:default;
 }
@@ -416,3 +435,5 @@ html, body {
     font-family: Arial;
     font-size: 10px;
 }
+
+

@@ -47,7 +47,7 @@ function draw_cEl_text(cEl_group,strNewText){
         }
         
         if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
-            cEl_group.children[3].removeChildren();
+            
             draw_cEl_lines3(cEl_group,cEl_pageText);
         }
         
@@ -804,6 +804,7 @@ function draw_cEl_lines3(cEl_group,cEl_pageText){
     
     try{
         
+        cEl_group.children[3].removeChildren();
 
         var offset = cEl_group.data.values.temp.style.textIndent;
         
@@ -900,6 +901,7 @@ function set_text_path(cEl_group,boolShowTextLines){
             case "path":
                 
 //                if(cEl_path.name!==text_path.name){
+                cEl_group.children[1].removeChildren();
 //                    cEl_group.children[1].children[0] = cEl_group.children[0].children[0];
                     cEl_setPaperPath(cEl_group,cEl_group.children[1], cEl_group.shape, true, false);
 //                    cEl_group.children[1].children[0].name = text_path_name;
@@ -1218,7 +1220,7 @@ function drawTextSelection(cEl_group,cEl_pageText){
                 if(boolSelected){
                     
                     
-                    var rect = cEl_group.children[2].addChild(new paper.Path.Rectangle({
+                    var selection = cEl_group.children[2].addChild(new paper.Path.Rectangle({
                         from: [charObj.textItem.position.x - charObj.w/2, charObj.textItem.position.y-charObj.fs/2],
                         to: [charObj.textItem.position.x + charObj.w/2, charObj.textItem.position.y+charObj.fs/2],
                         fillColor : cEl_pageText.charsSelection.style["background-color"],

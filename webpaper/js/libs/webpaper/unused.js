@@ -1,3 +1,339 @@
+//
+//function addDrawShape(cEl_layer, boolFinalise) {
+//    
+//    try{
+//        
+//        // TODO hmmm, move this to autoGLOBAL_renderering when drawing the canvas editor ( like the grid thingy )
+//        var eventholder = window["eventholder"];
+//        
+//        if (!cEl_layer.data.temp || !cEl_layer.data.temp.drawPoints) {
+//            cEl_layer.data.temp.drawPoints = [];
+//        }
+//        if (!cEl_layer.data.temp.drawPoints[0]) {
+//            cEl_layer.data.temp.drawPoints[0] = [eventholder.metrics.xy[0],eventholder.metrics.xy[1]];
+//        }
+//        var lastItem = cEl_layer.data.temp.drawPoints.length;
+//        var intLastPosX0, intLastPosY0;
+//        intLastPosX0 = cEl_layer.data.temp.drawPoints[lastItem - 1][0];
+//        intLastPosY0 = cEl_layer.data.temp.drawPoints[lastItem - 1][1];
+//        
+//        
+//        var cEl_ctx = document.getElementById(cEl_layer.pageId + "_" + cEl_layer.layerId + "_canvas").getContext('2d');
+//        cEl_ctx.beginPath();
+//        cEl_ctx.moveTo(intLastPosX0, intLastPosY0);
+//        if (boolFinalise) {
+//            cEl_ctx.lineTo(cEl_layer.data.temp.drawPoints[0][0], cEl_layer.data.temp.drawPoints[0][1]);
+//        } else {
+//            cEl_ctx.lineTo(eventholder.metrics.xy[0], eventholder.metrics.xy[1]);
+//            /// also add to the cEl_layer.data.temp.drawPoints array
+//            cEl_layer.data.temp.drawPoints.push(eventholder.metrics.xy);
+//        }
+//
+//        cEl_ctx.closePath();
+//        cEl_ctx.strokeStyle = "rgba(150,150,150,0.7)";
+//        cEl_ctx.lineWidth = 1;
+//        cEl_ctx.stroke();
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+////function makeElPairs(cEl_layer, masspoint ,reduction, delta) {
+//
+//    // clear fabric canvas
+//    try{
+//        
+//        var arrAproxShape = createAprox(cEl_layer, reduction, delta, masspoint);
+//        
+//        
+//        if (arrAproxShape.length > 6) {
+//            
+//            // add shape to page shapes
+//            var shape_id = id_generator("sh", 8);
+//            var page = window[cEl_layer.pageId];
+//           
+//            // create new element 
+//            var cEl_id = id_generator("el", 8);
+//            var cEl_new = {
+//                "id":cEl_id,
+//                "layerId":cEl_layer.name,
+//                "pageId":page.name,
+//                "parentName":page.name + "_" + cEl_layer.name,
+//                "tab":22,
+//                "class":"btnBlue1",
+//                "tag":"group",
+//                "visible":true,"enabled":false,"focus":false,"hover":false,"active":false,
+//                "events":null,
+//                "loaded":false,
+//                "shape":{
+//                    "redraw":true,
+//                    "masspoint":masspoint,
+//                    "id":shape_id,
+//                    "type":"bezier",
+//                    "scale":[1,1],
+//                    "detection":"shape"
+//                },
+//                "data":{
+//                    "type":"button"
+//                }
+//            };
+//            
+//            var cEl_new_load = $.extend(true,{},cEl_new);
+//            
+//            if(cEl_layer.children){
+//                cEl_layer.children.push(cEl_new_load);
+//            }else{
+//                cEl_layer.children = [cEl_new_load];
+//            }
+//            
+//            cEl_layer.data.editIndex = page.name + "_" + cEl_layer.name + "_" + cEl_id;
+//            
+//            
+//            page.shapes[shape_id] = arrAproxShape;
+//            cdebug(arrAproxShape,true,true,0)();
+//            pre_load_children(cEl_new_load,cEl_layer.pageId,cEl_layer.name,cEl_layer.pageId + "_" +cEl_layer.name);
+//            
+//            if(loadedPageAct){
+//                loadedPageAct.shapes[shape_id] = arrAproxShape;
+//                var edit_layer = loadedPageAct.children[loadcanvas];
+//                cEl_new.enabled = true;
+//                edit_layer.children.push(cEl_new);
+//                pre_load_children(cEl_new,edit_layer.pageId,edit_layer.name,edit_layer.pageId + "_" +edit_layer.name);
+//                cEl_new_load.shape = cEl_new.shape;
+//                //cdebug(edit_layer.name)();
+//                
+//            }
+//            //cEl_layer.shape.redraw = true;
+//            //GLOBAL_renderer = true;
+//            
+//            
+//////      ctx.clearRect(0, 0, cEl_layer.cShape[3], cEl_layer.cShape[4]);
+//////      var ctxPreview = retCanvCtxById(preview.cCanvId);
+//////      ctxPreview.clearRect(0, 0, preview.cShape[3], preview.cShape[4]);
+////        //var arrAproxShape2 = createAprox(cEl_layer,2,2);
+////
+////        var zoomMax, lambda, half, iterations, tick, bool2Way;
+////        zoomMax = 1.5;
+////        lambda = 3;
+////        half = 10;
+////        iterations = 10;
+////        tick = 30;
+////        bool2Way = true;
+//////
+//////      zoomAround(arrActEl[2],preview,zoomMax,lambda,half,iterations,tick,true);
+////
+////        //var ojCreatorCounter = preview.cChildren.length + 1;
+////        var objName = id_generator("cObj_", 6);
+////        window[objName + "_edit"] = new cElement(objName + "_edit", "hearts2", "shape", "", 2, arrAproxShape, false, null, true, 1, cEl_layer.cId, cEl_layer.cId, [], null, null, objName, true);
+////        window[objName] = new cElement(objName, "hearts2", "shape", "background-color-edit-on:#aaaaaa;onmousemove:zoomAround('" + objName + "',preview," + zoomMax + "," + lambda + "," + half + "," + iterations + "," + tick + "," + bool2Way + ");", 2, arrAproxShape, true, null, true, 1, viewCanv.cId, viewCanv.cId, [], null, null, objName, true);
+////
+////        window[objName].cShapeObf = window[objName + "_edit"].cShapeObf;
+////
+////        localStorage.EditFocus = objName + "_edit";
+////
+////        //drawChildren(viewCanv);
+////        //drawChildren(cEl_layer, true);
+////        drawCP(window[objName + "_edit"]);
+////
+////        //saveMe();
+////        resetMe();
+////        cEl_layer.cValStore = [];
+//            return true;
+//        }
+//        return false;
+//    } catch (e) {
+//            var err = listError(e);
+//            cdebug(err,false,false,3)();
+//        return err;
+//    }
+//
+//}
+//
+//function createAprox (cEl_layer, reduction, delta, masspoint){
+//    try{
+//        if(!cEl_layer.data.temp)return [];
+//        if(!delta){delta = 1;}
+//        var deltaAct=0;
+//        var drawArrayIn = cEl_layer.data.temp.drawPoints;
+//        var drawLength = drawArrayIn.length;
+//        var actRed = Math.floor(reduction*6);
+//        if (actRed === 0){actRed = 1;} 
+//        var drawArrayOut = [];
+//        var last = drawLength - 6;
+//        var lastArrOut = -1;
+//        var boolCloseIt = false;
+//        var master = 0;
+//
+//        for(var i = 0; i < drawLength; i++){
+//            if(i%reduction===0){
+//                if(master===6){master = 0;};
+//
+//                if(i > last){
+//                    boolCloseIt = true;
+//                }
+//
+//                // add elements only if aprox distance is greater then delta
+//                if(lastArrOut > 0 && boolCloseIt===false){
+//                    deltaAct = lineDelta(drawArrayOut[lastArrOut],[drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
+//                    if( deltaAct >= delta){
+//                        drawArrayOut.push([drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
+//                        lastArrOut++;
+//                        master++;
+//                    }
+//                }else{
+//                    if (master === 0 && boolCloseIt){
+//                        break;
+//                    }else{
+//                        drawArrayOut.push([drawArrayIn[i][0]/cEl_layer.shape.w-masspoint[0],drawArrayIn[i][1]/cEl_layer.shape.h-masspoint[1]]);
+//                        lastArrOut++;
+//                        master++;
+//                    }
+//                }    
+//            }
+//        }
+//        return drawArrayOut;
+//        } catch (e) {
+//            var err = listError(e);
+//            cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_editIndex(cEl_caller, boolNext, boolParent) {
+//    
+//    try {
+//        var boolReset = false;
+//        
+//        cEl_caller = window["editorPage_fabric"];
+//        
+//        if(!cEl_caller.data.editIndex && cEl_caller.children){
+//            boolReset = true;
+//            
+//            if(boolParent){
+//                cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
+//            }else{
+//                if(boolNext){
+//                    cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
+//                }else{
+//                    cEl_caller.data.editIndex = cEl_caller.children[cEl_caller.children.length-1].parentName + "_" + cEl_caller.children[cEl_caller.children.length-1].name;
+//                }
+//            }
+//
+//        }else if(cEl_caller.data.editIndex){
+//            var cEl_actualIndex = window[cEl_caller.data.editIndex];
+//            
+//            if(boolParent){
+//                if(!boolNext){
+//                    if(window[cEl_actualIndex.parentName].tag!=="canvas"){
+//                        cEl_caller.data.editIndex = cEl_actualIndex.parentName;
+//                        boolReset = true;
+//                    }
+//                }else{
+//                    if(cEl_actualIndex.children){
+//                        cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
+//                        boolReset = true;
+//                    }
+//                }
+//            
+//            }else{
+//                
+//
+//                var cEl_lookInto = window[cEl_actualIndex.parentName];
+//
+//                //cdebug("here look into  " + cEl_lookInto.name)();
+//                //cdebug("...of           " + cEl_caller.data.editIndex)();
+//
+//                if(boolNext){
+//                    for(var i = 0;i<cEl_lookInto.children.length-1;i++){
+//                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
+//                            cEl_caller.data.editIndex = cEl_lookInto.children[i+1].parentName + "_" + cEl_lookInto.children[i+1].name;
+//                            boolReset = true;
+//                            break;
+//                        }
+//                    }
+//                }else{
+//                    for(var i = cEl_lookInto.children.length-1;i>0;i--){
+//                        if(cEl_caller.data.editIndex === cEl_lookInto.children[i].parentName + "_" + cEl_lookInto.children[i].name){
+//                            cEl_caller.data.editIndex = cEl_lookInto.children[i-1].parentName + "_" + cEl_lookInto.children[i-1].name;
+//                            boolReset = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//            //cdebug("... set to           " + cEl_caller.data.editIndex)();
+//        }
+//        if(boolReset){
+//            cEl_caller.shape.redraw = true;
+//            window["editorPage_control"].shape.redraw = true;
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+//function cEl_editIndexParent(cEl_caller, boolParent) {
+//    
+//    try {
+//        var boolReset = false;
+//        if(!cEl_caller.data.editIndex && cEl_caller.children){
+//            boolReset = true;
+//            cEl_caller.data.editIndex = cEl_caller.children[0].parentName + "_" + cEl_caller.children[0].name;
+//
+//        }else if(cEl_caller.data.editIndex){
+//            
+//            var cEl_actualIndex = window[cEl_caller.data.editIndex];
+//            
+//            if(boolParent){
+//                if(window[cEl_actualIndex.parentName].tag!=="canvas"){
+//                    cEl_caller.data.editIndex = cEl_actualIndex.parentName;
+//                    boolReset = true;
+//                }
+//            }else{
+//                if(cEl_actualIndex.children){
+//                    cEl_caller.data.editIndex = cEl_actualIndex.children[0].parentName + "_" + cEl_actualIndex.children[0].name;
+//                    boolReset = true;
+//                }
+//            }
+//        }
+//        if(boolReset){
+//            cEl_caller.shape.redraw = true;
+//            window["editorPage_control"].shape.redraw = true;
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//                        
+//                        
+//                        //                        }else if(eventholder.metrics.delta.x<0){
+////                            cdebug(scaleX + " vs " + eventholder.metrics.delta.x)();
+//                            paper.data.workObject.children[1].scale(1-scaleX,1, paper.data.workObjectBounds.rightCenter);
+//                            paper.data.workObject.children[0].scale(1-scaleX,1, paper.data.workObjectBounds.rightCenter);
+//                            paper.data.workObject.reset.text_draw = true;
+//                            paper.data.workObject.reset.debug = true;
+//                        }else{
+//
+//                        }
+//                        var scaleX = paper.data.workObject.children[0].matrix.a - eventholder.metrics.delta.x/paper.data.workObjectBounds.width;
+//                        var translateX = paper.data.workObject.children[0].matrix.tx + eventholder.metrics.delta.x/2;
+////                        cdebug(scaleX)();
+//                        
+//                        paper.data.workObject.children[0].matrix.set(scaleX, 0, 0, 1 ,translateX, 0);
+                        //paper.data.workObject.children[0].matrix.translate(eventholder.metrics.delta.x/2,0);
+//                        paper.data.workObject.children[1].matrix.set(scaleX, 0, 0, 1,0, 0);
+//                        paper.data.workObject.reset.text_draw = true;
+//                      cdebug((1-scaleX) + " vs " + eventholder.metrics.delta)();
+//                        cdebug(paper.data.workObject.children[0].position)();
+//                        cdebug(paper.data.workObject.children[0].children[0])();
+
+
 
 //function getCharPos(lines,xy){
 //    try{
