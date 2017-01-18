@@ -1,4 +1,23 @@
 //
+
+//
+//function cEl_set_CpBorder(cpBorder,x,y){
+//    
+//    try{    
+//        if(cpBorder.x > x){ cpBorder.x = x;}
+//        if(cpBorder.y > y){ cpBorder.y = y;}
+//        if(cpBorder.x1 < x){ cpBorder.x1 = x;}
+//        if(cpBorder.y1 < y){ cpBorder.y1 = y;}
+//        return cpBorder;
+//    
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+////
 //function addDrawShape(cEl_layer, boolFinalise) {
 //    
 //    try{
@@ -1839,51 +1858,7 @@
 //        //cdebug(cElFocusOld.name + " vs " + canvElFocusOld.name);            
 //        //cdebug(cElFocusOld.tag);
 //
-//        if(canvElFocusOld && cElFocusOld.name!==canvElFocusOld.name){
-//            
-//            if(!boolDescending){
-//                if(cElTab < canvElFocusOld.children.length - 1){
-//                    cElTabNew = cElTab + 1;
-//                    boolResetOldFocus = true;
-//                }else{
-//                    if(canvTab < page.children.length - 2){
-//                        cElTabNew = 0;
-//                        canvTabNew = canvTab + 1;
-//                        boolResetOldFocus = true;
-//                    }else{
-//                        cElTabNew = 0;
-//                        canvTabNew = 0;
-//                        boolResetOldFocus = true;
-//                    }       
-//                } 
-//            }else{
-//                if(cElTab > 0){
-//                    cElTabNew = cElTab - 1;
-//                    boolResetOldFocus = true;
-//                }else{
-//                    if(canvTab > 0){
-//                        canvTabNew = canvTab - 1;
-//                        cElTabNew = page.children[canvTabNew].children.length-1;
-//                        boolResetOldFocus = true;
-//                    }else{
-//                        canvTabNew = page.children.length - 1;
-//                        cElTabNew = page.children[canvTabNew].children.length-1;
-//                        boolResetOldFocus = true;
-//                    }
-//                }
-//            }
-//        }else{
-//            if(canvElFocusOld.children){
-//                if(boolDescending){
-//                    canvTabNew = canvElFocusOld.children.length-1;
-//                }else{
-//                    canvTabNew = 0;
-//                }
-//                boolResetOldFocus = true;   
-//            }else{
-//                
-//            }           
-//        }
+//        
 //
 //        //cdebug([boolResetOldFocus,canvTab,canvTabNew,cElTab,cElTabNew]);
 //

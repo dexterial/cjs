@@ -22,42 +22,35 @@ editorTool.onKeyDown = editor_handleKeys;
 editorTool.onKeyUp = editor_handleKeys;
 
 
-function editor_handleKeys(evt) {
+function editor_handleKeys(paperEvt) {
     
     try{
         
-        var evtType = evt.type;
-        var eventholder = window["eventholder"];
-        preSetEventHolder(eventholder,evt,"keyboard");
-        if(!eventholder.active.oldObj)return false;
-
-        switch(evtType){
-            
-            case "keydown":
-                
-                
-                
-                editor_keydown(evt);
-                
-                drawProjects(paper,true);
-                
-                
-            break;
-            case "keyup":
-                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
-                    // check edit mode combination CTRL + SHIFT + "E" or "e"
-                    if(editMode(eventholder))return true;
-                }
-                
-                editor_keyup(evt);
-                
-                drawProjects(paper,true);
-                
-                
-            break;
-        };
+        paperEvt.stop();
         
-        //paper.view.draw();
+        var eventholder = window["eventholder"];
+        if(!eventholder.active.oldObj)return false;
+        
+        var cEl_layer = paper.project.activeLayer;
+        switch (cEl_layer.name) {
+            case "editTool1":
+            case "editTool2":
+//                cdebug("here1")();
+                preSetEventHolder(eventholder,paperEvt,"keyboard");
+                if (eventholder.noevent){return false;};
+                return globalEvents(eventholder);
+                
+            break;
+            default:
+                //cdebug("here2")();
+                preSetEventHolder(eventholder,paperEvt,"keyboard",true);
+                //cdebug("here2a")();
+                
+                if (eventholder.noevent){return false;};
+                return editorEvents(eventholder);
+                
+            break;
+        }
         
         return true;
     
@@ -68,87 +61,107 @@ function editor_handleKeys(evt) {
     }
 };
 
-function editor_handleMouse(evt) {
-    
+
+function editorEvents(eventholder){
     try{
-//        var evtType = evt.type;
-//        // exit if not event
-//        if(!evtType){
-//            return false;
-//        }
-//        
-        
-        //if(!eventholder.active.oldObj)return false;
-        
-        var cEl_project = paper.project;
-        
-        switch (cEl_project.activeLayer.name) {
-            case "editTool1":
-            case "editTool2":
-                //cdebug("here")();
-                var eventholder = window["eventholder"];
-                preSetEventHolder(eventholder,evt,"mouse");
-                return globalEvents(eventholder);
+
+        switch(eventholder.type){
+
+            case "mousedown":
+                
+                updateEventHolder(eventholder,false,true,true);
+                handleCSSEvents(eventholder,false,true,true,true);
+
+                editor_mousedown(eventholder);
+
+                drawProjects(paper.project,false);
+
+            break;
+            
+            case "mouseup":
+                
+                updateEventHolder(eventholder,true,false,false);
+                handleCSSEvents(eventholder,true,false,false,true);
+
+                editor_mouseup(eventholder);
+
+                drawProjects(paper.project,false);
+
+            break;
+            
+            case "mousemove":
+
+
+                updateEventHolder(eventholder,true,false,false);
+                handleCSSEvents(eventholder,true,false,false,true);
+
+                editor_mousemove(eventholder);
+
+                drawProjects(paper.project,false);
+
+            break;
+            
+            case "keydown":
+                
+                editor_keydown(eventholder);
+                
+                drawProjects(paper,true);
                 
             break;
-            default:
+            
+            case "keyup":
                 
-                var eventholder = window["eventholder"];
-                preSetEventHolder(eventholder,evt,"mouse",true);
+                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
+                    // check edit mode combination CTRL + SHIFT + "E" or "e"
+                    if(editMode(eventholder)){
+                        drawProjects(paper,true);
+                        return true;
+                    }    
+                }
                 
-                switch(eventholder.type){
-
-                    case "mousedown":
-                        //cdebug("mousedown")();
-
-                        //eventholder.actObj.remove();
-                        
-//                        cdebug(eventholder.metrics.delta)();
-                        
-                        
-                        updateEventHolder(eventholder,false,true,true);
-                        handleCSSEvents(eventholder,false,true,true,true);
-                        
-                        //cdebug(eventholder.actObj.name)();
-                        
-                        editor_mousedown(eventholder);
-
-                        drawProjects(paper.project,false);
-                        
-
-                    break;
-                    case "mouseup":
-                        updateEventHolder(eventholder,true,false,false);
-                        handleCSSEvents(eventholder,true,false,false,true);
-                        
-                        
-                        editor_mouseup(eventholder);
-                        
-                        drawProjects(paper.project,false);
-
-                    break;
-                    case "mousemove":
-                        
-                        
-                        updateEventHolder(eventholder,true,false,false);
-                        handleCSSEvents(eventholder,true,false,false,true);
-                        
-                        
-                        editor_mousemove(eventholder);
-                        
-                        drawProjects(paper.project,false);
-
-                    break;
+                editor_keyup(eventholder);
+                
+                drawProjects(paper,true);
+            break;
+            
+            
 //                    case "mouseout":
 //
 //                        drawProjects(paper,true);
 //
 //                    break;
-                };
+        };
+    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }    
+}
+
+function editor_handleMouse(evt) {
+    
+    try{
+
+
+        var eventholder = window["eventholder"];
+        var cEl_layer = paper.project.activeLayer;
+        
+        switch (cEl_layer.name) {
+            case "editTool1":
+            case "editTool2":
+                //cdebug("here")();
                 
+                preSetEventHolder(eventholder,evt,"mouse");
+                if (eventholder.noevent){return false;};
+                return globalEvents(eventholder);
                 
+            break;
+            default:
                 
-                //resetCursor(cEl_project.activeLayer);
+                preSetEventHolder(eventholder,evt,"mouse",true);
+                if (eventholder.noevent){return false;};
+                return editorEvents(eventholder);
                 
             break;
         }
@@ -165,9 +178,62 @@ function editor_handleMouse(evt) {
 
 
 
-function editor_keydown(evt) {
+function editor_keydown(eventholder) {
 
     try{
+        
+        switch (paper.data.workState) {
+            case "editlimbo":
+                
+                if(!paper.data.workObject && !paper.data.workObjectHit )return false;
+                var delta = {"x":0,"y":0,"rotation":0};
+                var offset = 2;
+                
+                switch(eventholder.keys.key){
+                    case "ArrowUp":
+                        delta.y = -offset;
+                        calcGroupScale(paper.data,delta);
+                    break;
+                    case "ArrowRight":
+                        delta.x = offset;
+                        calcGroupScale(paper.data,delta);
+                    break;
+                    case "ArrowDown":
+                        delta.y = offset;
+                        calcGroupScale(paper.data,delta);
+                    break;
+                    case "ArrowLeft":
+                        delta.x = -offset;
+                        calcGroupScale(paper.data,delta);
+                    break;
+                    case "Tab":
+//                        cdebug(eventholder.keys)();
+                        group_tabulation(paper.data.workLayer,paper.data.workObject,eventholder.keys.shiftKey);
+                    break;    
+                    default:
+//                        cdebug(eventholder.keys)();
+                    break;
+                }
+                
+//                if(eventholder.keys.buttons ===1 ){
+//                    calcGroupScale(paper.data,eventholder.metrics.delta);
+//                }
+                
+            break;
+            case "pre":
+//                if(!paper.data.workObject && !paper.data.workObjectHit )return false;
+                switch(eventholder.keys.key){
+                    case "Tab":
+//                        cdebug(eventholder.keys)();
+                        group_tabulation(paper.data.workLayer,paper.data.workObject,eventholder.keys.shiftKey);
+                    break;    
+                    default:
+                        cdebug(eventholder.keys)();
+                    break;
+                }
+            break;
+        }
+        
         //var cEl_layer = window[cEl.layerId];
         //var eventholder = window["eventholder"];
         //cdebug(window.event.keyCode);
@@ -239,33 +305,11 @@ function editor_keydown(evt) {
 
 
 
-function editor_keyup(evt) {
+function editor_keyup(eventholder) {
 
     try{
-        //var cEl_layer = window[cEl.layerId];
-        //var eventholder = window["eventholder"];
-        //cdebug(eventholder.event.shiftKey)();
-        //cdebug(window.event.shiftKey)();
 
-//        switch (cEl_layer.name) {
-//            case "fabric":
-//
-////                //cdebug("editor_keyup state " + cEl_layer.data.state)();
-////                var cEl_page = window["editorPage"];
-////                var cEl = window[cEl_layer.data.editIndex];
-////                switch (cEl_layer.data.state) {
-////                    case 2:
-////                        
-////                        switch(window.event.keyCode){
-//////                            case 13:
-//////                                return resetState(cEl_layer, cEl, cEl_layer.data.editIndex);
-//////                            break;
-////                        }
-////                    break;
-////                }
-//
-//            break;
-//        }
+
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -273,73 +317,69 @@ function editor_keyup(evt) {
     }
 }
 
-function editor_keypress(cEl_layer) {
-    // BEWARE triggers right after keydowns event, however it does not trigger for all keys (non printable)
+//function editor_keypress(cEl_layer) {
+//    // BEWARE triggers right after keydowns event, however it does not trigger for all keys (non printable)
+//    try{
+//        //var cEl_layer = window[cEl.layerId];
+//        var eventholder = window["eventholder"];
+//        switch (cEl_layer.name) {
+//            case "fabric":
+//                //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
+//                
+//                switch (cEl_layer.data.state) {
+//                    case "editlimbo":
+//                        switch(eventholder.keys.keyCode){
+//                            case 13: //save ref point
+//                                saveLastCpEdit(cEl_layer,"edit");
+//                            break;
+//                            case 26: //undo refpoint
+//                                undoLastCpEdit(cEl_layer,-1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                            case 25: //redo refpoint
+//                                undoLastCpEdit(cEl_layer,1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                        }
+//                    break;
+//                    default:
+//                        switch(eventholder.keys.keyCode){
+//                            case 26: //undo refpoint
+//                                undoLastCpEdit(cEl_layer,-1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                            case 25: //redo refpoint
+//                                undoLastCpEdit(cEl_layer,1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                        }
+//                    break;
+//                }
+//                //cdebug("editor_keypress END state " + cEl_layer.data.state)();
+//            break;
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+
+function editor_wheel(eventholder) {
+
     try{
-        //var cEl_layer = window[cEl.layerId];
-        var eventholder = window["eventholder"];
-        switch (cEl_layer.name) {
-            case "fabric":
-                //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
+        cdebug(eventholder.wheel.deltaY);
+        
+        switch (paper.data.workState) {
+            case "editlimbo":
+            case "pre":
                 
-                switch (cEl_layer.data.state) {
-                    case "editlimbo":
-                        switch(eventholder.keys.keyCode){
-                            case 13: //save ref point
-                                saveLastCpEdit(cEl_layer,"edit");
-                            break;
-                            case 26: //undo refpoint
-                                undoLastCpEdit(cEl_layer,-1);
-                                //cEl_layer.shape.redraw = true;
-                            break;
-                            case 25: //redo refpoint
-                                undoLastCpEdit(cEl_layer,1);
-                                //cEl_layer.shape.redraw = true;
-                            break;
-                        }
-                    break;
-                    default:
-                        switch(eventholder.keys.keyCode){
-                            case 26: //undo refpoint
-                                undoLastCpEdit(cEl_layer,-1);
-                                //cEl_layer.shape.redraw = true;
-                            break;
-                            case 25: //redo refpoint
-                                undoLastCpEdit(cEl_layer,1);
-                                //cEl_layer.shape.redraw = true;
-                            break;
-                        }
-                    break;
-                }
-                //cdebug("editor_keypress END state " + cEl_layer.data.state)();
-            break;
-        }
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-function editor_wheel(cEl_layer) {
-
-    try{
-        //cdebug(cEl_layer.name);
-        var eventholder = window["eventholder"];
-        switch (cEl_layer.name) {
-            case "fabric":
-                //cdebug("editor_wheel state " + cEl_layer.data.state)();
-                switch (cEl_layer.data.state) {
-                    case "pre":
-                    case "edit":
-                        cEl_layer.data.state = "edit";
-                        cEl_editIndex(cEl_layer,eventholder.wheel.deltaY>0,eventholder.keys.ctrlKey);
-
-                    break;
-                }
+                group_tabulation(paper.data.workLayer,paper.data.workObject,eventholder.wheel.deltaY>0);
             break;
         }
         
-        
+        return true;
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -357,16 +397,15 @@ function editor_mousedown(eventholder) {
         var cEl_layer = paper.project.activeLayer;
         if(!paper.data.workState){
             paper.data.workState = "pre";
-            paper.data.editIndex = 0;
         }
         paper.data.workLayer = cEl_layer;
        
 
 //                cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
-                switch (paper.data.workState) {
-                    case "edit":
-                        //if(cEl_layer.data.editIndex<0){return false;}
-                        //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
+        switch (paper.data.workState) {
+            case "edit":
+                //if(cEl_layer.data.editIndex<0){return false;}
+                //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
 //                        cdebug(cEl.shape.temp.activeCp)();
 //                        cdebug(cEl_layer.metrics.xy)();
 //                        if(cEl_setActiveCp(cEl_project)){
@@ -379,123 +418,114 @@ function editor_mousedown(eventholder) {
 //                            cEl_project.shape.redraw = true;
 //                            if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
 //                        };
-                        
-                        //GLOBAL_renderer = true;
-                    break;
-                    case "add":
+
+                //GLOBAL_renderer = true;
+            break;
+            case "add":
 //                        cdebug("here1")();
-                        
-                        paper.data.workObject = new paper.Path();
-                        paper.data.workObject.strokeColor = 'black';
-                        paper.data.workObject.fullySelected = true;
-                            
-                        
-                        
-                    break;
-                    case  "editlimbo" : // "editlimbo":
-                        
-                        //cEl_layer = paper.data.workLayer;
-                        var workObject_name = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
-                        var actObj_name = eventholder.actObj.name;
-                        if(actObj_name.indexOf(workObject_name)===0){
+
+                paper.data.workObject = new paper.Path();
+                paper.data.workObject.strokeColor = 'black';
+                paper.data.workObject.fullySelected = true;
+
+
+
+            break;
+            case  "editlimbo" : // "editlimbo":
+
+                //cEl_layer = paper.data.workLayer;
+                var workObject_name = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
+                var actObj_name = eventholder.actObj.name;
+                if(actObj_name.indexOf(workObject_name)===0){
 //                            cdebug(actObj_name)();
-                            paper.data.workObjectHit = actObj_name;
-                            
-                            var bounds = paper.data.workObject.children[0].bounds;
-                            
-                            paper.data.workObjectBounds = {
-                                "x":bounds.x,
-                                "y":bounds.y,
-                                "width":bounds.width,
-                                "height":bounds.height,
-                                "top":bounds.top,
-                                "right":bounds.right,
-                                "bottom":bounds.bottom,
-                                "left":bounds.left,
-                                "topCenter":bounds.topCenter,
-                                "rightCenter":bounds.rightCenter,
-                                "bottomCenter":bounds.bottomCenter,
-                                "leftCenter":bounds.leftCenter,
-                                "topLeft":bounds.topLeft,
-                                "topRight":bounds.topRight,
-                                "bottomRight":bounds.bottomRight,
-                                "bottomLeft":bounds.bottomLeft,
-                                "sign":sign1(paper.data.workObject.children[0].matrix.a)
-                            };
-                            
-                            cEl_setCpCursor(cEl_layer,false,paper.data.workObjectHit);
-                            
-                            paper.data.workObject.children[0].applyMatrix = false;
-                            //paper.data.workObject.children[1].applyMatrix = false;
-                            eventholder.actObj.bringToFront();
-                            
-                            paper.data.workState = "edit";
-                            
-                        }else{
-                            paper.data.workObjectHit = false;
-                            paper.data.workObjectBounds = null;
-                        }
-                        
-                        
-                        
+                    paper.data.workObjectHit = actObj_name;
+
+                    var bounds = paper.data.workObject.children[0].bounds;
+
+                    paper.data.workObjectBounds = {
+                        "x":bounds.x,
+                        "y":bounds.y,
+                        "width":bounds.width,
+                        "height":bounds.height,
+                        "top":bounds.top,
+                        "right":bounds.right,
+                        "bottom":bounds.bottom,
+                        "left":bounds.left,
+                        "topCenter":bounds.topCenter,
+                        "rightCenter":bounds.rightCenter,
+                        "bottomCenter":bounds.bottomCenter,
+                        "leftCenter":bounds.leftCenter,
+                        "topLeft":bounds.topLeft,
+                        "topRight":bounds.topRight,
+                        "bottomRight":bounds.bottomRight,
+                        "bottomLeft":bounds.bottomLeft,
+                        "sign":sign1(paper.data.workObject.children[0].matrix.a)
+                    };
+
+                    cEl_setCpCursor(cEl_layer,false,paper.data.workObjectHit);
+
+                    paper.data.workObject.children[0].applyMatrix = false;
+                    //paper.data.workObject.children[1].applyMatrix = false;
+                    eventholder.actObj.bringToFront();
+
+                    paper.data.workState = "edit";
+
+                }else{
+                    paper.data.workObjectHit = false;
+                    paper.data.workObjectBounds = null;
+                }
+
+
+
 //                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"text"});
 //                        cEl_layer.reset.cursor = true;
-                        
+
 //                        cEl_project.data.state = "editmove";
 //                        cEl_editActiveCp(cEl_project);
 //                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
 
+            break;
+            case "pre":
+
+                //paper.project.activeLayer.selected = false;
+
+
+
+                //eventholder.actObj.fullySelected = true;
+
+
+                //cdebug(eventholder.actObj.className)();
+                switch (eventholder.actObj.className) {
+
+                    case "SymbolItem":
+                    case "Path":
+                        var cEl_group = eventholder.actObj.parent.parent;
+                        if(cEl_group.tag !== "group")break;
+                        
+                        selectGroup(cEl_group);
+
                     break;
-                    case "pre":
-                        
-                        //paper.project.activeLayer.selected = false;
-                        
-                        
-                        
-                        //eventholder.actObj.fullySelected = true;
-                        
-                        
-                        //cdebug(eventholder.actObj.className)();
-                        switch (eventholder.actObj.className) {
-                            
-                            case "SymbolItem":
-                            case "Path":
-                                var cEl_group = eventholder.actObj.parent.parent;
-                                if(cEl_group.tag !== "group")break;
-                                cEl_group.debug = true;
-                                cEl_group.reset.debug = true;
-                                
-                                //cEl_group.selected = true;
-//                                cEl_group.children[0].selected = true;
-                                paper.data.workObject = cEl_group;
-                                paper.data.workObjectHit = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG_Path";
-                                
-                                
-//                                cdebug(cEl_group.name)();
-                                paper.data.workState = "editlimbo";
-                                
-                            break;
 //                            case "Path":
 //                                eventholder.actObj.parent.selected = true;
 //                            break;
-                            default:
-                                
-                                cdebug(eventholder.actObj.className)();
-                            break;
-                        }
-                        
-                        //
-                        
-                        
-                        //cEl_setCpCursor(cEl_layer);
-                        
-                        
-                        
-                        //cdebug("editor_mousedown END state " + paper.project.data.workLayer.name)();
-                        
-//                        addDrawShape(cEl_project,false);
+                    default:
+
+                        cdebug(eventholder.actObj.className)();
                     break;
                 }
+
+                //
+
+
+                //cEl_setCpCursor(cEl_layer);
+
+
+
+                //cdebug("editor_mousedown END state " + paper.project.data.workLayer.name)();
+
+//                        addDrawShape(cEl_project,false);
+            break;
+        }
                 //cdebug("editor_mousedown END state " + paper.project.data.workLayer)();
                 
 
@@ -511,31 +541,22 @@ function editor_mousedown(eventholder) {
 function editor_mousemove(eventholder) {
     try{
         
-        var cEl_layer = paper.project.activeLayer;
-//        if(!paper.data.workState){
-//            paper.data.workState = "pre";
-//            cEl_layer.data.editIndex = 0;
-//        }
-        if(!paper.data.workObject && !paper.data.workObjectHit )return false;
         
-        //
+        if(!paper.data.workObject && !paper.data.workObjectHit )return false;
         
         switch (paper.data.workState) {
             case "add":
-                
+                // add new shape points
                 if(eventholder.keys.buttons === 1 ){
-                        
                     paper.data.workObject.add(eventholder.metrics.xy);
-                        
                 }        
-                break;
+            break;
             case "editlimbo":
-                
-                cEl_setCpCursor(cEl_layer,false,eventholder.actObj.name);    
-                //cdebug(eventholder.actObj.name)();
-
+                // just change the cursor
+                cEl_setCpCursor(paper.project.activeLayer,false,eventholder.actObj.name);    
             break;
             case "edit":
+                // as default just move/scale up points
                 if(eventholder.keys.buttons ===1 ){
                     switch (paper.data.workObjectHit) {
                         // move group
@@ -547,7 +568,7 @@ function editor_mousemove(eventholder) {
 
                         default:
 
-                            calcGroupScale(cEl_layer);
+                            calcGroupScale(paper.data,eventholder.metrics.delta);
     //                        paper.data.workObject.translate(eventholder.metrics.delta);
                         break;
                     }
@@ -566,21 +587,17 @@ function editor_mouseup(eventholder) {
     
     try{
         
-        //var cEl_page = window[cEl_layer.pageId];
-        
-        
         var cEl_layer = paper.project.activeLayer;
-        if(!paper.data.workState){
-            paper.data.workState = "pre";
-            cEl_layer.data.editIndex = 0;
-        }
+//        if(!paper.data.workState){
+//            paper.data.workState = "pre";
+//            cEl_layer.data.editIndex = 0;
+//        }
        
-
-//                cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
-                switch (paper.data.workState) {
-                    case "edit":
-                        //if(cEl_layer.data.editIndex<0){return false;}
-                        //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
+//      cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
+        switch (paper.data.workState) {
+            case "edit":
+                //if(cEl_layer.data.editIndex<0){return false;}
+                //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
 //                        cdebug(cEl.shape.temp.activeCp)();
 //                        cdebug(cEl_layer.metrics.xy)();
 //                        if(cEl_setActiveCp(cEl_project)){
@@ -593,81 +610,57 @@ function editor_mouseup(eventholder) {
 //                            cEl_project.shape.redraw = true;
 //                            if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
 //                        };
-                        
-                        //GLOBAL_renderer = true;
-                        
+
+                //GLOBAL_renderer = true;
+
 //                        cdebug(paper.data.workObject.children[0].matrix)();
 //                        cdebug(paper.data.workObject.children[0].position)();
 //                        cdebug(paper.data.editTool)();
-                        
-                        paper.data.workObject.children[0].applyMatrix = true;
-                        paper.data.workObject.reset.debug = true;
-                        
-                        paper.data.workState = "editlimbo";
-                        
-                    break;
-                    case "add":
+
+                paper.data.workObject.children[0].applyMatrix = true;
+                paper.data.workObject.reset.debug = true;
+
+                paper.data.workState = "editlimbo";
+
+            break;
+            case "add":
 //                        cdebug("here ADD")();
-                        if(paper.data.workObject.length===0)break;
-                        paper.data.workObject.selected = false;
-                        paper.data.workObject.closed = true;
-                        paper.data.workObject.simplify();
-                        
-                        paper.data.shapes["zzz"] = createAprox(cEl_layer,paper.data.workObject.segments,[0.5,0.5],5);
-//                        cdebug(paper.data.shapes["zzz"])();
-                        
-                        var cEl_group = {
-                            "name":"zzzz",
-                            "elId":"defaultNew",
-                            "tab":1,
-                            "debug":true,
-                            "shape":{
-                                "masspoint":[0.5,0.5],
-                                "scale":[1,1],
-                                "name":"zzz",
-                                "type":"bezier"
-                            } 
-                        };
-                        
-                        pre_load_children(cEl_group,cEl_layer.name);
-                        
-                        paper.data.workObject.remove();
-//                        paper.data.workObject = cEl_layer.getItem("");
-                        
-                        paper.data.workState = "pre";
+                if(paper.data.workObject.length===0)break;
+                //paper.data.workObject.selected = false;
+                paper.data.workObject.closed = true;
+                paper.data.workObject.simplify();
 
-                    break;
-                    case  "editlimbo" : // "editlimbo":
-                        
-                        //cEl_layer = paper.data.workLayer;
-//                        if(paper.data.workObject){
-                            
+                var newShapeName = id_generator("sh_",9);
+                paper.data.shapes[newShapeName] = createAprox(cEl_layer,paper.data.workObject.segments,[0.5,0.5],5);
+                paper.data.workObject.remove();
 
-//                            cdebug(paper.data.workObject.children[0].matrix)();
+                var cEl = {
+                    "elId":"defaultNew",
+                    "tab":1,
+                    "shape":{
+                        "masspoint":[0.5,0.5],
+                        "scale":[1,1],
+                        "name":newShapeName,
+                        "type":"bezier"
+                    } 
+                };
+                cEl.name = id_generator("gr_",9);
+                pre_load_children(cEl,cEl_layer.name);
 
-//                            paper.data.workObject.children[0].applyMatrix = true;
-//                            paper.data.workObject.reset.debug = true;
-                            
-//                            cdebug(paper.data.workObject.children[0].matrix)();
-                            
-                            
-                            //cEl_setCpCursor(cEl_layer,"default");
-//                        }
-                        
-                        
-//                        cdebug("here2")();
-
-                    break;
-                    case "pre":
-                        
-                        //paper.project.activeLayer.selected = false;
-                        
-                        
-                    break;
-                }
-                //cdebug("editor_mousedown END state " + paper.project.data.workLayer)();
                 
+                
+                var cEl_group = cEl_layer.children[cEl_layer.children.length-1];
+                selectGroup(cEl_group);
 
+            break;
+//            case  "editlimbo" :
+//
+//            break;
+//            case "pre":
+//                
+//            break;
+        }
+        //cdebug("editor_mousedown END state " + paper.project.data.workLayer)();
         return true;
     } catch (e) {
         var err = listError(e,true);
@@ -702,83 +695,79 @@ function editor_mouseout(cEl_layer) {
 }
 
 
-function calcGroupScale(cEl_layer){
+function calcGroupScale(data,delta){
     try{
         
-        var scaleX=1,scaleY=1,boolResetScale=false,scalePoint;
+        var scaleX=1,scaleY=1,scalePoint;
         
-        var workObjectName = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
-        var hitObjName = paper.data.workObjectHit;
+        var workObjectName = data.workObject.parentName + "_" + data.workObject.name;
+        var hitObjName = data.workObjectHit;
                 
-        switch (paper.data.workObjectHit) {
+        switch (data.workObjectHit) {
 
             // scale left>right
             case workObjectName + ".borderLeft":
 
-                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scalePoint = paper.data.workObjectBounds.rightCenter;
+                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scalePoint = data.workObjectBounds.rightCenter;
             break;
             // scale right>left
             case workObjectName + ".borderRight":
 
-                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scalePoint = paper.data.workObjectBounds.leftCenter;
+                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scalePoint = data.workObjectBounds.leftCenter;
             break;
             // scale top>bottom
             case workObjectName + ".borderTop":
 
-                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.bottomCenter;
+                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.bottomCenter;
             break;
             // scale bottom>top
             case workObjectName + ".borderBottom":
 
-                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.topCenter;
+                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.topCenter;
             break;
 
             // scale topLeft>bottomRight
             case workObjectName + ".topLeft":
 
-                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.bottomRight;
+                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.bottomRight;
             break;
             // scale topRight>bottomLeft
             case workObjectName + ".topRight":
 
-                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scaleY = 1 - eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.bottomLeft;
+                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.bottomLeft;
             break;
             // scale bottomRight>topLeft
             case workObjectName + ".bottomRight":
 
-                scaleX = 1 + eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.topLeft;
+                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.topLeft;
             break;
             // scale bottomLeft>topRight
             case workObjectName + ".bottomLeft":
 
-                scaleX = 1 - eventholder.metrics.delta.x/(paper.data.workObject.children[0].matrix.a*paper.data.workObjectBounds.width);
-                scaleY = 1 + eventholder.metrics.delta.y/(paper.data.workObject.children[0].matrix.d*paper.data.workObjectBounds.height);
-                scalePoint = paper.data.workObjectBounds.topRight;
+                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scalePoint = data.workObjectBounds.topRight;
             break;
             default:
                 if(hitObjName.indexOf(workObjectName)===0){
-                    paper.data.workObject.translate(eventholder.metrics.delta);
-                    paper.data.editTool = "move";
-                }else{
-                    
+                    data.workObject.translate(delta);
+                    data.editTool = "move";
                 }
-                
-                
                 return true;
             break;
         }
-        paper.data.editTool = "scale";
-        setGroupScale(paper.data.workObject,scaleX,scaleY,scalePoint);
+        data.editTool = "scale";
+        setGroupScale(data.workObject,scaleX,scaleY,scalePoint);
         return true;
         
     } catch (e) {
@@ -787,12 +776,6 @@ function calcGroupScale(cEl_layer){
         return err;
     }   
 }
-
-
-
-
-
-
 
 function setGroupScale(workObject,scaleX,scaleY,scalePoint){
     try{
@@ -859,32 +842,6 @@ function undoLastCpEdit(cEl_caller, increment, boolResetActiveCp) {
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;
-    }
-}
-
-function keyAdjustments(cEl_caller, increment){
-    try{
-        var cEl_layer = window[cEl_caller.pageId + "_fabric"];
-        if(cEl_layer.children.length===0 || !cEl_layer.data.editIndex)return false;
-        var cEl = window[cEl_layer.data.editIndex];
-        var eventholder = window["eventholder"];
-        var xy = cEl_getCpXY(cEl.shape.temp.activeCp);
-        xy[increment[0]] = xy[increment[0]] + increment[1];
-        eventholder.metrics.xy = [xy[0],xy[1]];
-        
-        cEl_setCpXY(cEl.shape.temp.activeCp, xy);
-        
-        cEl_editActiveCp(cEl_layer);
-        
-        cEl.shape.redraw = true;
-        cEl_layer.shape.redraw = true;
-        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
-        return true;
-        
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return false;
     }
 }
 
@@ -1106,208 +1063,208 @@ function saveLastCpEdit(cEl_caller,state,boolReset){
     }
 }
 
-function cEl_drawCp(shape,cEl_ctx){
-    
-    try{
-        var cEl_canv = cEl_ctx.canvas;
-        //var cEl_ctx = cEl_canv.getContext('2d');
-        var offsetCorner = 10;
-
-        // draw cEl border
-        //cdebug(cEl.shape.temp.cpBorder);
-        cEl_ctx.beginPath();
-        cEl_ctx.lineWidth = 1;
-        
-        cEl_ctx.strokeStyle = "rgba(110,110,110,1)";
-        cEl_ctx.rect(shape.temp.cpBorder.x,shape.temp.cpBorder.y,shape.temp.cpBorder.x1-shape.temp.cpBorder.x,shape.temp.cpBorder.y1-shape.temp.cpBorder.y);
-        // draw corners points
-        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y + offsetCorner );
-        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y);
-        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y + offsetCorner );
-        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y);
-        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y1 - offsetCorner );
-        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y1);
-        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y1 - offsetCorner );
-        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y1);
-        cEl_ctx.stroke();
-        //cEl_ctx.closePath();
-        
-        // draw mass point
-        cEl_ctx.beginPath();
-        cEl_ctx.fillStyle = "rgba(255,0,0,1)";
-        cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
-        cEl_ctx.fill();
-        //cEl_ctx.closePath();
-        cEl_ctx.beginPath();
-        if(shape.temp.activeCp){
-            switch(shape.temp.activeCp.tag){
-                case "corner": // is corner
-                    
-                    cEl_ctx.lineWidth = 1;
-                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
-                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
-                    cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1] + offsetCorner * shape.temp.activeCp.value[4]);
-                    cEl_ctx.lineTo(shape.temp.activeCp.value[0] + offsetCorner * shape.temp.activeCp.value[3],shape.temp.activeCp.value[1]);
-                    //cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
-                    cEl_ctx.closePath();
-                    cEl_ctx.stroke();
-                    
-                    
-                break;
-                case "border": // is border
-                     
-                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
-                    cEl_ctx.beginPath();
-                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
-                    cEl_ctx.lineTo(shape.temp.activeCp.value[3],shape.temp.activeCp.value[4]);
-                    cEl_ctx.closePath();
-                    cEl_ctx.stroke();
-                    
-                break;
-                case "masspoint": // draw mass point
-                    
-                    cEl_ctx.beginPath();
-                    cEl_ctx.lineWidth = 3;
-                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
-                    cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
-                    cEl_ctx.closePath();
-                    cEl_ctx.stroke();
-                    
-                break;
-            }
-            
-        }
-        cEl_drawCp_Points(shape,cEl_ctx);
-        
-        return true;
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-};
-
-function cEl_drawCp_Points(shape,cEl_ctx){
-    
-    try{
-        var pointsLen = shape.temp.cp.length, boolIsCp;
-        for(var i = 0; i < pointsLen; i++){
-            boolIsCp = false;
-            switch(shape.temp.cp[i][2]){
-                case 0:// Poligon Shape Lines
-                    cEl_ctx.fillStyle = "rgba(0,0,0,1)";
-                    cEl_ctx.strokeStyle = "rgba(0,0,0,1)";                  
-                break;
-                case 1:// Quadratic Shape Lines
-                    cEl_ctx.fillStyle = "rgba(0,0,255,1)";
-                    cEl_ctx.strokeStyle = "rgba(0,0,255,1)";
-                break;
-                case 2:// Beziere Shape Lines
-                    cEl_ctx.fillStyle = "rgba(0,255,255,1)";
-                    cEl_ctx.strokeStyle = "rgba(0,255,255,1)";
-                break;
-            }
-            cEl_ctx.beginPath();
-            if(shape.temp.activeCp && shape.temp.activeCp.tag === "controlpoint" && shape.temp.activeCp.value[3]===i){
-                cEl_ctx.rect(shape.temp.activeCp.value[0]-2,shape.temp.activeCp.value[1]-2,4,4);
-                cEl_ctx.lineWidth = 3;
-                cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
-                cEl_ctx.closePath();
-                cEl_ctx.stroke();
-            }else{
-                cEl_ctx.beginPath();
-                cEl_ctx.rect(shape.temp.cp[i][0]-2,shape.temp.cp[i][1]-2,4,4);
-                cEl_ctx.closePath();
-                cEl_ctx.fill();
-            }
- 
-        }
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function draw_pointXY(cEl, cEl_layer, cEl_ctx){
-    try{
-
-        if(cEl.shape.temp.activeCp){
-            var eventholder = window["eventholder"];
-            cEl_ctx.lineWidth = 1;
-            cEl_ctx.setLineDash([3,3]);
-            
-            cEl_ctx.strokeStyle = "rgba(200,200,200,1)";
-            draw_pointXY_path1(cEl_ctx,cEl.shape.temp.activeCp.xy,cEl_layer.shape.w,cEl_layer.shape.h);
-            
-            cEl_ctx.strokeStyle = "rgba(0,255,0,1)";
-            draw_pointXY_path1(cEl_ctx,eventholder.metrics.xy,cEl_layer.shape.w,cEl_layer.shape.h);
-
-            
-            cEl_ctx.setLineDash([]);
-        }
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function draw_pointXY_path1(cEl_ctx,xy,w,h){
-    try{
-        
-        cEl_ctx.beginPath();
-        cEl_ctx.moveTo(0,xy[1]+0.5);
-        cEl_ctx.lineTo(w,xy[1]+0.5);
-        cEl_ctx.moveTo(xy[0]+0.5,0);
-        cEl_ctx.lineTo(xy[0]+0.5,h);
-        cEl_ctx.stroke();
-        cEl_ctx.closePath();
-            
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-function draw_pointXY_square(cEl_ctx,xy,w,h){
-    try{
-        //cEl_ctx.fillStyle = "rgba(0,255,0,1)";
-        //cEl_ctx.fillRect(xy[0],xy[1],w,h);
-        cEl_ctx.lineWidth = 1;
-        cEl_ctx.strokeRect(xy[0],xy[1],w,h);
-            
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function cEl_setCpXY(activeCp,xy) {
-    try{
-        activeCp.xy = [xy[0],xy[1]];
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
-
-function cEl_getCpXY(activeCp){
-    try{
-        if(activeCp.xy){
-            return [activeCp.xy[0],activeCp.xy[1]];
-        }else{
-            return [0,0];
-        }
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
+//function cEl_drawCp(shape,cEl_ctx){
+//    
+//    try{
+//        var cEl_canv = cEl_ctx.canvas;
+//        //var cEl_ctx = cEl_canv.getContext('2d');
+//        var offsetCorner = 10;
+//
+//        // draw cEl border
+//        //cdebug(cEl.shape.temp.cpBorder);
+//        cEl_ctx.beginPath();
+//        cEl_ctx.lineWidth = 1;
+//        
+//        cEl_ctx.strokeStyle = "rgba(110,110,110,1)";
+//        cEl_ctx.rect(shape.temp.cpBorder.x,shape.temp.cpBorder.y,shape.temp.cpBorder.x1-shape.temp.cpBorder.x,shape.temp.cpBorder.y1-shape.temp.cpBorder.y);
+//        // draw corners points
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y + offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y + offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y1 - offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y1);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y1 - offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y1);
+//        cEl_ctx.stroke();
+//        //cEl_ctx.closePath();
+//        
+//        // draw mass point
+//        cEl_ctx.beginPath();
+//        cEl_ctx.fillStyle = "rgba(255,0,0,1)";
+//        cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
+//        cEl_ctx.fill();
+//        //cEl_ctx.closePath();
+//        cEl_ctx.beginPath();
+//        if(shape.temp.activeCp){
+//            switch(shape.temp.activeCp.tag){
+//                case "corner": // is corner
+//                    
+//                    cEl_ctx.lineWidth = 1;
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1] + offsetCorner * shape.temp.activeCp.value[4]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[0] + offsetCorner * shape.temp.activeCp.value[3],shape.temp.activeCp.value[1]);
+//                    //cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                    
+//                break;
+//                case "border": // is border
+//                     
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.beginPath();
+//                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[3],shape.temp.activeCp.value[4]);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                break;
+//                case "masspoint": // draw mass point
+//                    
+//                    cEl_ctx.beginPath();
+//                    cEl_ctx.lineWidth = 3;
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                break;
+//            }
+//            
+//        }
+//        cEl_drawCp_Points(shape,cEl_ctx);
+//        
+//        return true;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+//
+//function cEl_drawCp_Points(shape,cEl_ctx){
+//    
+//    try{
+//        var pointsLen = shape.temp.cp.length, boolIsCp;
+//        for(var i = 0; i < pointsLen; i++){
+//            boolIsCp = false;
+//            switch(shape.temp.cp[i][2]){
+//                case 0:// Poligon Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,0,0,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,0,0,1)";                  
+//                break;
+//                case 1:// Quadratic Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,0,255,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,0,255,1)";
+//                break;
+//                case 2:// Beziere Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,255,255,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,255,255,1)";
+//                break;
+//            }
+//            cEl_ctx.beginPath();
+//            if(shape.temp.activeCp && shape.temp.activeCp.tag === "controlpoint" && shape.temp.activeCp.value[3]===i){
+//                cEl_ctx.rect(shape.temp.activeCp.value[0]-2,shape.temp.activeCp.value[1]-2,4,4);
+//                cEl_ctx.lineWidth = 3;
+//                cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                cEl_ctx.closePath();
+//                cEl_ctx.stroke();
+//            }else{
+//                cEl_ctx.beginPath();
+//                cEl_ctx.rect(shape.temp.cp[i][0]-2,shape.temp.cp[i][1]-2,4,4);
+//                cEl_ctx.closePath();
+//                cEl_ctx.fill();
+//            }
+// 
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function draw_pointXY(cEl, cEl_layer, cEl_ctx){
+//    try{
+//
+//        if(cEl.shape.temp.activeCp){
+//            var eventholder = window["eventholder"];
+//            cEl_ctx.lineWidth = 1;
+//            cEl_ctx.setLineDash([3,3]);
+//            
+//            cEl_ctx.strokeStyle = "rgba(200,200,200,1)";
+//            draw_pointXY_path1(cEl_ctx,cEl.shape.temp.activeCp.xy,cEl_layer.shape.w,cEl_layer.shape.h);
+//            
+//            cEl_ctx.strokeStyle = "rgba(0,255,0,1)";
+//            draw_pointXY_path1(cEl_ctx,eventholder.metrics.xy,cEl_layer.shape.w,cEl_layer.shape.h);
+//
+//            
+//            cEl_ctx.setLineDash([]);
+//        }
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function draw_pointXY_path1(cEl_ctx,xy,w,h){
+//    try{
+//        
+//        cEl_ctx.beginPath();
+//        cEl_ctx.moveTo(0,xy[1]+0.5);
+//        cEl_ctx.lineTo(w,xy[1]+0.5);
+//        cEl_ctx.moveTo(xy[0]+0.5,0);
+//        cEl_ctx.lineTo(xy[0]+0.5,h);
+//        cEl_ctx.stroke();
+//        cEl_ctx.closePath();
+//            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//function draw_pointXY_square(cEl_ctx,xy,w,h){
+//    try{
+//        //cEl_ctx.fillStyle = "rgba(0,255,0,1)";
+//        //cEl_ctx.fillRect(xy[0],xy[1],w,h);
+//        cEl_ctx.lineWidth = 1;
+//        cEl_ctx.strokeRect(xy[0],xy[1],w,h);
+//            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_setCpXY(activeCp,xy) {
+//    try{
+//        activeCp.xy = [xy[0],xy[1]];
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_getCpXY(activeCp){
+//    try{
+//        if(activeCp.xy){
+//            return [activeCp.xy[0],activeCp.xy[1]];
+//        }else{
+//            return [0,0];
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
 
 function save_changes(cEl_caller){
     
@@ -1643,32 +1600,27 @@ function drawGrid(cEl_canvas){
 }
 
 
-function selectGroup(){
+function selectGroup(cEl_group){
     try{
         //cdebug("selectButton")();
-        var cEl_layer = paper.data.workLayer;
-//        cdebug(cEl_layer.name)();
+        
 
         if(paper.data.workObject && paper.data.workObject.reset){
-            paper.data.workObject.reset.debug = true;
             paper.data.workObject.debug = false;
+            paper.data.workObject.reset.debug = true;
         }
-        paper.data.workObject = null;
         
-        if(!cEl_layer){return false;};
-        
-        //cdebug(cEl_layer.name)();
-        //layerSwitch(cEl_layer.name);
-        
-//        cEl_setCpCursor(cEl_layer,"pointer");
-        
-//        paper.project.activeLayer.fullySelected = false;
-//        cEl_layer.selected = false;
-//        
-        paper.data.workState = "pre";
-        cEl_layer.data.editIndex = 0;
-        
-        //paper.project.activeLayer.view.draw();
+        if(cEl_group){
+            
+            cEl_group.debug = true;
+            cEl_group.reset.debug = true;
+            paper.data.workObject = cEl_group;
+            paper.data.workObjectHit = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG_Path";
+            paper.data.workState = "editlimbo";
+        }else{
+            paper.data.workObject = null;
+            paper.data.workState = "pre";
+        }
         
         
         return true;    
@@ -1785,9 +1737,42 @@ function createAprox (cEl_layer,segments, masspoint, rounding){
             drawArrayOut.push([Math.round10(drawArrayIn[i].point.x/cEl_layer.shape.w-masspoint[0], -rounding),Math.round10(drawArrayIn[i].point.y/cEl_layer.shape.h-masspoint[1], -rounding)]);
         }
         return drawArrayOut;
-        } catch (e) {
-            var err = listError(e);
-            cdebug(err,false,false,3)();
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
         return err;
     }
+}
+
+
+function group_tabulation(cEl_layer,workObject,boolDescending){
+    try{
+        
+//        cdebug([workObject.name,workObject.index])();
+        
+        var newIndex;
+        var len = cEl_layer.children.length;
+        var offset = boolDescending ? -1:1;
+        var start = boolDescending ? 1:0;
+        var end = boolDescending ? len:len-1;
+        var def = boolDescending ? len-1:1;
+        
+        if(workObject && workObject.index){
+            if(workObject.index>start && workObject.index<end){
+                newIndex = workObject.index + offset;
+                if(cEl_layer.children[newIndex].tag ==="group"){
+                    return selectGroup(cEl_layer.children[newIndex]);
+                }
+            }else{
+                return true;
+            }
+        }    
+        return selectGroup(cEl_layer.children[def]);
+
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+
 }

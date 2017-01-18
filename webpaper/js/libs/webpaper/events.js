@@ -89,12 +89,6 @@ globalTool.onKeyUp = handleKeys;
 paper.activeTool = "globalTool";
 
 
-//tool1.onMouseDrag = function(event) {
-//        path.add(event.point);
-//}
-
-
-
 function testLayer(){
     cdebug(paper.project.name)();
 }
@@ -224,10 +218,8 @@ function globalEvents(eventholder){
                     if(editMode(eventholder)){
                         drawProjects(paper,true);
                         return true;
-                    }
-                        
+                    }    
                 }
-                
                 
                 handleCSSEvents_keys(eventholder);
                 
@@ -428,25 +420,21 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         eventholder.type = paperevt.type;
         eventholder.callerType = evtCallerType;
         var evt;
+        
         if(evtCallerType === "touch" || evtCallerType === "wheel"){
             evt = paperevt;
             
             //disableEvent(evt);
         }else{
             evt = paperevt.event;
-            
             //alert("here");
             //paperevt.stop();
         }
-                
         
-        //disableEvent(evt);
+//        cdebug("paperevt.type "+ paperevt.type + " >>> " + evt.target)();
         
         //
-
         var targetId = evt.target.id;
-        
-        
         eventholder.targetId = targetId;
         
         //projectSwitch(cEl_group.projectName);
@@ -544,9 +532,11 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
         // prefill advanced event stuff
         
         if(!targetId){
+//            cdebug(eventholder.targetId)();
             eventholder.noevent = true;
         }else{
             eventholder.noevent = false;
+            if(!eventholder.active.oldObj)eventholder.active.oldObj = paper.project.activeLayer;
             
             var arrTargetId = targetId.split("_");
             
@@ -554,81 +544,49 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
                 eventholder.pageId = arrTargetId[1];
                 eventholder.projectId = arrTargetId[2];
                 eventholder.tag = arrTargetId[3];
+            }else{
+                // case for body type key, scroll, etc event
+                return true;
             }
+
+            projectSwitch(eventholder.projectId);
+//            eventholder.layerId = paper.project.activeLayer.name;
             
-            
-            //cdebug(eventholder.projectId + " vs " + paper.project.name)();
-            
-            //if(eventholder.projectId !== paper.project.name){
-                projectSwitch(eventholder.projectId);
-            //}
-            eventholder.layerId = paper.project.activeLayer.name;
-            
-            
-//            if(targetId  === "editorPage_carret_div"){
-//            // just retrieve it from the event store and update metrics a little bit
-////                eventholder.metrics.xy[0] = eventholder.metrics.xyAbs[0];
-////                eventholder.metrics.xy[1] = eventholder.metrics.xyAbs[1];
-//            }else{
-                //eventholder.retObj = {"id":null,"nostop":true,"all":[]};
+            var hitOptions = {
+//                    class:paper.Path,
+//                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
+                segments: true,
+                stroke: true,
+                fill: true,
+                tolerance: 5
+            };
+            var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
+
+            if(hitObject && hitObject.item.parent.parent){
+//                        var name = hitObject.item.name;
+                //cdebug(paper.project.name)();
+                //cdebug(hitObject.item.parent.parent.className)();
+
+                eventholder.retObj = hitObject.item.parent.parent;
+                eventholder.actObj = hitObject.item;
+                eventholder.actSegment = hitObject.segment;
+
+            }else{
+                eventholder.retObj = paper.project.activeLayer;
+                eventholder.actObj = paper.project.activeLayer;
+                eventholder.actSegment = null;
+            }
                 
-//                if(!boolLayerOnly){
+            //if(!eventholder.active.oldObj)return false;
+            eventholder.layerId = eventholder.retObj.layerName;
+            layerSwitch(eventholder.layerId);
+
+            if(boolLayerOnly){
+                eventholder.retObj = paper.project.activeLayer;
+            }
                     
-                    var hitOptions = {
-    //                    class:paper.Path,
-    //                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
-                        segments: true,
-                        stroke: true,
-                        fill: true,
-                        tolerance: 5
-                    };
-                    var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
+            eventholder.currentid = eventholder.retObj.name;
 
-                    if(hitObject && hitObject.item.parent.parent){
-                        var name = hitObject.item.name;
-                        //cdebug(paper.project.name)();
-                        //cdebug(hitObject.item.parent.parent.className)();
-
-                        eventholder.retObj = hitObject.item.parent.parent;
-                        eventholder.actObj = hitObject.item;
-                        eventholder.actSegment = hitObject.segment;
-
-                    }else{
-                        eventholder.retObj = paper.project.activeLayer;
-                        eventholder.actObj = paper.project.activeLayer;
-                        eventholder.actSegment = null;
-                    }
-                
-                
-                
-                eventholder.layerId = eventholder.retObj.layerName;
-                if(eventholder.layerId !== paper.project.activeLayer.name){
-                    layerSwitch(eventholder.layerId);
-                }
-                
-                
-                if(boolLayerOnly){
-                    //cdebug(paper.project.activeLayer.name)();
-                    eventholder.retObj = paper.project.activeLayer;
-                }
-                    
-//                }else{
-//                    eventholder.retObj = paper.project.activeLayer;
-//                    eventholder.actObj = paper.project.activeLayer;
-//                }
-                
-                //cdebug(eventholder.retObj.layerName)();
-                
-                
-                //cdebug(eventholder.retObj.name)();
-                
-                //retCElId(eventholder,"_" + eventholder.pageId + "_" + eventholder.layerId);
-                
-                //cdebug(eventholder.retObj)();
-                
-                //eventholder.composedid = eventholder.retObj.name;
-                eventholder.currentid = eventholder.retObj.name;
-//            }
         }
 
         
@@ -771,7 +729,11 @@ function isPrintableJS(keycode){
 function editMode(eventholder,boolForce){
     try{
         
+//        cdebug("editMode")();
+        
         if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E" || boolForce){
+            
+            
             if(paper.activeTool === "globalTool" && !boolForce){
                 
                 var menuTriggered = handleMenuProject(eventholder,"editor",true);
@@ -785,12 +747,12 @@ function editMode(eventholder,boolForce){
 //                    drawProjects(menuTriggered,true);
                 };
                 
-                //cdebug("editorTool")();
+                //cdebug("to editorTool")();
                 editorTool.activate();
                 paper.activeTool = "editorTool";
                 
             }else{
-//                cdebug("globalTool")();
+                //cdebug("to globalTool")();
                 globalTool.activate();
                 paper.activeTool = "globalTool";
                 
@@ -1454,6 +1416,7 @@ function getCharPos2(eventholder,type){
     try{
         //if(!startPos || startPos === -1)startPos = 0;alert(hit.item.name);
         var actObjName = eventholder.actObj.name;
+        if(!actObjName)return {"valid":false};
         var indexTP = actObjName.indexOf(".P_");
         
         // TODO add top, bottom, left & right validation
@@ -1616,7 +1579,7 @@ function testEvents2(cEl){
     //alert(cEl.name);
     
     //cdebug(cEl.name)();
-    cdebug(cEl.style.calc2)();
+//    cdebug(cEl.style.calc2)();
     
 //    cdebug(eventholder.actObj.name)();
 //    cdebug(eventholder.actObj.className)();

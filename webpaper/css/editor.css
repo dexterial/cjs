@@ -93,7 +93,7 @@ input::-moz-focus-inner {
     border-width: 1px;
     color:rgba(255,255,255,0.7);
     /*    font-style:italic;*/
-    cursor:move;
+    cursor:text;
     padding: 5px;
     padding-top: 5px;
     text-align:justify;
@@ -113,14 +113,15 @@ input::-moz-focus-inner {
 
 }
 .label:active{
-    /*background-color:rgba(255,255,255,0.7);*/
+    background-color:rgba(255,255,255,0.7);
     /*cursor:move;*/
 }
 
 
 .header{
-    font-family: Arial;
-    font-size: 10px;
+    font-family : sans-serif;
+    font-size: 1.5em;
+    font-weight:bold;
     background-color:rgba(170,221,170,0.7);
     border-color:rgba(170,221,170,0.7);
     border-width: 1px;
@@ -128,7 +129,6 @@ input::-moz-focus-inner {
     text-align:left;
     color:#fff;
     font-style: italic;
-    font-weight:normal;
     cursor:move;
 
     text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;

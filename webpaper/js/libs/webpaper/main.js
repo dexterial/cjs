@@ -48,19 +48,19 @@ $.getJSON(loadedFile, function (jsonPage) {
     
     if(boolEditMode){
     
-        $.getJSON(editorFile, function (jsonPageEditor) {
-
-            document.title = "<EDIT MODE>" + jsonPage.title;
-            pre_load_children(jsonPageEditor);
-            
-            loadedPage = $.extend(true,{},jsonPage);
-            loadedPage.shape.masspoint = [0.5,0.25];
-            loadedPage.shape.scale = [loadedPage.shape.scale[0]/2,loadedPage.shape.scale[1]/2];
-
-            loadPageInEditor(false);
-            
-            //GLOBAL_debugger = true;
-        });
+//        $.getJSON(editorFile, function (jsonPageEditor) {
+//
+//            document.title = "<EDIT MODE>" + jsonPage.title;
+//            pre_load_children(jsonPageEditor);
+//            
+//            loadedPage = $.extend(true,{},jsonPage);
+//            loadedPage.shape.masspoint = [0.5,0.25];
+//            loadedPage.shape.scale = [loadedPage.shape.scale[0]/2,loadedPage.shape.scale[1]/2];
+//
+//            loadPageInEditor(false);
+//            
+//            //GLOBAL_debugger = true;
+//        });
     }else{
 
             //clearInterval(interval1);
@@ -2724,8 +2724,6 @@ function cEl_setPaperPath(cEl_group,cEl_path, shapeContainer, boolReset, boolSet
     }
 };
 
-
-
 function point_get_cpXY(point,scale,cpMp,flipXY,index){
     
     try{    
@@ -2750,21 +2748,6 @@ function point_get_cpXY(point,scale,cpMp,flipXY,index){
     }
 }
 
-function cEl_set_CpBorder(cpBorder,x,y){
-    
-    try{    
-        if(cpBorder.x > x){ cpBorder.x = x;}
-        if(cpBorder.y > y){ cpBorder.y = y;}
-        if(cpBorder.x1 < x){ cpBorder.x1 = x;}
-        if(cpBorder.y1 < y){ cpBorder.y1 = y;}
-        return cpBorder;
-    
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
 
 
 function getProperties(o) {
