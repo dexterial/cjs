@@ -1,4 +1,212 @@
+//function editor_keypress(cEl_layer) {
+//    // BEWARE triggers right after keydowns event, however it does not trigger for all keys (non printable)
+//    try{
+//        //var cEl_layer = window[cEl.layerId];
+//        var eventholder = window["eventholder"];
+//        switch (cEl_layer.name) {
+//            case "fabric":
+//                //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
+//                
+//                switch (cEl_layer.data.state) {
+//                    case "editlimbo":
+//                        switch(eventholder.keys.keyCode){
+//                            case 13: //save ref point
+//                                saveLastCpEdit(cEl_layer,"edit");
+//                            break;
+//                            case 26: //undo refpoint
+//                                undoLastCpEdit(cEl_layer,-1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                            case 25: //redo refpoint
+//                                undoLastCpEdit(cEl_layer,1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                        }
+//                    break;
+//                    default:
+//                        switch(eventholder.keys.keyCode){
+//                            case 26: //undo refpoint
+//                                undoLastCpEdit(cEl_layer,-1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                            case 25: //redo refpoint
+//                                undoLastCpEdit(cEl_layer,1);
+//                                //cEl_layer.shape.redraw = true;
+//                            break;
+//                        }
+//                    break;
+//                }
+//                //cdebug("editor_keypress END state " + cEl_layer.data.state)();
+//            break;
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
 //
+////var editorTool = new paper.Tool();
+//editorTool.onMouseDown = editor_handleMouse;
+//editorTool.onMouseMove = editor_handleMouse;
+//editorTool.onMouseUp = editor_handleMouse;
+//editorTool.onKeyDown = editor_handleKeys;
+//editorTool.onKeyUp = editor_handleKeys;
+
+
+//function editor_handleKeys(paperEvt) {
+//    
+//    try{
+//        
+//        paperEvt.stop();
+//        
+//        var eventholder = window["eventholder"];
+////        if(!eventholder.active.oldObj)return false;
+//        
+//        var cEl_layer = paper.project.activeLayer;
+//        switch (cEl_layer.name) {
+//            case "editTool1":
+//            case "editTool2":
+////                cdebug("here1")();
+//                preSetEventHolder(eventholder,paperEvt,"keyboard");
+//                if (eventholder.noevent){return false;};
+//                return globalEvents(eventholder);
+//                
+//            break;
+//            default:
+//                //cdebug("here2")();
+//                preSetEventHolder(eventholder,paperEvt,"keyboard",true);
+//                //cdebug("here2a")();
+//                
+//                if (eventholder.noevent){return false;};
+//                return editorEvents(eventholder);
+//                
+//            break;
+//        }
+//        
+//        return true;
+//    
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+//
+//
+//function editorEvents(eventholder){
+//    try{
+//
+//        switch(eventholder.type){
+//
+//            case "mousedown":
+//                
+//                updateEventHolder(eventholder,false,true,true);
+//                handleCSSEvents(eventholder,false,true,true,true);
+//
+//                editor_mousedown(eventholder);
+//
+//                drawProjects(paper.project,false);
+//
+//            break;
+//            
+//            case "mouseup":
+//                
+//                updateEventHolder(eventholder,true,false,false);
+//                handleCSSEvents(eventholder,true,false,false,true);
+//
+//                editor_mouseup(eventholder);
+//
+//                drawProjects(paper.project,false);
+//
+//            break;
+//            
+//            case "mousemove":
+//
+//
+//                updateEventHolder(eventholder,true,false,false);
+//                handleCSSEvents(eventholder,true,false,false,true);
+//
+//                editor_mousemove(eventholder);
+//
+//                drawProjects(paper.project,false);
+//
+//            break;
+//            
+//            case "keydown":
+//                
+//                editor_keydown(eventholder);
+//                
+//                drawProjects(paper,true);
+//                
+//            break;
+//            
+//            case "keyup":
+//                
+//                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
+//                    // check edit mode combination CTRL + SHIFT + "E" or "e"
+//                    if(editMode(eventholder)){
+//                        drawProjects(paper,true);
+//                        return true;
+//                    }    
+//                }
+//                
+//                editor_keyup(eventholder);
+//                
+//                drawProjects(paper,true);
+//            break;
+//            
+//            
+////                    case "mouseout":
+////
+////                        drawProjects(paper,true);
+////
+////                    break;
+//        };
+//    
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }    
+//}
+//
+//function editor_handleMouse(evt) {
+//    
+//    try{
+//
+//
+//        var eventholder = window["eventholder"];
+//        var cEl_layer = paper.project.activeLayer;
+//        
+//        switch (cEl_layer.name) {
+//            case "editTool1":
+//            case "editTool2":
+//                //cdebug("here")();
+//                
+//                preSetEventHolder(eventholder,evt,"mouse");
+//                if (eventholder.noevent){return false;};
+//                return globalEvents(eventholder);
+//                
+//            break;
+//            default:
+//                
+//                preSetEventHolder(eventholder,evt,"mouse",true);
+//                if (eventholder.noevent){return false;};
+//                return editorEvents(eventholder);
+//                
+//            break;
+//        }
+//        
+//        return true;
+//    
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+
 
 //
 //function cEl_set_CpBorder(cpBorder,x,y){

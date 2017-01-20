@@ -14,168 +14,32 @@
 //Copyright 2016 Dan Ionel Blaguiescu (dan.blaguiescu@dexterial.com)
 
 
-var editorTool = new paper.Tool();
-editorTool.onMouseDown = editor_handleMouse;
-editorTool.onMouseMove = editor_handleMouse;
-editorTool.onMouseUp = editor_handleMouse;
-editorTool.onKeyDown = editor_handleKeys;
-editorTool.onKeyUp = editor_handleKeys;
 
 
-function editor_handleKeys(paperEvt) {
-    
+function editor_hover(eventholder) {
+
     try{
-        
-        paperEvt.stop();
-        
-        var eventholder = window["eventholder"];
-        if(!eventholder.active.oldObj)return false;
-        
-        var cEl_layer = paper.project.activeLayer;
-        switch (cEl_layer.name) {
-            case "editTool1":
-            case "editTool2":
-//                cdebug("here1")();
-                preSetEventHolder(eventholder,paperEvt,"keyboard");
-                if (eventholder.noevent){return false;};
-                return globalEvents(eventholder);
-                
-            break;
-            default:
-                //cdebug("here2")();
-                preSetEventHolder(eventholder,paperEvt,"keyboard",true);
-                //cdebug("here2a")();
-                
-                if (eventholder.noevent){return false;};
-                return editorEvents(eventholder);
-                
-            break;
-        }
-        
-        return true;
-    
+    cdebug("editor_hover")();
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;
     }
-};
 
-
-function editorEvents(eventholder){
-    try{
-
-        switch(eventholder.type){
-
-            case "mousedown":
-                
-                updateEventHolder(eventholder,false,true,true);
-                handleCSSEvents(eventholder,false,true,true,true);
-
-                editor_mousedown(eventholder);
-
-                drawProjects(paper.project,false);
-
-            break;
-            
-            case "mouseup":
-                
-                updateEventHolder(eventholder,true,false,false);
-                handleCSSEvents(eventholder,true,false,false,true);
-
-                editor_mouseup(eventholder);
-
-                drawProjects(paper.project,false);
-
-            break;
-            
-            case "mousemove":
-
-
-                updateEventHolder(eventholder,true,false,false);
-                handleCSSEvents(eventholder,true,false,false,true);
-
-                editor_mousemove(eventholder);
-
-                drawProjects(paper.project,false);
-
-            break;
-            
-            case "keydown":
-                
-                editor_keydown(eventholder);
-                
-                drawProjects(paper,true);
-                
-            break;
-            
-            case "keyup":
-                
-                if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
-                    // check edit mode combination CTRL + SHIFT + "E" or "e"
-                    if(editMode(eventholder)){
-                        drawProjects(paper,true);
-                        return true;
-                    }    
-                }
-                
-                editor_keyup(eventholder);
-                
-                drawProjects(paper,true);
-            break;
-            
-            
-//                    case "mouseout":
-//
-//                        drawProjects(paper,true);
-//
-//                    break;
-        };
-    
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }    
 }
 
-function editor_handleMouse(evt) {
-    
+
+function editor_mouseout(eventholder) {
+
     try{
-
-
-        var eventholder = window["eventholder"];
-        var cEl_layer = paper.project.activeLayer;
-        
-        switch (cEl_layer.name) {
-            case "editTool1":
-            case "editTool2":
-                //cdebug("here")();
-                
-                preSetEventHolder(eventholder,evt,"mouse");
-                if (eventholder.noevent){return false;};
-                return globalEvents(eventholder);
-                
-            break;
-            default:
-                
-                preSetEventHolder(eventholder,evt,"mouse",true);
-                if (eventholder.noevent){return false;};
-                return editorEvents(eventholder);
-                
-            break;
-        }
-        
-        return true;
-    
+    cdebug("editor_mouseout")();
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;
     }
-};
 
-
+}
 
 
 function editor_keydown(eventholder) {
@@ -317,53 +181,7 @@ function editor_keyup(eventholder) {
     }
 }
 
-//function editor_keypress(cEl_layer) {
-//    // BEWARE triggers right after keydowns event, however it does not trigger for all keys (non printable)
-//    try{
-//        //var cEl_layer = window[cEl.layerId];
-//        var eventholder = window["eventholder"];
-//        switch (cEl_layer.name) {
-//            case "fabric":
-//                //cdebug("editor_keypress START state " + cEl_layer.data.state,true)();
-//                
-//                switch (cEl_layer.data.state) {
-//                    case "editlimbo":
-//                        switch(eventholder.keys.keyCode){
-//                            case 13: //save ref point
-//                                saveLastCpEdit(cEl_layer,"edit");
-//                            break;
-//                            case 26: //undo refpoint
-//                                undoLastCpEdit(cEl_layer,-1);
-//                                //cEl_layer.shape.redraw = true;
-//                            break;
-//                            case 25: //redo refpoint
-//                                undoLastCpEdit(cEl_layer,1);
-//                                //cEl_layer.shape.redraw = true;
-//                            break;
-//                        }
-//                    break;
-//                    default:
-//                        switch(eventholder.keys.keyCode){
-//                            case 26: //undo refpoint
-//                                undoLastCpEdit(cEl_layer,-1);
-//                                //cEl_layer.shape.redraw = true;
-//                            break;
-//                            case 25: //redo refpoint
-//                                undoLastCpEdit(cEl_layer,1);
-//                                //cEl_layer.shape.redraw = true;
-//                            break;
-//                        }
-//                    break;
-//                }
-//                //cdebug("editor_keypress END state " + cEl_layer.data.state)();
-//            break;
-//        }
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return err;
-//    }
-//}
+
 
 
 function editor_wheel(eventholder) {
@@ -432,13 +250,17 @@ function editor_mousedown(eventholder) {
 
             break;
             case  "editlimbo" : // "editlimbo":
-
+                
+//                cdebug("here1   " + eventholder.actObj.name + " <<< >>> " + paper.data.workObject.parentName + "_" + paper.data.workObject.name)();
+                
                 //cEl_layer = paper.data.workLayer;
                 var workObject_name = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
                 var actObj_name = eventholder.actObj.name;
                 if(actObj_name.indexOf(workObject_name)===0){
-//                            cdebug(actObj_name)();
-                    paper.data.workObjectHit = actObj_name;
+                    
+                    
+                    
+                    paper.data.workObjectHit = eventholder.actObj;
 
                     var bounds = paper.data.workObject.children[0].bounds;
 
@@ -462,8 +284,12 @@ function editor_mousedown(eventholder) {
                         "sign":sign1(paper.data.workObject.children[0].matrix.a)
                     };
 
-                    cEl_setCpCursor(cEl_layer,false,paper.data.workObjectHit);
-
+                    cEl_setCpCursor(cEl_layer,false,paper.data.workObjectHit.name);
+                    
+                    //cdebug(paper.data.workObject)();
+                    eventholder.actObj.fillColor = "rgba(255,100,100,0.3)";
+                    
+                    
                     paper.data.workObject.children[0].applyMatrix = false;
                     //paper.data.workObject.children[1].applyMatrix = false;
                     eventholder.actObj.bringToFront();
@@ -471,7 +297,7 @@ function editor_mousedown(eventholder) {
                     paper.data.workState = "edit";
 
                 }else{
-                    paper.data.workObjectHit = false;
+                    paper.data.workObjectHit = null;
                     paper.data.workObjectBounds = null;
                 }
 
@@ -541,7 +367,6 @@ function editor_mousedown(eventholder) {
 function editor_mousemove(eventholder) {
     try{
         
-        
         if(!paper.data.workObject && !paper.data.workObjectHit )return false;
         
         switch (paper.data.workState) {
@@ -558,7 +383,7 @@ function editor_mousemove(eventholder) {
             case "edit":
                 // as default just move/scale up points
                 if(eventholder.keys.buttons ===1 ){
-                    switch (paper.data.workObjectHit) {
+                    switch (paper.data.workObjectHit.name) {
                         // move group
     //                    case paper.data.workObject.parentName + "_" + paper.data.workObject.name + ".ShapeG_Path":
     //                        
@@ -587,13 +412,9 @@ function editor_mouseup(eventholder) {
     
     try{
         
+        if(!paper.data.workObject && !paper.data.workObjectHit )return false;
         var cEl_layer = paper.project.activeLayer;
-//        if(!paper.data.workState){
-//            paper.data.workState = "pre";
-//            cEl_layer.data.editIndex = 0;
-//        }
-       
-//      cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
+
         switch (paper.data.workState) {
             case "edit":
                 //if(cEl_layer.data.editIndex<0){return false;}
@@ -669,30 +490,6 @@ function editor_mouseup(eventholder) {
     }
 }
 
-function editor_hover(cEl_layer) {
-
-    try{
-    //cdebug("editor_hover")();
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-
-}
-
-
-function editor_mouseout(cEl_layer) {
-
-    try{
-    //cdebug("editor_hover")();
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-
-}
 
 
 function calcGroupScale(data,delta){
@@ -700,74 +497,103 @@ function calcGroupScale(data,delta){
         
         var scaleX=1,scaleY=1,scalePoint;
         
-        var workObjectName = data.workObject.parentName + "_" + data.workObject.name;
-        var hitObjName = data.workObjectHit;
+        var workObject = data.workObject;
+        var workObjectName = workObject.parentName + "_" + workObject.name;
+        
+        var hitObjName = data.workObjectHit.name;
                 
-        switch (data.workObjectHit) {
+        switch (hitObjName) {
 
             // scale left>right
             case workObjectName + ".borderLeft":
 
-                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scalePoint = data.workObjectBounds.rightCenter;
             break;
             // scale right>left
             case workObjectName + ".borderRight":
 
-                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scalePoint = data.workObjectBounds.leftCenter;
             break;
             // scale top>bottom
             case workObjectName + ".borderTop":
 
-                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomCenter;
             break;
             // scale bottom>top
             case workObjectName + ".borderBottom":
 
-                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topCenter;
             break;
 
             // scale topLeft>bottomRight
             case workObjectName + ".topLeft":
 
-                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
-                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomRight;
             break;
             // scale topRight>bottomLeft
             case workObjectName + ".topRight":
 
-                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
-                scaleY = 1 - delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomLeft;
             break;
             // scale bottomRight>topLeft
             case workObjectName + ".bottomRight":
 
-                scaleX = 1 + delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
-                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topLeft;
             break;
             // scale bottomLeft>topRight
             case workObjectName + ".bottomLeft":
 
-                scaleX = 1 - delta.x/(data.workObject.children[0].matrix.a*data.workObjectBounds.width);
-                scaleY = 1 + delta.y/(data.workObject.children[0].matrix.d*data.workObjectBounds.height);
+                scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
+                scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topRight;
+            break;
+            // edit shape Point
+            case workObjectName + ".CP":
+                
+//                cdebug("edit_CP " + data.workObjectHit.cp)();
+//                cdebug("edit_CP " + data.workObject.children[0])();
+                var segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].point;
+                segmentPoint.x += delta.x;
+                segmentPoint.y += delta.y;
+                
+                if (workObject.data.type === "text"){
+                    if(workObject.data.values.pattern === "path"){
+                        var segmentPoint = workObject.children[1].children[0].segments[data.workObjectHit.cp].point;
+                        segmentPoint.x += delta.x;
+                        segmentPoint.y += delta.y;
+                    }else{
+                        workObject.reset.text_shape = true;
+//                        workObject.reset.debug = true;
+                    }
+                }
+                
+                //data.workObject.children[1].children[0].segments[data.workObjectHit.cp].point = [111,111];
+                //data.workObject.reset.text = true;
+                workObject.reset.debug = true;
+                workObject.reset.text_draw = true;
+                data.editTool = "editCP";
+                return true;
             break;
             default:
                 if(hitObjName.indexOf(workObjectName)===0){
-                    data.workObject.translate(delta);
+                    workObject.translate(delta);
                     data.editTool = "move";
                 }
                 return true;
             break;
         }
         data.editTool = "scale";
-        setGroupScale(data.workObject,scaleX,scaleY,scalePoint);
+        setGroupScale(workObject,scaleX,scaleY,scalePoint);
         return true;
         
     } catch (e) {
@@ -781,8 +607,17 @@ function setGroupScale(workObject,scaleX,scaleY,scalePoint){
     try{
         
         workObject.children[0].scale(scaleX,scaleY, scalePoint);
-        workObject.children[1].scale(scaleX,scaleY, scalePoint);
         workObject.children[4].scale(scaleX,scaleY, scalePoint);
+        
+        if (workObject.data.type === "text"){
+            if(workObject.data.values.pattern === "path"){
+                workObject.children[1].scale(scaleX,scaleY, scalePoint);
+                
+            }else{
+                workObject.reset.text_shape = true;
+            }
+        }
+//        workObject.reset.debug = true;
         workObject.reset.text_draw = true;
         
     } catch (e) {
@@ -845,7 +680,7 @@ function undoLastCpEdit(cEl_caller, increment, boolResetActiveCp) {
     }
 }
 
-function cEl_setCpCursor(cEl_layer, cursor,hitObjName) {
+function cEl_setCpCursor(cEl_layer, cursor, hitObjName) {
     
     try{
         
@@ -893,6 +728,13 @@ function cEl_setCpCursor(cEl_layer, cursor,hitObjName) {
             // scale bottomLeft>topRight
             case workObjectName + ".bottomLeft":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
+            break;
+            
+            // control point
+            case workObjectName + ".CP":
+                cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"crosshair"});
+//                cdebug(paper.data.workObject.name)();
+                
             break;
             
             default:
@@ -1615,7 +1457,7 @@ function selectGroup(cEl_group){
             cEl_group.debug = true;
             cEl_group.reset.debug = true;
             paper.data.workObject = cEl_group;
-            paper.data.workObjectHit = cEl_group.parentName + "_" + cEl_group.name + ".ShapeG_Path";
+            paper.data.workObjectHit = cEl_group.children[0].children[0];
             paper.data.workState = "editlimbo";
         }else{
             paper.data.workObject = null;

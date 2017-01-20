@@ -29,7 +29,7 @@ function draw_cEl_text(cEl_group,strNewText){
         }
 
 
-        set_cEl_text(cEl_group,strNewText);
+        set_cEl_text(cEl_group,cEl_pageText,strNewText);
         
         
         if(cEl_group.reset.text_shape || cEl_group.reset.layout_shape){ //
@@ -201,12 +201,12 @@ function set_cEl_text_css(cEl_group){
     }
 }
 
-function set_cEl_text(cEl_group,strNewText){
+function set_cEl_text(cEl_group, cEl_pageText, strNewText){
     
     try{
         //console.log(strNewText + " vs " + cEl_group.data.values.temp.valueOld);
 
-                if(!cEl_group.data.values.text)cEl_group.data.values.text= cEl_group.data.values.default;
+                if(!cEl_group.data.values.text)cEl_group.data.values.text = cEl_pageText.defaults[cEl_group.data.values.default];
                 var strValAct = cEl_group.data.values.text;
                 
                 // if not set then set the old value to same value and continue to calc

@@ -23,23 +23,9 @@ function disableEvent(evt){
 
 function loadEvents() {
     try {
-        //window["w"] = window.innerWidth;
-        //window["h"] = window.innerHeight;
-        //mouse events
-//        if (window.addEventListener) window.addEventListener("dblclick", handleMouse, false);
-//        else if (window.attachEvent) window.attachEvent("ondblclick", handleMouse);
-        
+
         if (window.addEventListener) window.addEventListener("contextmenu", disableEvent, false);
         else if (window.attachEvent) window.attachEvent("oncontextmenu", disableEvent);
-//        
-////        if (window.addEventListener) window.addEventListener("mousedown", handleMouse, false);
-////        else if (window.attachEvent) window.attachEvent("onmousedown", handleMouse);
-////        if (window.addEventListener) window.addEventListener("mousemove", handleMouse, false);
-////        else if (window.attachEvent) window.attachEvent("onmousemove", handleMouse);
-////        if (window.addEventListener) window.addEventListener("mouseup", handleMouse, false);
-////        else if (window.attachEvent) window.attachEvent("onmouseup", handleMouse);
-////        if (window.addEventListener) window.addEventListener("mouseout", handleMouse, false);
-////        else if (window.attachEvent) window.attachEvent("onmouseout", handleMouse);
         if (window.addEventListener) window.addEventListener("wheel",handleWheel, false);
         else if (window.attachEvent) window.attachEvent("onwheel", handleWheel);
 //        
@@ -48,14 +34,7 @@ function loadEvents() {
 //        //else if (window.attachEvent) window.attachEvent("onbeforepaste", handleBeforePaste);
 //        //if (window.addEventListener) window.addEventListener("paste", handlePaste, false);
 //        //else if (window.attachEvent) window.attachEvent("onpaste", handlePaste);
-//        
-//        //keys events
-////        if (window.addEventListener) window.addEventListener("keydown", handleKeys, false);
-////        else if (window.attachEvent) window.attachEvent("onkeydown", handleKeys);
-////        if (window.addEventListener) window.addEventListener("keyup", handleKeys, false);
-////        else if (window.attachEvent) window.attachEvent("onkeyup", handleKeys);
-////        if (window.addEventListener) window.addEventListener("keypress", handleKeys, false);
-////        else if (window.attachEvent) window.attachEvent("onkeypress", handleKeys);
+
 //        //touch events
         if (window.addEventListener) window.addEventListener("touchstart",handleTouch, false);
         else if (window.attachEvent) window.attachEvent("ontouchstart", handleTouch);
@@ -68,9 +47,7 @@ function loadEvents() {
 //        if (window.addEventListener) window.addEventListener("error", function(e) {cdebug(e);}, false);
 //        else if (window.attachEvent) window.attachEvent("error", function(e) {cdebug(e);});
 //        window.addEventListener('error', function(e) {
-//  console.log(e.lineno); // 5
-//});
-        
+
         return true;
     } catch (e) {
         var err = listError(e);
@@ -78,7 +55,6 @@ function loadEvents() {
         return false;
     }
 }
-
 
 var globalTool = new paper.Tool();
 globalTool.onMouseDown = handleMouse;
@@ -94,34 +70,9 @@ function testLayer(){
 }
 
 
-function handleWheel(evt) {
-    
-    try{
-        // prevent default events        
-        evt.preventDefault();
-        evt.stopPropagation();
-
-        var eventholder = window["eventholder"];
-        preSetEventHolder(eventholder,evt,"wheel");
-
-        //if(eventholder.noevent)return false;
-        if(!eventholder.active.oldObj)return false;
-
-        return globalEvents(eventholder);
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-};
-
-
 function globalEvents(eventholder){
     
     try{
-        
-        runEval(eventholder.retObj,eventholder.type);
         
         switch(eventholder.type){
             
@@ -133,17 +84,22 @@ function globalEvents(eventholder){
                 //cdebug(evt.detail,true);
                 updateEventHolder(eventholder,false,true,true);
                 
-                handleCSSEvents(eventholder,false,true,true,true);
-                
-                
-                setCarret(null,null,false);
-                
-                handleTextSelection(eventholder);
-                
-                handleContextMenu(eventholder);
-                
-                //cdebug(eventholder.layerId + " vs actual paper project " + paper.project.name)();
-                //cdebug(eventholder.hover)();
+                if(paper.activeTool === "globalTool" || paper.project.name === "editor"){
+                    
+                    runEval(eventholder.retObj,eventholder.type);
+                    
+                    handleCSSEvents(eventholder,false,true,true,true);
+                    setCarret(null,null,false);
+
+                    handleTextSelection(eventholder);
+
+                    handleContextMenu(eventholder);
+                    
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+//                    handleCSSEvents(eventholder,false,true,true,false);
+                    editor_mousedown(eventholder);
+                }
                 
                 drawProjects(paper,false);
                 //paper.view.draw();
@@ -151,23 +107,47 @@ function globalEvents(eventholder){
                 
             break;
             case "mouseup":
-            case "touchend":     
-                handleTextSelection(eventholder);
+            case "touchend":
+                
+//                updateEventHolder(eventholder,false,true,true);
+                
+                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                    
+                    runEval(eventholder.retObj,eventholder.type);
+                    
+                    handleTextSelection(eventholder);
+
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+//                    updateEventHolder(eventholder,true,false,false);
+//                    handleCSSEvents(eventholder,true,false,false,true);
+                    editor_mouseup(eventholder);
+                }
                 
                 drawProjects(paper,false);
-                //renderer(eventholder.canvReset);
                 
             break;
             case "mousemove":
             case "touchmove":
                 
                 updateEventHolder(eventholder,true,false,false);
-                // CSS enabled events
-                handleCSSEvents(eventholder,true,false,false,true);
                 
-                handleTextSelection(eventholder);
-   
-//                paper.view.draw();
+                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                    
+                    runEval(eventholder.retObj,eventholder.type);
+               
+                    // CSS enabled events
+                    handleCSSEvents(eventholder,true,false,false,true);
+
+                    handleTextSelection(eventholder);
+                
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+//                    handleCSSEvents(eventholder,true,false,false,false);
+
+                    editor_mousemove(eventholder);
+                }
+
                 drawProjects(paper,false);
                 //cdebug(eventholder.targetId + " " + paper.project.name,true,true)();
                 //cdebug(eventholder.canvReset,true,true)();
@@ -175,15 +155,16 @@ function globalEvents(eventholder){
                 
             break;
             case "mouseout":
-            
-                updateEventHolder(eventholder,true,false,false);
-                // CSS enabled events
-                handleCSSEvents(true,false,false,true);
                 
-                handleTextSelection(eventholder);
-                
-                //renderer(eventholder.canvReset);
-                drawProjects(paper,false);
+                cdebug("event undefined >>> mouseout")();
+//                updateEventHolder(eventholder,true,false,false);
+//                // CSS enabled events
+//                handleCSSEvents(true,false,false,true);
+//                
+//                handleTextSelection(eventholder);
+//                
+//                //renderer(eventholder.canvReset);
+//                drawProjects(paper,false);
                 
             break;
             case "keydown":
@@ -192,25 +173,18 @@ function globalEvents(eventholder){
                 if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
                     return true;
                 }
-                handleCSSEvents_keys(eventholder);
                 
-                runEval(eventholder.active.oldObj,eventholder.type) ;
-                
+                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                    handleCSSEvents_keys(eventholder);
+
+                    runEval(eventholder.active.oldObj,eventholder.type) ;
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+                    editor_keydown(eventholder);
+                } 
                 drawProjects(paper,false);
                 
             break;
-//            case "keypress":
-//                
-//                handleCSSEvents_keys(eventholder,evt);
-//                
-//                //alert(evt.keyCode);
-//                runEval(eventholder.active.oldObj,evtType) ;
-//                //evt.preventDefault();
-//                //evt.stopPropagation();
-//                
-//                drawProjects(paper,true);
-//                
-//            break;
             case "keyup":
                 //cdebug([evtType,kind(evt.target)]);
                 if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
@@ -220,10 +194,15 @@ function globalEvents(eventholder){
                         return true;
                     }    
                 }
-                
-                handleCSSEvents_keys(eventholder);
-                
-                runEval(eventholder.active.oldObj,eventholder.type);
+            
+                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                    handleCSSEvents_keys(eventholder);
+
+                    runEval(eventholder.active.oldObj,eventholder.type);
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+                    editor_keyup(eventholder);
+                }  
                 
                 drawProjects(paper,false);
             break;
@@ -231,8 +210,13 @@ function globalEvents(eventholder){
             case "wheel":
                 
 //                cdebug(eventholder.wheel)();
+                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                    runEval(eventholder.active.oldObj,eventholder.type);
                 
-                runEval(eventholder.active.oldObj,eventholder.type);
+                }else{
+                    eventholder.retObj = paper.project.activeLayer;
+                    editor_wheel(eventholder);
+                }  
                 
                 drawProjects(paper,false);
             break;
@@ -246,6 +230,26 @@ function globalEvents(eventholder){
     }
     
 }
+
+
+function handleWheel(evt) {
+    
+    try{
+        // prevent default events        
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        var eventholder = window["eventholder"];
+        preSetEventHolder(eventholder,evt,"wheel");
+
+        return globalEvents(eventholder);
+
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+};
 
 function handleMouse(evt) {
     
@@ -292,11 +296,13 @@ function handleKeys(evt) {
     try{
 
         //cdebug(getProperties(evt),true);
+        evt.stop();
+        
         var eventholder = window["eventholder"];
         preSetEventHolder(eventholder,evt,"keyboard");
         
         //if(eventholder.noevent)return false;
-        if(!eventholder.active.oldObj)return false;
+//        if(!eventholder.active.oldObj)return false;
 
         return globalEvents(eventholder);
     
@@ -411,7 +417,7 @@ function setEventHolder(pageId) {
     }
 };
 
-function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
+function preSetEventHolder(eventholder,paperevt,evtCallerType) {
     try{
         // prefill default event stuff
         
@@ -581,9 +587,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType,boolLayerOnly) {
             eventholder.layerId = eventholder.retObj.layerName;
             layerSwitch(eventholder.layerId);
 
-            if(boolLayerOnly){
-                eventholder.retObj = paper.project.activeLayer;
-            }
+//            if(boolLayerOnly){
+                
+//            }
                     
             eventholder.currentid = eventholder.retObj.name;
 
@@ -748,12 +754,12 @@ function editMode(eventholder,boolForce){
                 };
                 
                 //cdebug("to editorTool")();
-                editorTool.activate();
+//                editorTool.activate();
                 paper.activeTool = "editorTool";
                 
             }else{
                 //cdebug("to globalTool")();
-                globalTool.activate();
+//                globalTool.activate();
                 paper.activeTool = "globalTool";
                 
                 handleMenuProject(eventholder,"editor",false);

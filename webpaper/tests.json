@@ -18,6 +18,14 @@
     },
     "clipboard":{},
     "text":{
+        "defaults":{
+            "textval1":"ABCDEFG",
+            "textval2":"A B c D E F G H I J K L m n o p q r s t u v w x y z 1234567890 A B c D E F G H I J K L m n o p q r s t u v w x y z",
+            "textval3":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
+            "header":"TOOLS",
+            "textEditor":"ABC",
+            "editmodekeys":"Press Ctrl + Shift + 'E' for edit mode"
+        },
         "chars":"",
         "words":[],
         "charsSelection":{
@@ -122,14 +130,11 @@
             "data":{
                 "type":"text",
                 "values":{
-                    "default_":"ABCDEFG",
-                    "default__":"A B c D E F G H I J K L m n o p q r s t u v w x y z 1234567890 A B c D E F G H I J K L m n o p q r s t u v w x y z",
-                    "default":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
                     "customStyle":[
                         {"style":{"font-size":"2em","color":"green"},"chars":["O","o"]},
                         {"style":{"color":"red"},"charspos":[0,1,2,3]},
-                        {"style":{"color":"blue"},"wordspos":["0_4",0,1]},
-                        {"style":{"font-size":"1em","color":"red"},"wordspos":[5]},
+                        {"style":{"color":"blue"},"wordspos":["0_1","0_4","0_7","0_8","0_9"]},
+                        {"style":{"font-size":"1em","color":"red"},"wordspos":[2,5]},
                         {"style":{"color":"grey","font-size":"1.2em"},"paragraphspos":[0]}
                     ]
                 }
@@ -258,7 +263,7 @@
             "shape":{
                 "redraw":true,
                 "name":"rectangle-tl",                
-                "scale":[0.03,0.03],
+                "scale":[0.03,null],
                 "type":"poligon"
             },
             "states":{
@@ -352,33 +357,41 @@
                 {
                     "name":"data1","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
                     "children":[
-                        {"name":"test1","elId":"text1","tab":1,
-                            "debug":false,
-                            "shape":{"masspoint":[0.5,0.4],"scale":[0.7,null],"name":"handdy","type":"bezier"},
-                            "data":{"values":{
+                        {"name":"test1","elId":"text1","tab":1,"debug":false,"shape":{"masspoint":[0.5,0.4],"scale":[0.7,0.7],"name":"handdy","type":"bezier"},"data":{"values":{
+                            "default":"textval3", 
                             "editable":true,
                             "vertical":false,
                             "pattern":"path"
                             }}},
                         {"name":"test2","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                            "default":"textval3",        
                             "editable":true,
                             "vertical":false,
                             "pattern":"box-fill"
                             }}},
                         {"name":"test3","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                            "default":"textval3", 
                             "editable":true,
                             "vertical":true,
                             "pattern":"box-fill"
                             }}},
                         {"name":"test2a","elId":"text1","tab":1,"shape":{"masspoint":[0.25,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                            "default":"textval3", 
                             "editable":false,
                             "noselect":true,
                             "vertical":false,
                             "pattern":"box-fill"
                             }}},
                         {"name":"test3a","elId":"text1","tab":1,"shape":{"masspoint":[0.75,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"quadratic"},"data":{"values":{
+                            "default":"textval3", 
                             "editable":true,
                             "vertical":true,
+                            "pattern":"box-fill"
+                            }}},
+                        {"name":"test3c","elId":"text1","tab":1,"shape":{"masspoint":[0.2,0.02],"scale":[0.4,0.04],"name":"round-corner-normal","type":"poligon"},"data":{"values":{
+                            "default":"editmodekeys", 
+                            "editable":true,
+                            "vertical":false,
                             "pattern":"box-fill"
                             }}}
                     ]
@@ -406,14 +419,14 @@
                     "children":[
                         {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"scale":[1,0.025],"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"TOOLS"}}},
+                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"scale":[1,0.025],"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"header"}}},
                                 {"name":"close","class":"btnRed1","elId":"btnClose1","tab":1,"shape":{"scale":[0.0025,null],"rotation":45,"masspoint":[0.09,0.012]},"events":{"mousedown":"editMode(eventholder,true)"}},
                                 
                                 {"name":"select","class":"select","elId":"handBtn","tab":2,"shape":{"masspoint":[0.05,0.09]},"events":{"mousedown":"selectGroup()"}},
                                 {"name":"add","class":"select","elId":"btnClose1","tab":3,"shape":{"scale":[0.005,null],"masspoint":[0.05,0.15]},"events":{"mousedown":"addGroup()"}},
                                 
                                 {"name":"colorPicker","class":"colors","elId":"colorsBtn1","tab":4,"shape":{"masspoint":[0.035,0.21]},"events":{"mousedown":"colorButton(this)"}},
-                                {"name":"textEditor","class":"select","elId":"editorBHeader1","tab":5,"shape":{"scale":[0.032,null],"masspoint":[0.035,0.28]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"ABC"}}}
+                                {"name":"textEditor","class":"select","elId":"editorBHeader1","tab":5,"shape":{"scale":[0.032,null],"masspoint":[0.035,0.28]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"textEditor"}}}
                             ]
                         }
                     ]
