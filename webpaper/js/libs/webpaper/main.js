@@ -1780,23 +1780,28 @@ function drawGroup_CP(cEl_group){
         
         
         cEl_group.children[4].removeChildren();
-        
 //        cdebug(cEl_group.name + "  vs   " + cEl_group.debug)();
         
         if(!cEl_group.debug)return true;
         
         var bounds = cEl_group.children[0].bounds;
-        
-        
         var size,path,radius;
         var cEl_groupName = cEl_group.parentName + "_" + cEl_group.name ;
-        var color;
         
         radius = GLOBAL_editSize;
+
+        var color = "rgba(255,255,255,0.5)";
+        var color2 = "rgba(0,0,255,0.8)";
+        var color3 = "rgba(0,255,0,0.8)";
         
         
         
-        color = "rgba(255,255,255,0.3)";
+//        cdebug(eventholder.metrics.xy)();
+//        
+//        path = cEl_group.children[4].addChild(new Path.Line([eventholder.metrics.xy[0],eventholder.metrics.xy[1]], [0,0]));
+//        path.strokeColor = color3;
+//        path.name = cEl_groupName + ".zzz";
+//        path.cp = i;
         
         
         size = new Size(bounds.width-radius, bounds.height-radius);
@@ -1852,16 +1857,52 @@ function drawGroup_CP(cEl_group){
         
         //cdebug(cEl_group.children[0].children[0].segments[1].point)();
 //        color = "rgba(0,0,0,0.9)";
-        color = "rgba(255,0,0,0.9)";
+        color = "rgba(255,0,0,0.8)";
         
-        for(var i = 0;i<cEl_group.children[0].children[0].segments.length;i++){
+        
+        for(var i = 0,boolHandles,segment,point,pointHandleIn,pointHandleOut;i<cEl_group.children[0].children[0].segments.length;i++){
             size = new Size(radius/2, radius/2);
-            var point = cEl_group.children[0].children[0].segments[i].point;
+            segment = cEl_group.children[0].children[0].segments[i];
+            point = segment.point;
+            boolHandles = segment.hasHandles();
+            
+            if(boolHandles){
+                pointHandleIn = segment.handleIn;
+                pointHandleOut = segment.handleOut;
+                
+                path = cEl_group.children[4].addChild(new Path.Line([pointHandleIn.x+point.x,pointHandleIn.y+point.y], point));
+                path.strokeColor = color3;
+                path.name = cEl_groupName + ".CPLin";
+                path.cp = i;
+
+                path = cEl_group.children[4].addChild(new Path.Line(point, [pointHandleOut.x+point.x,pointHandleOut.y+point.y]));
+                path.strokeColor = color2;
+                path.name = cEl_groupName + ".CPLout";
+                path.cp = i;
+            }
+            
             path = cEl_group.children[4].addChild(new paper.Path.Rectangle([point.x-radius/4,point.y-radius/4],size));
             path.fillColor = color;
             path.name = cEl_groupName + ".CP";
             path.cp = i;
+            
+            if(boolHandles){
+                path = cEl_group.children[4].addChild(new paper.Path.Rectangle([pointHandleIn.x+point.x-radius/4,pointHandleIn.y+point.y-radius/4],size));
+                path.fillColor = color3;
+                path.name = cEl_groupName + ".CPin";
+                path.cp = i;
+                
+                path = cEl_group.children[4].addChild(new paper.Path.Rectangle([pointHandleOut.x+point.x-radius/4,pointHandleOut.y+point.y-radius/4],size));
+                path.fillColor = color2;
+                path.name = cEl_groupName + ".CPout";
+                path.cp = i;
+                
+            }
+            
         };
+        
+        
+        
         
 //        path.strokeWidth = radius/2;
 //        path.strokeColor = color;

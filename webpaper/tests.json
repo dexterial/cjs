@@ -284,9 +284,8 @@
             "events":{},
             "shape":{
                 "redraw":true,
-                "name":"handdy",                
-                "scale":[0.06,null],
-                "rotation":0,
+                "name":"handdy",
+                "rotation":12,
                 "flipXY":[false,false],
                 "type":"poligon"
             },
@@ -420,13 +419,13 @@
                         {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
                                 {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"scale":[1,0.025],"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"header"}}},
-                                {"name":"close","class":"btnRed1","elId":"btnClose1","tab":1,"shape":{"scale":[0.0025,null],"rotation":45,"masspoint":[0.09,0.012]},"events":{"mousedown":"editMode(eventholder,true)"}},
+                                {"name":"close","class":"btnRed1","elId":"btnClose1","tab":1,"shape":{"scale":[0.0018,null],"rotation":45,"masspoint":[0.09,0.012]},"events":{"mousedown":"editMode(eventholder,true)"}},
                                 
-                                {"name":"select","class":"select","elId":"handBtn","tab":2,"shape":{"masspoint":[0.05,0.09]},"events":{"mousedown":"selectGroup()"}},
+                                {"name":"select","class":"select","elId":"handBtn","tab":2,"shape":{"scale":[0.05,null],"masspoint":[0.05,0.09]},"events":{"mousedown":"selectGroup()"}},
                                 {"name":"add","class":"select","elId":"btnClose1","tab":3,"shape":{"scale":[0.005,null],"masspoint":[0.05,0.15]},"events":{"mousedown":"addGroup()"}},
                                 
-                                {"name":"colorPicker","class":"colors","elId":"colorsBtn1","tab":4,"shape":{"masspoint":[0.035,0.21]},"events":{"mousedown":"colorButton(this)"}},
-                                {"name":"textEditor","class":"select","elId":"editorBHeader1","tab":5,"shape":{"scale":[0.032,null],"masspoint":[0.035,0.28]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"textEditor"}}}
+                                {"name":"colorPicker","class":"colors","elId":"colorsBtn1","tab":4,"shape":{"masspoint":[0.035,0.20]},"events":{"mousedown":"colorButton(this)"}},
+                                {"name":"textEditor","class":"select","elId":"editorBHeader1","tab":5,"shape":{"scale":[0.03,null],"masspoint":[0.035,0.28]},"events":{"mousedown":"colorButton(this)"},"data":{"values":{"default":"textEditor"}}}
                             ]
                         }
                     ]

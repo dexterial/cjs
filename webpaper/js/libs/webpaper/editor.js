@@ -498,93 +498,82 @@ function calcGroupScale(data,delta){
         var scaleX=1,scaleY=1,scalePoint;
         
         var workObject = data.workObject;
-        var workObjectName = workObject.parentName + "_" + workObject.name;
+//        var workObjectName = workObject.parentName + "_" + workObject.name;
         
-        var hitObjName = data.workObjectHit.name;
+        var hitObjType = data.workObjectHit.name.split(".")[1];
+//        cdebug(hitObjName)();
                 
-        switch (hitObjName) {
+        switch (hitObjType) {
 
             // scale left>right
-            case workObjectName + ".borderLeft":
+            case "borderLeft":
 
                 scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scalePoint = data.workObjectBounds.rightCenter;
             break;
             // scale right>left
-            case workObjectName + ".borderRight":
+            case "borderRight":
 
                 scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scalePoint = data.workObjectBounds.leftCenter;
             break;
             // scale top>bottom
-            case workObjectName + ".borderTop":
+            case "borderTop":
 
                 scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomCenter;
             break;
             // scale bottom>top
-            case workObjectName + ".borderBottom":
+            case "borderBottom":
 
                 scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topCenter;
             break;
 
             // scale topLeft>bottomRight
-            case workObjectName + ".topLeft":
+            case "topLeft":
 
                 scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomRight;
             break;
             // scale topRight>bottomLeft
-            case workObjectName + ".topRight":
+            case "topRight":
 
                 scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scaleY = 1 - delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.bottomLeft;
             break;
             // scale bottomRight>topLeft
-            case workObjectName + ".bottomRight":
+            case "bottomRight":
 
                 scaleX = 1 + delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topLeft;
             break;
             // scale bottomLeft>topRight
-            case workObjectName + ".bottomLeft":
+            case "bottomLeft":
 
                 scaleX = 1 - delta.x/(workObject.children[0].matrix.a*data.workObjectBounds.width);
                 scaleY = 1 + delta.y/(workObject.children[0].matrix.d*data.workObjectBounds.height);
                 scalePoint = data.workObjectBounds.topRight;
             break;
             // edit shape Point
-            case workObjectName + ".CP":
+            case "CP":
+            case "CPin":
+            case "CPout":
+            case "CPLin":
+            case "CPLout":
                 
-//                cdebug("edit_CP " + data.workObjectHit.cp)();
-//                cdebug("edit_CP " + data.workObject.children[0])();
-                var segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].point;
-                segmentPoint.x += delta.x;
-                segmentPoint.y += delta.y;
+                editCP(data,workObject,delta,hitObjType);
+                data.editTool = "edit" + hitObjType;
                 
-                if (workObject.data.type === "text"){
-                    if(workObject.data.values.pattern === "path"){
-                        var segmentPoint = workObject.children[1].children[0].segments[data.workObjectHit.cp].point;
-                        segmentPoint.x += delta.x;
-                        segmentPoint.y += delta.y;
-                    }else{
-                        workObject.reset.text_shape = true;
-//                        workObject.reset.debug = true;
-                    }
-                }
-                
-                //data.workObject.children[1].children[0].segments[data.workObjectHit.cp].point = [111,111];
-                //data.workObject.reset.text = true;
-                workObject.reset.debug = true;
-                workObject.reset.text_draw = true;
-                data.editTool = "editCP";
                 return true;
             break;
+            
             default:
+                var workObjectName = workObject.parentName + "_" + workObject.name;
+                var hitObjName = data.workObjectHit.name;
                 if(hitObjName.indexOf(workObjectName)===0){
                     workObject.translate(delta);
                     data.editTool = "move";
@@ -595,6 +584,84 @@ function calcGroupScale(data,delta){
         data.editTool = "scale";
         setGroupScale(workObject,scaleX,scaleY,scalePoint);
         return true;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }   
+}
+
+function editCP(data,workObject,delta,typeCP){
+    try{
+        
+        var segmentPoint;
+        switch (typeCP) {
+            case "CP":
+                segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].point;
+                segmentPoint.x += delta.x;
+                segmentPoint.y += delta.y;
+            break;
+            case "CPin":
+                segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].handleIn;
+                segmentPoint.x += delta.x;
+                segmentPoint.y += delta.y;
+            break;    
+            case "CPout":
+                segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].handleOut;
+                segmentPoint.x += delta.x;
+                segmentPoint.y += delta.y;
+            break;
+            case "CPLout":
+                
+                var delta2 = delta.clone();
+                delta2.angle += 90;
+                
+                cdebug(delta2)();
+//                var point = event.middlePoint + delta;
+                
+//                segmentPoint = workObject.children[0].children[0].segments[data.workObjectHit.cp].handleOut;
+//                segmentPoint.x += delta.x;
+//                segmentPoint.y += delta.y;
+            break;
+            
+            
+
+
+        
+        
+        }
+        
+        
+        if (workObject.data.type === "text"){
+            if(workObject.data.values.pattern === "path"){
+                switch (typeCP) {
+                    case "CP":
+                        segmentPoint = workObject.children[1].children[0].segments[data.workObjectHit.cp].point;
+                        segmentPoint.x += delta.x;
+                        segmentPoint.y += delta.y;
+                    break;
+                    case "CPin":
+                        segmentPoint = workObject.children[1].children[0].segments[data.workObjectHit.cp].handleIn;
+                        segmentPoint.x += delta.x;
+                        segmentPoint.y += delta.y;
+                    break;    
+                    case "CPout":
+                        segmentPoint = workObject.children[1].children[0].segments[data.workObjectHit.cp].handleOut;
+                        segmentPoint.x += delta.x;
+                        segmentPoint.y += delta.y;
+                    break;    
+                }
+                
+            }else{
+                workObject.reset.text_shape = true;
+
+            }
+        }
+                
+        workObject.reset.debug = true;
+        workObject.reset.text_draw = true;
+        
         
     } catch (e) {
         var err = listError(e);
@@ -692,46 +759,51 @@ function cEl_setCpCursor(cEl_layer, cursor, hitObjName) {
         }
         
         if(!hitObjName)return false;
-        
         var workObjectName = paper.data.workObject.parentName + "_" + paper.data.workObject.name;
+        var hitObjType = hitObjName.split(".")[1];
         
-        switch (hitObjName) {
+        switch (hitObjType) {
 
             // scale left>right
-            case workObjectName + ".borderLeft":
+            case "borderLeft":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
             break;
             // scale right>left
-            case workObjectName + ".borderRight":
+            case "borderRight":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"col-resize"});
             break;
             // scale top>bottom
-            case workObjectName + ".borderTop":
+            case "borderTop":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
             break;
             // scale bottom>top
-            case workObjectName + ".borderBottom":
+            case "borderBottom":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"row-resize"});
             break;
             // scale topLeft>bottomRight
-            case workObjectName + ".topLeft":
+            case "topLeft":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
             break;
             // scale topRight>bottomLeft
-            case workObjectName + ".topRight":
+            case "topRight":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
             break;
             // scale bottomRight>topLeft
-            case workObjectName + ".bottomRight":
+            case "bottomRight":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"nw-resize"});
             break;
             // scale bottomLeft>topRight
-            case workObjectName + ".bottomLeft":
+            case "bottomLeft":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"ne-resize"});
             break;
             
             // control point
-            case workObjectName + ".CP":
+            case "CP":
+            case "CPin":
+            case "CPout":
+            case "CPLin":
+            case "CPLout":
+                
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"crosshair"});
 //                cdebug(paper.data.workObject.name)();
                 
@@ -1461,6 +1533,7 @@ function selectGroup(cEl_group){
             paper.data.workState = "editlimbo";
         }else{
             paper.data.workObject = null;
+            paper.data.workObjectHit = null;
             paper.data.workState = "pre";
         }
         

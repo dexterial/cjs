@@ -761,6 +761,7 @@ function editMode(eventholder,boolForce){
                 //cdebug("to globalTool")();
 //                globalTool.activate();
                 paper.activeTool = "globalTool";
+                selectGroup(null);
                 
                 handleMenuProject(eventholder,"editor",false);
                 
