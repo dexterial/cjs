@@ -128,7 +128,7 @@ input::-moz-focus-inner {
     border-width: 1px;
     color:rgba(255,255,255,0.7);
 /*    font-style:italic;*/
-    cursor:text;
+    cursor:pointer;
     padding: 5px;
     padding-top: 5px;
     text-align:justify;
@@ -321,6 +321,8 @@ input::-moz-focus-inner {
     text-align:justify;
     cursor:text
 }
+
+
 .btnGreen{
     font-family: Arial;
     font-size: 10px;

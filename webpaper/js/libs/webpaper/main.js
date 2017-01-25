@@ -1595,12 +1595,14 @@ function draw_cEl_layer(cEl_layer) {
 //    //                var scaleX = paper.view.bounds.width/raster.width;
 //    //                var scaleY = paper.view.bounds.height/raster.height;
 //    //                raster.scale([scaleX,scaleY]);
-//                //raster.fitBounds(cEl_project.view.bounds,true);
+                    
                     //drawProjects(paper,true);
                     layerSwitch(cEl_layer.name);
                     //cdebug("done >>> on " + paper.project.name)();
                     
                     var bkg = cEl_layer.children[0].addChild(new paper.Raster(cEl_layer.bkgImg,new paper.Point(0,0)));
+                    bkg.fitBounds(paper.project.view.bounds,true);
+                    
                     //var bkg = cEl_project.activeLayer.children[0].children[0];
                     bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG.I";
                     //bkg.fitBounds(cEl_layer.view.bounds,true);

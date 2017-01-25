@@ -97,7 +97,7 @@ function editor_keydown(eventholder) {
                         selectGroup(paper.data.workObject);
                     break;
                     default:
-                        cdebug(eventholder.keys)();
+//                        cdebug(eventholder.keys)();
                     break;
                 }
                 
@@ -519,14 +519,14 @@ function drawGroup_CP(cEl_group){
         var colorBorder = "rgba(111,111,111,0.4)";
         
         var selectedColor = "rgba(255,0,0,0.6)";
-        
+        var selectedColor2 = "rgba(255,0,0,0.2)";
 //        cdebug(selectedName)();
         
 
         // set background
         size = new Size(bounds.width-radius, bounds.height-radius);
         path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topLeft.x+radius/2,bounds.topLeft.y+radius/2],size));
-        path.fillColor = (boolSelectedId && cEl_groupName + ".body"===selectedName)?selectedColor:colorBKG;
+        path.fillColor = (boolSelectedId && cEl_groupName + ".body"===selectedName)?selectedColor2:colorBKG;
         path.name = cEl_groupName + ".body";
         path.cp = -9;
 
