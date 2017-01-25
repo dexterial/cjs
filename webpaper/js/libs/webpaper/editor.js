@@ -53,14 +53,16 @@ function editor_keydown(eventholder) {
             break;    
             
             case "editset":
-            paper.data.workState = "edit";
-            case "edit":
+                paper.data.workState = "editkeys";
+                paper.data.workObject.children[0].applyMatrix = false;
+//            break;
+            case "editkeys":
                 
                 if(!paper.data.workObject || !paper.data.workObjectHit ){
                     if(eventholder.keys.key==="Escape")selectGroup(null);
                     return false;
                 }
-                var delta = {"x":0,"y":0,"rotation":0};
+                var delta = new paper.Point();//{"x":0,"y":0,"rotation":0};
                 var offset = 2;
                  
                 switch(eventholder.keys.key){
@@ -74,6 +76,7 @@ function editor_keydown(eventholder) {
                     break;
                     case "ArrowDown":
                         delta.y = offset;
+                        
                         handleCP(paper.data,delta);
                     break;
                     case "ArrowLeft":
@@ -126,70 +129,7 @@ function editor_keydown(eventholder) {
             break;
         }
         
-        
-        
-        //var cEl_layer = window[cEl.layerId];
-        //var eventholder = window["eventholder"];
-        //cdebug(window.event.keyCode);
-//        
-//        var eventholder = window["eventholder"];
-//        
-//        switch (cEl_layer.name) {
-//            case "fabric":
-//                //cdebug("editor_keydown START state " + cEl_layer.data.state,true);
-//                //cdebug(eventholder.keys);
-//                switch (cEl_layer.data.state) {
-//                    case "editlimbo":
-//                        switch(eventholder.keys.keyCode){
-//                            case 38:
-//                                keyAdjustments(cEl_layer, [1,-1]);
-//                            break;
-//                            case 40:
-//                                keyAdjustments(cEl_layer, [1,1]);
-//                            break;
-//                            case 37:
-//                                keyAdjustments(cEl_layer, [0,-1]);
-//                            break;
-//                            case 39:
-//                                keyAdjustments(cEl_layer, [0,1]);
-//                            break;
-//                            case 27:
-//                                
-//                                undoLastCpEdit(cEl_layer,0,true);
-//                                
-//                            break;
-//                        }
-//                        return true;
-//                    break;
-//                    case "edit":
-//                    case "pre":
-//                        switch(eventholder.keys.keyCode){
-//                            case 38:
-//                                cEl_editIndex(cEl_layer, false, true);
-//                            break;
-//                            case 40:
-//                                cEl_editIndex(cEl_layer, true, true);
-//                            break;
-//                            case 37:
-//                                cEl_editIndex(cEl_layer, false, false);
-//                            break;
-//                            case 39:
-//                                cEl_editIndex(cEl_layer, true, false);
-//                            break;
-//                            case 27:
-//                                //undoLastCpEdit(cEl_layer,0);
-//                                saveLastCpEdit(cEl_layer,"pre",true);
-//                            break;
-////                            case 13: //edit children index
-////                                cEl_editIndexParent(cEl_layer,eventholder.keys.shiftKey);
-////                            break;
-//                        }
-//                    break;
-//                }
-////                cdebug("editor_keydown START state " + cEl_layer.data.state,true)();
-//            break;
-//        }
-        return false;
+        return true;
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -204,7 +144,7 @@ function editor_keyup(eventholder) {
     try{
         switch (paper.data.workState) {
 //            case "editset":
-            case "edit":
+            case "editkeys":
 //                cdebug("hre")();
                 paper.data.workObject.children[0].applyMatrix = true;
                 paper.data.workObject.reset.debug = true;
@@ -271,7 +211,7 @@ function editor_mousedown(eventholder) {
 
 //                cdebug("editor_mousedown START state " + cEl_project.data.state + " at index " + cEl_project.data.editIndex,true)();
         switch (paper.data.workState) {
-            case "edit":
+            case "editmouse":
                 //if(cEl_layer.data.editIndex<0){return false;}
                 //var cEl = cEl_layer.children[cEl_layer.data.editIndex];
 //                        cdebug(cEl.shape.temp.activeCp)();
@@ -290,13 +230,10 @@ function editor_mousedown(eventholder) {
                 //GLOBAL_renderer = true;
             break;
             case "add":
-//                        cdebug("here1")();
-
+                
                 paper.data.workObject = new paper.Path();
                 paper.data.workObject.strokeColor = 'black';
                 paper.data.workObject.fullySelected = true;
-
-
 
             break;
             case  "editlimbo" : // "editlimbo":
@@ -310,35 +247,17 @@ function editor_mousedown(eventholder) {
                 if(actObj_name.indexOf(workObject_name)===0){
                     
                     select_CP(cEl_layer,eventholder.metrics.xy,eventholder.actObj);
-                    
-                    paper.data.workState = "edit";
+                    paper.data.workState = "editmouse";
                     
                     //eventholder.actObj.bringToFront();
-
                 }else{
                     paper.data.workObjectHit = null;
                     paper.data.workObjectCPdata = null;
                 }
-
-
-
-//                        cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"text"});
-//                        cEl_layer.reset.cursor = true;
-
-//                        cEl_project.data.state = "editmove";
-//                        cEl_editActiveCp(cEl_project);
-//                        if(loadedPageAct){loadedPageAct.children[loadcanvas].shape.redraw = true;}
-
+                
             break;
             case "pre":
-
-                //paper.project.activeLayer.selected = false;
-
-
-
                 //eventholder.actObj.fullySelected = true;
-
-
                 //cdebug(eventholder.actObj.className)();
                 switch (eventholder.actObj.className) {
 
@@ -358,22 +277,8 @@ function editor_mousedown(eventholder) {
                         cdebug(eventholder.actObj.className)();
                     break;
                 }
-
-                //
-
-
-                //cEl_setCpCursor(cEl_layer);
-
-
-
-                //cdebug("editor_mousedown END state " + paper.project.data.workLayer.name)();
-
-//                        addDrawShape(cEl_project,false);
             break;
         }
-                //cdebug("editor_mousedown END state " + paper.project.data.workLayer)();
-                
-
         return true;
     } catch (e) {
         var err = listError(e);
@@ -404,13 +309,14 @@ function editor_mousemove(eventholder) {
 //                paper.data.workState = "edit";
                 cEl_setCpCursor(paper.project.activeLayer,false,eventholder.actObj.name);
             break;
-            case "edit":
+            case "editmouse":
 //                cdebug(eventholder.keys.buttons)();
                 // move/scale/edit control points
                 handleCP(paper.data,eventholder.metrics.delta);
                 
             break;
         }
+        return true;
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -426,7 +332,7 @@ function editor_mouseup(eventholder) {
         var cEl_layer = paper.project.activeLayer;
 
         switch (paper.data.workState) {
-            case "edit":
+            case "editmouse":
 
                 paper.data.workObject.children[0].applyMatrix = true;
                 paper.data.workObject.reset.debug = true;
@@ -652,10 +558,12 @@ function handleCP(data,delta){
         var scaleX=1,scaleY=1,scalePoint;
         
         var workObject = data.workObject;
+        
+        
+        
 //        var workObjectName = workObject.parentName + "_" + workObject.name;
         
         var hitObjType = data.workObjectHit.name.split(".")[1];
-//        cdebug(hitObjName)();
                 
         switch (hitObjType) {
 
@@ -737,6 +645,10 @@ function handleCP(data,delta){
         }
         data.editTool = "scale";
         setGroupScale(workObject,scaleX,scaleY,scalePoint);
+        
+        
+//        cdebug([scaleX,scaleY,workObject.children[0].matrix])();
+        
         return true;
         
     } catch (e) {
@@ -1485,6 +1397,8 @@ function select_CP(cEl_layer,xy,actObj){
         paper.data.workObject.reset.debug = true;
         paper.data.workObject.children[0].applyMatrix = false;
         //paper.data.workObject.children[1].applyMatrix = false;
+        
+        
         
         return true;            
     } catch (e) {
