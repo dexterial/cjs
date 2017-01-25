@@ -516,7 +516,7 @@ function delete_chars(eventholder){
             // do nada
             //cdebug("delete selection " + eventholder.keys.chr)();
             
-        }else if(eventholder.keys.chr === 8 ){
+        }else if(eventholder.keys.key === "Backspace" ){
             //cdebug(cEl_pageText.charsSelection.cr)();
                 
             if(cEl_pageText.charsSelection.cr.pos > 0){
@@ -532,7 +532,7 @@ function delete_chars(eventholder){
                 cEl_group.reset.selection = true;
             }
             
-        }else if(eventholder.keys.chr === 46 ){
+        }else if(eventholder.keys.key === "Delete" ){
             
             //cdebug("delete current " + eventholder.keys.chr)();
             
@@ -664,7 +664,7 @@ function move_chars(eventholder){
         
         if(!cEl_group || cEl_group.data.type!=="text" || !cEl_group.data.values.editable)return false;
         
-        return selection_actions(cEl_group, eventholder, eventholder.keys.chr,false);
+        return selection_actions(cEl_group, eventholder, eventholder.keys.key,false);
         
         
     } catch (e) {

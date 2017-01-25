@@ -1,4 +1,300 @@
-//function editor_keypress(cEl_layer) {
+//
+//function cEl_drawCp(shape,cEl_ctx){
+//    
+//    try{
+//        var cEl_canv = cEl_ctx.canvas;
+//        //var cEl_ctx = cEl_canv.getContext('2d');
+//        var offsetCorner = 10;
+//
+//        // draw cEl border
+//        //cdebug(cEl.shape.temp.cpBorder);
+//        cEl_ctx.beginPath();
+//        cEl_ctx.lineWidth = 1;
+//        
+//        cEl_ctx.strokeStyle = "rgba(110,110,110,1)";
+//        cEl_ctx.rect(shape.temp.cpBorder.x,shape.temp.cpBorder.y,shape.temp.cpBorder.x1-shape.temp.cpBorder.x,shape.temp.cpBorder.y1-shape.temp.cpBorder.y);
+//        // draw corners points
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y + offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y + offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x1,shape.temp.cpBorder.y1 - offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x1 - offsetCorner,shape.temp.cpBorder.y1);
+//        cEl_ctx.moveTo(shape.temp.cpBorder.x,shape.temp.cpBorder.y1 - offsetCorner );
+//        cEl_ctx.lineTo(shape.temp.cpBorder.x + offsetCorner,shape.temp.cpBorder.y1);
+//        cEl_ctx.stroke();
+//        //cEl_ctx.closePath();
+//        
+//        // draw mass point
+//        cEl_ctx.beginPath();
+//        cEl_ctx.fillStyle = "rgba(255,0,0,1)";
+//        cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
+//        cEl_ctx.fill();
+//        //cEl_ctx.closePath();
+//        cEl_ctx.beginPath();
+//        if(shape.temp.activeCp){
+//            switch(shape.temp.activeCp.tag){
+//                case "corner": // is corner
+//                    
+//                    cEl_ctx.lineWidth = 1;
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1] + offsetCorner * shape.temp.activeCp.value[4]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[0] + offsetCorner * shape.temp.activeCp.value[3],shape.temp.activeCp.value[1]);
+//                    //cEl_ctx.lineTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                    
+//                break;
+//                case "border": // is border
+//                     
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.beginPath();
+//                    cEl_ctx.moveTo(shape.temp.activeCp.value[0],shape.temp.activeCp.value[1]);
+//                    cEl_ctx.lineTo(shape.temp.activeCp.value[3],shape.temp.activeCp.value[4]);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                break;
+//                case "masspoint": // draw mass point
+//                    
+//                    cEl_ctx.beginPath();
+//                    cEl_ctx.lineWidth = 3;
+//                    cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                    cEl_ctx.rect(shape.temp.cpMp[0]-2,shape.temp.cpMp[1]-2,4,4);
+//                    cEl_ctx.closePath();
+//                    cEl_ctx.stroke();
+//                    
+//                break;
+//            }
+//            
+//        }
+//        cEl_drawCp_Points(shape,cEl_ctx);
+//        
+//        return true;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//};
+//
+//function cEl_drawCp_Points(shape,cEl_ctx){
+//    
+//    try{
+//        var pointsLen = shape.temp.cp.length, boolIsCp;
+//        for(var i = 0; i < pointsLen; i++){
+//            boolIsCp = false;
+//            switch(shape.temp.cp[i][2]){
+//                case 0:// Poligon Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,0,0,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,0,0,1)";                  
+//                break;
+//                case 1:// Quadratic Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,0,255,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,0,255,1)";
+//                break;
+//                case 2:// Beziere Shape Lines
+//                    cEl_ctx.fillStyle = "rgba(0,255,255,1)";
+//                    cEl_ctx.strokeStyle = "rgba(0,255,255,1)";
+//                break;
+//            }
+//            cEl_ctx.beginPath();
+//            if(shape.temp.activeCp && shape.temp.activeCp.tag === "controlpoint" && shape.temp.activeCp.value[3]===i){
+//                cEl_ctx.rect(shape.temp.activeCp.value[0]-2,shape.temp.activeCp.value[1]-2,4,4);
+//                cEl_ctx.lineWidth = 3;
+//                cEl_ctx.strokeStyle = "rgba(255,20,20,1)";
+//                cEl_ctx.closePath();
+//                cEl_ctx.stroke();
+//            }else{
+//                cEl_ctx.beginPath();
+//                cEl_ctx.rect(shape.temp.cp[i][0]-2,shape.temp.cp[i][1]-2,4,4);
+//                cEl_ctx.closePath();
+//                cEl_ctx.fill();
+//            }
+// 
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function draw_pointXY(cEl, cEl_layer, cEl_ctx){
+//    try{
+//
+//        if(cEl.shape.temp.activeCp){
+//            var eventholder = window["eventholder"];
+//            cEl_ctx.lineWidth = 1;
+//            cEl_ctx.setLineDash([3,3]);
+//            
+//            cEl_ctx.strokeStyle = "rgba(200,200,200,1)";
+//            draw_pointXY_path1(cEl_ctx,cEl.shape.temp.activeCp.xy,cEl_layer.shape.w,cEl_layer.shape.h);
+//            
+//            cEl_ctx.strokeStyle = "rgba(0,255,0,1)";
+//            draw_pointXY_path1(cEl_ctx,eventholder.metrics.xy,cEl_layer.shape.w,cEl_layer.shape.h);
+//
+//            
+//            cEl_ctx.setLineDash([]);
+//        }
+//
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function draw_pointXY_path1(cEl_ctx,xy,w,h){
+//    try{
+//        
+//        cEl_ctx.beginPath();
+//        cEl_ctx.moveTo(0,xy[1]+0.5);
+//        cEl_ctx.lineTo(w,xy[1]+0.5);
+//        cEl_ctx.moveTo(xy[0]+0.5,0);
+//        cEl_ctx.lineTo(xy[0]+0.5,h);
+//        cEl_ctx.stroke();
+//        cEl_ctx.closePath();
+//            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//function draw_pointXY_square(cEl_ctx,xy,w,h){
+//    try{
+//        //cEl_ctx.fillStyle = "rgba(0,255,0,1)";
+//        //cEl_ctx.fillRect(xy[0],xy[1],w,h);
+//        cEl_ctx.lineWidth = 1;
+//        cEl_ctx.strokeRect(xy[0],xy[1],w,h);
+//            
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_setCpXY(activeCp,xy) {
+//    try{
+//        activeCp.xy = [xy[0],xy[1]];
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_getCpXY(activeCp){
+//    try{
+//        if(activeCp.xy){
+//            return [activeCp.xy[0],activeCp.xy[1]];
+//        }else{
+//            return [0,0];
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//function cEl_setActiveCp(cEl_caller){
+//    
+//    try{
+//        
+//        var cEl_layer = window[cEl_caller.pageId + "_fabric"];
+//        if(cEl_layer.children.length===0 || !cEl_layer.data.editIndex)return false;
+//        var cEl = window[cEl_layer.data.editIndex];
+//        var eventholder = window["eventholder"];
+//        var xy = eventholder.metrics.xy;
+//        
+//        var deltaCP = 6;
+//        var deltaMP = 7;
+//        var deltaBL = 8;
+//        var deltaBC = 7;
+//        cEl.shape.temp.activeCp = null;
+//        
+//        // set as massPoint
+//        if(Math.abs(cEl.shape.temp.cpMp[0]-xy[0])<=deltaMP && Math.abs(cEl.shape.temp.cpMp[1]-xy[1])<=deltaMP){
+//            cEl.shape.temp.activeCp = {"type":"mp","tag":"masspoint","value":cEl.shape.temp.cpMp,"xy":[cEl.shape.temp.cpMp[0],cEl.shape.temp.cpMp[1]]};
+//            //cEl.shape.temp.activeCp = cEl.shape.temp.cpMp;
+//            return true;
+//        }
+//
+//        // set as shape point
+//        for(var i = 0, pointsLen = cEl.shape.temp.cp.length; i < pointsLen; i++){
+//            if(Math.abs(cEl.shape.temp.cp[i][0]-xy[0])<=deltaCP && Math.abs(cEl.shape.temp.cp[i][1]-xy[1])<=deltaCP){
+//                cEl.shape.temp.activeCp = {"type":"scp","tag":"controlpoint","value":cEl.shape.temp.cp[i],"xy":[cEl.shape.temp.cp[i][0],cEl.shape.temp.cp[i][1]]};
+//                //cEl.shape.temp.activeCp = cEl.shape.temp.cp[i];
+//                return true;
+//            }
+//        }
+//        
+//        // set as borderPoints --- sides or corners
+//        var cpBorder = cEl.shape.temp.cpBorder;
+//        // corner top left
+//        if(Math.abs(cpBorder.x-xy[0])<=deltaBL && Math.abs(cpBorder.y-xy[1])<=deltaBL){
+//            cEl.shape.temp.activeCp = {"type":"tl","tag":"corner","value":[cpBorder.x,cpBorder.y,4,1,1,0],"xy":[cpBorder.x,cpBorder.y]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x,cpBorder.y,4,1,1,0];
+//            return true;
+//        }
+//        // corner top right
+//        if(Math.abs(cpBorder.x1-xy[0])<=deltaBL && Math.abs(cpBorder.y-xy[1])<=deltaBL){
+//            cEl.shape.temp.activeCp = {"type":"tr","tag":"corner","value":[cpBorder.x1,cpBorder.y,4,-1,1,1],"xy":[cpBorder.x1,cpBorder.y]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x1,cpBorder.y,4,-1,1,1];
+//            return true;
+//        }
+//        // corner bottom right
+//        if(Math.abs(cpBorder.x1-xy[0])<=deltaBL && Math.abs(cpBorder.y1-xy[1])<=deltaBL){
+//            cEl.shape.temp.activeCp = {"type":"br","tag":"corner","value":[cpBorder.x1,cpBorder.y1,4,-1,-1,2],"xy":[cpBorder.x1,cpBorder.y1]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x1,cpBorder.y1,4,-1,-1,2];
+//            return true;
+//        }
+//        // corner bottom left
+//        if(Math.abs(cpBorder.x-xy[0])<=deltaBL && Math.abs(cpBorder.y1-xy[1])<=deltaBL){
+//            cEl.shape.temp.activeCp = {"type":"bl","tag":"corner","value":[cpBorder.x,cpBorder.y1,4,1,-1,3],"xy":[cpBorder.x,cpBorder.y1]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x,cpBorder.y1,4,1,-1,3];
+//            return true;
+//        }
+//        
+//
+//        // set as border lines
+//        //border top
+//        if(cpBorder.x1-xy[0]>=deltaBC && cpBorder.x-xy[0]<=deltaBC && Math.abs(cpBorder.y-xy[1])<=deltaBC){
+//            cEl.shape.temp.activeCp = {"type":"t","tag":"border","value":[cpBorder.x,cpBorder.y,5,cpBorder.x1,cpBorder.y,0],"xy":[cpBorder.x,cpBorder.y]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x,cpBorder.y,5,cpBorder.x1,cpBorder.y,0];
+//            return true;
+//        }
+//        //border right
+//        if(cpBorder.y-xy[1]<=deltaBC && cpBorder.y1-xy[1]>=deltaBC && Math.abs(cpBorder.x1-xy[0])<=deltaBC){
+//            cEl.shape.temp.activeCp = {"type":"r","tag":"border","value":[cpBorder.x1,cpBorder.y,5,cpBorder.x1,cpBorder.y1,1],"xy":[cpBorder.x1,cpBorder.y]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x1,cpBorder.y,5,cpBorder.x1,cpBorder.y1,1];
+//            return true;
+//        }
+//        //border bottom
+//        if(cpBorder.x1-xy[0]>=deltaBC && cpBorder.x-xy[0]<=deltaBC && Math.abs(cpBorder.y1-xy[1])<=deltaBC){
+//            cEl.shape.temp.activeCp = {"type":"b","tag":"border","value":[cpBorder.x1,cpBorder.y1,5,cpBorder.x,cpBorder.y1,2],"xy":[cpBorder.x1,cpBorder.y1]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x1,cpBorder.y1,5,cpBorder.x,cpBorder.y1,2];
+//            return true;
+//        }
+//        //border left
+//        if(cpBorder.y-xy[1]<=deltaBC && cpBorder.y1-xy[1]>=deltaBC && Math.abs(cpBorder.x-xy[0])<=deltaBC){
+//            cEl.shape.temp.activeCp = {"type":"l","tag":"border","value":[cpBorder.x,cpBorder.y1,5,cpBorder.x,cpBorder.y,3],"xy":[cpBorder.x,cpBorder.y1]};
+//            //cEl.shape.temp.activeCp = [cpBorder.x,cpBorder.y1,5,cpBorder.x,cpBorder.y,3];
+//            return true;
+//        }
+//        
+//        return false;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+////function editor_keypress(cEl_layer) {
 //    // BEWARE triggers right after keydowns event, however it does not trigger for all keys (non printable)
 //    try{
 //        //var cEl_layer = window[cEl.layerId];

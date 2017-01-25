@@ -189,10 +189,12 @@ function globalEvents(eventholder){
                 //cdebug([evtType,kind(evt.target)]);
                 if(eventholder.keys.shiftKey && eventholder.keys.ctrlKey){
                     // check edit mode combination CTRL + SHIFT + "E" or "e"
-                    if(editMode(eventholder)){
-                        drawProjects(paper,true);
-                        return true;
-                    }    
+                    if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E" || boolForce){
+                        if(editMode(eventholder)){
+                            drawProjects(paper,true);
+                            return true;
+                        }
+                    }
                 }
             
                 if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
@@ -720,24 +722,13 @@ function updateEventHolder(eventholder,boolHover,boolFocus,boolActive) {
 };
 
 
-function isPrintableJS(keycode){
-    var valid = 
-        (keycode > 47 && keycode < 58)   || // number keys
-        (keycode === 32)   || // spacebar & return key(s) (if you want to allow carriage returns)
-        (keycode > 64 && keycode < 91)   || // letter keys
-        (keycode > 95 && keycode < 112)  || // numpad keys
-        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-        (keycode > 218 );   // [\]' (in order) //&& keycode < 223
-
-    return valid;
-}
 
 function editMode(eventholder,boolForce){
     try{
         
 //        cdebug("editMode")();
         
-        if(eventholder.keys.key ==="e" || eventholder.keys.key ==="E" || boolForce){
+        
             
             
             if(paper.activeTool === "globalTool" && !boolForce){
@@ -767,7 +758,7 @@ function editMode(eventholder,boolForce){
                 
             }
             return true;
-        }
+        
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -782,55 +773,61 @@ function handleCSSEvents_keys(eventholder) {
         switch(eventholder.type){
             
             case "keydown":
-                //cdebug(eventholder.keys.chr)();
-                //cdebug(eventholder.keys)();
-                
-                if (eventholder.keys.chr){ //&& eventholder.keys.chr<127
-                    //evt.preventDefault();
+                // handle normal keys
+                if (eventholder.keys.key.length===1){
                     edit_chars(eventholder,true);
-                    //evt.preventDefault();
                     return true;
                 }
                 
-                //cdebug(evt)();
-                switch(eventholder.keys.chr){
-                    case 37:
-                    case 38:
-                    case 39:
-                    case 40:    
+                
+                
+                // handle special keys
+                switch(eventholder.keys.key){
+                    
+                    case "Control":
+                    case "Shift":
+                        // do nada
+                    break;
+                    
+                    case "ArrowLeft":
+                    case "ArrowUp":
+                    case "ArrowDown":
+                    case "ArrowRight":    
                         move_chars(eventholder);
 //                        evt.preventDefault();
                     break;
-                    case 8:
-                    case 46:
+                    case "Delete":
+                    case "Backspace":
                         delete_chars(eventholder);
 //                        evt.preventDefault();
                     break;
-                    case 9:
+                    case "Tab":
+                        // TODO update this
                         updateEventHolder(eventholder,false,true,false);
                         handleCSSEvents(eventholder,false,true,false);
 //                        evt.preventDefault();
                     break;
-                    case 13:
+                    case "Enter":
+                        // TODO update this
                         updateEventHolder(eventholder,false,false,true);
                         handleCSSEvents(eventholder,false,false,true);
 
                     break;
-                    case 27:
-//                        evt.preventDefault();
+                    case "Escape":
+//                        cdebug(eventholder.retObj.name)();
+                        resetTextSelection(eventholder.retObj);
                     break;
-                    case 86:
-                    case 118:    
-                        if(eventholder.keys.ctrlKey){
-                            //handlePaste(evt);
-                        }
-                    break;
-                    case 16:
-                    case 17:
-                        
-                        // do nada
-                        
-                    break;
+//                    case 86:
+//                    case 118:    
+//                        if(eventholder.keys.ctrlKey){
+//                            //handlePaste(evt);
+//                        }
+//                    break;
+//                    case 16:
+//                    
+//                    
+                    default:
+                        cdebug(eventholder.keys.key + " >>> " + eventholder.keys.chr)();
                     
                 }
                 
@@ -849,13 +846,13 @@ function handleCSSEvents_keys(eventholder) {
 //            break;
             case "keyup":
                 
-                switch(eventholder.keys.chr){
-                    case 86:
-                    case 118:
-                        if(eventholder.keys.ctrlKey){
-                            //handlePaste(evt);
-                        }
-                    break;
+                switch(eventholder.keys.key){
+//                    case 86:
+//                    case 118:
+//                        if(eventholder.keys.ctrlKey){
+//                            //handlePaste(evt);
+//                        }
+//                    break;
                 }
                 
                 
@@ -1123,18 +1120,17 @@ function setContextMenu(cEl_canv){
     }
 }
 
-function resetTextSelection(cEl){
+function resetTextSelection(cEl_group){
     
     try{
-       //cdebug(cEl.name)();
         
-        if(cEl.data.type === "text"){
+        if(cEl_group.data.type === "text"){
             var cEl_Selection = paper.data.text.charsSelection;
             cEl_Selection.charspos = [];
             cEl_Selection.chars = [];
             cEl_Selection.wordspos = [];
             cEl_Selection.paragraphspos = [];
-            cEl.reset.selection = true;
+            cEl_group.reset.selection = true;
         }
     } catch (e) {
         var err = listError(e);
@@ -1169,7 +1165,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
 
         switch(true){
             //move carret top
-            case actionNo === 38:
+            case actionNo === "ArrowTop":
                 chrObj = lines[cEl_Selection.cr.pos];
                 cr = getCharPos2(eventholder,"top");
                 if(!cr.valid)break;                
@@ -1181,7 +1177,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 boolForce = true;
             break;
             //move carret bottom
-            case actionNo === 40:
+            case actionNo === "ArrowDown":
                 chrObj = lines[cEl_Selection.cr.pos];
                 cr = getCharPos2(eventholder,"bottom");
                 if(!cr.valid)break; 
@@ -1193,7 +1189,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 boolForce = true;
             break;
             //move carret right
-            case actionNo === 39:
+            case actionNo === "ArrowRight":
 
                 var i = cEl_Selection.cr.pos;
                 for(var boolParagraph = false;i<eol;i++){
@@ -1225,7 +1221,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 
             break;
             //move carret left
-            case actionNo === 37:
+            case actionNo === "ArrowLeft":
                 var i = cEl_Selection.cr.pos;
                 for(var boolParagraph = false;i>0;i--){
                     chrObj = lines[i-1];
@@ -1597,4 +1593,17 @@ function testEvents2(cEl){
 //    //cEl.reset.layout_shape = true;
 //    drawChildren(cEl,true);
     
+}
+
+
+function isPrintableJS(keycode){
+    var valid = 
+        (keycode > 47 && keycode < 58)   || // number keys
+        (keycode === 32)   || // spacebar & return key(s) (if you want to allow carriage returns)
+        (keycode > 64 && keycode < 91)   || // letter keys
+        (keycode > 95 && keycode < 112)  || // numpad keys
+        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+        (keycode > 218 );   // [\]' (in order) //&& keycode < 223
+
+    return valid;
 }
