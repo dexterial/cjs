@@ -1,4 +1,168 @@
+////function drawGroup_CP_old(cEl_group){
+//    try{
+//        
+////        cdebug("start")();
+//        cEl_group.children[4].removeChildren();
+////        cdebug(cEl_group.name + "  vs   " + cEl_group.debug)();
+//        
+//        if(!cEl_group.debug)return true;
+//        
+////        cdebug(paper.data.workObjectHit.name)();
 //
+////        cdebug(paper.data.workState)();
+//        
+//        
+//        var bounds = cEl_group.children[0].bounds;
+//        var size,path,radius;
+//        var selectedName,selectedId;
+//        
+//        var cEl_groupName = cEl_group.parentName + "_" + cEl_group.name ;
+//        if(paper.data.workObjectHit){
+//            selectedName = paper.data.workObjectHit.name;
+//            selectedId = paper.data.workObjectHit.cp;
+//            boolSelectedId = true;
+//        }else{
+//            boolSelectedId = false;
+//            selectedName = "";
+//            selectedId = -1;
+//        }
+//        
+//        
+//        radius = GLOBAL_editSize;
+//
+//        var colorBKG = "rgba(255,255,255,0.5)";
+//        var colorCPout = "rgba(0,0,255,0.8)";
+//        var colorCPin = "rgba(0,255,0,0.8)";
+//        var colorCP = "rgba(255,111,111,0.8)";
+//        var colorCorner = "rgba(111,111,111,0.7)";
+//        var colorBorder = "rgba(111,111,111,0.4)";
+//        
+//        var selectedColor = "rgba(255,0,0,0.6)";
+//        var selectedColor2 = "rgba(255,0,0,0.2)";
+////        cdebug(selectedName)();
+//        
+//
+//        // set background
+//        size = new Size(bounds.width-radius, bounds.height-radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topLeft.x+radius/2,bounds.topLeft.y+radius/2],size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".body"===selectedName)?selectedColor2:colorBKG;
+//        path.name = cEl_groupName + ".body";
+//        path.cp = -9;
+//
+//
+//
+//        // draw borders
+//        
+//        size = new Size(bounds.width-2*radius, radius/2);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topLeft.x+radius,bounds.topLeft.y],size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".borderTop"===selectedName )?selectedColor:colorBorder;//|| cEl_groupName + ".topLeft"===selectedName
+//        path.name = cEl_groupName + ".borderTop";
+//        path.cp = -8;
+//        
+//        size = new Size(radius/2, bounds.height-2*radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.topRight.x-radius/2,bounds.topRight.y+radius],size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".borderRight"===selectedName)?selectedColor:colorBorder;
+//        path.name = cEl_groupName + ".borderRight";
+//        path.cp = -7;
+//        
+//        size = new Size(-bounds.width+2*radius, radius/2);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.bottomRight.x-radius,bounds.bottomRight.y-radius/2],size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".borderBottom"===selectedName)?selectedColor:colorBorder;
+//        path.name = cEl_groupName + ".borderBottom";
+//        path.cp = -6;
+//        
+//        size = new Size(radius/2, -bounds.height+2*radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle([bounds.bottomLeft.x,bounds.bottomLeft.y-radius],size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".borderLeft"===selectedName)?selectedColor:colorBorder;
+//        path.name = cEl_groupName + ".borderLeft";
+//        path.cp = -5;
+//        // draw corners
+//        
+//        size = new Size(radius, radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.topLeft,size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".topLeft"===selectedName)?selectedColor:colorCorner;
+//        path.name = cEl_groupName + ".topLeft";
+//        path.cp = -4;
+//        
+//        size = new Size(-radius, radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.topRight,size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".topRight"===selectedName)?selectedColor:colorCorner;
+//        path.name = cEl_groupName + ".topRight";
+//        path.cp = -3;
+//        
+//        size = new Size(-radius, -radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.bottomRight,size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".bottomRight"===selectedName)?selectedColor:colorCorner;
+//        path.name = cEl_groupName + ".bottomRight";
+//        path.cp = -2;
+//        
+//        size = new Size(radius, -radius);
+//        path = cEl_group.children[4].addChild(new paper.Path.Rectangle(bounds.bottomLeft,size));
+//        path.fillColor = (boolSelectedId && cEl_groupName + ".bottomLeft"===selectedName)?selectedColor:colorCorner;
+//        path.name = cEl_groupName + ".bottomLeft";
+//        path.cp = -1;
+//        // draw control points and handles
+//        
+//        for(var i = 0,boolHandles,boolSelectedId,segment,point,pointHandleIn,pointHandleOut;i<cEl_group.children[0].children[0].segments.length;i++){
+//            size = new Size(radius/2, radius/2);
+//            segment = cEl_group.children[0].children[0].segments[i];
+//            point = segment.point;
+//            boolHandles = segment.hasHandles();
+//            boolSelectedId = (i===selectedId);
+//            
+//            var CP_group = cEl_group.children[4].addChild(new paper.Group);
+//            CP_group.name = ".CPGR";
+//            CP_group.cp = i;
+//            
+//            // draw handles lines
+//            if(boolHandles){
+//                pointHandleIn = segment.handleIn;
+//                pointHandleOut = segment.handleOut;
+//                
+//                path = CP_group.addChild(new Path.Line([pointHandleIn.x+point.x,pointHandleIn.y+point.y], point));
+//                path.strokeColor = (boolSelectedId && cEl_groupName + ".CPLin"===selectedName)?selectedColor:colorCPin;
+//                path.name = cEl_groupName + ".CPLin";
+//                path.cp = i;
+//
+//                path = CP_group.addChild(new Path.Line(point, [pointHandleOut.x+point.x,pointHandleOut.y+point.y]));
+//                path.strokeColor = (boolSelectedId && cEl_groupName + ".CPLout"===selectedName)?selectedColor:colorCPout;
+//                path.name = cEl_groupName + ".CPLout";
+//                path.cp = i;
+//            }
+//            
+//            // draw CP point
+//            path = CP_group.addChild(new paper.Path.Rectangle([point.x-radius/4,point.y-radius/4],size));
+//            path.fillColor = (boolSelectedId && cEl_groupName + ".CP"===selectedName)?selectedColor:colorCP;
+//            path.name = cEl_groupName + ".CP";
+//            path.cp = i;
+//            
+//            // draw handles points
+//            if(boolHandles){
+//                path = CP_group.addChild(new paper.Path.Rectangle([pointHandleIn.x+point.x-radius/4,pointHandleIn.y+point.y-radius/4],size));
+//                path.fillColor = (boolSelectedId && cEl_groupName + ".CPin"===selectedName)?selectedColor:colorCPin;
+//                path.name = cEl_groupName + ".CPin";
+//                path.cp = i;
+//                
+//                path = CP_group.addChild(new paper.Path.Rectangle([pointHandleOut.x+point.x-radius/4,pointHandleOut.y+point.y-radius/4],size));
+//                path.fillColor = (boolSelectedId && cEl_groupName + ".CPout"===selectedName)?selectedColor:colorCPout;
+//                path.name = cEl_groupName + ".CPout";
+//                path.cp = i;
+//            }
+//        };
+//        
+//        
+////        path.strokeWidth = radius/2;
+////        path.strokeColor = color;
+//        
+////        path.selected = true;
+////        cdebug("end")();
+//        return true;
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
 //function cEl_drawCp(shape,cEl_ctx){
 //    
 //    try{
