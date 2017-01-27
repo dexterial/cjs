@@ -577,7 +577,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
 
                 eventholder.retObj = hitObject.item.parent.parent;
                 eventholder.actObj = hitObject.item;
-                eventholder.actSegment = hitObject.segment;
+                eventholder.hitObject = hitObject;
 
             }else{
                 eventholder.retObj = paper.project.activeLayer;

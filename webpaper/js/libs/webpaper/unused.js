@@ -1,3 +1,93 @@
+////        cdebug(bounds.topLeft)();
+        
+        // borderTop
+//        size = new paper.Size(bounds.width, GlobalEditRadius);
+//        drawGroup_CP_Rectangle(CP_group,boolSetNew,{"color":GlobalEditColorBorder,"type":"fillColor","index":1},cEl_groupName + ".borderTop",size,bounds.topLeft);
+//        
+        
+//        return true;
+        
+//        // borderTop
+//        size = new paper.Size(bounds.width-2*GlobalEditRadius, GlobalEditRadius/2);
+//        drawGroup_CP_Rectangle(CP_group,boolSetNew,{"color":GlobalEditColorBorder,"type":"fillColor","index":1},cEl_groupName + ".borderTop",size,bounds.topLeft.add([GlobalEditRadius,0]));
+
+        
+//        // borderRight
+//        size = new Size(GlobalEditRadius/2, bounds.height-2*GlobalEditRadius);
+//        drawGroup_CP_Rectangle(CP_group,boolSetNew,{"color":GlobalEditColorBorder,"type":"fillColor","index":2},
+//            cEl_groupName + ".borderRight",size,[bounds.topRight.x-GlobalEditRadius/2,bounds.topRight.y+GlobalEditRadius]);
+
+        
+//        size = new Size(GlobalEditRadius/2, bounds.height-2*GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle([bounds.topRight.x-GlobalEditRadius/2,bounds.topRight.y+GlobalEditRadius],size));
+//            path.data = {"color":GlobalEditColorBorder,"type":"fillColor","index":2};
+//            path.fillColor = GlobalEditColorBorder;
+//            path.name = cEl_groupName + ".borderRight";
+//        }else{
+//            
+//        }
+//        size = new Size(-bounds.width+2*GlobalEditRadius, GlobalEditRadius/2);
+//        
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle([bounds.bottomRight.x-GlobalEditRadius,bounds.bottomRight.y-GlobalEditRadius/2],size));
+//            path.data = {"color":GlobalEditColorBorder,"type":"fillColor","index":3};
+//            path.fillColor = GlobalEditColorBorder;
+//            path.name = cEl_groupName + ".borderBottom";
+//        }else{
+//            
+//        }
+//        
+//        size = new Size(GlobalEditRadius/2, -bounds.height+2*GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle([bounds.bottomLeft.x,bounds.bottomLeft.y-GlobalEditRadius],size));
+//            path.data = {"color":GlobalEditColorBorder,"type":"fillColor","index":4};
+//            path.fillColor = GlobalEditColorBorder;
+//            path.name = cEl_groupName + ".borderLeft";
+//        }else{
+//            
+//        }
+//        
+//        // draw corners
+//        size = new Size(GlobalEditRadius, GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle(bounds.topLeft,size));
+//            path.data = {"color":GlobalEditColorCorner,"type":"fillColor","index":5};
+//            path.fillColor = GlobalEditColorCorner;
+//            path.name = cEl_groupName + ".topLeft";
+//        }else{
+//            
+//        }
+//        
+//        size = new Size(-GlobalEditRadius, GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle(bounds.topRight,size));
+//            path.data = {"color":GlobalEditColorCorner,"type":"fillColor","index":6};
+//            path.fillColor = GlobalEditColorCorner;
+//            path.name = cEl_groupName + ".topRight";
+//        }else{
+//            
+//        }
+//        
+//        size = new Size(-GlobalEditRadius, -GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle(bounds.bottomRight,size));
+//            path.data = {"color":GlobalEditColorCorner,"type":"fillColor","index":7};
+//            path.fillColor = GlobalEditColorCorner;
+//            path.name = cEl_groupName + ".bottomRight";
+//        }else{
+//            
+//        }
+//        
+//        size = new Size(GlobalEditRadius, -GlobalEditRadius);
+//        if(boolSetNew){
+//            path = CP_group.addChild(new paper.Path.Rectangle(bounds.bottomLeft,size));
+//            path.data = {"color":GlobalEditColorCorner,"type":"fillColor","index":8};
+//            path.fillColor = GlobalEditColorCorner;
+//            path.name = cEl_groupName + ".bottomLeft";
+//        }else{
+//            
+//        }
 ////function drawGroup_CP_old(cEl_group){
 //    try{
 //        
