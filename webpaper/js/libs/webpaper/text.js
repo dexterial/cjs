@@ -42,7 +42,7 @@ function draw_cEl_text(cEl_group,strNewText){
         }
         
         if(cEl_group.reset.selection){
-            cEl_group.children[2].removeChildren();
+            cEl_group.children["TextSelection"].removeChildren();
             drawTextSelection(cEl_group,cEl_pageText);
         }
         
@@ -804,7 +804,7 @@ function draw_cEl_lines3(cEl_group,cEl_pageText){
     
     try{
         
-        cEl_group.children[3].removeChildren();
+        cEl_group.children["TextSymbols"].removeChildren();
 
         var offset = cEl_group.data.values.temp.style.textIndent;
         
@@ -825,17 +825,17 @@ function set_text_path(cEl_group,boolShowTextLines){
     
     try{
         
-        //var cEl_path = cEl_group.children[0].children[0];
+        //var cEl_path = cEl_group.children["ShapePath"].children[0];
         
-        var text_path_name =  cEl_group.children[1].name;
+        var text_path_name =  cEl_group.children["TextPath"].name;
         
         switch(cEl_group.data.values.pattern){
             case "box-fill":
                 
                 //cdebug(cEl_group.bounds)();
                 
-                cEl_group.children[1].removeChildren();
-                var bounds = cEl_group.children[0].bounds;
+                cEl_group.children["TextPath"].removeChildren();
+                var bounds = cEl_group.children["ShapePath"].bounds;
                 
                 //cdebug(cEl_group.data.values.vertical,false,false,0)();
                 if(cEl_group.data.values.vertical){
@@ -845,26 +845,26 @@ function set_text_path(cEl_group,boolShowTextLines){
                     var w = bounds.x + bounds.width - cEl_group.data.values.temp.style.paddingLeft - cEl_group.data.values.temp.style.paddingRight;
                     var h = bounds.y + bounds.height - cEl_group.data.values.temp.style.paddingTop - cEl_group.data.values.temp.style.paddingBottom;
                     
-                    //cEl_group.children[1].selected = true;
-                    //cdebug(cEl_group.children[0].bounds)();
-                    //cdebug(cEl_group.children[1].bounds)();
+                    //cEl_group.children["TextPath"].selected = true;
+                    //cdebug(cEl_group.children["ShapePath"].bounds)();
+                    //cdebug(cEl_group.children["TextPath"].bounds)();
                     
                     //size2px(cEl_group.style.calc["font-size"])
-                    cEl_group.children[1].addChild(new paper.Path({
+                    cEl_group.children["TextPath"].addChild(new paper.Path({
                         segments:[[x, y]],
                         name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                     }));
                     
                     while  (x<w){
                         i++;
-                        cEl_group.children[1].addChild(new paper.Path.Line({
+                        cEl_group.children["TextPath"].addChild(new paper.Path.Line({
                             from:[x, y],
                             to:[x, h],
                             name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                         }));
                         x = x + cEl_group.data.values.temp.style.fontSize + cEl_group.data.values.temp.style.lineHeight;
                     }
-                    cEl_group.children[1].clockwise = false;
+                    cEl_group.children["TextPath"].clockwise = false;
  
                 }else{
                     
@@ -878,13 +878,13 @@ function set_text_path(cEl_group,boolShowTextLines){
                     var h = bounds.y + bounds.height - cEl_group.data.values.temp.style.paddingTop - cEl_group.data.values.temp.style.paddingBottom;
                     var i = 0;
                     
-                    cEl_group.children[1].addChild(new paper.Path({
+                    cEl_group.children["TextPath"].addChild(new paper.Path({
                         segments:[[x, y]],
                         name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                     }));
                     while(y<h){
                         i++;
-                        cEl_group.children[1].addChild(new paper.Path.Line({
+                        cEl_group.children["TextPath"].addChild(new paper.Path.Line({
                             from:[x , y],
                             to:[w , y],
                             name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
@@ -894,29 +894,38 @@ function set_text_path(cEl_group,boolShowTextLines){
 
                 }
                 if(boolShowTextLines){
-                    cEl_group.children[1].selected = true;
+                    cEl_group.children["TextPath"].selected = true;
                 }
                 
             break;
             case "path":
                 
 //                if(cEl_path.name!==text_path.name){
-                cEl_group.children[1].removeChildren();
-//                    cEl_group.children[1].children[0] = cEl_group.children[0].children[0];
-                    cEl_setPaperPath(cEl_group,cEl_group.children[1], cEl_group.shape, true, false);
-//                    cEl_group.children[1].children[0].name = text_path_name;
-                    
-                    if(boolShowTextLines){
-                        cEl_group.children[1].selected = true;
-                    }
-//                }
+                
+               
+                cEl_group.children["TextPath"].removeChildren();
+                cEl_group.children["TextPath"].addChild(cEl_group.children["ShapePath"].clone());
+                
+                cEl_group.children["TextPath"].visible = false;
+                cEl_group.children["TextPath"].name = text_path_name;
+                
+                
+                //cEl_group.children["TextPath"].children[0].name = text_path_name;
+//                    cEl_group.children["TextPath"].children[0] = cEl_group.children["ShapePath"].children[0];
+//                    cEl_setPaperPath(cEl_group,cEl_group.children["TextPath"], cEl_group.shape, true, false);
+//                    cEl_group.children["TextPath"].children[0].name = text_path_name;
+                
+                //cdebug(cEl_group.children["TextPath"])();
+                if(boolShowTextLines){
+                    cEl_group.children["TextPath"].selected = true;
+                }
                 
             break;    
         }
         
-//        cdebug(cEl_group.children[0].children[0].length)();
-//        cdebug(cEl_group.children[1].children[0].length)();
-//        cdebug(cEl_group.children[2].children.length)();
+//        cdebug(cEl_group.children["ShapePath"].children[0].length)();
+//        cdebug(cEl_group.children["TextPath"].children[0].length)();
+//        cdebug(cEl_group.children["TextSelection"].children.length)();
         
         return true;
       
@@ -1084,7 +1093,7 @@ function drawTextAlongPath(cEl_group,index,offset){
         
         //cdebug(cEl_group.name)();
         
-        var text_path =  cEl_group.children[1];
+        var text_path =  cEl_group.children["TextPath"];
         
 
         // TODO do something about this part
@@ -1136,8 +1145,8 @@ function drawTextAlongPath(cEl_group,index,offset){
                     //cdebug(cEl_pageText.charsSelection.style)();
 //                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
 
-                    //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children[3],charSymbolContainer,boolSelected);
-                    drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children[3],boolSelected);
+                    //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],charSymbolContainer,boolSelected);
+                    drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],boolSelected);
                 }else{
                               
                     j++;
@@ -1186,14 +1195,14 @@ function drawTextSelection(cEl_group,cEl_pageText){
         
         
         
-//        var charsCount = cEl_group.children[3].children.length;
+//        var charsCount = cEl_group.children["TextSymbols"].children.length;
 //        cEl_group.selected=false;
 //        for(var charObj,boolSelected; i < charsCount; i++){
-//            charObj = cEl_group.children[3].children[i];
+//            charObj = cEl_group.children["TextSymbols"].children[i];
 //            if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
 //            if(boolSelected){
 //                charObj.selected=true;
-//                var rect = cEl_group.children[2].addChild(new paper.Path.Rectangle({
+//                var rect = cEl_group.children["TextSelection"].addChild(new paper.Path.Rectangle({
 //                    from: [charObj.position.x - charObj.w/2, charObj.position.y-charObj.fs/2],
 //                    to: [charObj.position.x + charObj.w/2, charObj.position.y+charObj.fs/2],
 //                    fillColor : cEl_pageText.charsSelection.style["background-color"],
@@ -1220,7 +1229,7 @@ function drawTextSelection(cEl_group,cEl_pageText){
                 if(boolSelected){
                     
                     
-                    var selection = cEl_group.children[2].addChild(new paper.Path.Rectangle({
+                    var selection = cEl_group.children["TextSelection"].addChild(new paper.Path.Rectangle({
                         from: [charObj.textItem.position.x - charObj.w/2, charObj.textItem.position.y-charObj.fs/2],
                         to: [charObj.textItem.position.x + charObj.w/2, charObj.textItem.position.y+charObj.fs/2],
                         fillColor : cEl_pageText.charsSelection.style["background-color"],
@@ -1263,7 +1272,7 @@ function drawTextCarret(cEl_group,cEl_pageText){
                     offset = +charObj.w/2;
                 }
                 
-                carret = cEl_group.children[2].addChild(new paper.Path.Line({
+                carret = cEl_group.children["TextSelection"].addChild(new paper.Path.Line({
                     from: [charObj.textItem.position.x + offset, charObj.textItem.position.y-charObj.fs/2],
                     to: [charObj.textItem.position.x + offset, charObj.textItem.position.y+charObj.fs/2],
                     strokeColor : cEl_pageText.charsSelection.style["color"],

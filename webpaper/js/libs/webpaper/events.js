@@ -563,36 +563,36 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             var hitOptions = {
 //                    class:paper.Path,
 //                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
-                segments: true,
+//                segments: true,
                 stroke: true,
                 fill: true,
                 tolerance: 5
             };
             var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
 
-            if(hitObject && hitObject.item.parent.parent){
+            if(hitObject && hitObject.item){
 //                        var name = hitObject.item.name;
                 //cdebug(paper.project.name)();
-                //cdebug(hitObject.item.parent.parent.className)();
+//                cdebug("<<< " + hitObject.item.parent.parent.tag + " --- " + hitObject.item.parent.parent.name + " >>> vs <<< " +
+//                        hitObject.item.parent.className + " --- " + hitObject.item.parent.name + " >>> vs <<< " + 
+//                        hitObject.item.className +" --- "+ hitObject.item.name + " >>>")();
+//                var parent = getParent(hitObject.item,"tag");
+//                cdebug(parent.name)();
 
-                eventholder.retObj = hitObject.item.parent.parent;
+                eventholder.retObj = getParent(hitObject.item,"tag");
                 eventholder.actObj = hitObject.item;
                 eventholder.hitObject = hitObject;
 
             }else{
                 eventholder.retObj = paper.project.activeLayer;
                 eventholder.actObj = paper.project.activeLayer;
-                eventholder.actSegment = null;
+                eventholder.hitObject = null;
             }
                 
             //if(!eventholder.active.oldObj)return false;
             eventholder.layerId = eventholder.retObj.layerName;
             layerSwitch(eventholder.layerId);
-
-//            if(boolLayerOnly){
-                
-//            }
-                    
+    
             eventholder.currentid = eventholder.retObj.name;
 
         }
@@ -606,6 +606,30 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
     }
 };
 
+function getParent(obj,checkProperty){
+    try{
+        //var i=0;
+        do{
+            //i++;
+            if(!obj.parent)return obj;
+            obj = obj.parent;
+            if(obj.hasOwnProperty(checkProperty)){
+                //cdebug(i)();
+                return obj;
+            }
+
+        }while(true)
+
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+function has(object, key) {
+    return object.hasOwnProperty(key);
+ }
 
 function updateEventHolder(eventholder,boolHover,boolFocus,boolActive) {
     
@@ -889,6 +913,7 @@ function handleCSSEvents(eventholder,boolHover,boolFocus,boolActive,boolRunEvent
             //  hover reset for old focus element 
             if(eventholder.hover.resetold){
                 cEl = eventholder.hover.oldObj;
+//                cdebug(cEl.className)();
                 //cdebug("->>>" + cEl.name)();
 //                if(cEl){
 //                    //cdebug(eventholder.hover.id)();
