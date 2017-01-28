@@ -834,6 +834,7 @@ function setGetLayer(cEl,parentName){
         layer.focus = cEl.focus;
         layer.hover = cEl.hover;
         layer.active = cEl.active;
+        layer.enabled = cEl.enabled;
         
         layer.style = $.extend(true,{},cEl.style);
         layer.events = $.extend(true,{},cEl.events);
@@ -1461,9 +1462,7 @@ function draw_cEl_project(cEl_project){
 function draw_cEl_layer(cEl_layer) {
     
     try {
-        
-        
-        
+
         if(!cEl_layer.reset.layout_shape){return true;};
         if(!cEl_layer.visible){
             //cdebug("not visible")();
@@ -2727,12 +2726,14 @@ function getFunctionObj(strEval,boolEvalArgs,actEl){
 function runEval(actEl, evtType){
     
     try{
-        //cdebug(actEl);
+        
+        
         if(!actEl || !actEl.events)return null;
         var strEval = actEl.events[evtType];
-
+        
         if(strEval && actEl.enabled){
-            
+        
+            //cdebug(strEval)();
             var fctObj = getFunctionObj(strEval,true,actEl);
 //            return eval(strEval);
             
@@ -2758,7 +2759,7 @@ function executeFunctionByName2(fctObj){
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
-        cdebug(fctObj,false,false,3)();
+        cdebug("undefined function " + Obj.fName,false,false,3)();
         return err;
     }
 }

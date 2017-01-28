@@ -134,6 +134,8 @@ function globalEvents(eventholder){
                 
                 if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
                     
+                    //cdebug(eventholder.retObj.events)();
+                    
                     runEval(eventholder.retObj,eventholder.type);
                
                     // CSS enabled events
@@ -406,6 +408,8 @@ function setEventHolder(pageId) {
                 "active":{"id":null,"resetold":false,"reset":false},
                 "metrics":{},
                 "keys":{},
+                "block":{"state":false,"metrics":{},"keys":{}},
+                "data":{},
                 "currentid":null,
                 "pageId":pageId,
                 "canvReset":[]
@@ -423,8 +427,6 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
     try{
         // prefill default event stuff
         
-        //alert("preSetEventHolder");
-        
         eventholder.type = paperevt.type;
         eventholder.callerType = evtCallerType;
         var evt;
@@ -439,21 +441,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             //paperevt.stop();
         }
         
-//        cdebug("paperevt.type "+ paperevt.type + " >>> " + evt.target)();
         
-        //
-        var targetId = evt.target.id;
-        eventholder.targetId = targetId;
-        
-        //projectSwitch(cEl_group.projectName);
-
-        
-        //cdebug(eventholder.targetId)();
-        
-        //cdebug(projects.length,false,false,0);
-        
-        
-        //if(!paperevt.timeStamp){paperevt.timeStamp = new Date()};
         eventholder.metrics.ts = paperevt.timeStamp;
         eventholder.keys ={
             "altKey":evt.altKey,
@@ -538,12 +526,20 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
         }
         
         // prefill advanced event stuff
+        var targetId = evt.target.id;
         
-        if(!targetId){
+        
+        if(!targetId ){
 //            cdebug(eventholder.targetId)();
             eventholder.noevent = true;
         }else{
             eventholder.noevent = false;
+            if(eventholder.block.state) return true;
+            
+//            cdebug("here")();
+            
+            eventholder.targetId = targetId;
+            
             if(!eventholder.active.oldObj)eventholder.active.oldObj = paper.project.activeLayer;
             
             var arrTargetId = targetId.split("_");
@@ -556,7 +552,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 // case for body type key, scroll, etc event
                 return true;
             }
-
+            
+            
+            
             projectSwitch(eventholder.projectId);
 //            eventholder.layerId = paper.project.activeLayer.name;
             
@@ -571,6 +569,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             var hitObject = paper.project.hitTest(eventholder.metrics.xy, hitOptions);
 
             if(hitObject && hitObject.item){
+                
+                
+                
 //                        var name = hitObject.item.name;
                 //cdebug(paper.project.name)();
 //                cdebug("<<< " + hitObject.item.parent.parent.tag + " --- " + hitObject.item.parent.parent.name + " >>> vs <<< " +
@@ -583,7 +584,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 eventholder.actObj = hitObject.item;
                 eventholder.hitObject = hitObject;
                 
-//                cdebug(eventholder.retObj.name)();
+                //cdebug(eventholder.retObj.events)();
 
             }else{
                 eventholder.retObj = paper.project.activeLayer;
@@ -599,7 +600,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
 
         }
 
-        
+        return true;
        
     } catch (e) {
         var err = listError(e);
@@ -1116,16 +1117,42 @@ function handleContextMenu(eventholder){
         //cdebug(menuTriggered)();
         
         if (menuTriggered){
-            var xy = eventholder.metrics.xy;
-            menuTriggered.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
-            menuTriggered.reset.layout_shape = true;
-            
+            moveCEl(eventholder,menuTriggered,false);
             menuTriggered.bringToFront();
-            
-            drawProjects(menuTriggered,true);
+//            drawProjects(menuTriggered,false);
         };
         
         
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+function moveCEl(eventholder,cEl,boolcheckmouse){
+    try{
+        if(boolcheckmouse){
+            if(eventholder.keys.buttons !==1)return true;
+        }
+        var xy;
+        
+        
+        
+        if(eventholder.block.offset){
+            xy = [eventholder.metrics.xy[0] + eventholder.block.offset.x -eventholder.block.metrics.xy[0],
+                eventholder.metrics.xy[1] + eventholder.block.offset.y-eventholder.block.metrics.xy[1]];
+        }else{
+            xy = eventholder.metrics.xy;
+        }
+        
+        cEl.shape.masspoint = cEl_edit_MP(paper.project,xy,paper.project.shape.scale);
+        cEl.reset.layout_shape = true;
+        
+        //cdebug(eventholder.block.offset)();
+        
+        return true;
         
     } catch (e) {
         var err = listError(e);

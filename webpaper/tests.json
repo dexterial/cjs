@@ -170,7 +170,37 @@
             "focus":false,
             "hover":false,
             "active":false,
-            "events":{  
+            "events":{
+                "mousedown":"blockEvents(true,eventholder)",
+                "mouseup":"blockEvents(false,eventholder)",
+                "mousemove":"moveCEl(eventholder,this,true)"
+            },
+            "shape":{
+                "redraw":true,
+                "name":"rectangle-tl",
+                "masspoint":[0,0],
+                "type":"poligon"
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "context":{
+                    "text":"ct2",
+                    "unfolded":"ct2",
+                    "unfoldedfull":"ct2"
+                }
+            },
+            "data":{
+                "type":"list"
+            }
+        },
+        "editlayer":{
+            "tag":"layer",
+            "debug":false,
+            "enabled":true,
+            "focus":false,
+            "hover":false,
+            "active":false,
+            "events":{
             },
             "shape":{
                 "redraw":true,
@@ -225,9 +255,6 @@
             "tag":"layer",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
-                "mouseout":"testEvents2(this,'mouseout')",
-                "mousedown":"testEvents(this,'mousedown')",
-                "mouseup":"testEvents2(this,'mouseup')"
             },
             "shape":{
                 "redraw":true,
@@ -246,9 +273,6 @@
             "tag":"project",
             "enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
-                "mouseout":"testEvents2(this,'mouseout')",
-                "mousedown":"testEvents(this,'mousedown')",
-                "mouseup":"testEvents2(this,'mouseup')"
             },
             "shape":{
                 "redraw":true,
@@ -419,10 +443,10 @@
                                 "vertical":false,
                                 "pattern":"box-fill"
                             }}},
-                        {"name":"test3c","elId":"text1","tab":1,"shape":{"masspoint":[0.2,0.02],"scale":[0.5,0.04],"name":"round-corner-normal","type":"poligon"},
-                            "events":{"mousedown":"editMode(window['eventholder'])"},
+                        {"name":"test3c","elId":"text1","tab":1,"shape":{"masspoint":[0.3,0.02],"scale":[0.6,0.04],"name":"round-corner-normal","type":"poligon"},
+                            "events":{"mousedown":"editMode(eventholder)"},
                             "data":{"values":{
-                                "default":"editmodekeys", 
+                                "default":"editmodekeys",
                                 "editable":false,
                                 "noselect":true,
                                 "vertical":false,
@@ -434,8 +458,7 @@
                     "name":"context","elId":"contextlayer","visible":false,"class":"contextmenu","tab":1,
                     "shape":{"scale":[0.1,0.2]},
                     "children":[
-                        {"name":"contextlist",
-                            "elId":"contextlist","tab":0,
+                        {"name":"contextlist","elId":"contextlist","tab":0,
                             "children":[
                                 {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.11]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"copy"}}},
                                 {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.45]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"paste"}}}
@@ -448,12 +471,12 @@
         {"name":"editor","elId":"project1","visible":false,"tab":0,"shape":{"masspoint":[0.05,0.05],"scale":[0.1,0.35]},
             "children":[
                 {
-                    "name":"editTool1","elId":"contextlayer","visible":true,"class":"toolKit","tab":2,
+                    "name":"editTool1","elId":"editlayer","visible":true,"class":"toolKit","tab":2,
                     "shape":{"scale":[1,1]},
                     "children":[
                         {"name":"editTool1List","elId":"contextlist","tab":0,
                             "children":[
-                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"scale":[1,0.025],"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this)"},"data":{"values":{"default":"header"}}},
+                                {"name":"header","class":"header","elId":"editorBHeader1","tab":0,"shape":{"scale":[1,0.025],"masspoint":[0,0]},"events":{"mousemove":"moveMenu(this,eventholder)","mousedown":"blockEvents(true,eventholder)","mouseup":"blockEvents(false,eventholder)"},"data":{"values":{"default":"header"}}},
                                 {"name":"close","class":"btnRed1","elId":"btnClose1","tab":1,"shape":{"scale":[0.0018,null],"rotation":45,"masspoint":[0.09,0.012]},"events":{"mousedown":"editMode(eventholder,true)"}},
                                 
                                 {"name":"select","class":"select","elId":"handBtn","tab":2,"shape":{"scale":[0.05,null],"masspoint":[0.05,0.09]},"events":{"mousedown":"selectGroup()"}},

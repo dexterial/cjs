@@ -254,6 +254,8 @@ function editor_mousedown(eventholder) {
                     select_CP(cEl_layer,eventholder.metrics.xy,eventholder.hitObject);
                     paper.data.workState = "editmouse";
                     
+                    eventholder.block.state = true;
+                    
                     //eventholder.actObj.bringToFront();
                 }else{
 //                    paper.data.cEl_group = null;
@@ -263,7 +265,7 @@ function editor_mousedown(eventholder) {
             break;
             case "pre":
                 //eventholder.actObj.fullySelected = true;
-                //cdebug(eventholder.actObj.className)();
+//                cdebug(eventholder.actObj.className)();
                 switch (eventholder.actObj.className) {
 
                     case "SymbolItem":
@@ -271,7 +273,7 @@ function editor_mousedown(eventholder) {
                     case "CompoundPath":
                         
                         var cEl_group = getParent(eventholder.actObj,"tag");
-                        if(cEl_group.tag !== "group")selectGroup(cEl_group);
+                        if(cEl_group.tag === "group")selectGroup(cEl_group);
 
                     break;
 //                            case "Path":
@@ -346,7 +348,7 @@ function editor_mouseup(eventholder) {
                 paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
                 paper.data.cEl_group.reset.debug = true;
                 paper.data.workState = "editset";
-
+                eventholder.block.state = false;
             break;
             case "add":
 //                        cdebug("here ADD")();
@@ -451,6 +453,8 @@ function drawGroup_CP_Line(CP_group,boolSetNew,data,name,from,to){
 function drawGroup_CP_bounds(cEl_group,bounds,cEl_groupName){
     try{
         
+//        bounds = cEl_group.layer.bounds;
+        
         var size = new paper.Size(bounds.width, bounds.height);
         
         var CP_group = cEl_group.children["ControlPoints"].children[0];
@@ -460,9 +464,7 @@ function drawGroup_CP_bounds(cEl_group,bounds,cEl_groupName){
             CP_group.name = ".CPGR1";
             boolSetNew = true;
         }else{
-
             cEl_group.children["ControlPoints"].children[0].removeChildren();
-
         }
         
         // set background
@@ -502,7 +504,7 @@ function drawGroup_CP(cEl_group){
         // draw control points and handles
         if(boolSetNew){
             CP_group = cEl_group.children["ControlPoints"].addChild(new paper.Group);
-            CP_group.name = ".CPGR2";
+//            CP_group.name = ".CPGR2";
         }else{
             CP_group = cEl_group.children["ControlPoints"].children[1];
             
@@ -1507,8 +1509,7 @@ function select_CP(cEl_layer,xy,hitObject){
         
         paper.data.cEl_groupHit = hitObject.item;
         
-//        var bounds = paper.data.cEl_group.children["ShapePath"].bounds;
-        paper.data.cEl_groupCPdata = null;
+//        paper.data.cEl_groupCPdata = null;
         
         paper.data.cEl_groupCPdata = paper.data.cEl_group.children["ShapePath"].bounds.clone(); //bounds;//.clone();
         
@@ -1523,10 +1524,7 @@ function select_CP(cEl_layer,xy,hitObject){
         if(paper.data.cEl_groupCPdata.hitActType.default)hitObject.item[hitObject.item.data.drawType] = "rgba(255,0,0,0.4)";
         
         cEl_setCpCursor(cEl_layer,false,paper.data.cEl_groupCPdata.hitActType.name);
-        
-
         paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
-        //paper.data.cEl_group.children["TextPath"].applyMatrix = false;
         
         return true;            
     } catch (e) {
@@ -1723,40 +1721,45 @@ function colorButton(cEl){
     }   
 }
 
-function moveMenu(cEl){
+function blockEvents(boolState,eventholder){
+    try{
+        //eventholder = window["eventholder"];
+        eventholder.block.state = boolState;
+        if(boolState){
+            eventholder.block.metrics = $.extend(true,{},eventholder.metrics);
+            eventholder.block.keys = $.extend(true,{},eventholder.metrics);
+            eventholder.block.offset = eventholder.retObj.bounds.clone();
+        }else{
+            eventholder.block.offset = null;
+        }
+    
+    
+        //cdebug("blockEvents " + boolState)();
+        
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
+
+function moveMenu(cEl,eventholder){
     try{
         
         // TODO add event type and set it on mousedown also
         
-        var eventholder = window["eventholder"];
-        
         if(eventholder.keys.buttons===1){
-            
-            //cdebug(cEl.projectName)();
-            //cdebug(cEl.data.xyoffset)();
-            
-            var menuTriggered = paper.project;
-            var xy = [eventholder.metrics.xyAbs[0]-cEl.data.xyoffset[0],eventholder.metrics.xyAbs[1]-cEl.data.xyoffset[1]];
-            
-            
-//            if(paper.data.cEl_group && eventholder.keys.buttons ===1){
-//                            
-////                           paper.data.cEl_group.shape.masspoint = cEl_edit_MP(paper.data.cEl_group.parent,eventholder.metrics.xy,paper.data.cEl_group.parent.shape.scale);
-////                           paper.data.cEl_group.reset.layout_shape =true;
-////                            cdebug(paper.data.cEl_group.position)();
-////                            cdebug(eventholder.metrics.delta)(); 
-//
-////                            cdebug(paper.data.cEl_group.name)();
-//                            
-//                            paper.data.cEl_group.position = new paper.Point([paper.data.cEl_group.position.x + eventholder.metrics.delta.x,paper.data.cEl_group.position.y + eventholder.metrics.delta.y]);
-//                        }
 
+            var menuTriggered = paper.project;
+            var xy = [eventholder.metrics.xyAbs[0]+eventholder.data.offset[0],eventholder.metrics.xyAbs[1]+eventholder.data.offset[1]];
+            
             menuTriggered.shape.masspoint = [menuTriggered.shape.scale[0]*xy[0]/menuTriggered.shape.w,menuTriggered.shape.scale[1]*xy[1]/menuTriggered.shape.h];
             menuTriggered.reset.layout_shape = true;
             
-            
         }else if(eventholder.keys.buttons===0){
-            cEl.data.xyoffset = [eventholder.metrics.xy[0]-cEl.bounds.topLeft.x,eventholder.metrics.xy[1]-cEl.bounds.topLeft.y];
+            eventholder.data.offset = [cEl.bounds.topLeft.x-eventholder.metrics.xy[0],cEl.bounds.topLeft.y-eventholder.metrics.xy[1]];
+//            cdebug(eventholder.data.offset)();
         }
 //        if(eventholder.keys.button)
 //        cdebug(cEl.name)();
