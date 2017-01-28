@@ -269,10 +269,9 @@ function editor_mousedown(eventholder) {
                     case "SymbolItem":
                     case "Path":
                     case "CompoundPath":
-                        var cEl_group = eventholder.actObj.parent.parent;
-                        if(cEl_group.tag !== "group")break;
                         
-                        selectGroup(cEl_group);
+                        var cEl_group = getParent(eventholder.actObj,"tag");
+                        if(cEl_group.tag !== "group")selectGroup(cEl_group);
 
                     break;
 //                            case "Path":

@@ -1681,7 +1681,6 @@ function draw_cEl_group(cEl_group) {
                 if(url.indexOf("(")>0){
                     fillGradient(cEl_group,url);
                 }
-//                cdebug(cEl_group.name + " >>> " + url)();
                 
             }else{
                 // normal fill
@@ -2360,7 +2359,7 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
         if(!shapeContainer.scale[1]){
             shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
         }
-        scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
+        
         var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];
         if(!shapeContainer.masspoint){
             shapeContainer.masspoint = $.extend(true,[],cEl_layer.shape.masspoint);
@@ -2384,7 +2383,14 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
             shapeContainer.points = cEl_page.shapes[cEl_group.shape.name];
             
             cEl_pathHolder.addChild(new paper.CompoundPath(shapeContainer.points));
-            cEl_path = cEl_pathHolder.children[0];
+//            cEl_path = cEl_pathHolder.children[1];
+            cEl_pathHolder.position = cpMP;
+            cEl_pathHolder.scale(shapeContainer.scale[0],shapeContainer.scale[1]);
+            
+//            cdebug(shapeContainer.scale)();
+            
+            //cEl_path.name = cEl_group.parentName + "_" + cEl_group.name + ".Path";
+            
 //            cEl_group.children["ShapePath"].removeChildren();
 //            cEl_path = cEl_group.children["ShapePath"].addChild(new paper.CompoundPath(shapeContainer.points));
             //cEl_path = cEl_group.children["ShapePath"];
@@ -2394,6 +2400,8 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
             shapeContainer.points = $.extend(true,[],cEl_page.shapes[cEl_group.shape.name]);
             points = shapeContainer.points;
             pointsLen = points.length;
+            
+            scaleCP = [shapeContainer.scale[0]*wF,shapeContainer.scale[1]*hF];
             
 //            cEl_group.children["ShapePath"].
             cEl_path = cEl_pathHolder.addChild(new paper.CompoundPath(new paper.Path()));
@@ -2507,7 +2515,7 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
             
         }
 
-        cEl_path.name = cEl_group.parentName + "_" + cEl_group.name + ".Path";
+        
         if(cEl_group.shape.rotation){
             //cdebug()();
             cEl_pathHolder.rotate(cEl_group.shape.rotation,cpMP);

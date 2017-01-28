@@ -252,8 +252,8 @@ function cEl_set_wordMap3(cEl_group){
         
         var text = cEl_group.data.values.text;
         
-        
-//        cdebug(styleMap)();
+        if(!text)return false;
+//        cdebug(text)();
         
         var charObj = {"chr":"n","f":null,"wp":0,"pp":0,"nl":true,"sc":false,"pr":false};
         pushChar(charObj,cEl_group,false);

@@ -563,7 +563,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             var hitOptions = {
 //                    class:paper.Path,
 //                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
-//                segments: true,
+                segments: true,
                 stroke: true,
                 fill: true,
                 tolerance: 5
@@ -582,6 +582,8 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 eventholder.retObj = getParent(hitObject.item,"tag");
                 eventholder.actObj = hitObject.item;
                 eventholder.hitObject = hitObject;
+                
+//                cdebug(eventholder.retObj.name)();
 
             }else{
                 eventholder.retObj = paper.project.activeLayer;
