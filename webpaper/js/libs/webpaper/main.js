@@ -39,7 +39,8 @@ var GLOBAL_rem = getRootElementFontSize();
 var GLOBAL_loaded = false;
 var GLOBAL_renderer = false;
 paper.install(window);
-
+paper.settings.handleSize =5;
+paper.settings.handleLength =15;
 
 //window.setInterval(function(){cdebug("zz",false,true)},100);
 
@@ -70,6 +71,8 @@ $.getJSON(loadedFile, function (jsonPage) {
             GLOBAL_renderer = true;
             //renderer([jsonPage.name]);
             //renderer([jsonPage.name]);
+            
+            //console.log(paper.version);
             
             drawProjects(paper);
             
@@ -810,10 +813,14 @@ function setGetLayer(cEl,parentName){
         var layer = layerSwitch(cEl.name);
         if(layer)return layer;
         
+        
+        
         if(!paper.project.activeLayer.name && paper.project.layers.length===1){
             layer = paper.project.activeLayer;
         }else{
+//            cdebug(paper.version)();
             layer = paper.project.addLayer(new paper.Layer);
+//            cdebug("test2")();
             layer.activate();
         }
 //        cdebug("load layer " + parentName + "_" + cEl.name )();

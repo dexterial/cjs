@@ -561,7 +561,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             var hitOptions = {
 //                    class:paper.Path,
 //                    match: function test(hit){if(typeof hit.item.name!=="undefined")return true;},
-                segments: true,
+//                handles:true,
+//                bounds:true,
+//                segments: true,
                 stroke: true,
                 fill: true,
                 tolerance: 5
@@ -614,12 +616,13 @@ function getParent(obj,checkProperty){
         //var i=0;
         do{
             //i++;
-            if(!obj.parent)return obj;
-            obj = obj.parent;
             if(obj.hasOwnProperty(checkProperty)){
                 //cdebug(i)();
                 return obj;
             }
+            if(!obj.parent)return obj;
+            obj = obj.parent;
+            
 
         }while(true)
 
