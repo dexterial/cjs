@@ -1200,9 +1200,6 @@ function draw_cEl(cEl,boolRedraw){
 ////                if(cEl.layerId !== "control" && cEl.layerId !== "stats" )cdebug("draw shape " + cEl.name + " , redraw " + cEl.reset.layout_shape,false,false,2)();
                 draw_cEl_group(cEl);
                 
-                if(cEl.reset.debug){
-                    drawGroup_CP(cEl);
-                }
                 
                 cEl.reset.layout_shape = false;
                 cEl.reset.layout_css = false;

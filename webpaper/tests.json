@@ -393,7 +393,7 @@
                                 "vertical":false,
                                 "pattern":"path"
                             }}},
-                        {"name":"bear","elId":"text1","tab":1,"shape":{"masspoint":[0.4,0.3],"scale":[0.06,0.06],"rotation":180,"name":"ursan","type":"svg"},
+                        {"name":"bear","elId":"text1","tab":1,"shape":{"masspoint":[0.4,0.3],"scale":[0.2,0.2],"rotation":180,"name":"ursan","type":"svg"},
                             "data":{"values":{
                                 "default":"",        
                                 "editable":true,
