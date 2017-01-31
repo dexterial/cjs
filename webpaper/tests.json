@@ -21,7 +21,7 @@
         "defaults":{
             "textval1":"ABCDEFG",
             "textval2":"A B c D E F G H I J K L m n o p q r s t u v w x y z 1234567890 A B c D E F G H I J K L m n o p q r s t u v w x y z",
-            "textval3":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
+            "longText":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
             "header":"TOOLS",
             "textEditor":"ABC",
             "editmodekeys":"Press Ctrl + Shift + 'E' or this button for edit mode",
@@ -395,10 +395,10 @@
                             }}},
                         {"name":"bear","elId":"text1","tab":1,"shape":{"masspoint":[0.4,0.3],"scale":[0.2,0.2],"rotation":180,"name":"ursan","type":"svg"},
                             "data":{"values":{
-                                "default":"",        
+                                "default":"longText",        
                                 "editable":true,
                                 "vertical":false,
-                                "pattern":"box-fill"
+                                "pattern":"path"
                             }}},
                         {"name":"hd","elId":"text1","tab":1,"shape":{"masspoint":[0.6,0.3],"scale":[2,2],"name":"hd","type":"svg"},
                             "data":{"values":{
@@ -417,28 +417,28 @@
                             }}},
                         {"name":"test3","elId":"text1","tab":1,"shape":{"masspoint":[0.8,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"quadratic"},
                             "data":{"values":{
-                                "default":"textval3", 
+                                "default":"longText", 
                                 "editable":true,
                                 "vertical":true,
                                 "pattern":"box-fill"
                             }}},
                         {"name":"test3a","elId":"text1","tab":1,"shape":{"masspoint":[0.8,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"quadratic"},
                             "data":{"values":{
-                                "default":"textval3", 
+                                "default":"longText", 
                                 "editable":true,
                                 "vertical":true,
                                 "pattern":"box-fill"
                             }}},
                         {"name":"test4","elId":"text1","tab":1,"shape":{"masspoint":[0.3,0.75],"scale":[0.3,0.3],"name":"round-corner-normal","type":"poligon"},
                             "data":{"values":{
-                                "default":"textval3", 
+                                "default":"longText", 
                                 "editable":true,
                                 "vertical":false,
                                 "pattern":"box-fill"
                             }}},
                         {"name":"test4a","elId":"text1","tab":1,"shape":{"masspoint":[0.3,0.5],"scale":[0.1,0.1],"name":"round-corner-normal","type":"poligon"},
                             "data":{"values":{
-                                "default":"textval3", 
+                                "default":"longText", 
                                 "editable":true,
                                 "vertical":false,
                                 "pattern":"box-fill"

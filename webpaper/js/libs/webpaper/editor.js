@@ -195,10 +195,10 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
 //                var color = caller.getSelectedColor(true) || (layer = caller.getLayer())
 //                    && layer.getSelectedColor(true);
                         
-                var        colorBounds = new paper.Color(0, 1, 1, 0.8);
+                var        colorBounds = new paper.Color(0, 0, 0, 0.6);
                 colorBounds = colorBounds.toCanvasStyle(ctx);
                 
-                var        colorPath = new paper.Color(0, 0, 0, 0.4);
+                var        colorPath = new paper.Color(0, 1, 1, 0.8);
                 colorPath = colorPath.toCanvasStyle(ctx);
                 
                 var        colorPosition = new paper.Color(1, 0, 0, 0.8);
@@ -307,7 +307,7 @@ function editor_keydown(eventholder) {
 //            break;
             case "editkeys":
                 
-                if(!paper.data.cEl_group || !paper.data.cEl_groupHit ){
+                if(!paper.data.cEl_group || !paper.data.cEl_groupCPdata ){
                     if(eventholder.keys.key==="Escape")selectGroup(null);
                     return false;
                 }
@@ -372,7 +372,7 @@ function editor_keydown(eventholder) {
 //                        selectGroup(null);
 //                    break;
                     default:
-                        cdebug(eventholder.keys)();
+//                        cdebug(eventholder.keys)();
                     break;
                 }
             break;
@@ -396,7 +396,7 @@ function editor_keyup(eventholder) {
             case "editkeys":
 //                cdebug("hre")();
                 paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
-                paper.data.cEl_group.reset.debug = true;
+//                paper.data.cEl_group.reset.debug = true;
                 paper.data.workState = "editset";
 //                cdebug(paper.data.workState)();
             break;
@@ -428,7 +428,7 @@ function editor_wheel(eventholder) {
             case "editset":
                 //cdebug(eventholder.wheel.deltaY);
 //                cdebug(paper.data.cEl_groupHit.name)();
-                cp_tabulation(paper.data,eventholder.wheel.deltaY>0);
+                cp_scrolling(paper.data,eventholder.wheel.deltaY>0);
                 
                 // TODO add here code to scroll in editsets control points
                 
@@ -494,6 +494,8 @@ function editor_mousedown(eventholder) {
                 var cEl_group_name = paper.data.cEl_group.parentName + "_" + paper.data.cEl_group.name;
                 //eventholder.actObj;
                 
+                var boolSelectBounds = !eventholder.keys.shiftKey;
+                
                 var hitOptions = {
 //                        class:paper.Path,
                     match: function test(hit){if(typeof hit.item.className!=="SymbolItem")return true;},
@@ -502,7 +504,7 @@ function editor_mousedown(eventholder) {
                     center: true,
                     stroke: true,
                     fill: true,
-                    bounds:true,
+                    bounds:boolSelectBounds,
                     
                     selected:true,
                     tolerance: 5
@@ -541,7 +543,7 @@ function editor_mousedown(eventholder) {
                     
                     select_CP(actObj,eventholder.metrics.xy,hitObject);
                     
-                   cdebug(hitObject.type + " of " + actObj.name)();
+//                    cdebug(hitObject.type + " of " + actObj.name)();
                     
                     
                     //cdebug(paper.data.cEl_groupCPdata)();
@@ -953,12 +955,19 @@ function editor_mouseup(eventholder) {
 function handleCP(data,delta,boolAlt){
     try{
         
+//        cdebug()();
+        
         var scaleX=1,scaleY=1,scalePoint;
         var cEl_group = data.cEl_group;
         var hitObjType = data.cEl_groupCPdata.hitActType.name;
 
         switch (hitObjType) {
-
+            
+            case "center":
+                    cEl_group.translate(delta);
+                    data.editTool = "move";
+            break;
+            
             // scale left>right
             case "borderLeft":
 
@@ -1036,11 +1045,11 @@ function handleCP(data,delta,boolAlt){
                 //var cEl_groupName = cEl_group.parentName + "_" + cEl_group.name;
                 //var hitObjName = data.cEl_groupHit;
                 
-                //cdebug(data.cEl_groupCPdata.name)();
+//                cdebug(data.cEl_groupCPdata.hitActType)();
                 
                 //if(data.cEl_groupCPdata.name === cEl_groupName){
-                    cEl_group.translate(delta);
-                    data.editTool = "move";
+//                    cEl_group.translate(delta);
+//                    data.editTool = "move";
                 //}
                 return true;
             break;
@@ -1065,18 +1074,20 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
         
         
         
-        var segmentPoint,CP_group;
-        var cEl_groupHit = data.cEl_groupHit;
+        var segmentPoint,hitActType;
+        hitActType = data.cEl_groupCPdata.hitActType;
+//        var cEl_groupHit = data.cEl_groupHit;
         //var boolLow = cEl_groupHit.data.indexLow===-1;
-        var cEl_groupBounds = cEl_group.children["ShapePath"].bounds;
-        
+//        var cEl_groupBounds = cEl_group.children["ShapePath"].bounds;
+//        
 //        if(boolLow){
 //            segmentPoint = cEl_group.children["ShapePath"].children[0].segments[cEl_groupHit.data.index];
 //        }else{
-            segmentPoint = cEl_group.children["ShapePath"].children[cEl_groupHit.data.indexLow].segments[cEl_groupHit.data.index];
+            segmentPoint = cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
 //        }
         
-        
+//        segmentPoint = data.cEl_groupCPdata.hitObject.item;
+//        cdebug(data.cEl_groupCPdata.hitActType)();
         
         
         switch (typeCP) {
@@ -1090,9 +1101,9 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                 segmentPoint.handleIn.x += delta.x;
                 segmentPoint.handleIn.y += delta.y;
 
-                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleIn);
-                CP_group = cEl_groupHit.parent;
-                CP_group.children["CPLin"].firstSegment.point = cEl_groupHit.position;
+//                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleIn);
+//                CP_group = cEl_groupHit.parent;
+//                CP_group.children["CPLin"].firstSegment.point = cEl_groupHit.position;
                 //
                 //cEl_groupHit.previousSibling.previousSibling.previousSibling.firstSegment.point = cEl_groupHit.position;
 
@@ -1103,11 +1114,11 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                 
   
                 
-                segmentPoint.handleIn = getEditVector(segmentPoint.handleIn,segmentPoint.point,delta,data);
-                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleIn);
-                
-                CP_group = cEl_groupHit.parent;
-                CP_group.children["CPin"].position = cEl_groupHit.firstSegment.point;
+//                segmentPoint.handleIn = getEditVector(segmentPoint.handleIn,segmentPoint.point,delta,data);
+//                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleIn);
+//                
+//                CP_group = cEl_groupHit.parent;
+//                CP_group.children["CPin"].position = cEl_groupHit.firstSegment.point;
                 
                 
 
@@ -1119,20 +1130,20 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                 segmentPoint.point.y += delta.y;
 
                 
-                // translate CP
-                cEl_groupHit.parent.translate(delta);
-                
+//                // translate CP
+//                cEl_groupHit.parent.translate(delta);
+//                
             break;
             
             case "CPLout":
                 
    
                 
-                segmentPoint.handleOut = getEditVector(segmentPoint.handleOut,segmentPoint.point,delta,data);
-                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleOut);
-                
-                CP_group = cEl_groupHit.parent;
-                CP_group.children["CPout"].position = cEl_groupHit.firstSegment.point;
+//                segmentPoint.handleOut = getEditVector(segmentPoint.handleOut,segmentPoint.point,delta,data);
+//                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleOut);
+//                
+//                CP_group = cEl_groupHit.parent;
+//                CP_group.children["CPout"].position = cEl_groupHit.firstSegment.point;
 
             break;
                 
@@ -1141,15 +1152,15 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                 segmentPoint.handleOut.x += delta.x;
                 segmentPoint.handleOut.y += delta.y;
 
-                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleOut);
-                CP_group = cEl_groupHit.parent;
-                CP_group.children["CPLout"].firstSegment.point = cEl_groupHit.position;
+//                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleOut);
+//                CP_group = cEl_groupHit.parent;
+//                CP_group.children["CPLout"].firstSegment.point = cEl_groupHit.position;
                 
             break;
             
         }
         
-        resetCPBounds(cEl_groupBounds,cEl_group);
+//        resetCPBounds(cEl_groupBounds,cEl_group);
         
         // TODO precompute if needed to update the CP margins ...
         
@@ -1157,11 +1168,11 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
             if(cEl_group.data.values.pattern === "path"){
                 switch (typeCP) {
                     case "CP":
-                        cEl_group.children["TextPath"].children[cEl_groupHit.data.indexLow].segments[cEl_groupHit.data.index].point = segmentPoint.point;
+                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].point = segmentPoint.point;
                     break;
                     case "CPin":
                     case "CPLin":
-                        cEl_group.children["TextPath"].children[cEl_groupHit.data.indexLow].segments[cEl_groupHit.data.index].handleIn = segmentPoint.handleIn;
+                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleIn = segmentPoint.handleIn;
                     
 //                        if(boolAlt){
 //                            editCP(data,groupObject,delta,typeCP,boolAlt);
@@ -1170,7 +1181,7 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                     break;    
                     case "CPout":
                     case "CPLout":
-                        cEl_group.children["TextPath"].children[cEl_groupHit.data.indexLow].segments[cEl_groupHit.data.index].handleOut = segmentPoint.handleOut;
+                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleOut = segmentPoint.handleOut;
                     break;
                 }
             }else{
@@ -1178,7 +1189,7 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
             }
         }
                 
-//        cEl_group.reset.debug = true;
+
         cEl_group.reset.text_draw = true;
         
         
@@ -1873,6 +1884,7 @@ function getHitActType(hitObject,defaultType){
             case "center":
                 return {"name":"center","default":false};
             break;
+            // borders and corners
             case "bounds":
 
                 switch(hitObject.name){
@@ -1903,27 +1915,27 @@ function getHitActType(hitObject,defaultType){
                 }
 
             break;
-            // corners
+            // handles CP
             case "segment":
-
 //                cdebug(hitObject.segment.index)();
-//                cdebug(hitObject.location)();
-                return {"name":"CP","default":true,"index":hitObject.segment.index};
-
-                
+//                cdebug(hitObject.item.index)();
+                return {"name":"CP","default":true,"index":hitObject.segment.index,"indexLow":hitObject.item.index};
             break;
-            case "stroke":
-                
-                return {"name":"CP","default":true,"index":hitObject.location.curve.index};
-
-            break;
+            
             case "handle-out":
-//                cdebug(hitObject.location)();
-                return {"name":"CPout","default":true};
+                return {"name":"CPout","default":true,"index":hitObject.segment.index,"indexLow":hitObject.item.index};
             break;
+            
             case "handle-in":
-                return {"name":"CPin","default":true};
+                return {"name":"CPin","default":true,"index":hitObject.segment.index,"indexLow":hitObject.item.index};
             break;
+            
+            case "stroke":
+                cdebug(hitObject.item.index)();
+                return {"name":"CP","default":true,"index":hitObject.location.curve.index,"indexLow":hitObject.item.index};
+
+            break;
+            
         }
 
 
@@ -1949,7 +1961,6 @@ function selectGroup(cEl_group){
 //            paper.data.cEl_group.position.selected = false;
             paper.data.cEl_group.children["ShapePath"].position.selected = false;
             paper.data.cEl_group.children["ShapePath"].bounds.selected = false;
-//            paper.data.cEl_group.children["ShapePath"].selected = false;
             paper.data.cEl_group.children["ShapePath"].fullySelected = false;
         }
         
@@ -1966,7 +1977,6 @@ function selectGroup(cEl_group){
 //            cEl_group.children["ShapePath"].children[0].segments[0].selected =true;
             cEl_group.children["ShapePath"].position.selected = true;
             cEl_group.children["ShapePath"].bounds.selected = true;
-//            cEl_group.children["ShapePath"].selected = true;
             cEl_group.children["ShapePath"].fullySelected = true;
             
             paper.data.cEl_group = cEl_group;
@@ -2125,14 +2135,41 @@ function createAprox (cEl_layer,segments, masspoint, rounding){
     }
 }
 
-function cp_tabulation(data,boolDescending){
+function cp_scrolling(data,boolDescending){
     try{
         
         var newIndex;
+        var segmentPoint,hitActType, newSegmentPoint;
+        hitActType = data.cEl_groupCPdata.hitActType;
         
-        var cEl_group = data.cEl_groupCPdata.hitObjectParent;
+        if(hitActType.name ==="CP"){
+            
+            // TODO make a separate function and use CPselect
+//            cdebug(hitActType)();
+            var cEl_group = data.cEl_groupCPdata.hitObjectParent;
+            var segmentPoint = cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
+
+            if(boolDescending){
+                newSegmentPoint = segmentPoint.next;
+            }else{
+                newSegmentPoint = segmentPoint.previous;
+            }
+
+            if(newSegmentPoint){
+    //            cdebug(newSegmentPoint)();
+                data.cEl_groupCPdata.hitActType.index = newSegmentPoint.index;
+
+                cEl_group.children["ShapePath"].fullySelected = false;
+                cEl_group.children["ShapePath"].fullySelected = true;
+            }
+            
+        }
         
-        cdebug(cEl_group.name)();
+        
+        
+        
+        
+        
         
 //        var cp_group = cpObject.parent;
         
