@@ -1410,7 +1410,13 @@ function handlehandle(data,delta,keys){
             case "handle-in":
             case "handle-out":
             
+                
+                
+                
                 edithandle(data,cEl_group,delta,hitObjType,keys);
+                
+                
+                
                 
                 data.editTool = "edit" + hitObjType;
                 
