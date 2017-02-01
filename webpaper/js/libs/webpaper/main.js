@@ -2385,11 +2385,12 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
             
             shapeContainer.points = cEl_page.shapes[cEl_group.shape.name];
             
-            cEl_pathHolder.addChild(new paper.CompoundPath(shapeContainer.points));
+            cEl_path = cEl_pathHolder.addChild(new paper.CompoundPath(shapeContainer.points));
+//            cdebug(cEl_path.className)();
 //            cEl_path = cEl_pathHolder.children[1];
-            cEl_pathHolder.position = cpMP;
+            cEl_pathHolder.position = new paper.Point(cpMP);
             cEl_pathHolder.scale(shapeContainer.scale[0],shapeContainer.scale[1]);
-            
+            //cEl_pathHolder.position = new paper.Point(cpMP);
 //            cdebug(shapeContainer.scale)();
             
             //cEl_path.name = cEl_group.parentName + "_" + cEl_group.name + ".Path";
@@ -2397,6 +2398,7 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
 //            cEl_group.children["ShapePath"].removeChildren();
 //            cEl_path = cEl_group.children["ShapePath"].addChild(new paper.CompoundPath(shapeContainer.points));
             //cEl_path = cEl_group.children["ShapePath"];
+           //cEl_pathHolder.pivot = new paper.Point(subPath.position);
             
         }else{
             
@@ -2515,7 +2517,7 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
                     //cElPath.closed = true;
                 break;
             };
-            
+//            cEl_path.pivot = new paper.Point(subPath.position);
         }
 
         

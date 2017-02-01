@@ -1,3 +1,157 @@
+
+//function cEl_editActiveCp(cEl_caller){
+//    
+//    try{
+//        
+//        var cEl_layer = window[cEl_caller.pageId + "_fabric"];
+//        if(cEl_layer.children.length===0 || !cEl_layer.data.editIndex)return false;
+//        var cEl = window[cEl_layer.data.editIndex];
+//        
+//        if(cEl.shape.temp.activeCp){
+//            var editIndex = cEl_layer.data.editIndex;
+//            var eventholder = window["eventholder"];
+//            var xy = eventholder.metrics.xy;
+//            var scalehandle = [1,1];
+//            scalehandle[0] = cEl_layer.shape.w * cEl.shape.scale[0];
+//            scalehandle[1] = cEl_layer.shape.h * cEl.shape.scale[1];
+//            
+//            //cdebug(xy);
+//            
+//            switch(cEl.shape.temp.activeCp.tag){
+//                // shape control points
+//                case "controlpoint":
+//                    
+//                    cEl_editActiveCp_Shandle(cEl_layer, cEl, editIndex, xy);
+//
+//                break;
+//                // masspoint control point
+//                case "masspoint":
+//
+//                    cEl_editActiveCp_MP(cEl_layer, cEl, editIndex, xy);
+//
+//                break;
+//                // border and corners control points 
+//                case "border":
+//                case "corner":
+//                    
+//                    var boolTop = false, boolRight = false, boolBottom = false, boolLeft =false;
+//
+//                    switch(cEl.shape.temp.activeCp.value[5]){
+//                        // border top - corner leftTop
+//                        case 0:
+//                            if(cEl.shape.temp.activeCp.value[2]===4)boolLeft = true;
+//                            boolTop = true;
+//                        break;
+//                        // border right - corner top-right
+//                        case 1:
+//                            if(cEl.shape.temp.activeCp.value[2]===4)boolTop = true;
+//                            boolRight = true;
+//                        break;
+//                        // border bottom - corner rightBottom
+//                        case 2:
+//                            if(cEl.shape.temp.activeCp.value[2]===4)boolRight = true;
+//                            boolBottom = true;
+//                        break;
+//                        // border left - corner bottom-left
+//                        case 3:
+//                            if(cEl.shape.temp.activeCp.value[2]===4)boolBottom = true;
+//                            boolLeft = true;
+//                        break;
+//
+//                    }
+//                    
+//                    var rfObj = get_undo_rf_position(cEl_layer.data.temp.rf, editIndex, 0, false, true);
+//                    //cdebug(rfObj);
+//                    var mpYcp = cEl_layer.shape.h * rfObj.shape.masspoint[1];
+//                    var mpXcp = cEl_layer.shape.w * rfObj.shape.masspoint[0];
+//                    
+//                    // reset all shape points to match the new position
+//                    for( var i=0, len = cEl.shape.points.length,yFactor,xFactor; i < len; i++){
+//                        yFactor = (boolTop || boolBottom) ?(scalehandle[1]*rfObj.shape.points[i][1] + mpYcp - rfObj.shape.temp.cpBorder.y)/(rfObj.shape.temp.cpBorder.y1-rfObj.shape.temp.cpBorder.y):0;
+//                        xFactor = (boolRight || boolLeft) ?(scalehandle[0]*rfObj.shape.points[i][0] + mpXcp - rfObj.shape.temp.cpBorder.x1)/(rfObj.shape.temp.cpBorder.x-rfObj.shape.temp.cpBorder.x1):0;
+//                        if(boolTop){
+//                            cEl.shape.points[i][1] = (yFactor * rfObj.shape.temp.cpBorder.y1  + xy[1] * (1 - yFactor) - mpYcp)/scalehandle[1];
+//                        }
+//                        if(boolBottom){
+//                            cEl.shape.points[i][1] = (yFactor * xy[1] + rfObj.shape.temp.cpBorder.y * (1 - yFactor) - mpYcp)/scalehandle[1];
+//                        }
+//                        if(boolRight){
+//                            cEl.shape.points[i][0] = (xFactor * rfObj.shape.temp.cpBorder.x  + xy[0] * (1 - xFactor) - mpXcp)/scalehandle[0];
+//                        }
+//                        if(boolLeft){
+//                            cEl.shape.points[i][0] = (xFactor * xy[0] + rfObj.shape.temp.cpBorder.x1 * (1 - xFactor) - mpXcp)/scalehandle[0];
+//                        }
+//                    }
+//                    if(boolRight || boolLeft || boolTop || boolBottom){
+//                        reset_shape_stuff(cEl,false,true,true);
+//                    }
+//
+//                break;
+//
+//            }
+//            
+//            cEl.shape.redraw = true;
+//            cEl_layer.shape.redraw = true;
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
+//function cEl_editActiveCp_Shandle(cEl_layer, cEl, editIndex, xy){
+//    
+//    try{
+//        
+//        cdebug("test")();
+//        
+//        var scalehandle = [1,1];
+//        scalehandle[0] = cEl_layer.shape.w * cEl.shape.scale[0];
+//        scalehandle[1] = cEl_layer.shape.h * cEl.shape.scale[1];
+//        cEl.shape.points[cEl.shape.temp.activeCp.value[3]] = [(xy[0] - cEl.shape.temp.cpMp[0])/scalehandle[0],(xy[1] - cEl.shape.temp.cpMp[1])/scalehandle[1]];
+//        
+//        reset_shape_stuff(cEl,false,true,true);
+//
+//        return true;
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+//
+//function cEl_editActiveCp_MP(cEl_layer, cEl, editIndex, xy){
+//    
+//    try{
+//        
+//        //cdebug(cEl.shape,true,true);
+//        
+//        // reset masspoint
+//        cEl.shape.masspoint = cEl_edit_MP(cEl_layer,xy,[1,1]);//[xy[0]/cEl_layer.shape.w,xy[1]/cEl_layer.shape.h];
+//        //cEl_layer.shape.scale[0]*  cEl_layer.shape.scale[1]*
+//        //cdebug(cEl.shape,false,true);
+//        // reset children relative masspoints
+//        if (cEl.children){
+//            for (var i = cEl.children.length - 1, ofssetXY; i >= 0; i--) {
+//                ofssetXY = [cEl.shape.temp.cpMp[0]-cEl.children[i].shape.temp.cpMp[0],cEl.shape.temp.cpMp[1]-cEl.children[i].shape.temp.cpMp[1]];
+//                cEl_editActiveCp_MP(cEl_layer, cEl.children[i], editIndex, [xy[0]-ofssetXY[0],xy[1]-ofssetXY[1]]);
+//                //cEl.children[i].shape.redraw = true;
+//            }
+//        }
+//        return true;
+//        
+//    } catch (e) {
+//        var err = listError(e);
+//        cdebug(err,false,false,3)();
+//        return err;
+//    }
+//}
+
 ////        cdebug(bounds.topLeft)();
         
         // borderTop
