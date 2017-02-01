@@ -395,18 +395,18 @@
                             }}},
                         {"name":"bear","elId":"text1","tab":1,"shape":{"masspoint":[0.4,0.3],"scale":[0.2,0.2],"rotation":180,"name":"ursan","type":"svg"},
                             "data":{"values":{
-                                "default":"longText",        
+                                "default":"",        
                                 "editable":true,
                                 "vertical":false,
                                 "pattern":"path"
                             }}},
                         {"name":"hd","elId":"text1","tab":1,"shape":{"masspoint":[0.6,0.3],"scale":[2,2],"name":"hd","type":"svg"},
                             "data":{"values":{
-                                "default":"", 
+                                "default":"longText", 
                                 "editable":false,
                                 "noselect":true,
                                 "vertical":false,
-                                "pattern":"box-fill"
+                                "pattern":"path"
                             }}},
                         {"name":"is","elId":"text1","tab":1,"shape":{"masspoint":[0.8,0.3],"scale":[2,2],"name":"iasi","type":"svg"},
                             "data":{"values":{

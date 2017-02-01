@@ -39,7 +39,7 @@ var GLOBAL_rem = getRootElementFontSize();
 var GLOBAL_loaded = false;
 var GLOBAL_renderer = false;
 paper.install(window);
-paper.settings.handleSize =5;
+paper.settings.handleSize =7;
 paper.settings.handleLength =15;
 
 //window.setInterval(function(){cdebug("zz",false,true)},100);

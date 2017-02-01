@@ -40,10 +40,11 @@ paper.Path.inject({
     _drawSelected: function(ctx, matrix) {//
 //        console.log(this.hasHandles());
         
-            ctx.beginPath();
-            drawSegments_duplicate(ctx, this, matrix);
-            ctx.stroke();
-            drawHandles_new(ctx, this._segments, matrix, paper.settings.handleSize, paper.data);
+//            ctx.beginPath();
+////            drawSegments_duplicate(ctx, this, matrix);
+//                
+//            ctx.stroke();
+            drawHandles_new(ctx, this._segments, matrix, paper.settings.handleSize, paper.data ,this.index);
 //        console.log("ere3");
     }
 });
@@ -99,81 +100,150 @@ function drawSegments_duplicate(ctx, path, matrix) {
             }
     }
 
-    for (var i = 0; i < length; i++)
-            drawSegment(segments[i]);
-    if (path._closed && length > 0)
-            drawSegment(segments[0]);
+    for (var i = 0; i < length; i++)drawSegment(segments[i],i);
+    if (path._closed && length > 0)drawSegment(segments[0],0);
 }
 
-function drawHandles_new(ctx, segments, matrix, size , data) {
+function drawHandles_new(ctx, segments, matrix, size , data ,indexLow) {
     var half = size / 2,
             coords = new Array(6),
             pX, pY;
-
-    function drawHandle(index,color) {
+    var fillStyle,strokeStyle,lineWidth;
+    
+    function drawHandle(index,color1,color2) {
             var hX = coords[index],
                     hY = coords[index + 1];
             if (pX != hX || pY != hY) {
-                var fillStyle,strokeStyle;
+                
                 fillStyle = ctx.fillStyle;
                 strokeStyle = ctx.strokeStyle;
-                ctx.fillStyle = ctx.strokeStyle = color;
-                
+                ctx.fillStyle = color1;
+                ctx.strokeStyle = color1;
                 ctx.beginPath();
                 ctx.moveTo(pX, pY);
                 ctx.lineTo(hX, hY);
                 ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
-                ctx.fill();
+                
+//                cdebug("herer1")();
+                if(color2){
+                    
+                    lineWidth = ctx.lineWidth;
+                    
+                    ctx.beginPath();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                    ctx.moveTo(hX, 0);
+                    ctx.lineTo(hX, ctx.canvas.height);
+                    ctx.moveTo(0, hY);
+                    ctx.lineTo(ctx.canvas.width, hY);
+                    ctx.stroke();
+                    
+                    ctx.lineWidth = size / 3;
+                    ctx.strokeStyle = color2;
+                    ctx.beginPath();
+                    ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                   
+                    
+                    ctx.lineWidth = lineWidth;
+                }else{
+                    
+                    ctx.beginPath();
+                    ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
+                    ctx.fill();
+                    
+                }
+
                 ctx.fillStyle = fillStyle;
                 ctx.strokeStyle = strokeStyle;
             }
     }
-
+    
+    
     for (var i = 0,color = ctx.fillStyle, l = segments.length; i < l; i++) {
-            var segment = segments[i],
-                selection = segment._selection;
-            segment._transformCoordinates(matrix, coords);
-            pX = coords[0];
-            pY = coords[1];
-            var fillStyle; 
-            
-            if (selection & 2){
-                if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i){
-                    drawHandle(2,'#ffff00');
+        var segment = segments[i],
+            selection = segment._selection;
+        segment._transformCoordinates(matrix, coords);
+        pX = coords[0];
+        pY = coords[1];
+
+
+        if (selection & 2){
+            if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i && data.cEl_groupCPdata.hitActType.indexLow === indexLow){
+                if(data.cEl_groupCPdata.hitActType.name==="CPin"){
+                    drawHandle(2,'rgba(255,255,0,1)','rgba(255,0,0,1)');
                 }else{
-                    drawHandle(2,color);
+                    drawHandle(2,'rgba(255,255,0,1)');
                 }
-                
+
+            }else{
+                drawHandle(2,'rgba(255,255,0,0.2)');
             }
-            if (selection & 4){
-                if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i){
-                    drawHandle(4,'#0000ff');
+
+        }
+        if (selection & 4){
+            if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i && data.cEl_groupCPdata.hitActType.indexLow === indexLow){
+                if(data.cEl_groupCPdata.hitActType.name==="CPout"){
+                    drawHandle(4,'rgba(0,0,255,1)','rgba(255,0,0,1)');
                 }else{
-                    drawHandle(4,color);
-                }
+                    drawHandle(4,'rgba(0,0,255,1)');
+                }    
+            }else{
+                drawHandle(4,'rgba(0,0,255,0.2)');
             }
+        }
 //            if (selection){
 //                
 //                
 //            }
-            if (!(selection & 1)) {
-                    var fillStyle = ctx.fillStyle;
-                    ctx.fillStyle = '#555555';
-                    ctx.fillRect(pX - half + 1, pY - half + 1, size - 2, size - 2);
-                    ctx.fillStyle = fillStyle;
-            }else{
-                var fillStyle = ctx.fillStyle;
-                if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i){
-                    ctx.fillStyle = '#00ff00';
+        if (!(selection & 1)) {
+//                    var fillStyle = ctx.fillStyle;
+//                    ctx.fillStyle = '#555555';
+//                    ctx.fillRect(pX - half + 1, pY - half + 1, size - 2, size - 2);
+//                    ctx.fillStyle = fillStyle;
+        }else{
+            fillStyle = ctx.fillStyle;
+
+            if (data.cEl_groupCPdata && data.cEl_groupCPdata.hitActType.index === i && data.cEl_groupCPdata.hitActType.indexLow === indexLow){
+                ctx.fillStyle = 'rgba(0,255,0,1)';
+                if(data.cEl_groupCPdata.hitActType.name==="CP"){
+                    strokeStyle = ctx.strokeStyle;
+                    lineWidth = ctx.lineWidth;
+                    ctx.lineWidth = size / 3;
+                    ctx.strokeStyle = 'rgba(255,0,0,1)';
+//                    
+                    ctx.beginPath();
+                    ctx.rect(pX - half, pY - half, size, size);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                    ctx.beginPath();
+                    ctx.moveTo(pX, 0);
+                    ctx.lineTo(pX, ctx.canvas.height);
+                    ctx.moveTo(0, pY);
+                    ctx.lineTo(ctx.canvas.width, pY);
+                    ctx.stroke();
+//                    
+//                    
+                    ctx.strokeStyle = strokeStyle;
+                    ctx.lineWidth = lineWidth;
                 }else{
-                    ctx.fillStyle = color;
+                    ctx.fillRect(pX - half, pY - half, size, size);
                 }
+            }else{
+                ctx.fillStyle = 'rgba(0,255,0,0.2)';
                 ctx.fillRect(pX - half, pY - half, size, size);
-                ctx.fillStyle = fillStyle;
             }
+            
+            ctx.fillStyle = fillStyle;
+        }
     }
+    
 }
 
 
@@ -189,13 +259,24 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                 positionSelected = selection & 4;
         if (!caller._drawSelected)
                 itemSelected = false;
+        
         if ((itemSelected || boundsSelected || positionSelected)
                         && caller._isUpdated(updateVersion)) {
+                
+//                if(boundsSelected){
+//                    drawGrid(ctx);
+//                    cdebug(updateVersion)();
+//                }
+                
+//                if(paper.data.resetGrid){
+                    
+//                    paper.data.resetGrid = false;
+//                }
                 
 //                var color = caller.getSelectedColor(true) || (layer = caller.getLayer())
 //                    && layer.getSelectedColor(true);
                         
-                var        colorBounds = new paper.Color(0, 0, 0, 0.6);
+                var        colorBounds = new paper.Color(0, 0, 0, 0.5);
                 colorBounds = colorBounds.toCanvasStyle(ctx);
                 
                 var        colorPath = new paper.Color(0, 1, 1, 0.8);
@@ -209,8 +290,11 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                 var layer,       mx = matrix.appended(caller.getGlobalMatrix(true)),
                         half = size / 2;
 //                ctx.strokeStyle = ctx.fillStyle = color ? color.toCanvasStyle(ctx) : '#002dec';
+
+                
                 if (itemSelected)
                         ctx.strokeStyle = ctx.fillStyle = colorPath;
+//                        drawGrid(ctx);
                         caller._drawSelected(ctx, mx, selectionItems);
                 if (positionSelected) {
                         ctx.strokeStyle = ctx.fillStyle = colorPosition;
@@ -231,30 +315,242 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                                 ctx.lineTo(x + dx * end, y + dy * end);
                                 ctx.stroke();
                         }
+                        
+                    if(paper.data.cEl_groupCPdata && paper.data.cEl_groupCPdata.hitActType.name==="center"){
+                        ctx.fill();
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                        ctx.beginPath();
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x, ctx.canvas.height);
+                        ctx.moveTo(0, y);
+                        ctx.lineTo(ctx.canvas.width, y);
+                        ctx.stroke();
+                    }
+                        
                 }
                 if (boundsSelected) {
-                        var coords = mx._transformCorners(caller.getInternalBounds());
-                        ctx.beginPath();
-                        ctx.strokeStyle = ctx.fillStyle = colorBounds;
-                        for (var i = 0; i < 8; i++) {
-                                ctx[!i ? 'moveTo' : 'lineTo'](coords[i], coords[++i]);
-                        }
-                        ctx.closePath();
-                        ctx.stroke();
-                        for (var i = 0; i < 8; i++) {
-                                ctx.fillRect(coords[i] - half, coords[++i] - half,size, size);
+                    
+                    
+                    
+                    ctx.strokeStyle = ctx.fillStyle = colorBounds;
+                    drawGrid(ctx);
+                    
+                    var coords = mx._transformCorners(caller.getInternalBounds());
+                    
+//                    cdebug(coords)();
+                    
+                    ctx.beginPath();
+
+                    for (var i = 0; i < 8; i++) {
+                        ctx[!i ? 'moveTo' : 'lineTo'](coords[i], coords[++i]);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    for (var i = 0; i < 8; i++) {
+                        ctx.fillRect(coords[i] - half, coords[++i] - half,size, size);
+                    }
+
+                    ctx.fillRect((coords[0] + coords[2])/2- half, (coords[1] + coords[3])/2 - half, size, size);
+                    
+                    ctx.fillRect((coords[2] + coords[4])/2- half, (coords[3] + coords[5])/2 - half, size, size);
+                    
+                    ctx.fillRect((coords[4] + coords[6])/2- half, (coords[5] + coords[7])/2 - half, size, size);
+                    
+                    ctx.fillRect((coords[6] + coords[0])/2- half, (coords[7] + coords[1])/2 - half, size, size);
+                    
+                    var lines=[0,0,0,0,0,0,0,0];
+                    
+                    if(paper.data.cEl_groupCPdata){
+                        
+                        switch(paper.data.cEl_groupCPdata.hitActType.name){
+                            case "topLeft":
+                                
+                                lines=[1,1,0,0,1,1,0,0];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect(coords[0] - half, coords[1] - half, size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[6],coords[7]);
+                                ctx.lineTo(coords[0],coords[1]);
+                                ctx.lineTo(coords[2],coords[3]);
+                                ctx.stroke();
+                            break;
+                            case "borderTop":
+                                
+                                lines=[0,0,0,1,0,0,0,1];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect((coords[0] + coords[2])/2- half, (coords[1] + coords[3])/2 - half , size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[0],coords[1]);
+                                ctx.lineTo(coords[2],coords[3]);
+                                ctx.stroke();
+                            break;
+                            case "topRight":
+                                
+                                lines=[0,0,1,1,0,0,1,1];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect(coords[2] - half, coords[3] - half, size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[0],coords[1]);
+                                ctx.lineTo(coords[2],coords[3]);
+                                ctx.lineTo(coords[4],coords[5]);
+                                ctx.stroke();
+                            break;
+                            case "borderRight":
+                                
+                                lines=[1,0,0,0,1,0,0,0];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect((coords[2] + coords[4])/2- half, (coords[3] + coords[5])/2 - half , size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[2],coords[3]);
+                                ctx.lineTo(coords[4],coords[5]);
+                                ctx.stroke();
+                            break;
+                            case "bottomRight":
+                                
+                                lines=[1,1,0,0,1,1,0,0];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect(coords[4] - half, coords[5] - half, size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[2],coords[3]);
+                                ctx.lineTo(coords[4],coords[5]);
+                                ctx.lineTo(coords[6],coords[7]);
+                                ctx.stroke();
+                            break;
+                            case "borderBottom":
+                                
+                                lines=[0,0,0,1,0,0,0,1];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect((coords[4] + coords[6])/2- half, (coords[5] + coords[7])/2 - half , size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[4],coords[5]);
+                                ctx.lineTo(coords[6],coords[7]);
+                                ctx.stroke();
+                            break;
+                            case "bottomLeft":
+                                
+                                lines=[0,0,1,1,0,0,1,1];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect(coords[6] - half, coords[7] - half, size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[4],coords[5]);
+                                ctx.lineTo(coords[6],coords[7]);
+                                ctx.lineTo(coords[0],coords[1]);
+                                ctx.stroke();
+                            break;
+                            
+                            case "borderLeft":
+                                
+                                lines=[1,0,0,0,1,0,0,0];
+                                
+                                ctx.strokeStyle = ctx.fillStyle = "rgba(255,0,0,1)";
+                                ctx.strokeRect((coords[6] + coords[0])/2- half, (coords[7] + coords[1])/2 - half , size, size);
+                                ctx.beginPath();
+                                ctx.moveTo(coords[6],coords[7]);
+                                ctx.lineTo(coords[0],coords[1]);
+                                ctx.stroke();
+                            break;
+                            
+                            
+                            default:
+//                                cdebug(paper.data.cEl_groupCPdata.hitActType)();
+                            
+                            break;
                         }
                         
-                        ctx.fillRect((coords[0] + coords[2])/2- half, (coords[1] + coords[3])/2 - half, size, size);
-                        ctx.fillRect((coords[2] + coords[4])/2- half, (coords[3] + coords[5])/2 - half, size, size);
-                        ctx.fillRect((coords[4] + coords[6])/2- half, (coords[5] + coords[7])/2 - half, size, size);
-                        ctx.fillRect((coords[6] + coords[0])/2- half, (coords[7] + coords[1])/2 - half, size, size);
-                        
-//                        ctx.fillRect((coords[0] + coords[2])/2, (coords[1] + coords[3])/2 - half, size, size);
+                    }
+                    
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                    ctx.beginPath();
+                    
+                    for(var i = 0;i<8;i++){
+                        if(lines[i]){
+                            ctx.moveTo(coords[i], 0);
+                            ctx.lineTo(coords[i], ctx.canvas.height);
+                        }
+                        i++;
+                        if(lines[i]){
+                            ctx.moveTo(0, coords[i]);
+                            ctx.lineTo(ctx.canvas.width, coords[i]);
+                        }
+                    }
+                    
+                    ctx.stroke();
                 }
         }
 };
 
+
+function drawGrid(ctx){
+    
+    try{
+        
+//        cdebug("grid" + new Date())();
+        
+        var strokeStyle = ctx.strokeStyle;
+        var lineWidth = ctx.lineWidth;
+        var cEl_canvas = ctx.canvas;
+        var gridMin = 5;
+        var gridMax = 10;
+        
+        ctx.strokeStyle = "rgba(0,0,0,1)";
+        ctx.lineWidth = 1; 
+        ctx.beginPath();
+        
+        for(var i = 0, len = cEl_canvas.width, height = cEl_canvas.height, perc = len/100, percPos = 0;i<100;i++){
+            percPos = parseInt(i*perc)+0.5;
+            if(i % 10){
+                ctx.moveTo(percPos,0);
+                ctx.lineTo(percPos,gridMin);
+                ctx.moveTo(percPos,height);
+                ctx.lineTo(percPos,height-gridMin);
+                
+            }else{
+                ctx.moveTo(percPos,0);
+                ctx.lineTo(percPos,gridMax);
+                ctx.moveTo(percPos,height);
+                ctx.lineTo(percPos,height-gridMax);
+                if(i>0)ctx.fillText(i/100,percPos,gridMin+10);
+            }
+        }
+        for(var i = 0, len = cEl_canvas.height, width = cEl_canvas.width, perc = len/100, percPos = 0;i<100;i++){
+            percPos = parseInt(i*perc)+0.5;
+            if(i % 10){
+                ctx.moveTo(0,percPos);
+                ctx.lineTo(gridMin,percPos);
+                ctx.moveTo(width,percPos);
+                ctx.lineTo(width-gridMin,percPos);
+                
+            }else{
+                ctx.moveTo(0,percPos);
+                ctx.lineTo(gridMax,percPos);
+                ctx.moveTo(width,percPos);
+                ctx.lineTo(width-gridMax,percPos);
+                if(i>0)ctx.fillText(i/100,gridMax,percPos);
+            }
+        }
+
+        ctx.closePath();
+        ctx.stroke();
+        
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = lineWidth;
+        
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }
+}
 
 //paper.Item.inject({
 //    _drawSelection: function(anyArgumentsHere) {
@@ -295,42 +591,76 @@ function editor_keydown(eventholder) {
 
     try{
         
+//        cdebug(paper.data.workState)();
+        
         switch (paper.data.workState) {
             case "editlimbo":
+                
                 if(eventholder.keys.key==="Escape")selectGroup(null);
                 if(eventholder.keys.key==="Delete")deleteGroup();
             break;    
             
             case "editset":
+//                cdebug(paper.data.cEl_groupCPdata.hitActType)();
+                if(eventholder.keys.key==="Delete"){
+                    if(!paper.data.cEl_groupCPdata){
+                        deleteGroup();
+                    }else{
+                        var segmentPoint,hitActType;
+                        hitActType = paper.data.cEl_groupCPdata.hitActType;
+                        
+                        switch(hitActType.name){
+                            case "CP":
+                                
+                                segmentPoint = paper.data.cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
+//                                cdebug(segmentPoint.next)();
+                                if(paper.data.cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index]){
+                                    segmentPoint.remove();
+                                    paper.data.cEl_group.reset.text_shape = true;
+                                }else{
+                                    paper.data.cEl_groupCPdata.hitActType.index = 0;
+                                }
+                                
+                            break;
+                        default:
+                            cdebug(paper.data.cEl_groupCPdata.hitActType)();
+                        };
+                        
+                    }
+                    return true;
+                }
+                
                 paper.data.workState = "editkeys";
                 paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
 //            break;
             case "editkeys":
                 
                 if(!paper.data.cEl_group || !paper.data.cEl_groupCPdata ){
-                    if(eventholder.keys.key==="Escape")selectGroup(null);
+//                    cdebug("here")();
+                    if(eventholder.keys.key==="Escape")
+                        selectGroup(null);
                     return false;
                 }
                 var delta = new paper.Point();//{"x":0,"y":0,"rotation":0};
-                var offset = 2;
-                 
+                var offset = GlobalKeyOffset;
+                
                 switch(eventholder.keys.key){
                     case "ArrowUp":
                         delta.y = -offset;
-                        handleCP(paper.data,delta,eventholder.keys.ctrlKey);
+                        handleCP(paper.data,delta,eventholder.keys);
                     break;
                     case "ArrowRight":
                         delta.x = offset;
-                        handleCP(paper.data,delta,eventholder.keys.ctrlKey);
+                        handleCP(paper.data,delta,eventholder.keys);
                     break;
                     case "ArrowDown":
                         delta.y = offset;
                         
-                        handleCP(paper.data,delta,eventholder.keys.ctrlKey);
+                        handleCP(paper.data,delta,eventholder.keys);
                     break;
                     case "ArrowLeft":
                         delta.x = -offset;
-                        handleCP(paper.data,delta,eventholder.keys.ctrlKey);
+                        handleCP(paper.data,delta,eventholder.keys);
                     break;
                     case "Tab":
 //                        cdebug(eventholder.keys)();
@@ -345,8 +675,9 @@ function editor_keydown(eventholder) {
                     case "Escape":
                         
                         // TODO add undo here
-//                        cdebug(paper.data.workState)();
-                        selectGroup(paper.data.cEl_group);
+
+                        select_CP(null);
+                        
                     break;
                     default:
 //                        cdebug(eventholder.keys)();
@@ -480,9 +811,20 @@ function editor_mousedown(eventholder) {
             break;
             case "add":
                 
+                paper.data.cEl_groupCPdata = {};
+                paper.data.cEl_groupCPdata.hitActType = {};
+                
                 paper.data.cEl_groupAdd = new paper.Path();
                 paper.data.cEl_groupAdd.strokeColor = 'black';
+
+//                selectGroup(paper.data.cEl_groupAdd);
+                var segment = paper.data.cEl_groupAdd.add(eventholder.metrics.xy);
+                paper.data.cEl_groupCPdata.hitActType = {index:segment.index,indexLow:paper.data.cEl_groupAdd.index,name:"CP"};
+
+//                paper.data.cEl_groupAdd.fullySelected = false;
                 paper.data.cEl_groupAdd.fullySelected = true;
+                paper.data.cEl_groupAdd.bounds.selected =true;
+                
 
             break;
             case  "editlimbo" : // "editlimbo":
@@ -498,7 +840,14 @@ function editor_mousedown(eventholder) {
                 
                 var hitOptions = {
 //                        class:paper.Path,
-                    match: function test(hit){if(typeof hit.item.className!=="SymbolItem")return true;},
+                    match: function test(hit){
+                        //cdebug(hit.type + " " + hit.item.index + " " + hit.item.className)();
+                        if(
+                            !(hit.type==="bounds" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
+                            !(hit.type==="center" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
+                            typeof hit.item.className!=="SymbolItem"
+                            )return true;
+                        },
                     handles:true,
                     segments:true,
                     center: true,
@@ -535,24 +884,18 @@ function editor_mousedown(eventholder) {
 //                }
 //                cdebug(list)();
                 
-                
-//                if(actObj.data && actObj.data.refersTo === cEl_group_name){
-                    
-//                    cdebug(eventholder.hitObject)();
-//                    cdebug(eventholder.hitObject.location.curve.index)();
-                    
+
                     select_CP(actObj,eventholder.metrics.xy,hitObject);
-                    
-//                    cdebug(hitObject.type + " of " + actObj.name)();
-                    
-                    
-                    //cdebug(paper.data.cEl_groupCPdata)();
                     
                     cEl_setCpCursor(cEl_layer,false,paper.data.cEl_groupCPdata.hitActType.name);
                     
                     paper.data.workState = "editmouse";
                     
                     eventholder.block.state = true;
+                    
+//                    paper.data.cEl_group.children["ShapePath"].position.selected = true;
+//                    paper.data.cEl_group.children["ShapePath"].bounds.selected = true;
+                    
                     
                     //eventholder.actObj.bringToFront();
 //                }else{
@@ -607,7 +950,11 @@ function editor_mousemove(eventholder) {
                 
                 // add new shape points
                 if(eventholder.keys.buttons === 1 ){
-                    paper.data.cEl_groupAdd.add(eventholder.metrics.xy);
+                    var segment = paper.data.cEl_groupAdd.add(eventholder.metrics.xy);
+                    paper.data.cEl_groupCPdata.hitActType = {index:segment.index,indexLow:paper.data.cEl_groupAdd.index,name:"CP"};
+                    
+                    paper.data.cEl_groupAdd.fullySelected = false;
+                    paper.data.cEl_groupAdd.fullySelected = true;
                 }        
             break;
             case "editlimbo":
@@ -624,7 +971,7 @@ function editor_mousemove(eventholder) {
             case "editmouse":
 //                cdebug(eventholder.keys.buttons)();
                 // move/scale/edit control points
-                handleCP(paper.data,eventholder.metrics.delta,eventholder.keys.ctrlKey);
+                handleCP(paper.data,eventholder.metrics.delta,eventholder.keys);
                 
             break;
         }
@@ -653,16 +1000,19 @@ function editor_mouseup(eventholder) {
             break;
             case "add":
 //                        cdebug("here ADD")();
-                if(paper.data.cEl_groupAdd.length<2){
-                    paper.data.cEl_groupAdd = null;
+//                cdebug(paper.data.cEl_groupAdd.segments.length)();
+                paper.data.cEl_groupAdd.closed = true;
+                paper.data.cEl_groupAdd.simplify();
+                
+                if(paper.data.cEl_groupAdd.segments.length<2){
+                    paper.data.cEl_groupAdd.remove();
                     return true;
                 }
                 
                 
                 
                 //paper.data.cEl_group.selected = false;
-                paper.data.cEl_groupAdd.closed = true;
-                paper.data.cEl_groupAdd.simplify();
+                
 
                 var newShapeName = id_generator("sh",9);
                 paper.data.shapes[newShapeName] = createAprox(cEl_layer,paper.data.cEl_groupAdd.segments,[0.5,0.5],5);
@@ -681,16 +1031,19 @@ function editor_mouseup(eventholder) {
                 };
                 cEl.name = id_generator("gr",9);
                 
-                selectGroup(null,false);
+                //selectGroup(null,false);
                 
                 pre_load_children(cEl,cEl_layer.name);
                 
                 drawProjects(cEl_layer,false);
                 
                 
+                
                 var cEl_group = cEl_layer.children[cEl_layer.children.length-1];
                 
+//                cdebug(cEl_group.children["ShapePath"].children[0].index)();
                 
+                paper.data.cEl_groupCPdata.hitActType = {index:0,indexLow:cEl_group.children["ShapePath"].children[0].index,name:"CP"};
                 
                 selectGroup(cEl_group);
 
@@ -952,7 +1305,7 @@ function editor_mouseup(eventholder) {
 
 
 
-function handleCP(data,delta,boolAlt){
+function handleCP(data,delta,keys){
     try{
         
 //        cdebug()();
@@ -1022,8 +1375,6 @@ function handleCP(data,delta,boolAlt){
                 scalePoint = data.cEl_groupCPdata.topRight;
             break;
             // edit shape Point
-            case "CPLin":
-            case "CPLout":
             case "CP":
             case "CPin":
             case "CPout":
@@ -1031,7 +1382,7 @@ function handleCP(data,delta,boolAlt){
                 
                 
                 
-                editCP(data,cEl_group,delta,hitObjType,boolAlt);
+                editCP(data,cEl_group,delta,hitObjType,keys);
                 
                 
                 
@@ -1069,93 +1420,26 @@ function handleCP(data,delta,boolAlt){
     }   
 }
 
-function editCP(data,cEl_group,delta,typeCP,boolAlt){
+function editCP(data,cEl_group,delta,typeCP,keys){
     try{
-        
-        
-        
+
         var segmentPoint,hitActType;
         hitActType = data.cEl_groupCPdata.hitActType;
-//        var cEl_groupHit = data.cEl_groupHit;
-        //var boolLow = cEl_groupHit.data.indexLow===-1;
-//        var cEl_groupBounds = cEl_group.children["ShapePath"].bounds;
-//        
-//        if(boolLow){
-//            segmentPoint = cEl_group.children["ShapePath"].children[0].segments[cEl_groupHit.data.index];
-//        }else{
-            segmentPoint = cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
-//        }
-        
-//        segmentPoint = data.cEl_groupCPdata.hitObject.item;
-//        cdebug(data.cEl_groupCPdata.hitActType)();
-        
-        
+        segmentPoint = cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
+
         switch (typeCP) {
             
             case "CPin":
-                
-                //cdebug(cEl_group.children["ShapePath"].children[0])();
-                
-                
-                
                 segmentPoint.handleIn.x += delta.x;
                 segmentPoint.handleIn.y += delta.y;
-
-//                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleIn);
-//                CP_group = cEl_groupHit.parent;
-//                CP_group.children["CPLin"].firstSegment.point = cEl_groupHit.position;
-                //
-                //cEl_groupHit.previousSibling.previousSibling.previousSibling.firstSegment.point = cEl_groupHit.position;
-
             break;
-            
-            
-            case "CPLin":
-                
-  
-                
-//                segmentPoint.handleIn = getEditVector(segmentPoint.handleIn,segmentPoint.point,delta,data);
-//                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleIn);
-//                
-//                CP_group = cEl_groupHit.parent;
-//                CP_group.children["CPin"].position = cEl_groupHit.firstSegment.point;
-                
-                
-
-            break;
-            
             case "CP":
-
                 segmentPoint.point.x += delta.x;
                 segmentPoint.point.y += delta.y;
-
-                
-//                // translate CP
-//                cEl_groupHit.parent.translate(delta);
-//                
             break;
-            
-            case "CPLout":
-                
-   
-                
-//                segmentPoint.handleOut = getEditVector(segmentPoint.handleOut,segmentPoint.point,delta,data);
-//                cEl_groupHit.firstSegment.point = segmentPoint.point.add(segmentPoint.handleOut);
-//                
-//                CP_group = cEl_groupHit.parent;
-//                CP_group.children["CPout"].position = cEl_groupHit.firstSegment.point;
-
-            break;
-                
             case "CPout":
- 
                 segmentPoint.handleOut.x += delta.x;
                 segmentPoint.handleOut.y += delta.y;
-
-//                cEl_groupHit.position = segmentPoint.point.add(segmentPoint.handleOut);
-//                CP_group = cEl_groupHit.parent;
-//                CP_group.children["CPLout"].firstSegment.point = cEl_groupHit.position;
-                
             break;
             
         }
@@ -1171,16 +1455,9 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                         cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].point = segmentPoint.point;
                     break;
                     case "CPin":
-                    case "CPLin":
                         cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleIn = segmentPoint.handleIn;
-                    
-//                        if(boolAlt){
-//                            editCP(data,groupObject,delta,typeCP,boolAlt);
-//                        }
-                    
                     break;    
                     case "CPout":
-                    case "CPLout":
                         cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleOut = segmentPoint.handleOut;
                     break;
                 }
@@ -1191,10 +1468,7 @@ function editCP(data,cEl_group,delta,typeCP,boolAlt){
                 
 
         cEl_group.reset.text_draw = true;
-        
-        
-        
-        
+        return true;
         
     } catch (e) {
         var err = listError(e);
@@ -1767,68 +2041,23 @@ function cEl_edit_MP(cEl_parent,xy,scale){
 
 
 
-function drawGrid(cEl_canvas){
-    
-    try{
-        var cEl_ctx = cEl_canvas.getContext('2d');
-        var gridMin = 5;
-        var gridMax = 10;
-        
-        cEl_ctx.strokeStyle = "rgba(0,0,0,1)";
-        cEl_ctx.lineWidth = 1; 
-        cEl_ctx.beginPath();
-        
-        for(var i = 0, len = cEl_canvas.width, height = cEl_canvas.height, perc = len/100, percPos = 0;i<100;i++){
-            percPos = parseInt(i*perc)+0.5;
-            if(i % 10){
-                cEl_ctx.moveTo(percPos,0);
-                cEl_ctx.lineTo(percPos,gridMin);
-                cEl_ctx.moveTo(percPos,height);
-                cEl_ctx.lineTo(percPos,height-gridMin);
-                
-            }else{
-                cEl_ctx.moveTo(percPos,0);
-                cEl_ctx.lineTo(percPos,gridMax);
-                cEl_ctx.moveTo(percPos,height);
-                cEl_ctx.lineTo(percPos,height-gridMax);
-                if(i>0)cEl_ctx.fillText(i+"%",percPos,gridMin+10);
-            }
-        }
-        for(var i = 0, len = cEl_canvas.height, width = cEl_canvas.width, perc = len/100, percPos = 0;i<100;i++){
-            percPos = parseInt(i*perc)+0.5;
-            if(i % 10){
-                cEl_ctx.moveTo(0,percPos);
-                cEl_ctx.lineTo(gridMin,percPos);
-                cEl_ctx.moveTo(width,percPos);
-                cEl_ctx.lineTo(width-gridMin,percPos);
-                
-            }else{
-                cEl_ctx.moveTo(0,percPos);
-                cEl_ctx.lineTo(gridMax,percPos);
-                cEl_ctx.moveTo(width,percPos);
-                cEl_ctx.lineTo(width-gridMax,percPos);
-                if(i>0)cEl_ctx.fillText(i+"%",gridMax,percPos);
-            }
-        }
 
-        cEl_ctx.closePath();
-        cEl_ctx.stroke();
-
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }
-}
 
 function select_CP(cEl_group,xy,hitObject){
     try{    
 //        cdebug(actObj.className)();
 //        cdebug(actObj.name)();
+        
+        
+        if(!cEl_group){
+            paper.data.cEl_groupCPdata = null;
+//            paper.data.resetGrid = true;
+            paper.data.cEl_group.children["ShapePath"].fullySelected = false;
+            paper.data.cEl_group.children["ShapePath"].fullySelected = true;
+            return true;
+        }
+        
         if(!hitObject.item)return false;
-        
-        
-        
 //        if(paper.data.cEl_groupHit)paper.data.cEl_groupHit[paper.data.cEl_groupHit.data.drawType] = paper.data.cEl_groupHit.data.color;
         
 //        paper.data.cEl_groupHit = hitObject.item;
@@ -1840,6 +2069,7 @@ function select_CP(cEl_group,xy,hitObject){
         paper.data.cEl_groupCPdata.hitPoint = new paper.Point(xy);
         paper.data.cEl_groupCPdata.hitObject = hitObject;
         paper.data.cEl_groupCPdata.hitObjectParent = cEl_group;
+//        paper.data.resetGrid = true;
         
         paper.data.cEl_groupCPdata.hitActType = getHitActType(hitObject);
         cEl_group.children["ShapePath"].fullySelected = false;
@@ -1886,7 +2116,7 @@ function getHitActType(hitObject,defaultType){
             break;
             // borders and corners
             case "bounds":
-
+//                cdebug( " of " + hitObject.item.index)();
                 switch(hitObject.name){
                     case "top-center":
                         return {"name":"borderTop","default":false};
@@ -1917,8 +2147,7 @@ function getHitActType(hitObject,defaultType){
             break;
             // handles CP
             case "segment":
-//                cdebug(hitObject.segment.index)();
-//                cdebug(hitObject.item.index)();
+//                cdebug(hitObject.segment.index + " of " + hitObject.item.index)();
                 return {"name":"CP","default":true,"index":hitObject.segment.index,"indexLow":hitObject.item.index};
             break;
             
@@ -1931,8 +2160,8 @@ function getHitActType(hitObject,defaultType){
             break;
             
             case "stroke":
-                cdebug(hitObject.item.index)();
-                return {"name":"CP","default":true,"index":hitObject.location.curve.index,"indexLow":hitObject.item.index};
+//                cdebug(hitObject.item.index)();
+                return {"name":"stroke","default":true,"index":hitObject.location.curve.index,"indexLow":hitObject.item.index};
 
             break;
             
@@ -1954,7 +2183,7 @@ function selectGroup(cEl_group){
         //cdebug("selectButton")();
         
 
-        if(paper.data.cEl_group && paper.data.cEl_group.reset){
+        if(paper.data.cEl_group){
 //            paper.data.cEl_group.debug = false;
 //            paper.data.cEl_group.reset.debug = true;
 //            paper.data.cEl_group.bounds.selected = false;
@@ -1962,9 +2191,10 @@ function selectGroup(cEl_group){
             paper.data.cEl_group.children["ShapePath"].position.selected = false;
             paper.data.cEl_group.children["ShapePath"].bounds.selected = false;
             paper.data.cEl_group.children["ShapePath"].fullySelected = false;
+//            paper.data.workState = "editlimbo";
         }
         
-        if(cEl_group){
+        if(cEl_group && cEl_group.children["ShapePath"]){
 //            cdebug(cEl_group.className)();
 //            cdebug("here?")();
 //            cEl_group.debug = true;
@@ -1983,6 +2213,7 @@ function selectGroup(cEl_group){
 //            paper.data.cEl_groupCPdata = null;
 //            paper.data.cEl_groupHit = null;
             paper.data.workState = "editlimbo";
+//            paper.data.resetGrid = true;
         }else{
             paper.data.cEl_group = null;
 //            paper.data.cEl_groupHit = null;
@@ -2148,7 +2379,9 @@ function cp_scrolling(data,boolDescending){
 //            cdebug(hitActType)();
             var cEl_group = data.cEl_groupCPdata.hitObjectParent;
             var segmentPoint = cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index];
-
+            
+            if(!segmentPoint)return true;
+            
             if(boolDescending){
                 newSegmentPoint = segmentPoint.next;
             }else{
@@ -2165,9 +2398,7 @@ function cp_scrolling(data,boolDescending){
             
         }
         
-        
-        
-        
+
         
         
         

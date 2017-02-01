@@ -30,6 +30,7 @@ var GLOBAL_rendertime = 50/3; // 50/3 = 60 fps
 var GLOBAL_debugger_maxlen = 2000;
 var GLOBAL_debugger = true;
 
+var GlobalKeyOffset = 1;
 var GlobalEditRadius = 6;
 var GlobalEditColorBKG = "rgba(255,255,255,0.5)";
 var GlobalEditColorCorner = "rgba(111,111,111,0.7)";
