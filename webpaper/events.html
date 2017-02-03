@@ -77,6 +77,8 @@
                 text.content = 'The contents of the point text';
                 
                 
+                
+                
                 tool2.onMouseMove = function(event) {
 			// Use the arcTo command to draw cloudy lines
 			text.content = (event.point);
@@ -132,13 +134,19 @@
                 var text2 = new PointText({
                     point:new Point(50, 100),
                     content:'test',
-                    visible:false
+                    visible:true,
+                    selected:true
                 });
+                text2.applyMatrix =true;
+                
+                console.log(text2.exportJSON());
+                text2.position = new Point(150, 100);
                 console.log(text2.exportJSON());
                 //text2.justification = 'center';
                 //text2.selected = true;
                 //text2.content = "ZZZZZZZZZ";
                 //text2.fillColor = 'black';
+                
                 
 	}
 </script>

@@ -1475,19 +1475,33 @@ function getCharCRLeft(xy,bounds){
 function getCharPos2(eventholder,type){
     try{
         //if(!startPos || startPos === -1)startPos = 0;alert(hit.item.name);
-        var actObjName = eventholder.actObj.name;
-        if(!actObjName)return {"valid":false};
-        var indexTP = actObjName.indexOf(".P_");
+        
+        //cdebug(eventholder.actObj.className)();
+        
+        if(eventholder.actObj.className === "SymbolItem"){
+            
+            var pos = eventholder.actObj.index;
+            
+//            cdebug(eventholder.actObj.rotation)();
+            
+        }else{
+            return {"valid":false};
+        }
+        
+//        var actObjName = eventholder.actObj.name;
+//        if(!actObjName)return {"valid":false};
+//        var indexTP = actObjName.indexOf(".P_");
+//        cdebug()();
         
         // TODO add top, bottom, left & right validation
         
-        if(indexTP === -1)return {"valid":false};
+//        if(indexTP === -1)return {"valid":false};
         
 //        eventholder.actObj.selected = true;
         
         switch(type){
             case "point":
-                var pos = ~~actObjName.substring(indexTP+3);
+//                var pos = ~~actObjName.substring(indexTP+3);
                 var left = getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds);
                 if(left&&pos>1){
                     left = false;
@@ -1502,14 +1516,14 @@ function getCharPos2(eventholder,type){
             case "top":
                 return {
                     "valid":true,
-                    "pos":~~actObjName.substring(indexTP+3),
+//                    "pos":~~actObjName.substring(indexTP+3),
                     "left":false
                 };
             break;
             case "bottom":
                 return {
                     "valid":true,
-                    "pos":~~actObjName.substring(indexTP+3),
+//                    "pos":~~actObjName.substring(indexTP+3),
                     "left":false
                 };
             break;
@@ -1663,4 +1677,15 @@ function isPrintableJS(keycode){
         (keycode > 218 );   // [\]' (in order) //&& keycode < 223
 
     return valid;
+}
+
+
+function rotateThis(obj,deltaY){
+    var offset;
+    if(deltaY>0){
+        offset = 3;
+    }else{
+        offset = -3;
+    }
+    obj.rotate(offset);
 }

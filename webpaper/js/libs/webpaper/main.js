@@ -901,29 +901,34 @@ function setGetShape(cEl,parentName){
         // add holder of path                    cEl_group.children["ShapeRaster"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "ShapeRaster";
+        tempShape.applyMatrix = false;
         
         // add holder of path                    cEl_group.children["ShapePath"]
         tempShape = cEl_group.addChild(new paper.CompoundPath());
         tempShape.name = "ShapePath";
+        tempShape.applyMatrix = false;
         
         // add holder of text paths              cEl_group.children["TextPath"]
         tempShape = cEl_group.addChild(new paper.CompoundPath());
         tempShape.name = "TextPath";
+        tempShape.applyMatrix = false;
         
         // add holder of text symbols            cEl_group.children["TextSelection"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "TextSelection";
+        tempShape.applyMatrix = false;
         
         // add holder of text selection          cEl_group.children["TextSymbols"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "TextSymbols";
+        tempShape.applyMatrix = false;
         
-        // add holder of control points          cEl_group.children["ControlPoints"]
-        tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = "ControlGuides";
-        
-        tempShape = cEl_group.addChild(new paper.Group());
-        tempShape.name = "ControlPoints";
+//        // add holder of control points          cEl_group.children["ControlPoints"]
+//        tempShape = cEl_group.addChild(new paper.Group());
+//        tempShape.name = "ControlGuides";
+//        
+//        tempShape = cEl_group.addChild(new paper.Group());
+//        tempShape.name = "ControlPoints";
         
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "Items";
@@ -1675,6 +1680,7 @@ function draw_cEl_group(cEl_group) {
             
             cEl_setPaperPath(cEl_group,cEl_group.children["ShapePath"], cEl_group.shape, true, false);
             
+            
         }
         
         if(cEl_group.reset.layout_css){
@@ -2385,11 +2391,24 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
             
             shapeContainer.points = cEl_page.shapes[cEl_group.shape.name];
             
-            cEl_path = cEl_pathHolder.addChild(new paper.CompoundPath(shapeContainer.points));
+            cEl_pathHolder.addChild(new paper.CompoundPath(shapeContainer.points));
+            cEl_pathHolder.position = new paper.Point(cpMP);
 //            cdebug(cEl_path.className)();
 //            cEl_path = cEl_pathHolder.children[1];
-            cEl_pathHolder.position = new paper.Point(cpMP);
-            cEl_pathHolder.scale(shapeContainer.scale[0],shapeContainer.scale[1]);
+//            cEl_group.children["ShapePath"].position = new paper.Point(cpMP);
+            ;//new paper.Point(cEl_pathHolder.position);
+//            cEl_pathHolder.pivot = new paper.Point(cEl_group.children["ShapePath"].position);
+//            cEl_group.pivot = cEl_pathHolder.pivot;
+//            cdebug(cEl_group.name)();
+//            cdebug(shapeContainer.scale)();
+//            cdebug(cpMP)();
+//            
+            cEl_group.pivot = new paper.Point(cpMP);
+            cEl_group.scale(shapeContainer.scale[0],shapeContainer.scale[1]);
+            
+            
+            
+//            cEl_pathHolder.applyMatrix = false;
             //cEl_pathHolder.position = new paper.Point(cpMP);
 //            cdebug(shapeContainer.scale)();
             
@@ -2517,7 +2536,9 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
                     //cElPath.closed = true;
                 break;
             };
-//            cEl_path.pivot = new paper.Point(subPath.position);
+            
+            cEl_pathHolder.pivot = new paper.Point(cpMP);
+            cEl_group.pivot = cEl_pathHolder.pivot;
         }
 
         

@@ -23,7 +23,128 @@
 paper.Item.inject({
     _drawSelection: function(ctx, matrix, size, selectionItems, updateVersion) {
         // your function here
+//        cdebug(this.className)();
         _drawSelection_new (this,ctx, matrix, size, selectionItems, updateVersion);
+    }
+});
+
+paper.Item.inject({
+    _hitTest: function(point, options, parentViewMatrix) {
+        if (this._locked || !this._visible || this._guide && !options.guides
+                || this.isEmpty()) {
+            return null;
+        }
+
+        // Check if the point is withing roughBounds + tolerance, but only if
+        // this item does not have children, since we'd have to travel up the
+        // chain already to determine the rough bounds.
+        var matrix = this._matrix,
+            // Keep the accumulated matrices up to this item in options, so we
+            // can keep calculating the correct _tolerancePadding values.
+            viewMatrix = parentViewMatrix
+                    ? parentViewMatrix.appended(matrix)
+                    // If this is the first one in the recursion, factor in the
+                    // zoom of the view and the globalMatrix of the item.
+                    : this.getGlobalMatrix().prepend(this.getView()._matrix),
+            // Calculate the transformed padding as 2D size that describes the
+            // transformed tolerance circle / ellipse. Make sure it's never 0
+            // since we're using it for division (see checkBounds()).
+            tolerance = Math.max(options.tolerance, /*#=*/Numerical.EPSILON),
+            // Hit-tests are performed in the item's local coordinate space.
+            // To calculate the correct 2D padding for tolerance, we therefore
+            // need to apply the inverted item matrix.
+            tolerancePadding = options._tolerancePadding = new Size(
+                    Path._getStrokePadding(tolerance,
+                        matrix.inverted()._shiftless()));
+        // Transform point to local coordinates.
+        point = matrix._inverseTransform(point);
+        // If the matrix is non-reversible, point will now be `null`:
+        if (!point || !this._children &&
+            !this.getBounds({ internal: true, stroke: true, handle: true })
+                .expand(tolerancePadding.multiply(2))._containsPoint(point)) {
+            return null;
+        }
+
+        // See if we should check self (own content), by filtering for type,
+        // guides and selected items if that's required.
+        var checkSelf = !(options.guides && !this._guide
+                || options.selected && !this.isSelected()
+                // Support legacy Item#type property to match hyphenated
+                // class-names.
+                || options.type && options.type !== Base.hyphenate(this._class)
+                || options.class && !(this instanceof options.class)),
+            match = options.match,
+            that = this,
+            bounds,
+            res;
+
+        function filter(hit) {
+            if (hit && match && !match(hit))
+                hit = null;
+            // If we're collecting all matches, add it to options.all
+            if (hit && options.all)
+                options.all.push(hit);
+            return hit;
+        }
+
+        function checkBounds(type, part) {
+            var pt = bounds['get' + part]();
+            // Since there are transformations, we cannot simply use a numerical
+            // tolerance value. Instead, we divide by a padding size, see above.
+            if (point.subtract(pt).divide(tolerancePadding).length <= 1) {
+                return new HitResult(type, that,
+                        { name: Base.hyphenate(part), point: pt });
+            }
+        }
+
+        // Ignore top level layers by checking for _parent:
+        if (checkSelf && (options.position || options.center || options.bounds) && this._parent) {
+            // Don't get the transformed bounds, check against transformed
+            // points instead
+//            cdebug(this.className)();
+            bounds = this.bounds;
+            //bounds = this.getInternalBounds();
+            if (options.position) {
+                var pt = this.getPosition();
+                if (point.subtract(pt).divide(tolerancePadding).length <= 1) {
+                    res = new HitResult('position', that,
+                        { name: 'position', point: pt });
+                }
+            }
+            
+            if (!res && options.center) {
+                res = checkBounds('center', 'Center');
+            }
+            if (!res && options.bounds) {
+                // TODO: Move these into a private scope
+                var points = [
+                    'TopLeft', 'TopRight', 'BottomLeft', 'BottomRight',
+                    'LeftCenter', 'TopCenter', 'RightCenter', 'BottomCenter'
+                ];
+                for (var i = 0; i < 8 && !res; i++) {
+                    res = checkBounds('bounds', points[i]);
+                }
+            }
+            res = filter(res);
+        }
+
+        if (!res) {
+            res = this._hitTestChildren(point, options, viewMatrix)
+                // NOTE: We don't call match on _hitTestChildren() because
+                // it is already called internally.
+                || checkSelf
+                    && filter(this._hitTestSelf(point, options, viewMatrix,
+                        // If the item has a non-scaling stroke, we need to
+                        // apply the inverted viewMatrix to stroke dimensions.
+                        this.getStrokeScaling() ? null
+                            : viewMatrix.inverted()._shiftless()))
+                || null;
+        }
+        // Transform the point back to the outer coordinate system.
+        if (res && res.point) {
+            res.point = matrix.transform(res.point);
+        }
+        return res;
     }
 });
 
@@ -105,145 +226,151 @@ function drawSegments_duplicate(ctx, path, matrix) {
 }
 
 function drawHandles_new(ctx, segments, matrix, size , data ,indexLow) {
-    var half = size / 2,
-            coords = new Array(6),
-            pX, pY;
-    var fillStyle,strokeStyle,lineWidth;
     
-    function drawHandle(index,color1,color2) {
-            var hX = coords[index],
-                    hY = coords[index + 1];
-            if (pX != hX || pY != hY) {
-                
-                fillStyle = ctx.fillStyle;
-                strokeStyle = ctx.strokeStyle;
-                ctx.fillStyle = color1;
-                ctx.strokeStyle = color1;
-                ctx.beginPath();
-                ctx.moveTo(pX, pY);
-                ctx.lineTo(hX, hY);
-                ctx.stroke();
-                
-//                cdebug("herer1")();
-                if(color2){
-                    
-                    lineWidth = ctx.lineWidth;
-                    
+    try{
+        var half = size / 2,
+                coords = new Array(6),
+                pX, pY;
+        var fillStyle,strokeStyle,lineWidth;
+
+        function drawHandle(index,color1,color2) {
+                var hX = coords[index],
+                        hY = coords[index + 1];
+                if (pX != hX || pY != hY) {
+
+                    fillStyle = ctx.fillStyle;
+                    strokeStyle = ctx.strokeStyle;
+                    ctx.fillStyle = color1;
+                    ctx.strokeStyle = color1;
                     ctx.beginPath();
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = "rgba(0,0,0,0.2)";
-                    ctx.moveTo(hX, 0);
-                    ctx.lineTo(hX, ctx.canvas.height);
-                    ctx.moveTo(0, hY);
-                    ctx.lineTo(ctx.canvas.width, hY);
+                    ctx.moveTo(pX, pY);
+                    ctx.lineTo(hX, hY);
                     ctx.stroke();
-                    
-                    ctx.lineWidth = size / 3;
-                    ctx.strokeStyle = color2;
-                    ctx.beginPath();
-                    ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
-                    ctx.fill();
-                    ctx.stroke();
-                    
-                   
-                    
-                    ctx.lineWidth = lineWidth;
+
+    //                cdebug("herer1")();
+                    if(color2){
+
+                        lineWidth = ctx.lineWidth;
+
+                        ctx.beginPath();
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                        ctx.moveTo(hX, 0);
+                        ctx.lineTo(hX, ctx.canvas.height);
+                        ctx.moveTo(0, hY);
+                        ctx.lineTo(ctx.canvas.width, hY);
+                        ctx.stroke();
+
+                        ctx.lineWidth = size / 3;
+                        ctx.strokeStyle = color2;
+                        ctx.beginPath();
+                        ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
+                        ctx.fill();
+                        ctx.stroke();
+
+
+
+                        ctx.lineWidth = lineWidth;
+                    }else{
+
+                        ctx.beginPath();
+                        ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
+                        ctx.fill();
+
+                    }
+
+                    ctx.fillStyle = fillStyle;
+                    ctx.strokeStyle = strokeStyle;
+                }
+        }
+
+
+        for (var i = 0,color = ctx.fillStyle, l = segments.length; i < l; i++) {
+            var segment = segments[i],
+                selection = segment._selection;
+            segment._transformCoordinates(matrix, coords);
+            pX = coords[0];
+            pY = coords[1];
+
+
+            if (selection & 2){
+                if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
+                    if(data.hitActType.name==="handle-in"){
+                        drawHandle(2,'rgba(255,255,0,1)','rgba(255,0,0,1)');
+                    }else{
+                        drawHandle(2,'rgba(255,255,0,1)');
+                    }
+
                 }else{
-                    
-                    ctx.beginPath();
-                    ctx.arc(hX, hY, half, 0, Math.PI * 2, true);
-                    ctx.fill();
-                    
+                    drawHandle(2,'rgba(255,255,0,0.2)');
+                }
+
+            }
+            if (selection & 4){
+                if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
+                    if(data.hitActType.name==="handle-out"){
+                        drawHandle(4,'rgba(0,0,255,1)','rgba(255,0,0,1)');
+                    }else{
+                        drawHandle(4,'rgba(0,0,255,1)');
+                    }    
+                }else{
+                    drawHandle(4,'rgba(0,0,255,0.2)');
+                }
+            }
+    //            if (selection){
+    //                
+    //                
+    //            }
+            if (!(selection & 1)) {
+    //                    var fillStyle = ctx.fillStyle;
+    //                    ctx.fillStyle = '#555555';
+    //                    ctx.fillRect(pX - half + 1, pY - half + 1, size - 2, size - 2);
+    //                    ctx.fillStyle = fillStyle;
+            }else{
+                fillStyle = ctx.fillStyle;
+
+                if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
+                    ctx.fillStyle = 'rgba(0,255,0,1)';
+                    if(data.hitActType.name==="handle"){
+                        strokeStyle = ctx.strokeStyle;
+                        lineWidth = ctx.lineWidth;
+                        ctx.lineWidth = size / 3;
+                        ctx.strokeStyle = 'rgba(255,0,0,1)';
+    //                    
+                        ctx.beginPath();
+                        ctx.rect(pX - half, pY - half, size, size);
+                        ctx.fill();
+                        ctx.stroke();
+
+
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                        ctx.beginPath();
+                        ctx.moveTo(pX, 0);
+                        ctx.lineTo(pX, ctx.canvas.height);
+                        ctx.moveTo(0, pY);
+                        ctx.lineTo(ctx.canvas.width, pY);
+                        ctx.stroke();
+    //                    
+    //                    
+                        ctx.strokeStyle = strokeStyle;
+                        ctx.lineWidth = lineWidth;
+                    }else{
+                        ctx.fillRect(pX - half, pY - half, size, size);
+                    }
+                }else{
+                    ctx.fillStyle = 'rgba(0,255,0,0.2)';
+                    ctx.fillRect(pX - half, pY - half, size, size);
                 }
 
                 ctx.fillStyle = fillStyle;
-                ctx.strokeStyle = strokeStyle;
-            }
-    }
-    
-    
-    for (var i = 0,color = ctx.fillStyle, l = segments.length; i < l; i++) {
-        var segment = segments[i],
-            selection = segment._selection;
-        segment._transformCoordinates(matrix, coords);
-        pX = coords[0];
-        pY = coords[1];
-
-
-        if (selection & 2){
-            if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
-                if(data.hitActType.name==="handle-in"){
-                    drawHandle(2,'rgba(255,255,0,1)','rgba(255,0,0,1)');
-                }else{
-                    drawHandle(2,'rgba(255,255,0,1)');
-                }
-
-            }else{
-                drawHandle(2,'rgba(255,255,0,0.2)');
-            }
-
-        }
-        if (selection & 4){
-            if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
-                if(data.hitActType.name==="handle-out"){
-                    drawHandle(4,'rgba(0,0,255,1)','rgba(255,0,0,1)');
-                }else{
-                    drawHandle(4,'rgba(0,0,255,1)');
-                }    
-            }else{
-                drawHandle(4,'rgba(0,0,255,0.2)');
             }
         }
-//            if (selection){
-//                
-//                
-//            }
-        if (!(selection & 1)) {
-//                    var fillStyle = ctx.fillStyle;
-//                    ctx.fillStyle = '#555555';
-//                    ctx.fillRect(pX - half + 1, pY - half + 1, size - 2, size - 2);
-//                    ctx.fillStyle = fillStyle;
-        }else{
-            fillStyle = ctx.fillStyle;
-
-            if (data.cEl_grouphandledata && data.hitActType.index === i && data.hitActType.indexLow === indexLow){
-                ctx.fillStyle = 'rgba(0,255,0,1)';
-                if(data.hitActType.name==="handle"){
-                    strokeStyle = ctx.strokeStyle;
-                    lineWidth = ctx.lineWidth;
-                    ctx.lineWidth = size / 3;
-                    ctx.strokeStyle = 'rgba(255,0,0,1)';
-//                    
-                    ctx.beginPath();
-                    ctx.rect(pX - half, pY - half, size, size);
-                    ctx.fill();
-                    ctx.stroke();
-                    
-                    
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = "rgba(0,0,0,0.2)";
-                    ctx.beginPath();
-                    ctx.moveTo(pX, 0);
-                    ctx.lineTo(pX, ctx.canvas.height);
-                    ctx.moveTo(0, pY);
-                    ctx.lineTo(ctx.canvas.width, pY);
-                    ctx.stroke();
-//                    
-//                    
-                    ctx.strokeStyle = strokeStyle;
-                    ctx.lineWidth = lineWidth;
-                }else{
-                    ctx.fillRect(pX - half, pY - half, size, size);
-                }
-            }else{
-                ctx.fillStyle = 'rgba(0,255,0,0.2)';
-                ctx.fillRect(pX - half, pY - half, size, size);
-            }
-            
-            ctx.fillStyle = fillStyle;
-        }
-    }
-    
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }  
 }
 
 
@@ -251,30 +378,23 @@ function drawHandles_new(ctx, segments, matrix, size , data ,indexLow) {
 
 
 function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVersion) {
+    
+    try{
+        
         // your function here
         var selection = caller._selection,
                 itemSelected = selection & 1,
-                boundsSelected = selection & 2
-                                || itemSelected && caller._selectBounds,
+                boundsSelected = selection & 2 || itemSelected && caller._selectBounds,
                 positionSelected = selection & 4;
-        if (!caller._drawSelected)
-                itemSelected = false;
+        if (!caller._drawSelected)itemSelected = false;
         
-        if ((itemSelected || boundsSelected || positionSelected)
-                        && caller._isUpdated(updateVersion)) {
-                
-//                if(boundsSelected){
-//                    drawGrid(ctx);
-//                    cdebug(updateVersion)();
-//                }
-                
-//                if(paper.data.resetGrid){
-                    
-//                    paper.data.resetGrid = false;
-//                }
+        
+        
+        if ((itemSelected || boundsSelected || positionSelected) && caller._isUpdated(updateVersion)) {
                 
 //                var color = caller.getSelectedColor(true) || (layer = caller.getLayer())
 //                    && layer.getSelectedColor(true);
+//                    ctx.strokeStyle = ctx.fillStyle = color ? color.toCanvasStyle(ctx) : '#002dec';
                         
                 var        colorBounds = new paper.Color(0, 0, 0, 0.5);
                 colorBounds = colorBounds.toCanvasStyle(ctx);
@@ -284,18 +404,18 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                 
                 var        colorPosition = new paper.Color(1, 0, 0, 0.8);
                 colorPosition = colorPosition.toCanvasStyle(ctx);
-                
-                //var        color1 = new paper.Color(1, 0, 0.5);                
-                                
+                                              
                 var layer,       mx = matrix.appended(caller.getGlobalMatrix(true)),
                         half = size / 2;
-//                ctx.strokeStyle = ctx.fillStyle = color ? color.toCanvasStyle(ctx) : '#002dec';
+//                
 
                 
                 if (itemSelected)
                         ctx.strokeStyle = ctx.fillStyle = colorPath;
 //                        drawGrid(ctx);
-                        caller._drawSelected(ctx, mx, selectionItems);
+                        //cdebug(caller.className)();
+                        
+                        if(caller.className !== "SymbolItem" && caller.className !== "Group")caller._drawSelected(ctx, mx, selectionItems);
                 if (positionSelected) {
                         ctx.strokeStyle = ctx.fillStyle = colorPosition;
                         var point = caller.getPosition(true),
@@ -316,9 +436,21 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                                 ctx.stroke();
                         }
                         
-                    if(paper.data.cEl_grouphandledata && paper.data.hitActType.name==="center"){
+//                    cdebug(paper.data.cEl_grouphandledata && paper.data.hitActType.name==="position")();
+                        
+                    if(paper.data.cEl_grouphandledata && paper.data.hitActType.name==="position"){
                         ctx.fill();
                         ctx.lineWidth = 1;
+                        
+//                        var pointVector = point.normalize(10);
+//                        var pointEnd = point.add(point.normalize(20)); 
+//                        cdebug(caller.rotation)();
+                        
+//                        ctx.beginPath();
+//                        ctx.moveTo(x, y);
+//                        ctx.lineTo(pointEnd.x,pointEnd.y);
+//                        ctx.stroke();
+                        
                         ctx.strokeStyle = "rgba(0,0,0,0.2)";
                         ctx.beginPath();
                         ctx.moveTo(x, 0);
@@ -331,12 +463,15 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                 }
                 if (boundsSelected) {
                     
-                    
+                    //cdebug([caller.className,itemSelected , boundsSelected , positionSelected,updateVersion,caller.bounds,caller.matrix])();
                     
                     ctx.strokeStyle = ctx.fillStyle = colorBounds;
                     drawGrid(ctx);
+//                    cdebug(caller.bounds)();
+//                    cdebug(caller.getInternalBounds())();
                     
-                    var coords = mx._transformCorners(caller.getInternalBounds());
+                    //var coords = mx._transformCorners(caller.getInternalBounds());
+                    var coords = mx._transformCorners(caller.bounds);
                     
 //                    cdebug(coords)();
                     
@@ -359,6 +494,9 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                     ctx.fillRect((coords[4] + coords[6])/2- half, (coords[5] + coords[7])/2 - half, size, size);
                     
                     ctx.fillRect((coords[6] + coords[0])/2- half, (coords[7] + coords[1])/2 - half, size, size);
+                    
+                    // bounds center
+                    ctx.fillRect((coords[0] + coords[4])/2- half, (coords[1] + coords[5])/2 - half, size, size);
                     
                     var lines=[0,0,0,0,0,0,0,0];
                     
@@ -487,6 +625,11 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                     ctx.stroke();
                 }
         }
+    } catch (e) {
+        var err = listError(e);
+        cdebug(err,false,false,3)();
+        return err;
+    }  
 };
 
 
@@ -598,7 +741,13 @@ function editor_keydown(eventholder) {
                 
                 if(eventholder.keys.key==="Escape")selectGroup(null);
                 if(eventholder.keys.key==="Delete")deleteGroup();
-                
+                if(eventholder.keys.key==="Enter"){
+                    // TODO add save here
+                    paper.data.hitActType = {name:"position",default:false};
+                    select_handle(paper.data.cEl_group);
+                    paper.data.workState = "editset";
+                    
+                }
             break;    
             
             case "editset":
@@ -636,7 +785,7 @@ function editor_keydown(eventholder) {
                 }
                 
                 paper.data.workState = "editkeys";
-                paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
+//                paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
 //            break;
             case "editkeys":
                 
@@ -674,8 +823,10 @@ function editor_keydown(eventholder) {
                     case "Enter":
                         
                         // TODO add save here
-                        
-                        selectGroup(paper.data.cEl_group);
+//                        paper.data.hitActType = {name:"position",default:false};
+//                        select_handle(cEl_group);
+//                        paper.data.workState = "editset";
+
                     break;
                     case "Escape":
                         
@@ -732,7 +883,7 @@ function editor_keyup(eventholder) {
 //            case "editset":
             case "editkeys":
 //                cdebug("hre")();
-                paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
+//                paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
 //                paper.data.cEl_group.reset.debug = true;
                 paper.data.workState = "editset";
 //                cdebug(paper.data.workState)();
@@ -851,7 +1002,7 @@ function editor_mousedown(eventholder) {
                 
 //                cdebug(paper.data.hitActType)();
 
-                select_handle(actObj,eventholder.metrics.xy,hitObject);
+                select_handle(actObj);
 
                 
 
@@ -861,15 +1012,7 @@ function editor_mousedown(eventholder) {
 
                 
                     
-//                var hitObjects = paper.project.activeLayer.hitTestAll(eventholder.metrics.xy, hitOptions);
-//                var list = "";
-//                for(var i=0;i<hitObjects.length;i++){
-//                    if(hitObjects[i].item.className !== "SymbolItem"){
-//                        list = list + "<<<" + getHitActType(hitObjects[i]).name + " of " + hitObjects[i].item.className + ">>>";
-//                    }
-//                    
-//                }
-//                cdebug(list)();
+//                
                 
             break;
             case "pre":
@@ -941,26 +1084,42 @@ function getHitEditor(eventholder,boolSelectBounds){
         var hitOptions = {
 //          class:paper.Path,
             match: function test(hit){
-                //cdebug(hit.type + " " + hit.item.index + " " + hit.item.className)();
-                if(
-                    !(hit.type==="bounds" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
-                    !(hit.type==="center" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
-                    typeof hit.item.className!=="SymbolItem"
-                    )return true;
+//                cdebug(hit.item.className + " " +  hit.type + " " + hit.name + " " + hit.item.index )();
+//                if(
+//                    !(hit.type==="bounds" && !(hit.item.className==="Group")) &&
+//                    !(hit.type==="center" && !(hit.item.className==="Group")) &&
+//                    !(hit.type==="position" && !(hit.item.className==="Group")) &&
+//                    !(hit.type==="position" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
+//                    (typeof hit.item.className!=="SymbolItem")
+//                    )
+                    return true;
                 },
             handles:true,
             segments:true,
             center: true,
+            position:true,
             stroke: true,
             fill: true,
-            bounds:boolSelectBounds,
+            bounds:true,
 
-            selected:true,
+//            selected:true,
             tolerance: 5
         };
                 
-                
-        return paper.project.hitTest(eventholder.metrics.xy, hitOptions);
+//        cdebug(paper.data.cEl_group.className)();
+//        cdebug(paper.data.cEl_group.bounds);        
+//        return paper.data.cEl_group.hitTestAll(eventholder.metrics.xy, hitOptions);
+        
+        return paper.data.cEl_group.hitTest(eventholder.metrics.xy, hitOptions);
+//        var list = "";
+//        for(var i=0;i<hitObjects.length;i++){
+//            if(hitObjects[i].item.className !== "SymbolItem"){
+//                list = list + "<<<" + getHitActType(hitObjects[i]).name + " of " + hitObjects[i].item.className + ">>>";
+//            }
+//        }
+//        cdebug(list)();
+        
+        
 
     } catch (e) {
         var err = listError(e);
@@ -993,9 +1152,12 @@ function editor_mousemove(eventholder) {
             case "editlimbo":
             case "editset":
                 
-                var hitObject = getHitEditor(eventholder,!eventholder.keys.shiftKey);
-                var cEl_layer = paper.project.activeLayer;
-                var actObj = returnValidHandle(hitObject,cEl_layer,false);
+//                var hitObject = getHitEditor(eventholder,!eventholder.keys.shiftKey);
+//                
+////                if(hitObject)cdebug(hitObject.type)();
+//                
+//                var cEl_layer = paper.project.activeLayer;
+//                var actObj = returnValidHandle(hitObject,cEl_layer,false);
                 
             break;
             case "editmouse":
@@ -1023,7 +1185,7 @@ function editor_mouseup(eventholder) {
         switch (paper.data.workState) {
             case "editmouse":
 
-                paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
+//                paper.data.cEl_group.children["ShapePath"].applyMatrix = true;
                 paper.data.cEl_group.reset.debug = true;
                 paper.data.workState = "editset";
                 eventholder.block.state = false;
@@ -1046,14 +1208,20 @@ function editor_mouseup(eventholder) {
 
                 var newShapeName = id_generator("sh",9);
                 paper.data.shapes[newShapeName] = createAprox(cEl_layer,paper.data.cEl_groupAdd.segments,[0.5,0.5],5);
+                
+                var mp = paper.data.cEl_groupAdd.position;
+                
                 paper.data.cEl_groupAdd.remove();
+                
+//                cdebug(paper.project.view.size)();
+//                cdebug(mp)();
 
                 var cEl = {
                     "elId":"defaultNew",
                     "tab":1,
                     "visible":true,
                     "shape":{
-                        "masspoint":[0.5,0.5],
+                        "masspoint":[mp.x/paper.project.view.size.width,mp.y/paper.project.view.size.height],
                         "scale":[1,1],
                         "name":newShapeName,
                         "type":"bezier"
@@ -1072,10 +1240,11 @@ function editor_mouseup(eventholder) {
                 var cEl_group = cEl_layer.children[cEl_layer.children.length-1];
                 
 //                cdebug(cEl_group.children["ShapePath"].children[0].index)();
-                
+
+                selectGroup(cEl_group);
                 paper.data.hitActType = {index:0,indexLow:cEl_group.children["ShapePath"].children[0].index,name:"handle"};
                 
-                selectGroup(cEl_group);
+                
 
             break;
 //            case  "editlimbo" :
@@ -1335,7 +1504,7 @@ function editor_mouseup(eventholder) {
 
 
 
-function handlehandle(data,delta,keys){
+function handlehandle(data,delta,keys,action){
     try{
         
 //        cdebug()();
@@ -1345,10 +1514,41 @@ function handlehandle(data,delta,keys){
         var hitObjType = data.hitActType.name;
 
         switch (hitObjType) {
-            
-            case "center":
-                cEl_group.translate(delta);
-                data.editTool = "move";
+            // edit shape Point
+            case "handle":
+            case "handle-in":
+            case "handle-out":
+
+                edithandle(data,cEl_group,delta,hitObjType,keys);
+                data.editTool = "edit" + hitObjType;
+                
+                return true;
+            break;
+            case "position":
+                
+                if(action==="scroll"){
+//                    cdebug(cEl_group.position)();
+//                    cdebug(data.cEl_grouphandledata.position)();
+//                    data.cEl_grouphandledata.position = cEl_group.children["ShapePath"].position;
+//                    cEl_group.pivot = data.cEl_grouphandledata.position;
+//                    cEl_group.rotate(delta);
+//                    cEl_group.children["ShapePath"].pivot = data.cEl_grouphandledata.position;
+//                    var pivot = cEl_group.children["ShapePath"].pivot;
+                    cEl_group.rotate(delta);
+//                    cEl_group.children["ShapePath"].rotate(delta);
+//                    cEl_group.children["TextPath"].rotate(delta,pivot);
+//                    cEl_group.children["TextSymbols"].rotate(delta,pivot);
+//                    cEl_group.reset.text_draw=true;
+                    
+//                    cEl_group.children["ShapePath"].position = data.cEl_grouphandledata.position;
+                    data.editTool = "scroll";
+                    
+                }else{
+                    cEl_group.translate(delta);
+                    data.editTool = "move";
+
+                }
+                
                 return true;
             break;
             
@@ -1404,23 +1604,6 @@ function handlehandle(data,delta,keys){
                 scaleX = 1 - delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
                 scaleY = 1 + delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.topRight;
-            break;
-            // edit shape Point
-            case "handle":
-            case "handle-in":
-            case "handle-out":
-            
-                
-                
-                
-                edithandle(data,cEl_group,delta,hitObjType,keys);
-                
-                
-                
-                
-                data.editTool = "edit" + hitObjType;
-                
-                return true;
             break;
             
             default:
@@ -1586,14 +1769,14 @@ function getAngleSSS(a,b,c){
 function setGroupScale(cEl_group,scaleX,scaleY,scalePoint){
     try{
         
-//        cEl_group.scale(scaleX,scaleY, scalePoint);
+        cEl_group.scale(scaleX,scaleY, scalePoint);
         
-        cEl_group.children["ShapePath"].scale(scaleX,scaleY, scalePoint);
+//        cEl_group.children["ShapePath"].scale(scaleX,scaleY, scalePoint);
 //        cEl_group.children["ControlPoints"].scale(scaleX,scaleY, scalePoint);
         
         if (cEl_group.data.type === "text"){
             if(cEl_group.data.values.pattern === "path"){
-                cEl_group.children["TextPath"].scale(scaleX,scaleY, scalePoint);
+//                cEl_group.children["TextPath"].scale(scaleX,scaleY, scalePoint);
             }else{
                 cEl_group.reset.text_shape = true;
             }
@@ -1673,7 +1856,7 @@ function cEl_setCpCursor(cEl_layer, cursor, hitObjType) {
 //        var hitObjType = hitActType;
         
         switch (hitObjType) {
-            case "center":
+            case "position":
                 cEl_layer.style.custom = $.extend(true,cEl_layer.style.custom,{"cursor":"move"});
             break;
             // scale left>right
@@ -1923,7 +2106,7 @@ function cEl_edit_MP(cEl_parent,xy,scale){
 
 
 
-function select_handle(cEl_group,xy,hitObject){
+function select_handle(cEl_group){
     try{    
 //        cdebug(actObj.className)();
 //        cdebug(actObj.name)();
@@ -1938,19 +2121,19 @@ function select_handle(cEl_group,xy,hitObject){
             return true;
         }
         
-        if(!hitObject.item)return false;
+//        if(!hitObject)return false;
 //        if(paper.data.cEl_groupHit)paper.data.cEl_groupHit[paper.data.cEl_groupHit.data.drawType] = paper.data.cEl_groupHit.data.color;
         
 //        paper.data.cEl_groupHit = hitObject.item;
         
 //        paper.data.cEl_grouphandledata = null;
         
-        paper.data.cEl_grouphandledata = paper.data.cEl_group.children["ShapePath"].bounds.clone(); //bounds;//.clone();
+        paper.data.cEl_grouphandledata = paper.data.cEl_group.bounds.clone(); //bounds;//.clone();
         
         paper.data.cEl_grouphandledata.position = new paper.Point(paper.data.cEl_group.position);
-        paper.data.cEl_grouphandledata.hitPoint = new paper.Point(xy);
-        paper.data.cEl_grouphandledata.hitObject = hitObject;
-        paper.data.cEl_grouphandledata.hitObjectParent = cEl_group;
+//        paper.data.cEl_grouphandledata.hitPoint = new paper.Point(xy);
+//        paper.data.cEl_grouphandledata.hitObject = hitObject;
+//        paper.data.cEl_grouphandledata.hitObjectParent = cEl_group;
 //        paper.data.resetGrid = true;
         
 //        paper.data.hitActType = getHitActType(hitObject);
@@ -1972,7 +2155,7 @@ function select_handle(cEl_group,xy,hitObject){
         
 //        cdebug(paper.data.hitActType)();
         
-        paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
+//        paper.data.cEl_group.children["ShapePath"].applyMatrix = false;
         
         return true;            
     } catch (e) {
@@ -1999,38 +2182,12 @@ function getHitActType(hitObject,defaultType){
             // borders and corners
             case "fill":
             case "center":
+            case "position":
                 return {"name":hitType,"default":false};
             break;
             case "bounds":
                 //cdebug( " of " + hitObject.item.index)();
                 return {"name":hitObject.name,"default":false};
-//                switch(hitObject.name){
-//                    case "top-center":
-//                        return {"name":"top-center","default":false};
-//                    break;
-//                    case "right-center":
-//                        return {"name":"right-center","default":false};
-//                    break;
-//                    case "bottom-center":
-//                        return {"name":"bottom-center","default":false};
-//                    break;
-//                    case "left-center":
-//                        return {"name":"left-center","default":false};
-//                    break;
-//                    case "top-left":
-//                        return {"name":"top-left","default":false};
-//                    break;
-//                    case "top-right":
-//                        return {"name":"top-right","default":false};
-//                    break;
-//                    case "bottom-right":
-//                        return {"name":"bottom-right","default":false};
-//                    break;
-//                    case "bottom-left":
-//                        return {"name":"bottom-left","default":false};
-//                    break;
-//                }
-
             break;
             // handles handle
             case "segment":
@@ -2073,15 +2230,17 @@ function selectGroup(cEl_group){
         if(paper.data.cEl_group){
 //            paper.data.cEl_group.debug = false;
 //            paper.data.cEl_group.reset.debug = true;
-//            paper.data.cEl_group.bounds.selected = false;
-//            paper.data.cEl_group.position.selected = false;
-            paper.data.cEl_group.children["ShapePath"].position.selected = false;
-            paper.data.cEl_group.children["ShapePath"].bounds.selected = false;
+            paper.data.cEl_group.bounds.selected = false;
+            paper.data.cEl_group.position.selected = false;
+//            paper.data.cEl_group.children["ShapePath"].position.selected = false;
+//            paper.data.cEl_group.children["ShapePath"].bounds.selected = false;
             paper.data.cEl_group.children["ShapePath"].fullySelected = false;
 //            paper.data.workState = "editlimbo";
+//              paper.data.cEl_group.fullySelected = false;
         }
         
         if(cEl_group && cEl_group.children["ShapePath"]){
+            paper.data.cEl_group = cEl_group;
 //            cdebug(cEl_group.className)();
 //            cdebug("here?")();
 //            cEl_group.debug = true;
@@ -2092,15 +2251,28 @@ function selectGroup(cEl_group){
             //cEl_group.selectedColor = "green";
 //            cEl_group.children["ShapePath"].selected = true;
 //            cEl_group.children["ShapePath"].children[0].segments[0].selected =true;
-            cEl_group.children["ShapePath"].position.selected = true;
-            cEl_group.children["ShapePath"].bounds.selected = true;
+//            cdebug(cEl_group.bounds)();
+//            cdebug(cEl_group.position)();
+            cEl_group.bounds.selected = true;
+            cEl_group.position.selected = true;
+//            cEl_group.fullySelected = true;
+//            cEl_group.position.selected = true;
+//            cEl_group.children["ShapePath"].position.selected = true;
+//            cEl_group.children["ShapePath"].bounds.selected = true;
+            cEl_group.children["ShapePath"].fullySelected = false;
             cEl_group.children["ShapePath"].fullySelected = true;
             
-            paper.data.cEl_group = cEl_group;
-//            paper.data.cEl_grouphandledata = null;
-//            paper.data.cEl_groupHit = null;
+            
+            
+            
+//            paper.data.hitActType = {name:"position",default:false};
+//            select_handle(cEl_group);
+//            
+////            paper.data.cEl_grouphandledata = null;
+////            paper.data.cEl_groupHit = null;
             paper.data.workState = "editlimbo";
 //            paper.data.resetGrid = true;
+//            cdebug("here")();
         }else{
             paper.data.cEl_group = null;
 //            paper.data.cEl_groupHit = null;
@@ -2259,8 +2431,10 @@ function cp_scrolling(data,eventholder){
         var newIndex;
         var segmentPoint,hitActType, newSegmentPoint,boolResetHandles=false;
         hitActType = data.hitActType;
+        if(!hitActType)return true;
+        
         var boolDescending = eventholder.wheel.deltaY>0;
-        var cEl_group = data.cEl_grouphandledata.hitObjectParent;
+        var cEl_group = data.cEl_group;
 //        cdebug(eventholder.keys.ctrlKey + " on " + hitActType.name)();
         
         switch(hitActType.name){
@@ -2375,15 +2549,14 @@ function cp_scrolling(data,eventholder){
                 boolResetHandles = true;
             break;
             
-            case "center":
+            case "position":
                 
-//                cdebug(cEl_group.children["ShapePath"].pivot)();
+                var delta = boolDescending? 3:-3;
+                handlehandle(data,delta,eventholder.keys,"scroll");
                 
-                if(boolDescending){
-                    cEl_group.rotate(1); //,data.cEl_grouphandledata.position
-                }else{
-                    cEl_group.rotate(-1); //,data.cEl_grouphandledata.position
-                }
+//                cdebug(cEl_group.matrix)();
+                
+                boolResetHandles = true;
 //                cEl_group.children["ShapePath"].applyMatrix = true;
 //                boolResetHandles = true;
             break;
@@ -2392,6 +2565,8 @@ function cp_scrolling(data,eventholder){
         if(boolResetHandles){
             cEl_group.children["ShapePath"].fullySelected = false;
             cEl_group.children["ShapePath"].fullySelected = true;
+            cEl_group.position.selected= true;
+            cEl_group.bounds.selected = true;
         }
         
         

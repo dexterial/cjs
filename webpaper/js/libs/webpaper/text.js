@@ -49,6 +49,7 @@ function draw_cEl_text(cEl_group,strNewText){
         if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
             
             draw_cEl_lines3(cEl_group,cEl_pageText);
+
         }
         
         if(cEl_group.reset.selection){
@@ -810,7 +811,11 @@ function draw_cEl_lines3(cEl_group,cEl_pageText){
         
         //cdebug(cEl_group.data.values.temp.lines3)();
         
+//        cEl_group.applyMatrix = true;
+        
         drawTextAlongPath(cEl_group,0,offset,cEl_pageText);
+        
+        
         
        
     } catch (e) {
@@ -835,6 +840,9 @@ function set_text_path(cEl_group,boolShowTextLines){
                 //cdebug(cEl_group.bounds)();
                 
                 cEl_group.children["TextPath"].removeChildren();
+                cEl_group.children["TextPath"].pivot = cEl_group.children["ShapePath"].pivot;
+                cEl_group.children["TextPath"].position = cEl_group.children["ShapePath"].position;
+                
                 var bounds = cEl_group.children["ShapePath"].bounds;
                 
                 //cdebug(cEl_group.data.values.vertical,false,false,0)();
@@ -901,10 +909,15 @@ function set_text_path(cEl_group,boolShowTextLines){
             case "path":
                 
 //                if(cEl_path.name!==text_path.name){
-                
+                var pivot = cEl_group.children["ShapePath"].pivot;
                
                 cEl_group.children["TextPath"].removeChildren();
                 cEl_group.children["TextPath"].addChild(cEl_group.children["ShapePath"].clone());
+//                cEl_group.children["TextPath"].pivot = pivot;
+//                cEl_group.children["TextPath"].position = cEl_group.children["ShapePath"].position;
+//                cEl_group.children["TextSymbols"].pivot = cEl_group.children["ShapePath"].pivot;
+//                cEl_group.children["TextSymbols"].position = cEl_group.children["ShapePath"].position;
+                
                 
                 cEl_group.children["TextPath"].visible = false;
                 cEl_group.children["TextPath"].name = text_path_name;
@@ -1146,7 +1159,8 @@ function drawTextAlongPath(cEl_group,index,offset){
 //                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
 
                     //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],charSymbolContainer,boolSelected);
-                    drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],boolSelected);
+                    drawChar(charObj,cEl_group.children["TextSymbols"]);
+//                    return true;
                 }else{
                               
                     j++;
@@ -1233,7 +1247,7 @@ function drawTextSelection(cEl_group,cEl_pageText){
                         from: [charObj.textItem.position.x - charObj.w/2, charObj.textItem.position.y-charObj.fs/2],
                         to: [charObj.textItem.position.x + charObj.w/2, charObj.textItem.position.y+charObj.fs/2],
                         fillColor : cEl_pageText.charsSelection.style["background-color"],
-                        rotation:charObj.angle,
+                        rotation:charObj.textItem.rotation,
                         name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
                     }));
                     
@@ -1280,7 +1294,7 @@ function drawTextCarret(cEl_group,cEl_pageText){
                     name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + cEl_pageText.charsSelection.cr.pos
                 }));
                 
-                carret.rotate(charObj.angle, charObj.textItem.position);
+                carret.rotate(charObj.textItem.rotation, charObj.textItem.position);
                 
                 //cdebug(window["carret"].name)();
                     //cEl_pageText.charsSelection.style["color"]
@@ -1399,17 +1413,40 @@ function drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i){
 }
 
 
-function drawChar(charObj,name,textContainer,boolSelected){
+function drawChar(charObj,textContainer){
    
     try{
         
         //var charSymbol = charObj.symbol;
-
-        charObj.textItem = textContainer.addChild(new paper.SymbolItem(charObj.symbol));
-        charObj.textItem.position = charObj.point;
-        charObj.textItem.rotation = charObj.angle;
-        charObj.textItem.name = name;
+        //var charSymbol
+//        charObj.textItem = new paper.SymbolItem(charObj.symbol);
+//        
+//        charObj.textItem.position = charObj.point;
+//        charObj.textItem.rotation = charObj.angle;
+//        charObj.textItem.name = name;
         
+        
+        
+//        charObj.textItem = charObj.symbol.place(charObj.point);
+//        var charDefinition = charObj.symbol;
+        
+//        charObj.textItem =  textContainer.addChild(new paper.TextItem());
+//        charObj.textItem.content = charObj.chr;
+//        charObj.textItem.position = charObj.point;
+//        charObj.textItem.stroke();
+        
+        
+        
+        charObj.textItem = textContainer.addChild(charObj.symbol.place(charObj.point));
+        charObj.textItem.rotation = charObj.angle;
+//        charObj.textItem.transform();
+        
+        
+//        cdebug(textContainer.bounds)();
+        
+//        cdebug(textContainer.children.length)();
+        
+        //charObj.symbol
         
         //textItem.selected = boolSelected;
         

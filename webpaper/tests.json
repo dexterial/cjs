@@ -125,7 +125,8 @@
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
-                "mouseup":"testEvents2(this)"
+                "mouseup":"testEvents2(this)",
+                "wheel":"rotateThis(this,eventholder.wheel.deltaY)"
             },
             "shape":{
                 "redraw":true
@@ -386,6 +387,13 @@
                 {
                     "name":"data1","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
                     "children":[
+                        {"name":"handdyzz","elId":"text1","tab":1,"debug":false,"shape":{"masspoint":[0.2,0.5],"scale":[1,1],"rotation":0,"name":"handdy","type":"bezier"},
+                            "data":{"values":{
+                                "default":"", 
+                                "editable":true,
+                                "vertical":false,
+                                "pattern":"path"
+                            }}},
                         {"name":"cow","elId":"text1","tab":1,"debug":false,"shape":{"masspoint":[0.2,0.3],"scale":[0.1,0.1],"rotation":180,"name":"cow","type":"svg"},
                             "data":{"values":{
                                 "default":"", 
