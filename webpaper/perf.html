@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/libs/helpers/paper-full.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	paper.install(window);
+	// Keep global references to both tools, so the HTML
+	// links below can access them.
+
+	window.onload = function() {
+            paper.setup('myCanvas1');
+            console.log(paper.view.size.width);
+            view.viewSize.width = 1000;
+            view.viewSize.height = 1000;
+		// The amount of circles we want to make:
+            var count =5500;
+            var center = paper.Point.random().multiply(view.size);
+            var color = {
+                hue: Math.random() * 360,
+                saturation: 1,
+                brightness: 1
+            };
+            color = "blue";
+            var path = new paper.Path.Circle({
+                    center: center,
+                    radius: 10,
+                    //strokeColor:"red",
+                    fillColor:color
+            });
+            // Create a symbol, which we will use to place instances of later:
+            
+            var boolRand = false;
+            
+            
+            var symbol = new paper.Symbol(path);
+
+            // Place the instances of the symbol:
+            for (var i = 0; i < count; i++) {
+                    // The center position is a random point in the view:
+                    center = paper.Point.random().multiply(view.size);
+                    if(boolRand){
+                        
+                        color = {
+                            hue: Math.random() * 360,
+                            saturation: 1,
+                            brightness: 1
+                        };
+                        //color = "blue";
+                        path = new paper.Path.Circle({
+                                center: center,
+                                radius: 10,
+                                //strokeColor:"red",
+                                fillColor:color
+                        });
+                    }else{
+                        var placedSymbol = symbol.place(center);
+                        
+                    }
+                    
+            }
+
+            // The onFrame function is called up to 60 times a second:
+            view.onFrame = function(event) {
+                //console.log(view.size.width);
+                // Run through the active layer's children list and change
+                // the position of the placed symbols:
+                var offsetX = 2,offsetY= 2;
+                for (var i = 0; i < count; i++) {
+
+                        var item = paper.project.activeLayer.children[i];
+                        
+                        //console.log(item.className);
+                        if(i % 10){
+                            //offsetX = Math.random() * 1;
+                            //offsetY = Math.random() * 1;
+                        }
+                        // Move the item 1/20th of its width to the right. This way
+                        // larger circles move faster than smaller circles:
+                        item.position.x += offsetX;
+                        if(item.position.y>1000)item.position.y = 0;
+                        item.position.y += offsetY;
+                        //item.fillColor = "green";
+                        // If the item has left the view on the right, move it back
+                        // to the left:
+                        if (item.bounds.left > view.size.width) {
+                                item.position.x = -item.bounds.width;
+                        }
+                }
+                
+            }; 
+	};
+</script>
+</head>
+<body>
+	<canvas id="myCanvas1" resize></canvas>
+</body>
+</html>

@@ -1198,27 +1198,31 @@ function resetTextSelection(cEl_group){
 
 
 
-function selection_actions(cEl, eventholder, actionNo, boolReset){
+function selection_actions(cEl_group, eventholder, actionNo, boolReset){
     
     try{
         
         //cdebug(actionNo)();
 
-        var lines = cEl.data.values.temp.lines3;
-        var eol = cEl.data.values.temp.eol;
+        var lines = cEl_group.data.values.temp.lines3;
+        var symbols = cEl_group.children["TextSymbols"].children;
+        var eol = symbols.length-1;
+        //var eol = cEl_group.data.values.temp.eol;
+        
         var cEl_Selection = paper.data.text.charsSelection;
         
-        cEl_Selection.name = cEl.parentName  + "_" + cEl.name;
+        cEl_Selection.name = cEl_group.parentName  + "_" + cEl_group.name;
         
         if(boolReset){
             cEl_Selection.charspos = [];
             if(cEl_Selection.selObj)cEl_Selection.selObj.reset.selection = true;
-            cEl_Selection.selObj = cEl;
+            cEl_Selection.selObj = cEl_group;
         }
         
         var boolForce = false;
         
         var cr,startPos,endPos,chrObj;
+        var chrObj_sibling;
 
         switch(true){
             //move carret top
@@ -1247,62 +1251,37 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
             break;
             //move carret right
             case actionNo === "ArrowRight":
-
-                var i = cEl_Selection.cr.pos;
-                for(var boolParagraph = false;i<eol;i++){
-                    chrObj = lines[i+1];
-                    if(!chrObj)break;
-                    if(cEl_Selection.cr.left){
-                        cEl_Selection.cr.left = false;
-                        boolForce = true;
-                        break;
-                    }
-                    
-                    if(chrObj.pr){
-                        if(cEl_Selection.cr.pos < eol-1){
-                            if(boolParagraph){
-                                cEl_Selection.cr.left = true;
-                            }
-
-                            cEl_Selection.cr.pos=i+1;
-                            boolForce = true;
-                            break;
-                        }
-                    }else{
-                        if(chrObj.chr==="n" && !cEl_Selection.cr.left){
-                            boolParagraph = true;
-                            boolForce = true;
-                        }
-                    }
+                chrObj = symbols[cEl_Selection.cr.pos];
+                chrObj_sibling = chrObj.nextSibling;
+                
+                if(cEl_Selection.cr.left){
+                    cEl_Selection.cr.left = false;
+                    boolForce = true;
+                }else if(chrObj_sibling && chrObj_sibling.nl){
+                    cEl_Selection.cr.pos++;
+                    boolForce = true;
+                    cEl_Selection.cr.left = true;
+                }else if(chrObj_sibling){
+                    cEl_Selection.cr.pos++;
+                    boolForce = true;
+                    cEl_Selection.cr.left = false;
                 }
                 
             break;
             //move carret left
             case actionNo === "ArrowLeft":
-                var i = cEl_Selection.cr.pos;
-                for(var boolParagraph = false;i>0;i--){
-                    chrObj = lines[i-1];
-                    
-                    if(!chrObj)break;
-                    //cdebug(chrObj.chr)();
-                    if(chrObj.pr){
-                        if(cEl_Selection.cr.pos > 0){
-                            if(boolParagraph){
-                                break;
-                            }
-                            if(cEl_Selection.cr.left)cEl_Selection.cr.left = false;
-                            cEl_Selection.cr.pos=i-1;
-                            boolForce = true;
-                            break;
-                        }
-                    }else{
-                        if(chrObj.chr==="n" && !cEl_Selection.cr.left){
-                            cEl_Selection.cr.left = true;
-                            boolParagraph = true;
-                            boolForce = true;
-                        }
-                    }
-                }
+                chrObj = symbols[cEl_Selection.cr.pos];
+                chrObj_sibling = chrObj.previousSibling;
+                //cdebug(chrObj.nl)();
+                
+                if(!cEl_Selection.cr.left && chrObj.nl){
+                    cEl_Selection.cr.left = true;
+                    boolForce = true;
+                }else if(chrObj_sibling){
+                    cEl_Selection.cr.pos--;
+                    boolForce = true;
+                    cEl_Selection.cr.left = false;
+                } 
                 
             break;
             // reset temp selection
@@ -1326,9 +1305,8 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 if(!cEl_Selection.temp)cEl_Selection.temp = $.extend(true,[],cEl_Selection.charspos);
                 
                 //cdebug(getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left))();
+                cEl_Selection.charspos = mergeIntArrays(cEl_Selection.temp,getIntArray(cr.pos,cEl_Selection.cr.pos));
                 
-                cEl_Selection.charspos = mergeIntArrays(cEl_Selection.temp,getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left));
-                //cdebug(cEl_Selection.charspos)();
                 
             break;
             // move carret on mouse down
@@ -1338,7 +1316,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                 
-                //cdebug(cr)();
+//                cdebug(cr)();
                 
                 startPos =cr.pos;
                 endPos =cr.pos;
@@ -1355,37 +1333,30 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 cr = getCharPos2(eventholder,"point");
                 if(!cr.valid)break;
                 
-                
-                //cdebug(cr.pos + " vs " + cEl_Selection.cr.pos)();
-                
-                chrObj = lines[cEl_Selection.cr.pos];
-                
-//                cdebug(cr)();
-//                cdebug(lines)();
-//                cdebug(chrObj)();
-                
-                startPos = 0;
-                for(var j = cr.pos; j>-1;j--){
-                    if(lines[j].wp!==chrObj.wp){
-                        if(lines[j].sc){
+                if(!symbols[cr.pos].pc){
+                    startPos = 0;
+                    for(var j = cr.pos; j>-1;j--){
+                        chrObj_sibling = symbols[j];
+                        if(!chrObj_sibling || chrObj_sibling.pc || chrObj_sibling.definition.item.content === " "){
                             startPos = j+1;
-                        }else{
-                            startPos = j;
+                            break;
                         }
-                        break;
                     }
-                }
-                endPos = eol-1;
-                for(var j = cr.pos+1; j<eol;j++){
-                    if(lines[j].wp!==chrObj.wp){
-                        //cdebug(lines[j].sc)();
-//                        if(lines[j].sc){
-                            endPos = j-2;
-//                        }else{
-//                            endPos = j-2;
-//                        }
-                        break;
+                    endPos = eol;
+                    for(var j = cr.pos+1; j<eol;j++){
+                        chrObj_sibling = symbols[j];
+                        if(chrObj_sibling.nl || chrObj_sibling.pc){
+
+                            endPos = j-1;
+                            break;
+                        }else if(chrObj_sibling.definition.item.content === " "){
+                            endPos = j;
+                            break;
+                        }
                     }
+                }else{
+                    startPos = cr.pos;
+                    endPos = cr.pos;
                 }
                 if(startPos>endPos)endPos=startPos;
                 cEl_Selection.charspos = mergeIntArrays(cEl_Selection.charspos,getIntArray(startPos,endPos));
@@ -1400,28 +1371,46 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
                 
                 startPos =cr.pos;
                 endPos =cr.pos;
+                chrObj = symbols[cEl_Selection.cr.pos];
                 
-                chrObj = lines[cEl_Selection.cr.pos];
-                //cdebug(lines)();
-                
-                
-                if(cr.pos===-1)cr.pos = 0;
                 for(var j = cr.pos; j>-1;j--){
                     if(chrObj.pp === 0){
                         startPos = 0;
                         break;
-                    }else if(lines[j].pp!==chrObj.pp){
-                        startPos = j;
+                    }else if(symbols[j].pp!==chrObj.pp){
+                        startPos = j+1;
                         break;
                     }
                 }
-                endPos = eol-1;
+                endPos = eol;
                 for(var j = cr.pos+1; j<eol;j++){
-                    if(lines[j].pp!==chrObj.pp){
+                    if(symbols[j].pp!==chrObj.pp){
                         endPos = j-1;
                         break;
                     }
                 }
+                
+//                chrObj = lines[cEl_Selection.cr.pos];
+//                //cdebug(lines)();
+//                
+//                
+//                if(cr.pos===-1)cr.pos = 0;
+//                for(var j = cr.pos; j>-1;j--){
+//                    if(chrObj.pp === 0){
+//                        startPos = 0;
+//                        break;
+//                    }else if(lines[j].pp!==chrObj.pp){
+//                        startPos = j;
+//                        break;
+//                    }
+//                }
+//                endPos = eol-1;
+//                for(var j = cr.pos+1; j<eol;j++){
+//                    if(lines[j].pp!==chrObj.pp){
+//                        endPos = j-1;
+//                        break;
+//                    }
+//                }
 
                 if(startPos>endPos)endPos=startPos;
                 cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(startPos,endPos));
@@ -1432,7 +1421,7 @@ function selection_actions(cEl, eventholder, actionNo, boolReset){
             break;
 
         }
-        if(boolForce || cEl_Selection.charspos.length>0)cEl.reset.selection = true;
+        if(boolForce || cEl_Selection.charspos.length>0)cEl_group.reset.selection = true;
         //cEl_layer.reset.layout_shape = true;
         
         //cdebug(cEl_Selection.charspos,true,true,0)();
@@ -1501,16 +1490,10 @@ function getCharPos2(eventholder,type){
         
         switch(type){
             case "point":
-//                var pos = ~~actObjName.substring(indexTP+3);
-                var left = getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds);
-                if(left&&pos>1){
-                    left = false;
-                    pos--;
-                }
                 return {
                     "valid":true,
                     "pos":pos,
-                    "left":left
+                    "left":getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds)
                 };
             break;
             case "top":

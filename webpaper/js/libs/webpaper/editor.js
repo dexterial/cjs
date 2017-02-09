@@ -102,8 +102,9 @@ paper.Item.inject({
             // Don't get the transformed bounds, check against transformed
             // points instead
 //            cdebug(this.className)();
-            bounds = this.bounds;
-            //bounds = this.getInternalBounds();
+            bounds = this.className==="Group"?this.bounds:this.getInternalBounds();
+
+            
             if (options.position) {
                 var pt = this.getPosition();
                 if (point.subtract(pt).divide(tolerancePadding).length <= 1) {
@@ -396,7 +397,7 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
 //                    && layer.getSelectedColor(true);
 //                    ctx.strokeStyle = ctx.fillStyle = color ? color.toCanvasStyle(ctx) : '#002dec';
                         
-                var        colorBounds = new paper.Color(0, 0, 0, 0.5);
+                var        colorBounds = new paper.Color(0, 0, 0, 0.3);
                 colorBounds = colorBounds.toCanvasStyle(ctx);
                 
                 var        colorPath = new paper.Color(0, 1, 1, 0.8);
@@ -463,15 +464,22 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                 }
                 if (boundsSelected) {
                     
-                    //cdebug([caller.className,itemSelected , boundsSelected , positionSelected,updateVersion,caller.bounds,caller.matrix])();
+                    
                     
                     ctx.strokeStyle = ctx.fillStyle = colorBounds;
-                    drawGrid(ctx);
+                    
 //                    cdebug(caller.bounds)();
 //                    cdebug(caller.getInternalBounds())();
-                    
-                    //var coords = mx._transformCorners(caller.getInternalBounds());
-                    var coords = mx._transformCorners(caller.bounds);
+                    var coords;
+                    if(caller.className==="Group"){
+//                        cdebug([caller.className,itemSelected , boundsSelected , positionSelected,updateVersion,caller.bounds,caller.matrix])();
+                        drawGrid(ctx);
+                        coords = mx._transformCorners(caller.bounds);
+                    }else{
+                        coords = mx._transformCorners(caller.getInternalBounds());
+                    }
+//                    var coords = mx._transformCorners(caller.getInternalBounds());
+                    //var coords = mx._transformCorners(caller.bounds);
                     
 //                    cdebug(coords)();
                     
@@ -481,7 +489,9 @@ function _drawSelection_new (caller, ctx, matrix, size, selectionItems, updateVe
                         ctx[!i ? 'moveTo' : 'lineTo'](coords[i], coords[++i]);
                     }
                     ctx.closePath();
+//                    ctx.globalCompositeOperation = "screen";
                     ctx.stroke();
+//                    ctx.fill();
 
                     for (var i = 0; i < 8; i++) {
                         ctx.fillRect(coords[i] - half, coords[++i] - half,size, size);
@@ -748,6 +758,9 @@ function editor_keydown(eventholder) {
                     paper.data.workState = "editset";
                     
                 }
+                case "Tab":
+                    group_tabulation(paper.data.workLayer,paper.data.cEl_group,eventholder.keys.shiftKey);
+                break;
             break;    
             
             case "editset":
@@ -770,7 +783,7 @@ function editor_keydown(eventholder) {
 //                                cdebug(segmentPoint.next)();
                                 if(paper.data.cEl_group.children["ShapePath"].children[hitActType.indexLow].segments[hitActType.index]){
                                     segmentPoint.remove();
-                                    paper.data.cEl_group.reset.text_shape = true;
+//                                    paper.data.cEl_group.reset.text_shape = true;
                                 }else{
                                     paper.data.hitActType.index = 0;
                                 }
@@ -816,18 +829,15 @@ function editor_keydown(eventholder) {
                         delta.x = -offset;
                         handlehandle(paper.data,delta,eventholder.keys);
                     break;
-                    case "Tab":
-//                        cdebug(eventholder.keys)();
-                        group_tabulation(paper.data.workLayer,paper.data.cEl_group,eventholder.keys.shiftKey);
-                    break;
-                    case "Enter":
-                        
-                        // TODO add save here
+                    
+//                    case "Enter":
+//                        
+//                        // TODO add save here
 //                        paper.data.hitActType = {name:"position",default:false};
 //                        select_handle(cEl_group);
 //                        paper.data.workState = "editset";
-
-                    break;
+//
+//                    break;
                     case "Escape":
                         
                         // TODO add undo here
@@ -1085,13 +1095,13 @@ function getHitEditor(eventholder,boolSelectBounds){
 //          class:paper.Path,
             match: function test(hit){
 //                cdebug(hit.item.className + " " +  hit.type + " " + hit.name + " " + hit.item.index )();
-//                if(
+                if(
 //                    !(hit.type==="bounds" && !(hit.item.className==="Group")) &&
 //                    !(hit.type==="center" && !(hit.item.className==="Group")) &&
 //                    !(hit.type==="position" && !(hit.item.className==="Group")) &&
 //                    !(hit.type==="position" && !(hit.item.className==="Group"||hit.item.className==="CompoundPath")) &&
-//                    (typeof hit.item.className!=="SymbolItem")
-//                    )
+                    (hit.item.className!=="SymbolItem")
+                    )
                     return true;
                 },
             handles:true,
@@ -1102,7 +1112,7 @@ function getHitEditor(eventholder,boolSelectBounds){
             fill: true,
             bounds:true,
 
-//            selected:true,
+            selected:true,
             tolerance: 5
         };
                 
@@ -1512,6 +1522,9 @@ function handlehandle(data,delta,keys,action){
         var scaleX=1,scaleY=1,scalePoint;
         var cEl_group = data.cEl_group;
         var hitObjType = data.hitActType.name;
+        
+        
+        
 
         switch (hitObjType) {
             // edit shape Point
@@ -1554,55 +1567,79 @@ function handlehandle(data,delta,keys,action){
             
             // scale left>right
             case "left-center":
+                
+//                data.cEl_group.position.x+=delta.x;
+//                var width = Math.abs(data.cEl_group.bounds.topLeft.x-data.cEl_grouphandledata.rightCenter.x);
+//                if(width===0)return true;
+//                data.cEl_group.bounds.width = width;
+//                if(data.cEl_group.position.x > data.cEl_grouphandledata.rightCenter.x){
+//                    data.cEl_grouphandledata.rightCenter.x = data.cEl_group.position.x;
+//                }else if(data.cEl_group.position.x < data.cEl_grouphandledata.rightCenter.x){
+//
+//                }
+//
+//                return true;
 
-                scaleX = 1 - delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
+
+                scaleX = 1 - delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
                 scalePoint = data.cEl_grouphandledata.rightCenter;
+                
             break;
             // scale right>left
             case "right-center":
-
-                scaleX = 1 + delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
+//                data.cEl_group.position.x+=delta.x;
+//                var width = Math.abs(data.cEl_group.bounds.topLeft.x-data.cEl_grouphandledata.rightCenter.x);
+//                if(width===0)return true;
+//                data.cEl_group.bounds.width = width;
+//                if(data.cEl_group.position.x < data.cEl_grouphandledata.leftCenter.x){
+//                    data.cEl_grouphandledata.leftCenter.x = data.cEl_group.position.x;
+//                }else if(data.cEl_group.position.x > data.cEl_grouphandledata.leftCenter.x){
+//
+//                }
+//                
+//                return true;
+                scaleX = 1 + delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
                 scalePoint = data.cEl_grouphandledata.leftCenter;
             break;
             // scale top>bottom
             case "top-center":
 
-                scaleY = 1 - delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleY = 1 - delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.bottomCenter;
             break;
             // scale bottom>top
             case "bottom-center":
 
-                scaleY = 1 + delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleY = 1 + delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.topCenter;
             break;
 
             // scale top-left>bottom-right
             case "top-left":
 
-                scaleX = 1 - delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
-                scaleY = 1 - delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleX = 1 - delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
+                scaleY = 1 - delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.bottomRight;
             break;
             // scale top-right>bottom-left
             case "top-right":
 
-                scaleX = 1 + delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
-                scaleY = 1 - delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleX = 1 + delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
+                scaleY = 1 - delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.bottomLeft;
             break;
             // scale bottom-right>top-left
             case "bottom-right":
 
-                scaleX = 1 + delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
-                scaleY = 1 + delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleX = 1 + delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
+                scaleY = 1 + delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.topLeft;
             break;
             // scale bottom-left>top-right
             case "bottom-left":
 
-                scaleX = 1 - delta.x/(cEl_group.children["ShapePath"].matrix.a*data.cEl_grouphandledata.width);
-                scaleY = 1 + delta.y/(cEl_group.children["ShapePath"].matrix.d*data.cEl_grouphandledata.height);
+                scaleX = 1 - delta.x/(cEl_group.matrix.a*data.cEl_grouphandledata.width);
+                scaleY = 1 + delta.y/(cEl_group.matrix.d*data.cEl_grouphandledata.height);
                 scalePoint = data.cEl_grouphandledata.topRight;
             break;
             
@@ -1662,23 +1699,23 @@ function edithandle(data,cEl_group,delta,typehandle,keys){
         
         // TODO precompute if needed to update the handle margins ...
         
-        if (cEl_group.data.type === "text"){
-            if(cEl_group.data.values.pattern === "path"){
-                switch (typehandle) {
-                    case "handle":
-                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].point = segmentPoint.point;
-                    break;
-                    case "handle-in":
-                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleIn = segmentPoint.handleIn;
-                    break;    
-                    case "handle-out":
-                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleOut = segmentPoint.handleOut;
-                    break;
-                }
-            }else{
-                cEl_group.reset.text_shape = true;
-            }
-        }
+//        if (cEl_group.data.type === "text"){
+//            if(cEl_group.data.values.pattern === "path"){
+//                switch (typehandle) {
+//                    case "handle":
+//                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].point = segmentPoint.point;
+//                    break;
+//                    case "handle-in":
+//                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleIn = segmentPoint.handleIn;
+//                    break;    
+//                    case "handle-out":
+//                        cEl_group.children["TextPath"].children[hitActType.indexLow].segments[hitActType.index].handleOut = segmentPoint.handleOut;
+//                    break;
+//                }
+//            }else{
+//                cEl_group.reset.text_shape = true;
+//            }
+//        }
                 
 
         cEl_group.reset.text_draw = true;
@@ -1774,13 +1811,13 @@ function setGroupScale(cEl_group,scaleX,scaleY,scalePoint){
 //        cEl_group.children["ShapePath"].scale(scaleX,scaleY, scalePoint);
 //        cEl_group.children["ControlPoints"].scale(scaleX,scaleY, scalePoint);
         
-        if (cEl_group.data.type === "text"){
-            if(cEl_group.data.values.pattern === "path"){
-//                cEl_group.children["TextPath"].scale(scaleX,scaleY, scalePoint);
-            }else{
-                cEl_group.reset.text_shape = true;
-            }
-        }
+//        if (cEl_group.data.type === "text"){
+//            if(cEl_group.data.values.pattern === "path"){
+////                cEl_group.children["TextPath"].scale(scaleX,scaleY, scalePoint);
+//            }else{
+//                cEl_group.reset.text_shape = true;
+//            }
+//        }
 //        cEl_group.reset.debug = true;
         cEl_group.reset.text_draw = true;
         
@@ -2241,6 +2278,12 @@ function selectGroup(cEl_group){
         
         if(cEl_group && cEl_group.children["ShapePath"]){
             paper.data.cEl_group = cEl_group;
+            
+//            cdebug(cEl_group.bounds)();
+//            cdebug(cEl_group.getInternalBounds())();
+//            cdebug(cEl_group.children["ShapePath"].bounds)();
+//            cEl_group.children["TextPath"].fullySelected = true;
+            
 //            cdebug(cEl_group.className)();
 //            cdebug("here?")();
 //            cEl_group.debug = true;
@@ -2611,7 +2654,9 @@ function cp_scrolling(data,eventholder){
 function group_tabulation(cEl_layer,cEl_group,boolDescending){
     try{
         
-//        cdebug([cEl_group.name,cEl_group.index])();
+        //cdebug([cEl_group.name,cEl_group.index])();
+        
+        
         
         var newIndex;
         var len = cEl_layer.children.length;
