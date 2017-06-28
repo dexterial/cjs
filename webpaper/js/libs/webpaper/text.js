@@ -810,7 +810,7 @@ function draw_cEl_lines3(cEl_group,cEl_pageText){
     
     try{
         
-        cEl_group.children["TextSymbols"].removeChildren();
+        //cEl_group.children["TextSymbols"].removeChildren();
 
         var offset = cEl_group.data.values.temp.style.textIndent;
         
@@ -1179,7 +1179,7 @@ function drawTextAlongPath(cEl_group,index,offset){
 //                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
 
                     //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],charSymbolContainer,boolSelected);
-                    drawChar(charObj,cEl_group.children["TextSymbols"]);
+                    drawChar(charObj,cEl_group.children["TextSymbols"],cEl_group.reset.text_draw);
 //                    return true;
                 }else{
                               
@@ -1449,7 +1449,7 @@ function drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i){
 }
 
 
-function drawChar(charObj,textContainer){
+function drawChar(charObj,textContainer, boolNotReset){
    
     try{
         
@@ -1472,8 +1472,15 @@ function drawChar(charObj,textContainer){
 //        charObj.textItem.stroke();
         
         
+        //charObj.textItem = charObj.symbol.place(charObj.point);
         
-        charObj.textItem = textContainer.addChild(charObj.symbol.place(charObj.point));
+        //cdebug(charObj.textItem)();
+        if(!charObj.textItem){
+            charObj.textItem = textContainer.addChild(charObj.symbol.place(charObj.point));
+        }else{
+            //charObj.textItem = textContainer.children[charObj.textItem.index].replaceWith(charObj.symbol.place(charObj.point));
+            charObj.textItem = charObj.textItem.replaceWith(charObj.symbol.place(charObj.point));
+        }
         charObj.textItem.rotation = charObj.angle;
         charObj.textItem.w = charObj.w;
         charObj.textItem.fs = charObj.fs;

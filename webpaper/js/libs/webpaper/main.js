@@ -898,32 +898,32 @@ function setGetShape(cEl,parentName){
         var tempShape,cEl_groupFullName;
         //cEl_groupFullName = cEl_group.parentName + "_" + cEl_group.name;
         
-        cEl_group.applyMatrix = true;
+        //cEl_group.applyMatrix = true;
         
         // add holder of path                    cEl_group.children["ShapeRaster"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "ShapeRaster";
-        tempShape.applyMatrix = false;
+        //tempShape.applyMatrix = true;
         
         // add holder of path                    cEl_group.children["ShapePath"]
         tempShape = cEl_group.addChild(new paper.CompoundPath());
         tempShape.name = "ShapePath";
-        tempShape.applyMatrix = false;
+        //tempShape.applyMatrix = true;
         
         // add holder of text paths              cEl_group.children["TextPath"]
         tempShape = cEl_group.addChild(new paper.CompoundPath());
         tempShape.name = "TextPath";
-        tempShape.applyMatrix = false;
+        //tempShape.applyMatrix = true;
         
         // add holder of text symbols            cEl_group.children["TextSelection"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "TextSelection";
-        tempShape.applyMatrix = false;
+        //tempShape.applyMatrix = true;
         
         // add holder of text selection          cEl_group.children["TextSymbols"]
         tempShape = cEl_group.addChild(new paper.Group());
         tempShape.name = "TextSymbols";
-        tempShape.applyMatrix = false;
+        //tempShape.applyMatrix = true;
         
 //        // add holder of control points          cEl_group.children["ControlPoints"]
 //        tempShape = cEl_group.addChild(new paper.Group());

@@ -15,9 +15,10 @@
 
 function pulse(obj,eventholder){
     
-    paper.project.view.onFrame = function(event){
+    if(obj.shape.type !== "svg")return true;
+    obj.on("frame",function(event){
         obj.rotate(5);
-    };
+    });
     
 }
 

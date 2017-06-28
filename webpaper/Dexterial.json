@@ -19,11 +19,11 @@
     "clipboard":{},
     "text":{
         "defaults":{
+            "1":"DEXTERIAL",
             "1a":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
             "2":"CONTACT",
             "3":"ABOUT",
             "4":"PROJECTS",
-            "1":"DEXTERIAL",
             "5":"zzz1 abc \\nzzz2 \\nzzz3 \\nzzz4",
             "ct1":"Copy",
             "ct2":"Paste"

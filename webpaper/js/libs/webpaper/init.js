@@ -14,13 +14,13 @@
 //Copyright 2016 Dan Ionel Blaguiescu (dan.blaguiescu@dexterial.com)
 
 
-var editorFile = 'editor.json';
+//var editorFile = 'editor.json';
 //var editorFile = 'listing.json';
 //var pagefile = 'editor.json';
 
 
 var loadedFile = 'Dexterial.json';
-var loadedFile = 'tests.json';
+//var loadedFile = 'tests.json';
 //var loadedFile = 'editor.json';
 
 
