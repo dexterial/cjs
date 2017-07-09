@@ -42,18 +42,22 @@ function draw_cEl_text(cEl_group,strNewText){
         }
         
         
+        if(cEl_group.reset.selection){
+            
+            //cdebug(page.activeLayer)();
+            
+            drawTextSelection(cEl_group,cEl_pageText);
+            //drawTextCarret(cEl_group,cEl_pageText);
+        }
         
-        if(cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
+        
+        if(cEl_group.reset.selection || cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
             
             draw_cEl_lines3(cEl_group,cEl_pageText);
 
         }
         
-        if(cEl_group.reset.selection){
-            
-            drawTextSelection(cEl_group,cEl_pageText);
-            drawTextCarret(cEl_group,cEl_pageText);
-        }
+        
         
 
         cEl_group.reset.text = false;
@@ -285,7 +289,6 @@ function cEl_set_wordMap3(cEl_group){
 function set_charObj_line(charObj,cEl_group,charNext){    
     try{
         
-        
         // case is nonprintable character
         if(charNext && charObj.chr === "\\"){
             
@@ -302,8 +305,7 @@ function set_charObj_line(charObj,cEl_group,charNext){
                     charObj.wp = 0;
                     
                     charObj.chr = charNext;
-//                    pushChar(charObj,cEl_group,false);
-                    
+
                 break;
 //                case "t":
 //                    // TODO add tabulation logic
@@ -376,13 +378,11 @@ function pushChar(charObj,cEl_group,boolSetStyle){
         var cEl_pageText = paper.data.text;
         var charStyle = cEl_pageText.charsFontsObj[charObj.f.id];
         
-       
-         
         if(charObj.pr){
             var charWidth = setGetCharWidth(cEl_pageText,charObj.chr,charObj.f.id,charStyle);
             
             charObj.fc = charWidth.fc;
-            charObj.symbol = charWidth.symbol;
+            //charObj.symbol = charWidth.symbol;
             charObj.w = charWidth.w;
             charObj.fs = charStyle.fontSize;
             charObj.ls = charStyle.letterSpacing;
@@ -394,16 +394,8 @@ function pushChar(charObj,cEl_group,boolSetStyle){
             charObj.ls = 0;
         }
         
-        //cdebug(charObj.chr)();
-        
-        //var charSymbolContainer = cEl_pageText.charsWidths[charObj.fc];
-        //cdebug(charFont)();
-        
         lines.push($.extend(false,{},charObj));
-        //lines.push({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.pr});
-        
-        //cdebug({"chr":charObj.chr,"f":charObj.f,"wp":charObj.wp,"pp":charObj.pp,"nl":charObj.nl,"sc":charObj.sc,"pr":charObj.print})();
-        
+
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
@@ -479,32 +471,6 @@ function set_charObj_style(styleMap,charObj){
     }    
 }
 
-// TODO split bellow function according to text allignment, will keep it simple
-function cEl_set_chr_metrics(cEl_group,cEl_pageText){
-    
-    try{
-        
-//        var lines = cEl_group.data.values.temp.lines3;
-//        var len = lines.length;
-//        if(!lines)return false;
-//
-//        for(var i = 0, charObj, charStyle,charWidth; i< len;i++){
-//            charObj = lines[i];
-//            //cdebug(charObj.f.id)();
-//            //charStyle = cEl_pageText.charsFontsObj[charObj.f.id];
-//            
-//            
-//            //if(cEl_ctx.font !== charStyle.fontCanvas)cEl_ctx.font = charStyle.fontCanvas;
-//            
-//            
-//        }
-    } catch (e) {
-        var err = listError(e);
-        cdebug(err,false,false,3)();
-        return err;
-    }    
-}
-
 function delete_chars(eventholder){
     
     try{
@@ -515,7 +481,6 @@ function delete_chars(eventholder){
         
         var cEl_pageText = paper.data.text;
         
-
         if(delete_selection(cEl_group,cEl_pageText)){
             // do nada
             //cdebug("delete selection " + eventholder.keys.chr)();
@@ -527,11 +492,14 @@ function delete_chars(eventholder){
                 
                 if(cEl_pageText.charsSelection.cr.left){
                     cEl_pageText.charsSelection.cr.pos--;
+                    cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos].textItem.remove();
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                 }else{
+                    cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos].textItem.remove();
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
+                
                 cEl_group.reset.text_draw = true;
                 cEl_group.reset.selection = true;
             }
@@ -544,18 +512,21 @@ function delete_chars(eventholder){
                 
                 if(cEl_pageText.charsSelection.cr.left){
                     //cEl_pageText.charsSelection.cr.pos++;
+                    cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos].textItem.remove();
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                 }else{
-                    
-                    cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos+1,1);
-                    cEl_pageText.charsSelection.cr.left = true;
                     cEl_pageText.charsSelection.cr.pos++;
+                    cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos].textItem.remove();
+                    cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
+                    cEl_pageText.charsSelection.cr.left = true;
+                    
                 }
                 cEl_group.reset.text_draw = true;
                 cEl_group.reset.selection = true;
             } else if(cEl_pageText.charsSelection.cr.pos === cEl_group.data.values.temp.lines3.length-1){
                 if(cEl_pageText.charsSelection.cr.left){
                     cEl_pageText.charsSelection.cr.left = false;
+                    cEl_group.data.values.temp.lines3[cEl_pageText.charsSelection.cr.pos].textItem.remove();
                     cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos,1);
                     cEl_pageText.charsSelection.cr.pos--;
                 }
@@ -582,11 +553,10 @@ function delete_selection(cEl_group,cEl_pageText){
             // TODO detect last charObj selection type
             cEl_pageText.charsSelection.cr.left = false;
             
-            
-            
             for(var i = selLen-1;i>-1;i--){
                 delPos = cEl_pageText.charsSelection.charspos[i];
                 //console.log(delPos + " vs "+cEl_group.data.values.temp.lines3[delPos].chr + " vs " + cEl_group.data.values.temp.lines3[delPos].wp);
+                cEl_group.data.values.temp.lines3[delPos].textItem.remove();
                 cEl_group.data.values.temp.lines3.splice(delPos,1);
             }
             cEl_pageText.charsSelection.charspos = [];
@@ -641,14 +611,14 @@ function edit_chars(eventholder,boolAppend){
                 var charStyle = cEl_pageText.charsFontsObj[newCarObj.f.id];
                 var charWidth = setGetCharWidth(cEl_pageText,newCarObj.chr,newCarObj.f.id,charStyle);
                 newCarObj.fc = charWidth.fc;
-                newCarObj.symbol = charWidth.symbol;
                 newCarObj.w = charWidth.w;
                 newCarObj.fs = charStyle.fontSize;
                 newCarObj.ls = charStyle.letterSpacing;
-
+                
+                
                 cEl_group.data.values.temp.lines3.splice(cEl_pageText.charsSelection.cr.pos+1,0,newCarObj);
                 
-                cEl_pageText.charsSelection.cr.pos++;
+                //cEl_pageText.charsSelection.cr.pos++;
                 cEl_group.reset.selection = true;
                 cEl_group.reset.text_draw = true;
             } 
@@ -742,26 +712,6 @@ function setGetCharsObj(cEl_ctx,cEl_pageText,chars,char,fontObj){
     }
 }
 
-
-
-//function setFont(cEl_ctx,cEl_pageText,fontId){
-//    
-//    try{
-//        var charFont = cEl_pageText.charsFonts[Object.keys(cEl_pageText.charsFonts)[fontId]];
-//        
-//        // reset font if needed 
-//        if(cEl_ctx.font !== charFont.val){
-//            cEl_ctx.font = charFont.val;
-//        }
-//        return true;
-//
-//    } catch (e) {
-//        var err = listError(e);
-//        cdebug(err,false,false,3)();
-//        return err;
-//    }
-//}
-
 function setGetCharWidth(cEl_pageText,chrVal,charFontId,charStyle){
     
     try{
@@ -785,11 +735,6 @@ function setGetCharWidth(cEl_pageText,chrVal,charFontId,charStyle){
             // Create a symbol definition from the path:
             var charSymbol = new paper.SymbolDefinition(charPoint);
             
-            //var instance = new paper.SymbolItem(charSymbol);
-            
-            //cdebug(instance.bounds,false,false,0)();
-            //cdebug(charPoint.bounds,false,false,0)();
-            
             charWidth = {"w":charPoint.bounds.width,"f":charFontId,"fc":strFontChar,"symbol":charSymbol};
             
             cEl_pageText.charsWidths[strFontChar] = charWidth;
@@ -810,8 +755,6 @@ function draw_cEl_lines3(cEl_group,cEl_pageText){
     
     try{
         
-        //cEl_group.children["TextSymbols"].removeChildren();
-
         var offset = cEl_group.data.values.temp.style.textIndent;
         
         //cdebug(cEl_group.data.values.temp.lines3)();
@@ -835,10 +778,6 @@ function set_text_path(cEl_group,boolShowTextLines){
     
     try{
         
-        //var cEl_path = cEl_group.children["ShapePath"].children[0];
-        
-        var text_path_name =  cEl_group.children["TextPath"].name;
-        
         switch(cEl_group.data.values.pattern){
             case "box-fill":
                 
@@ -849,7 +788,8 @@ function set_text_path(cEl_group,boolShowTextLines){
                 cEl_group.children["TextPath"].position = cEl_group.position;
                 
                 var bounds = cEl_group.children["ShapePath"].bounds;
-                var i=0,x,y,w,h;
+                
+                var x,y,w,h;
                 
                 //cdebug(cEl_group.data.values.vertical,false,false,0)();
                 if(cEl_group.data.values.vertical){
@@ -866,16 +806,12 @@ function set_text_path(cEl_group,boolShowTextLines){
                     //size2px(cEl_group.style.calc["font-size"])
                     cEl_group.children["TextPath"].addChild(new paper.Path({
                         segments:[[x, y]]
-                        
-                        //,name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                     }));
                     
                     while  (x<w){
-                        //i++;
                         cEl_group.children["TextPath"].addChild(new paper.Path.Line({
                             from:[x, y],
                             to:[x, h]
-                            //,name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                         }));
                         x = x + cEl_group.data.values.temp.style.fontSize + cEl_group.data.values.temp.style.lineHeight;
                     }
@@ -895,63 +831,26 @@ function set_text_path(cEl_group,boolShowTextLines){
                     
                     cEl_group.children["TextPath"].addChild(new paper.Path({
                         segments:[[x, y]]
-                        //,name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                     }));
                     while(y<h){
-                        //i++;
                         cEl_group.children["TextPath"].addChild(new paper.Path.Line({
                             from:[x , y],
                             to:[w , y]
-                            //,name:cEl_group.parentName + "_" + cEl_group.name + ".TGL_" + i
                         }));
                         y = y + cEl_group.data.values.temp.style.fontSize + cEl_group.data.values.temp.style.lineHeight;
                     }
 
                 }
-//                if(boolShowTextLines){
-//                    cEl_group.children["TextPath"].selected = true;
-//                }
-                
             break;
             case "path":
                 
-//                if(cEl_path.name!==text_path.name){
-//                var pivot = cEl_group.children["ShapePath"].pivot;
-               
-                //cEl_group.children["TextPath"].removeChildren();
                 cEl_group.children["TextPath"].addChild(cEl_group.children["ShapePath"].clone());
-//                cEl_group.children["TextPath"]=cEl_group.children["ShapePath"];
-                
-//                cdebug(cEl_group.name)();
-//                cdebug(cEl_group.children["TextPath"].rotation = cEl_group.rotation)();
-//                cdebug(cEl_group.rotation)();
-//                
-//                cdebug(cEl_group.children["TextPath"].matrix)();
-//                cdebug(cEl_group.children["ShapePath"].matrix)();
-                
-//                cEl_group.children["TextPath"].pivot = pivot;
-//                cEl_group.children["TextPath"].position = cEl_group.children["ShapePath"].position;
-//                cEl_group.children["TextSymbols"].pivot = cEl_group.children["ShapePath"].pivot;
-//                cEl_group.children["TextSymbols"].position = cEl_group.children["ShapePath"].position;
-                
-                
-                //cEl_group.children["TextPath"].visible = false;
-                //cEl_group.children["TextPath"].name = text_path_name;
-                
-                
-                //cEl_group.children["TextPath"].children[0].name = text_path_name;
-//                    cEl_group.children["TextPath"].children[0] = cEl_group.children["ShapePath"].children[0];
-//                    cEl_setPaperPath(cEl_group,cEl_group.children["TextPath"], cEl_group.shape, true, false);
-//                    cEl_group.children["TextPath"].children[0].name = text_path_name;
-                
-                //cdebug(cEl_group.children["TextPath"])();
-//                if(boolShowTextLines){
-//                    cEl_group.children["TextPath"].selected = true;
-//                }
                 
             break;    
         }
-        
+        if(boolShowTextLines){
+            cEl_group.children["TextPath"].selected = true;
+        }
 //        cdebug(cEl_group.children["ShapePath"].children[0].length)();
 //        cdebug(cEl_group.children["TextPath"].children[0].length)();
 //        cdebug(cEl_group.children["TextSelection"].children.length)();
@@ -1110,21 +1009,14 @@ var carret;
 
 
 
-function drawTextAlongPath(cEl_group,index,offset){
+function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
     
     try{
         var i = index;
-        //var j = 0;
-        //var offset=0;
         var lines = cEl_group.data.values.temp.lines3;
-        
-        //cdebug(lines)();
-        
-        //cdebug(cEl_group.name)();
-        
+  
         var text_path =  cEl_group.children["TextPath"];
         
-
         // TODO do something about this part
         switch(cEl_group.data.values.temp.style.textAlign){
 
@@ -1142,12 +1034,7 @@ function drawTextAlongPath(cEl_group,index,offset){
 
         }
 
-        var showCP = true;
-
         var charsCount = lines.length;
-        
-//        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
-        
         var metricsObj = {
           curveLen:0,
           vertical:cEl_group.data.values.vertical,
@@ -1159,37 +1046,20 @@ function drawTextAlongPath(cEl_group,index,offset){
         var curve = text_path.curves[j];
         metricsObj.curveLen = curve.length;
 
-        for(var charObj,boolSelected; i < charsCount; i++){
+        for(var charObj; i < charsCount; i++){
             charObj = lines[i];
-            //cdebug(i + " of " + charsCount + " is " + charObj.chr)();
-//            boolNewLine = (charObj.pp === pp_line)?false:true;
-//            pp_line = charObj.pp;
-//            cdebug(i + " of " + charsCount + " is " + charObj.chr + " " + charObj.pp)();
-            
+
             if( !charObj.nl){
 
-//                boolSelected = boolHasSelection;
-//                if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
-                //boolSelected = true;
-                //charFont = cEl_pageText.charsFontsObj[charObj.f.id];
-
-
                 if(setCharPos(charObj,curve,metricsObj)){
-                    //cdebug(cEl_pageText.charsSelection.style)();
-//                    drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i);
-
-                    //drawChar(charObj,cEl_group.parentName + "_" + cEl_group.name + ".P_" + i,cEl_group.children["TextSymbols"],charSymbolContainer,boolSelected);
-                    drawChar(charObj,cEl_group.children["TextSymbols"],cEl_group.reset.text_draw);
-//                    return true;
+                    drawChar(charObj,cEl_group.children["TextSymbols"],cEl_pageText);
                 }else{
-                              
                     j++;
                     if(!text_path.curves[j]){
                         break;
                     }
                     curve = text_path.curves[j];
                     metricsObj.curveLen = curve.length;
-                    // skip back and repeat positioning
                     i--;
                 }
 
@@ -1204,12 +1074,15 @@ function drawTextAlongPath(cEl_group,index,offset){
                 metricsObj.curveLen = curve.length;
                 
                 if(setCharPos(charObj,curve,metricsObj)){
-                    drawChar(charObj,cEl_group.children["TextSymbols"]);
+                    drawChar(charObj,cEl_group.children["TextSymbols"],cEl_pageText);
                 }
                 
             }
 
         }
+       
+        //cEl_group.children["TextSymbols"] = cEl_group.children["TextSymbols"].rasterize();
+        
         cEl_group.data.values.temp.eol = i;    
         return i;
         
@@ -1228,7 +1101,7 @@ function drawTextSelection(cEl_group,cEl_pageText){
         if(!boolHasSelection)return true;
         var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
         if(!boolHasSelection)return true;
-        cEl_group.children["TextSelection"].removeChildren();
+        //cEl_group.children["TextSelection"].removeChildren();
 //        cEl_group.selected =false;
         
         boolHasSelection = cEl_pageText.charsSelection.charspos.length > 0;
@@ -1239,20 +1112,18 @@ function drawTextSelection(cEl_group,cEl_pageText){
         
         var charsCount = cEl_group.children["TextSymbols"].children.length;
         
-//        cdebug(charsCount)();
+        //cdebug(charsCount)();
         var i = 0;
         for(var charObj,boolSelected; i < charsCount; i++){
             charObj = cEl_group.children["TextSymbols"].children[i];
             if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
-            
             if(boolSelected){
-                var rect = cEl_group.children["TextSelection"].addChild(new paper.Path.Rectangle({
-                    from: [charObj.position.x - charObj.w/2, charObj.position.y-charObj.fs/2],
-                    to: [charObj.position.x + charObj.w/2, charObj.position.y+charObj.fs/2],
-                    fillColor : cEl_pageText.charsSelection.style["background-color"],
-                    rotation:charObj.rotation
-                }));
+                
+                //cdebug(charObj.className)();
+//                cdebug(charObj.id)();
             }
+            charObj.selected = boolSelected;
+            
         }
 
 //        var i = 0;
@@ -1449,7 +1320,7 @@ function drawSelection(charObj,cEl_group,cEl_pageText,boolSelected,i){
 }
 
 
-function drawChar(charObj,textContainer, boolNotReset){
+function drawChar(charObj,textContainer,cEl_pageText){
    
     try{
         
@@ -1475,110 +1346,33 @@ function drawChar(charObj,textContainer, boolNotReset){
         //charObj.textItem = charObj.symbol.place(charObj.point);
         
         //cdebug(charObj.textItem)();
+        
+        var symbol;
+        
         if(!charObj.textItem){
-            charObj.textItem = textContainer.addChild(charObj.symbol.place(charObj.point));
-        }else{
-            //charObj.textItem = textContainer.children[charObj.textItem.index].replaceWith(charObj.symbol.place(charObj.point));
-            charObj.textItem = charObj.textItem.replaceWith(charObj.symbol.place(charObj.point));
+            
+            //cdebug(charObj.fc)();
+            var symbol = cEl_pageText.charsWidths[charObj.fc].symbol;
+            
+            charObj.textItem = textContainer.addChild(symbol.place(charObj.point));
+            
+            //cdebug(charObj.textItem.id + " of " + charObj.textItem.definition.item.id + " " + charObj.chr)();     
         }
+        else{
+            //cdebug(charObj.textItem.id + " of " + charObj.textItem.definition.item.id + " " + charObj.chr)();     
+            //charObj.textItem = textContainer.children[charObj.textItem.index].replaceWith(charObj.symbol.place(charObj.point));
+            //charObj.textItem = charObj.textItem.replaceWith(charObj.symbol.place(charObj.point));
+        }
+        
+        charObj.textItem.position = charObj.point;
         charObj.textItem.rotation = charObj.angle;
         charObj.textItem.w = charObj.w;
         charObj.textItem.fs = charObj.fs;
         charObj.textItem.nl = charObj.nl;
         charObj.textItem.pc = charObj.pc;
         charObj.textItem.pp = charObj.pp;
+        //charObj.textItem.selected = true;
         
-//        charObj.textItem.strokeColor = new paper.Color ("red");
-//        charObj.textItem.fillColor = "red";
-        
-//        charObj.textItem.transform();
-        
-        
-//        cdebug(textContainer.bounds)();
-        
-//        cdebug(textContainer.children.length)();
-        
-        //charObj.symbol
-        
-        //textItem.selected = boolSelected;
-        
-        
-        //textContainer.lastChildren();
-//        
-//        textContainer.addChild(new PointText({
-//            content: charObj.chr,
-//            point: charObj.point
-//        }));
-        
-        
-        //cdebug(textContainer.children.length)();
-        
-//        textContainer.addChild(new paper.SymbolItem(charSymbol));
-        
-        //if(charObj.path)charObj.path.remove();
-        
-//        if(!charObj.path){
-//            charObj.path = charSymbol.place(charObj.point);
-//            charObj.path.name = name;
-//        }else{
-//            //charObj.path = charSymbol;
-//            charObj.path.position = charObj.point;
-//            charObj.path.content= charObj.chr;
-//        }
-        
-//        charObj.path.rotation = charObj.angle;
-        //charObj.path.selected = true;
-        
-//        if(showCP){            
-//            var pathPoint1 = new paper.Path.Line({
-//                from: charObj.point,
-//                to: [charObj.point.x + 5, charObj.point.y + 5],
-//                strokeColor: 'green',
-//                name:cEl_group.parentName + "_" + cEl_group.name + ".MP_" + i
-//            });
-//            var pathPoint2 = new paper.Path.Line({
-//                from: charObj.point,
-//                to: [charObj.point.x - 5, charObj.point.y - 5],
-//                strokeColor: 'red',
-//                name:cEl_group.parentName + "_" + cEl_group.name + ".LR_" + i
-//            });
-//        }
-        
-        
-        //cdebug(paper.project.children.length)();
-
-        //definition.fillColor = "red";
-        //textItem.position = charObj.point;
-        //charSymbol.definition.fillColor = charFont.color;
-        //charSymbol.definition.strokeColor = charFont.color;
-        //textItem.rotate = charObj.angle;
-
-        //{"fontSize":36,"fontStyle":"normal","fontVariant":"normal",
-        //"fontWeight":"bold","fontFamily":"Arial","fontCanvas":"bold 36px Arial",
-        //"letterSpacing":18,"color":"rgba(255, 255, 255, 0.701960784313725)","wordSpacing":0}
-
-
-        //cEl_pageText.charsWidths[strFontChar];
-
-
-
-//        var textItem = new paper.PointText({
-//            content: charObj.chr,
-//            point: charObj.point
-//        });
-
-
-    //    var textItem = new paper.PointText({
-    //        content: charObj.chr,
-    //        point: charObj.point,
-    //        fillColor: charFont.color,
-    //        rotation: charObj.angle,
-    //        fontSize:charObj.fs,
-    //        fontStyle:charFont.fontStyle,
-    //        fontWeight: charFont.fontWeight,
-    //        name:name,
-    //        selected:false
-    //    });
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,true,0);

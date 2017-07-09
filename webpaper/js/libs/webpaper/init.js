@@ -20,7 +20,7 @@
 
 
 var loadedFile = 'Dexterial.json';
-//var loadedFile = 'tests.json';
+var loadedFile = 'tests.json';
 //var loadedFile = 'editor.json';
 
 

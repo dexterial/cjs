@@ -1713,8 +1713,11 @@ function draw_cEl_group(cEl_group) {
             }
         }
         
+        
+        
         cEl_postsets(cEl_group,boolDrawCp);
         
+        //cEl_group.children["ShapePath"] = cEl_group.children["ShapePath"].rasterize();
         
         //cdebug(paper.project.activeLayer.children.length)();
         
