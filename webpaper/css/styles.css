@@ -79,20 +79,37 @@ input::-moz-focus-inner {
     border-width: 1px;used for textshade width
     font-style: italic;
     border:thin dotted #FF0000;*/
+} 
+
+.background{
+    /*    font-family: Arial;
+        font-size: 0.9rem;*/
+    /*background-color:rgba(255,255,222,1);*/
+
+    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon2.jpg");
+    /*    border-color:rgba(170,221,170,0.7);
+        border-width: 5px;*/
+    /*    border-color: #aff;used for textshade color
+        border-width: 1px;used for textshade width
+        font-style: italic;
+        border:thin dotted #FF0000;*/
 }
 
 .test{
 /*    font-family: Arial;
     font-size: 0.9rem;*/
-    background-color:rgba(255,255,222,1);
-    
-    background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon.jpg");
+    background-color:rgba(0,0,0,0.3);
+    /*background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&center=55.716086,12.4614506&zoom=15&size=1280x960");*/
+    /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon2.jpg");*/
 /*    border-color:rgba(170,221,170,0.7);
     border-width: 5px;*/
 /*    border-color: #aff;used for textshade color
     border-width: 1px;used for textshade width
     font-style: italic;
     border:thin dotted #FF0000;*/
+}
+.locationTest{
+    background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&center=55.716086,12.4614506&zoom=@S&size=@Xx@Y");
 }
 
 .testLabel2{
@@ -101,9 +118,9 @@ input::-moz-focus-inner {
     font-family : sans-serif;
     font-size: 1em;
     font-weight:bold;
-    background-color: rgba(255,255,255,0.4);
-    border-color: rgba(255,255,255,0.4);
-    border-width: 1px;
+    background-color: rgba(255,255,255,0.2);
+/*    border-color: rgba(255,255,255,0.4);
+    border-width: 1px;*/
     color:rgba(25,222,255,0.7);
 /*    font-style:italic;*/
     cursor:pointer;
@@ -123,10 +140,13 @@ input::-moz-focus-inner {
     font-family : sans-serif;
     font-size: 3em;
     font-weight:bold;
-    background-color: rgba(255,255,255,0.4);
-    border-color: rgba(255,255,255,0.4);
+    /*background-color: rgba(255,255,255,0.3);*/
+    background-color: rgba(0,0,0,0.5);
+    border-color: rgba(0,0,0,0.1);
+    border-style: solid;
     border-width: 1px;
     color:rgba(255,255,255,0.7);
+    /*color:rgba(0,0,0,0.6);*/
 /*    font-style:italic;*/
     cursor:pointer;
     padding: 5px;
@@ -142,20 +162,21 @@ input::-moz-focus-inner {
 
 
 .testLabel:hover{
-    background-color:rgba(255,255,255,0.5);
+    /*background-color:rgba(255,255,255,0.5);*/
+    background-color: rgba(0,0,0,0.7);
 }
 .testLabel:focus{
     
 }
 .testLabel:active{
-    background-color:rgba(255,255,255,0.7);
+    background-color:rgba(0,0,0,0.5);
 }
 
 .tabRed{
     font-family: Arial;
     font-size: 3em;
-    background-color:rgba(221,170,120,0.7);
-    border-color:rgba(221,170,120,0.7);
+    background-color:rgba(231,200,200,0.4);
+    border-color:rgba(0,0,0,0.4);
     border-width: 1px;
     padding: 1px;
     text-align:left;
@@ -167,8 +188,8 @@ input::-moz-focus-inner {
 .tabGreen{
     font-family: Arial;
     font-size: 10px;
-    background-color:rgba(170,221,170,0.7);
-    border-color:rgba(170,221,170,0.7);
+    background-color:rgba(200,231,200,0.4);
+    border-color:rgba(0,0,0,0.4);
     border-width: 1px;
     padding: 1px;
     text-align:left;
@@ -177,11 +198,12 @@ input::-moz-focus-inner {
     font-weight:normal;
     text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
 }
+
 .tabBlue{
     font-family: Arial;
     font-size: 10px;
-    background-color:rgba(170,170,221,0.7);
-    border-color:rgba(170,170,221,0.7);
+    background-color:rgba(200,200,231,0.4);
+    border-color:rgba(0,0,0,0.4);
     border-width: 1px;
     padding: 1px;
     text-align:left;
@@ -193,9 +215,10 @@ input::-moz-focus-inner {
 .tabWhite{
     font-family: Arial;
     font-size: 10px;
-    background-color:rgba(221,221,221,0.7);
-    border-color:rgba(221,221,221,0.7);
-    border-width: 1px;
+    background-color:rgba(231,231,231,0.8);
+    border-color:rgba(0,0,0,0.5);
+    /*border-style: solid;*/
+    /*border-width: 2px;*/
     padding: 1px;
     text-align:left;
     color:#fff;
@@ -203,6 +226,7 @@ input::-moz-focus-inner {
     font-weight:normal;
     text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
 }
+
 
 .stats{
 /*    font-family: Arial;
@@ -313,13 +337,16 @@ input::-moz-focus-inner {
 .label1{
 /*    my-hover-color:#9aabb;*/
     font-family: Arial;
-    font-size: 1em;
-/*    background-color: #555;*/
-    text-indent: 15px;
+    font-size: 1.8em;
+/*    background-color: rgba(255,255,255,0.2);*/
+    background-color: rgba(0,0,0,0.1);
+    text-indent: 2em;
+    padding-top: 5px;
     padding-left: 15px;
     color:#000;
     text-align:justify;
-    cursor:text
+    cursor:text;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
 }
 
 

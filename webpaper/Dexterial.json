@@ -1,7 +1,7 @@
 {
     "title": "Dexterial",
     "name":"dexterial","tag":"page","visible":true,"tab":0,"events":{},"debug":true,
-    "class":"test",
+    "class":"background",
     "shape":{
         "tab":-1,
         "w":"",
@@ -20,8 +20,13 @@
     "text":{
         "defaults":{
             "1":"DEXTERIAL",
+            "1first":"Although Excel VBA and Google Docs is considered a very low tech approach to modern data handling, it is still widely used due to the inherent flexibility and visibility in tackling highly customized or temporary needs that are hard to define in any ERP system.\\nMany times transferring data from one data system to a different data system requires excel exports then data rearrangement then re-import that takes much precious time and can be easily automated, however the  prohibitive cost for requiring a plugin for the data systems providers makes Excel/Google Docs as a lean solution, albeit time consuming one.",
+            "1second":"Dexterial is build around the idea of automating tasks that require or could be done via Excel or Google Docs. This can range from simple graphs export to pdf, automated data parsing/validation, web data interfaces, to adding extra tools to the Ribbon/Sidebar interface, advanced user input validation, advanced data readers and integration (ex reading pdf's and putting them in tables according to specific rules, user input forms, populating custom fields in Word from different data sources, sky's the limit ).",
+            "1third":"By using state of the art Redmine issue management tool, project visibility and time tracking becomes a breeze.\\nStakeholders and developers can see the progress and can collaborate in transparent manner for faster idea to deployment path.",
+            "1fourth":"Using automated testing on multiple Office platforms (OS type and Version numbers) for VBA and on multiple browsers targets for google-scripts makes the quality of our products outstanding. Although the development time is slightly higher upfront, using test driven approach makes the error debugging and fixing a much easier task, thus eliminating much of the pre-deployment time and assuring best quality.",
             "1a":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
             "2":"CONTACT",
+            "2a":"Dan Ionel Blaguiescu \\nConsultant and CEO at Dexterial \\nEmail: dan.blaguiescu@dexterial.com\\nPhone: (+45) 50 13 01 91",
             "3":"ABOUT",
             "4":"PROJECTS",
             "5":"zzz1 abc \\nzzz2 \\nzzz3 \\nzzz4",
@@ -31,7 +36,7 @@
         },
         "chars":"0123456789 -",
         "words":["0","1","2","3","4","5","6","7","8","9"," ","-","00","000","0000"],
-        "charsSelection":{"name":"editorPage_control_list2_txtInputObj","cr":{"pos":0,"vis":false,"left":true},"style":{"color":"rgb(255,255,255)","background-color":"rgb(151,243,255)"},"charspos":[],"chars":[],"wordspos":[],"paragraphspos":[]},
+        "charsSelection":{"style":{"color":"rgb(255,255,255)","background-color":"rgb(151,243,255)"}},
         "charsWidths":{},
         "charsFontsMd5":{},
         "charsFontsObj":[]
@@ -61,6 +66,8 @@
         "ct1":{"text":true},
         "ct2":{"visible":true},
         "ct3":{"visible":false},
+        "ct4":{"visible":true,"reset":{"layout_shape":true}},
+        "ct5":{"visible":true,"reset":{"layout_shape":true,"layout_css":true}},
 
         "t-1-a":{"reset":{"layout_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.7]}},
         "t-1":{"reset":{"layout_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.3]}},
@@ -94,6 +101,11 @@
     "shapes":{
         "rectangle-tl":[[0,0],[1,0],[1,1],[0,1]],
         "round-corner-normal":[[-0.5,-0.5,0,15],[-0.5,-0.5],[-0.5,-0.5,15,0],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.5],[-0.5,0]],
+        "round-corner-full":[
+            [-0.61,-0.51],[-0.61,-0.61],[-0.51,-0.6],[0,-0.5]
+            ,[0.5,-0.5,-15,0],[0.5,-0.5],[0.5,-0.5,0,15],[0.5,0]
+            ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5]
+            ,[-0.5,0.5,15,0],[-0.5,0.5],[-0.5,0.5,0,-15],[-0.5,0]],
         "rectangle-centered":[[-0.5,-0.5],[0.5,-0.5],[0.5,0.5],[-0.5,0.5]],
         "heart1":[[0,-2],[1,-3],[2,-3],[3,-2],[3,-2],[2,1],[0,3],[-2,1],[-3,-1],[-3,-2],[-2,-3],[-1,-3]],
         "plus1":[[-1,-3],[1,-3],[1,-1],[3,-1],[3,1],[1,1],[1,3],[-1,3],[-1,1],[-3,1],[-3,-1],[-1,-1]],
@@ -218,7 +230,7 @@
             }
         },
         "layer1":{
-            "class":"test",
+            "class":"background",
             "tag":"layer",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{
@@ -244,10 +256,10 @@
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
                 "scale":[0.8,0.8],
-                "masspoint":[0.1,0.1],
-                "name":"rectangle-tl",
+                "masspoint":[0.5,0.5],
+                "name":"round-corner-full",
                 "flipXY":[false,false],
-                "type":"poligon",
+                "type":"quadratic",
                 "detection":"shape"
             },
             "states":{
@@ -257,7 +269,7 @@
                 "type":"list"
             },
             "children":[
-                {"name":"tabTL","elId":"tab","tab":0,"class":"tabRed",
+                {"name":"tabTL","elId":"tab","tab":0,"class":"tabWhite",
                     "shape":{"flipXY":[false,false]},
                     "states":{
                         "tabstate":{
@@ -286,25 +298,33 @@
                             },
                             "data":{"values":{"default":"1"}}
                         },
-                        {"name":"tabTLLabel2","elId":"tablabel","tab":1,"class":"label1",
+                        {"name":"tabTLLabel2","elId":"tablabel2","tab":1,"class":"label1",
                             "shape":{
-                                "flipXY":[false,false],
-                                "scale":[0.69,0.49],
+                                "scale":[0.68,0.15],
+                                "masspoint":[0.45,0.29]
+                            },
+                            "data":{"values":{"default":"1first"}}
+                        },
+                        {"name":"tabTLLabel3","elId":"tablabel2","tab":2,"class":"label1",
+                            "shape":{
+                                "scale":[0.68,0.13],
                                 "masspoint":[0.45,0.45]
                             },
-                            "rules":{
-                                "tabstate":"r2"
+                            "data":{"values":{"default":"1second"}}
+                        },
+                        {"name":"tabTLLabel4","elId":"tablabel2","tab":3,"class":"label1",
+                            "shape":{
+                                "scale":[0.68,0.09],
+                                "masspoint":[0.45,0.58]
                             },
-                            "states":{
-                                "tabstate":{
-                                    "normal":"ct3",
-                                    "foldedTL":"ct2",
-                                    "foldedTR":"ct3",
-                                    "foldedBR":"ct3",
-                                    "foldedBL":"ct3"
-                                }
+                            "data":{"values":{"default":"1third"}}
+                        },
+                        {"name":"tabTLLabel5","elId":"tablabel2","tab":4,"class":"label1",
+                            "shape":{
+                                "scale":[0.68,0.13],
+                                "masspoint":[0.45,0.71]
                             },
-                            "data":{"values":{"default":"1a"}}
+                            "data":{"values":{"default":"1fourth"}}
                         }
                     ]
                 },
@@ -336,6 +356,40 @@
                                 }
                             },
                             "data":{"values":{"default":"2"}}
+                        },
+                        {"name":"tabTRLabel1","elId":"tablabel3","tab":1,"class":"label1",
+                            "shape":{
+                                "scale":[0.68,0.15],
+                                "masspoint":[0.55,0.29]
+                            },
+                            "data":{
+                                "type":"text",
+                                "values":{
+                                    "editable":false,
+                                    "pattern":"box-fill",
+                                    "default":"2a"
+                                }
+                            },
+                            "states":{
+                                "tabstate":{
+                                    "foldedTR":"ct4"
+                                }
+                            }
+                        },
+                        {"name":"tabTRLabel2","elId":"tablabel3","tab":2,"class":"locationTest",
+                            "shape":{
+                                "scale":[0.68,0.25],
+                                "masspoint":[0.55,0.65]
+                            },
+                            "data":{
+                                "type":"image",
+                                "values":{}
+                            },
+                            "states":{
+                                "tabstate":{
+                                    "foldedTR":"ct5"
+                                }
+                            }
                         }
                     ]
                 },
@@ -370,7 +424,7 @@
                         }
                     ]
                 },
-                {"name":"tabBL","elId":"tab","tab":3,"class":"tabWhite",
+                {"name":"tabBL","elId":"tab","tab":3,"class":"tabRed",
                     "shape":{"flipXY":[false,true]},
                     "states":{
                         "tabstate":{
@@ -435,8 +489,61 @@
                 "type":"text",
                 "values":{
                     "editable":false,
+                    "noselect":true,
                     "pattern":"box-fill"
                 }
+            }
+        },
+        "tablabel2":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "shape":{
+                "name":"round-corner-normal",
+                "flipXY":[false,false],
+                "type":"quadratic",
+                "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "tabstate":{
+                    "normal":"ct3",
+                    "foldedTL":"ct2",
+                    "foldedTR":"ct3",
+                    "foldedBR":"ct3",
+                    "foldedBL":"ct3"
+                }
+            },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "pattern":"box-fill"
+                }
+            },
+            "rules":{
+                "tabstate":"r2"
+            }
+        },
+        "tablabel3":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "shape":{
+                "name":"round-corner-normal",
+                "flipXY":[true,false],
+                "type":"quadratic",
+                "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "tabstate":{
+                    "normal":"ct3",
+                    "foldedTL":"ct3",
+                    "foldedBR":"ct3",
+                    "foldedBL":"ct3"
+                }
+            },
+            "rules":{
+                "tabstate":"r3"
             }
         },
         "txtInput1":{

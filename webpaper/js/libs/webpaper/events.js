@@ -84,12 +84,12 @@ function globalEvents(eventholder){
                 //cdebug(evt.detail,true);
                 updateEventHolder(eventholder,false,true,true);
                 
-                if(paper.activeTool === "globalTool" || paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool"  ){
                     
                     runEval(eventholder.retObj,eventholder.type);
                     
                     handleCSSEvents(eventholder,false,true,true,true);
-                    setCarret(null,null,false);
+                    //setCarret(null,null,false);
 
                     handleTextSelection(eventholder);
 
@@ -111,7 +111,7 @@ function globalEvents(eventholder){
                 
 //                updateEventHolder(eventholder,false,true,true);
                 
-                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool" ){
                     
                     runEval(eventholder.retObj,eventholder.type);
                     
@@ -132,15 +132,17 @@ function globalEvents(eventholder){
                 
                 updateEventHolder(eventholder,true,false,false);
                 
-                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool"){
                     
                     //cdebug(eventholder.retObj.events)();
                     
                     runEval(eventholder.retObj,eventholder.type);
                
                     // CSS enabled events
-                    handleCSSEvents(eventholder,true,false,false,true);
-
+                    
+                    if(eventholder.keys.button === 0){
+                        handleCSSEvents(eventholder,true,false,false,true);
+                    }
                     handleTextSelection(eventholder);
                 
                 }else{
@@ -176,9 +178,10 @@ function globalEvents(eventholder){
                     return true;
                 }
                 
-                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool"){
                     handleCSSEvents_keys(eventholder);
-
+                    handleTextSelection(eventholder);
+                    
                     runEval(eventholder.active.oldObj,eventholder.type) ;
                 }else{
                     eventholder.retObj = paper.project.activeLayer;
@@ -199,7 +202,7 @@ function globalEvents(eventholder){
                     }
                 }
             
-                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool" ){
                     handleCSSEvents_keys(eventholder);
 
                     runEval(eventholder.active.oldObj,eventholder.type);
@@ -214,7 +217,7 @@ function globalEvents(eventholder){
             case "wheel":
                 
 //                cdebug(eventholder.wheel)();
-                if(paper.activeTool === "globalTool"|| paper.project.name === "editor"){
+                if(paper.activeTool === "globalTool" ){
                     runEval(eventholder.active.oldObj,eventholder.type);
                 
                 }else{
@@ -325,32 +328,45 @@ function handleTextSelection(eventholder){
         if(!eventholder.active.oldObj)return false;
         
         var cEl = eventholder.active.oldObj;
+        
+        //console.log(cEl.data.type);
         if(cEl.data.type !== "text"){
             return false;
         }
+        //cdebug("cEl",true);
         
-        //cdebug(cEl.name,false,false,0)();
-        
-        var btnPressed = eventholder.keys.which ? eventholder.keys.which : eventholder.keys.button;
+        var btnPressed = eventholder.keys.button;
         var clickCount = eventholder.keys.detail;
         
-        
         switch(eventholder.type){
+            case "keydown":
+                if(eventholder.keys.ctrlKey && (eventholder.keys.key ==="a" || eventholder.keys.key ==="A")){
+                    selection_actions(cEl, eventholder, 4, true);
+                    //cdebug(eventholder.keys.key)();
+                }
+                if(eventholder.keys.key ==="ESCAPE"){
+                    selection_actions(cEl, eventholder, 4, true);
+                    //cdebug(eventholder.keys.key)();
+                }
+                
+            break;
             case "mousedown":
             case "touchstart":
                 if(btnPressed === 1){
-                    
-                    selection_actions(cEl, eventholder, clickCount,!eventholder.keys.ctrlKey);
+                    //cdebug(!eventholder.keys.ctrlKey)();
+                    selection_actions(cEl, eventholder, clickCount, !eventholder.keys.ctrlKey);
+                    return true;
                 }
                 if(btnPressed === 3){
-
                     selection_actions(cEl, eventholder, clickCount, true);
+                    return true;
                 }
                     
             break;
             case "mousemove":
             case "touchmove":
                 if(btnPressed === 1){
+                    //cdebug(cEl.name)();
                     selection_actions(cEl, eventholder, -1, false);
                 }
             break;
@@ -450,6 +466,9 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             "shiftKey":evt.shiftKey,
             "which":evt.which
         };
+        
+        //cdebug(eventholder.keys.button)();
+        
         switch(evtCallerType){
             case "touch":
                 //dom2
@@ -464,7 +483,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 eventholder.metrics.xyAbs = [evt.changedTouches[0].pageX - evt.changedTouches[0].target.offsetLeft,evt.offsetY = evt.changedTouches[0].pageY - evt.changedTouches[0].target.offsetTop];
                 //if(evt.type==="touchend")alert(eventholder.metrics.xyAbs + " " + eventholder.metrics.xy);
                 eventholder.keys.detail = evt.detail;
-                eventholder.keys.button = evt.button;
+                eventholder.keys.button = evt.which ? evt.which: evt.button;
                 //dom3
                 eventholder.keys.buttons = evt.buttons;
                 //}
@@ -484,7 +503,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
                 eventholder.metrics.xyAbs = [evt.clientX,evt.clientY];
                 
                 eventholder.keys.detail = evt.detail;
-                eventholder.keys.button = evt.button;
+                eventholder.keys.button = evt.which ? evt.which: evt.button;
                 //dom3
                 eventholder.keys.buttons = evt.buttons;
             break;
@@ -502,7 +521,7 @@ function preSetEventHolder(eventholder,paperevt,evtCallerType) {
             case "wheel":
             
                 eventholder.keys.detail = evt.detail;
-                eventholder.keys.button = evt.button;
+                eventholder.keys.button = evt.which ? evt.which: evt.button;
                 //dom3
                 eventholder.keys.buttons = evt.buttons;
                 
@@ -845,7 +864,7 @@ function handleCSSEvents_keys(eventholder) {
                     break;
                     case "Escape":
 //                        cdebug(eventholder.retObj.name)();
-                        resetTextSelection(eventholder.retObj);
+                        //resetTextSelection(eventholder.retObj);
                     break;
 //                    case 86:
 //                    case 118:    
@@ -900,18 +919,8 @@ function handleCSSEvents_keys(eventholder) {
 function handleCSSEvents(eventholder,boolHover,boolFocus,boolActive,boolRunEvents) {
     
     try{
-        //var eventholder = window["eventholder"];
+
         // CSS enabled events
-        
-        // reset layers
-        //if(boolHover || boolFocus || boolActive){
-//        if(eventholder.canvReset.length>0){
-//            cdebug(eventholder.canvReset,false,false,0);
-//        }
-//        for(var i = 0, len = eventholder.canvReset.length; i<len; i++){
-//            window[eventholder.canvReset[i]].reset.layout_shape = true;
-//        }
-        //}
         
         var cEl;
         if(boolHover){
@@ -919,33 +928,27 @@ function handleCSSEvents(eventholder,boolHover,boolFocus,boolActive,boolRunEvent
             //  hover reset for old focus element 
             if(eventholder.hover.resetold){
                 cEl = eventholder.hover.oldObj;
-//                cdebug(cEl.className)();
-                //cdebug("->>>" + cEl.name)();
-//                if(cEl){
-//                    //cdebug(eventholder.hover.id)();
-                    cEl.hover = false;
-                    cEl.reset.layout_css = true;
-                    //cEl.reset.layout_shape = true;
-                    if(boolRunEvents)runEval(cEl,"hoveroff");
-//                }
+                //cdebug("hover reset old ->>>" + cEl.name)();
+                cEl.hover = false;
+                cEl.reset.layout_css = true;
+                if(boolRunEvents)runEval(cEl,"hoveroff");
             }
             // new hover set
             if(eventholder.hover.reset){
                 
                 //if(!eventholder.retObj.name)cdebug(eventholder.retObj)();
-
+                
                 eventholder.hover.id = eventholder.currentid;
                 eventholder.hover.oldObj = eventholder.retObj;
                 
                 cEl = eventholder.retObj;
                 
+                //cdebug("hover reset new ->>>" + cEl.name)();
                 //cEl = window[eventholder.currentid];
                 cEl.hover = true;
                 cEl.reset.layout_css = true;
-                //cEl.reset.layout_shape = true;
                 if(boolRunEvents)runEval(cEl,"hoveron");
                 cEl.reset.cursor = true;
-//                resetCursor(cEl);
             }
         }
         
@@ -984,7 +987,7 @@ function handleCSSEvents(eventholder,boolHover,boolFocus,boolActive,boolRunEvent
                     cEl.reset.layout_css = true;
                     //cEl.reset.layout_shape = true;
                     if(boolRunEvents)runEval(cEl,"activeoff");
-                    resetTextSelection(cEl);
+                    //resetTextSelection(cEl);
                     //resetCursor(cEl);
 //                }
             }
@@ -1203,21 +1206,53 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
     try{
         
         //cdebug(actionNo)();
-
+        if(cEl_group.data.values.noselect)return true;
+        
         var lines = cEl_group.data.values.temp.lines3;
         var symbols = cEl_group.children["TextSymbols"].children;
-        var eol = symbols.length-1;
-        //var eol = cEl_group.data.values.temp.eol;
         
-        var cEl_Selection = paper.data.text.charsSelection;
         
-        cEl_Selection.name = cEl_group.parentName  + "_" + cEl_group.name;
+        var cEl_SelectionObjs = paper.data.text.charsSelection.selObj;
         
-        if(boolReset){
-            cEl_Selection.charspos = [];
-            if(cEl_Selection.selObj)cEl_Selection.selObj.reset.selection = true;
-            cEl_Selection.selObj = cEl_group;
+        var selObj;
+        var selData = cEl_group.data.values.temp.selData;
+        //if(selData)cdebug(selData.charspos)();
+        if(!selData){
+            selData = {"charspos":[],"temp":[],"cr":{"pos":-1},"reset":false};
+            cEl_group.data.values.temp.selData = selData;
         }
+        //cdebug(selData.temp)();
+        
+        if(cEl_SelectionObjs){
+            //cdebug(Object.keys(cEl_SelectionObjs))();
+            for(var selObjKey in cEl_SelectionObjs){
+                selObj = cEl_SelectionObjs[selObjKey];
+                //cdebug(selObj)();
+                if(cEl_group.name === selObj.name){
+                    if(boolReset){
+                        selObj.reset.selection = true;
+                        selData.charspos = [];
+                        selData.temp = [];
+                        selData.cr = {"pos":-1};
+                        selData.reset = true;
+                    };
+                }else{
+                    if(boolReset){
+                        selObj.reset.selection = true;
+                        selObj.data.values.temp.selData.reset = true;
+                        //cdebug(Object.keys(cEl_SelectionObjs))();
+                        delete cEl_SelectionObjs[selObj.parentName + "_" + selObj.name];
+                        //cdebug(Object.keys(cEl_SelectionObjs))();
+                    };
+                }
+                
+            } 
+        }else{
+            paper.data.text.charsSelection.selObj = {};
+            cEl_SelectionObjs = paper.data.text.charsSelection.selObj;
+        }
+        
+        //cdebug(cEl_group.data.values.noselect)();
         
         var boolForce = false;
         
@@ -1227,8 +1262,8 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
         switch(true){
             //move carret top
             case actionNo === "ArrowTop":
-                chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos2(eventholder,"top");
+                chrObj = lines[selData.cr.pos];
+                cr = getCharPos2(eventholder,symbols,"ArrowTop");
                 if(!cr.valid)break;                
 //                if(lines[cr.pos].xy){
 //                    cEl_Selection.cr.pos = cr.pos;
@@ -1239,8 +1274,8 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
             break;
             //move carret bottom
             case actionNo === "ArrowDown":
-                chrObj = lines[cEl_Selection.cr.pos];
-                cr = getCharPos2(eventholder,"bottom");
+                chrObj = lines[selData.cr.pos];
+                cr = getCharPos2(eventholder,symbols,"ArrowDown");
                 if(!cr.valid)break; 
 //                if(lines[cr.pos].xy){
 //                    cEl_Selection.cr.pos = cr.pos;
@@ -1251,88 +1286,93 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
             break;
             //move carret right
             case actionNo === "ArrowRight":
-                chrObj = symbols[cEl_Selection.cr.pos];
+                chrObj = symbols[selData.cr.pos];
                 chrObj_sibling = chrObj.nextSibling;
                 
-                if(cEl_Selection.cr.left){
-                    cEl_Selection.cr.left = false;
+                if(selData.cr.left){
+                    selData.cr.left = false;
                     boolForce = true;
                 }else if(chrObj_sibling && chrObj_sibling.nl){
-                    cEl_Selection.cr.pos++;
+                    selData.cr.pos++;
                     boolForce = true;
-                    cEl_Selection.cr.left = true;
+                    selData.cr.left = true;
                 }else if(chrObj_sibling){
-                    cEl_Selection.cr.pos++;
+                    selData.cr.pos++;
                     boolForce = true;
-                    cEl_Selection.cr.left = false;
+                    selData.cr.left = false;
                 }
                 
             break;
             //move carret left
             case actionNo === "ArrowLeft":
-                chrObj = symbols[cEl_Selection.cr.pos];
+                chrObj = symbols[selData.cr.pos];
                 chrObj_sibling = chrObj.previousSibling;
                 //cdebug(chrObj.nl)();
                 
-                if(!cEl_Selection.cr.left && chrObj.nl){
-                    cEl_Selection.cr.left = true;
+                if(!selData.cr.left && chrObj.nl){
+                    selData.cr.left = true;
                     boolForce = true;
                 }else if(chrObj_sibling){
-                    cEl_Selection.cr.pos--;
+                    selData.cr.pos--;
                     boolForce = true;
-                    cEl_Selection.cr.left = false;
+                    selData.cr.left = false;
                 } 
                 
             break;
             // reset temp selection
             case actionNo === -2:
                 
-                cEl_Selection.temp = null;
-                boolForce = true;
+                //cdebug(selData)();
+                selData.temp = $.extend(true,[],selData.charspos);
+                //boolForce = true;
                 
             break;
             // select on mouse move and pressed
             case actionNo === -1:
                 
+                if(selData.cr.pos===-1)break;
                 
-                //cr = getCharPos(lines,xy);
-                cr = getCharPos2(eventholder,"point");
+                
+                //cdebug(eventholder.retObj.name)();
+                
+                cr = getCharPos2(eventholder,symbols,"Mouse");
                 if(!cr.valid)break;
-                    
-                startPos =cr.pos;
-                endPos =cr.pos;
+                
+                
+                
+                
+                if(selData.cr.pos === cr.pos && selData.cr.left===cr.left){
+                    selData.charspos = mergeIntArrays(selData.temp,[]);
+                }else{
+                    selData.charspos = mergeIntArrays(selData.temp,getIntArray(cr.pos, selData.cr.pos));
+                }
+                
+                
+                //cdebug(selData.oldPos !== cr.pos)();
+                boolForce = selData.oldPos !== cr.pos;
+                selData.oldPos = cr.pos;
 
-                if(!cEl_Selection.temp)cEl_Selection.temp = $.extend(true,[],cEl_Selection.charspos);
-                
-                //cdebug(getIntArray(cr.pos,cEl_Selection.cr.pos,cEl_Selection.cr.left))();
-                cEl_Selection.charspos = mergeIntArrays(cEl_Selection.temp,getIntArray(cr.pos,cEl_Selection.cr.pos));
-                
-                
             break;
             // move carret on mouse down
             case actionNo === 1:
                 
-                //cr = getCharPos(lines,xy);
-                cr = getCharPos2(eventholder,"point");
+                
+                cr = getCharPos2(eventholder,symbols,"Mouse");
                 if(!cr.valid)break;
-                
-//                cdebug(cr)();
-                
-                startPos =cr.pos;
-                endPos =cr.pos;
-
-                cEl_Selection.cr = cr;
+                //selData.cr = cr;
+                cEl_group.data.values.temp.selData.cr = cr;
                 
                 //setCarret(eventholder,cEl_Selection,true);
-                
+                boolForce = true;
             break;
             // select word
             case actionNo === 2:
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(eventholder,"point");
+                cr = getCharPos2(eventholder,symbols,"Mouse");
                 if(!cr.valid)break;
                 
+                var eol = symbols.length;
                 if(!symbols[cr.pos].pc){
                     startPos = 0;
                     for(var j = cr.pos; j>-1;j--){
@@ -1342,7 +1382,7 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
                             break;
                         }
                     }
-                    endPos = eol;
+                    endPos = eol-1;
                     for(var j = cr.pos+1; j<eol;j++){
                         chrObj_sibling = symbols[j];
                         if(chrObj_sibling.nl || chrObj_sibling.pc){
@@ -1358,21 +1398,23 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
                     startPos = cr.pos;
                     endPos = cr.pos;
                 }
+                
                 if(startPos>endPos)endPos=startPos;
-                cEl_Selection.charspos = mergeIntArrays(cEl_Selection.charspos,getIntArray(startPos,endPos));
-
+                selData.charspos = mergeIntArrays(selData.charspos,getIntArray(startPos,endPos));
+                boolForce = true;
             break;
             // select paragraph
-            case actionNo === 3:  
+            case actionNo === 3:
                 
                 //cr = getCharPos(lines,xy);
-                cr = getCharPos2(eventholder,"point");
+                cr = getCharPos2(eventholder,symbols,"Mouse");
                 if(!cr.valid)break;
                 
+                var eol = symbols.length;
                 startPos =cr.pos;
                 endPos =cr.pos;
-                chrObj = symbols[cEl_Selection.cr.pos];
                 
+                chrObj = symbols[cr.pos];
                 for(var j = cr.pos; j>-1;j--){
                     if(chrObj.pp === 0){
                         startPos = 0;
@@ -1382,7 +1424,7 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
                         break;
                     }
                 }
-                endPos = eol;
+                endPos = eol-1;
                 for(var j = cr.pos+1; j<eol;j++){
                     if(symbols[j].pp!==chrObj.pp){
                         endPos = j-1;
@@ -1390,42 +1432,25 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
                     }
                 }
                 
-//                chrObj = lines[cEl_Selection.cr.pos];
-//                //cdebug(lines)();
-//                
-//                
-//                if(cr.pos===-1)cr.pos = 0;
-//                for(var j = cr.pos; j>-1;j--){
-//                    if(chrObj.pp === 0){
-//                        startPos = 0;
-//                        break;
-//                    }else if(lines[j].pp!==chrObj.pp){
-//                        startPos = j;
-//                        break;
-//                    }
-//                }
-//                endPos = eol-1;
-//                for(var j = cr.pos+1; j<eol;j++){
-//                    if(lines[j].pp!==chrObj.pp){
-//                        endPos = j-1;
-//                        break;
-//                    }
-//                }
-
                 if(startPos>endPos)endPos=startPos;
-                cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(startPos,endPos));
+                selData.charspos =  mergeIntArrays(selData.charspos,getIntArray(startPos,endPos));
+                boolForce = true;
             break;
             // select all text
             case (actionNo > 3 && actionNo < 8):
-                cEl_Selection.charspos =  mergeIntArrays(cEl_Selection.charspos,getIntArray(0,eol-1));
+                var eol = symbols.length;
+                selData.charspos =  mergeIntArrays(selData.charspos,getIntArray(0,eol-1));
+                boolForce = true;
             break;
 
         }
-        if(boolForce || cEl_Selection.charspos.length>0)cEl_group.reset.selection = true;
-        //cEl_layer.reset.layout_shape = true;
-        
-        //cdebug(cEl_Selection.charspos,true,true,0)();
-        
+        if(boolForce){
+            //cdebug("here")();
+            cEl_group.reset.selection = true;
+            selData.reset = false;
+            cEl_group.data.values.temp.selData = selData;
+            cEl_SelectionObjs[cEl_group.parentName  + "_" + cEl_group.name] = cEl_group;
+        }
         return true;
         
     } catch (e) {
@@ -1461,73 +1486,101 @@ function getCharCRLeft(xy,bounds){
     }
 }
 
-function getCharPos2(eventholder,type){
+function getCharPos2(eventholder,symbols,type){
     try{
         //if(!startPos || startPos === -1)startPos = 0;alert(hit.item.name);
         
-        //cdebug(eventholder.actObj.className)();
         
-        if(eventholder.actObj.className === "SymbolItem"){
-            
-            var pos = eventholder.actObj.index;
-            
-//            cdebug(eventholder.actObj.rotation)();
-            
-        }else{
-            return {"valid":false};
-        }
         
-//        var actObjName = eventholder.actObj.name;
-//        if(!actObjName)return {"valid":false};
-//        var indexTP = actObjName.indexOf(".P_");
-//        cdebug()();
-        
-        // TODO add top, bottom, left & right validation
-        
-//        if(indexTP === -1)return {"valid":false};
-        
-//        eventholder.actObj.selected = true;
+        var actObj = eventholder.actObj;
+//        cdebug(eventholder.retObj.name)();
+//        cdebug(eventholder.active.oldObj.name)();
         
         switch(type){
-            case "point":
-                return {
-                    "valid":true,
-                    "pos":pos,
-                    "left":getCharCRLeft(eventholder.metrics.xy,eventholder.actObj.bounds)
-                };
+            case "Mouse":
+                
+                switch(actObj.className){
+                    case "SymbolItem":
+                        if(eventholder.active.oldObj.name!==eventholder.retObj.name)return {"valid":false};
+                        //cdebug("Mouse SymbolItem",true)(); 
+                        return {"valid":true,"pos":actObj.index,"left":getCharCRLeft(eventholder.metrics.xy,actObj.bounds),"last":actObj.index===symbols.length-1};
+                    break;
+                    default:
+                        return getPosFromBounds(symbols,eventholder.metrics.xy);
+                    break;
+                }
+                
+                
+                
             break;
-            case "top":
+            case "ArrowUp":
                 return {
-                    "valid":true,
+                    "valid":false,
 //                    "pos":~~actObjName.substring(indexTP+3),
                     "left":false
                 };
             break;
-            case "bottom":
+            case "ArrowDown":
                 return {
-                    "valid":true,
+                    "valid":false,
 //                    "pos":~~actObjName.substring(indexTP+3),
                     "left":false
                 };
             break;
         }
-
-//        if(hits && hits.item.name){
-//            
-////            cdebug(hits)();
-//            //cdebug(hits.item.index + " vs " + hits.item.name)();
-//            //return {"valid":true,"pos":hits.item.index,"left":true};
-//            return {"valid":true,"pos":hits.item.name,"left":false,"obj":hits.item};
-//        }else{
-            
-//        }
-            
-                            
+               
     } catch (e) {
         var err = listError(e);
         cdebug(err,false,false,3)();
         return err;
     }
+}
+
+function getPosFromBounds(symbols,xy){
+
+//    var tLMain = mainBounds.topLeft;
+//    var bRMain = mainBounds.bottomRight;
+    
+    var tLFirst = symbols[0].bounds.topLeft;
+    var bRLast = symbols[symbols.length-1].bounds.bottomRight;
+    
+//    cdebug(xy,true)();
+//    cdebug(tLMain)();
+//    cdebug(bRMain)();
+//    cdebug(tLFirst)();
+//    cdebug(bRLast)();
+    
+    switch(true){
+        case xy[1]<tLFirst.y:
+//            cdebug("z1" + 0)();
+            return {"valid":true,"pos":0,"left":true,"last":false};
+        break;
+        case xy[1]>bRLast.y:
+//            cdebug("z3 " + (symbols.length-1))();
+            return {"valid":true,"pos":symbols.length-1,"left":false,"last":true};
+        break;
+        default:
+            
+            for(var i=0,yLine=-1,bLAct;i<symbols.length;i++){
+                bLAct = symbols[i].bounds.bottomLeft;
+                if(yLine === -1 && bLAct.y>xy[1]){
+                    yLine = bLAct.y;
+                }
+                if(yLine>0){
+                    if(bLAct.x>xy[0]){
+//                        cdebug("z2 A "  + i)();
+                        return {"valid":true,"pos":i,"left":false,"last":false};
+                    }else if(bLAct.y > yLine){
+//                        cdebug("z2 B " + (i-1))();
+                        return {"valid":true,"pos":i-1,"left":false,"last":false};
+                    }
+                }
+            }
+//            cdebug("z2 C " + (symbols.length-1))();
+            return {"valid":true,"pos":symbols.length-1,"left":false,"last":true};
+
+        break;
+    }    
 }
 
 function pasteContext(cEl){

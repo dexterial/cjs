@@ -367,10 +367,7 @@ function drawHandles_new(ctx, segments, matrix, size , data ,indexLow) {
                     drawHandle(4,'rgba(0,0,255,0.2)');
                 }
             }
-    //            if (selection){
-    //                
-    //                
-    //            }
+
             if (!(selection & 1)) {
 //                        var fillStyle = ctx.fillStyle;
 //                        ctx.fillStyle = '#555555';
@@ -790,14 +787,14 @@ paper.PointText.inject({
 		ctx.font = style.getFontStyle();
 		ctx.textAlign = style.getJustification();
                 
-                
-//                if(param.selected){
-//                    //cdebug(param)();
-//                    ctx.save();
-//                    ctx.fillStyle = 'rgba(0,111,255,0.5)';
-//                    ctx.fillRect(this.position.x,this.position.y -this.bounds.height*3/4, this.bounds.width,this.bounds.height);
-//                    ctx.restore();
-//                }
+                //cdebug(param,true)();
+                if(param.cselect){
+                    
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(222,222,255,1)';
+                    ctx.fillRect(this.position.x,this.position.y -this.bounds.height*3/4, this.bounds.width,this.bounds.height);
+                    ctx.restore();
+                }
                 
 		for (var i = 0, l = lines.length; i < l; i++) {
 			ctx.shadowColor = shadowColor;

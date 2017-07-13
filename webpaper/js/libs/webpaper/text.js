@@ -33,7 +33,7 @@ function draw_cEl_text(cEl_group,strNewText){
         
         
         if(cEl_group.reset.text_shape || cEl_group.reset.layout_shape){ //
-            set_text_path(cEl_group,false);
+            set_text_path(cEl_group,true);
         }
         
             
@@ -44,14 +44,14 @@ function draw_cEl_text(cEl_group,strNewText){
         
         if(cEl_group.reset.selection){
             
-            //cdebug(page.activeLayer)();
+            //cdebug(cEl_group.data.values.temp.selData)();
             
             drawTextSelection(cEl_group,cEl_pageText);
             //drawTextCarret(cEl_group,cEl_pageText);
         }
         
         
-        if(cEl_group.reset.selection || cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
+        if( cEl_group.reset.text || cEl_group.reset.text_shape || cEl_group.reset.text_draw  || cEl_group.reset.layout_shape){
             
             draw_cEl_lines3(cEl_group,cEl_pageText);
 
@@ -191,11 +191,9 @@ function set_cEl_text_css(cEl_group){
         cEl_group.data.values.temp.style.paddingLeft = cEl_group.style.calc["padding-left"] ? size2px(cEl_group.style.calc["padding-left"],false) : 0;
         cEl_group.data.values.temp.style.paddingTop = cEl_group.style.calc["padding-top"] ? size2px(cEl_group.style.calc["padding-top"],false) : 0;
         
-        cEl_group.data.values.temp.style.lineHeight = cEl_group.style.calc["line-height"] ? size2px(cEl_group.style.calc["line-height"]) : 0;
-        
         cEl_group.data.values.temp.style.fontSize = size2px(cEl_group.style.calc["font-size"]);
+        cEl_group.data.values.temp.style.lineHeight = cEl_group.style.calc["line-height"] ? size2px(cEl_group.style.calc["line-height"]) : cEl_group.data.values.temp.style.fontSize/5;
         
-
         return true;
         
     } catch (e) {
@@ -815,7 +813,9 @@ function set_text_path(cEl_group,boolShowTextLines){
                         }));
                         x = x + cEl_group.data.values.temp.style.fontSize + cEl_group.data.values.temp.style.lineHeight;
                     }
-                    cEl_group.children["TextPath"].clockwise = false;
+                    //cdebug(cEl_group.name,true)();
+                    //cdebug(cEl_group.shape.flipXY)();
+                    //cEl_group.children["TextPath"].clockwise =  !(cEl_group.shape.flipXY[1] || cEl_group.shape.flipXY[0]);
  
                 }else{
                     
@@ -839,7 +839,9 @@ function set_text_path(cEl_group,boolShowTextLines){
                         }));
                         y = y + cEl_group.data.values.temp.style.fontSize + cEl_group.data.values.temp.style.lineHeight;
                     }
-
+                    
+                    //cEl_group.children["TextPath"].clockwise =  true;
+                    
                 }
             break;
             case "path":
@@ -848,9 +850,9 @@ function set_text_path(cEl_group,boolShowTextLines){
                 
             break;    
         }
-        if(boolShowTextLines){
-            cEl_group.children["TextPath"].selected = true;
-        }
+//        if(boolShowTextLines){
+//            cEl_group.children["TextPath"].selected = true;
+//        }
 //        cdebug(cEl_group.children["ShapePath"].children[0].length)();
 //        cdebug(cEl_group.children["TextPath"].children[0].length)();
 //        cdebug(cEl_group.children["TextSelection"].children.length)();
@@ -915,7 +917,6 @@ function set_linePars(line,linePars,boolPP){
                 if(!retIndex2){
                     retIndex2 = k-1;
                 }
-                
                 
                 if(intWordWidth > (linePars.maxX-linePars.minX)){
                     linePars.bp = retIndex;
@@ -1014,7 +1015,6 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
     try{
         var i = index;
         var lines = cEl_group.data.values.temp.lines3;
-  
         var text_path =  cEl_group.children["TextPath"];
         
         // TODO do something about this part
@@ -1049,23 +1049,23 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
         for(var charObj; i < charsCount; i++){
             charObj = lines[i];
 
-            if( !charObj.nl){
+            if(!charObj.nl){
 
                 if(setCharPos(charObj,curve,metricsObj)){
                     drawChar(charObj,cEl_group.children["TextSymbols"],cEl_pageText);
                 }else{
-                    j++;
+                    
                     if(!text_path.curves[j]){
                         break;
                     }
                     curve = text_path.curves[j];
                     metricsObj.curveLen = curve.length;
                     i--;
+                    j++;
                 }
 
             }else{
-                
-                if(j>0)j++;
+
                 if(!text_path.curves[j]){
                     break;
                 }
@@ -1076,9 +1076,8 @@ function drawTextAlongPath(cEl_group,index,offset,cEl_pageText){
                 if(setCharPos(charObj,curve,metricsObj)){
                     drawChar(charObj,cEl_group.children["TextSymbols"],cEl_pageText);
                 }
-                
+                j++;
             }
-
         }
        
         //cEl_group.children["TextSymbols"] = cEl_group.children["TextSymbols"].rasterize();
@@ -1097,65 +1096,28 @@ function drawTextSelection(cEl_group,cEl_pageText){
     
     try{
         
-        var boolHasSelection = !cEl_group.data.values.noselect;
-        if(!boolHasSelection)return true;
-        var boolHasSelection = (cEl_pageText.charsSelection.name === (cEl_group.parentName + "_" + cEl_group.name));
-        if(!boolHasSelection)return true;
-        //cEl_group.children["TextSelection"].removeChildren();
-//        cEl_group.selected =false;
-        
-        boolHasSelection = cEl_pageText.charsSelection.charspos.length > 0;
-        if(!boolHasSelection)return true;
-//        cEl_group.children["TextSelection"].removeChildren();
-        
-//        cdebug(cEl_pageText.charsSelection.style["background-color"])();
-        
-        var charsCount = cEl_group.children["TextSymbols"].children.length;
-        
-        //cdebug(charsCount)();
-        var i = 0;
-        for(var charObj,boolSelected; i < charsCount; i++){
-            charObj = cEl_group.children["TextSymbols"].children[i];
-            if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
-            if(boolSelected){
-                
-                //cdebug(charObj.className)();
-//                cdebug(charObj.id)();
-            }
-            charObj.selected = boolSelected;
-            
-        }
 
-//        var i = 0;
-//        var lines = cEl_group.data.values.temp.lines3;
-//        var charsCount = lines.length;
-//        
-//        
-//        for(var charObj,boolSelected; i < charsCount; i++){
-//            charObj = lines[i];
-//            //cdebug(i + " of " + charsCount + " is " + charObj.point.position)();
-//            
-//            
-//            if(charObj.pr){
-//                
-////                cdebug(charObj.textItem)();
-//                boolSelected = boolHasSelection;
-//                if(boolHasSelection)boolSelected = cEl_pageText.charsSelection.charspos.indexOf(i)>-1 ? true:false;
-//                if(boolSelected){
-//                    
-//                    //charObj.textItem.isselected = true;
-//                    var selection = cEl_group.children["TextSelection"].addChild(new paper.Path.Rectangle({
-//                        from: [charObj.textItem.position.x - charObj.w/2, charObj.textItem.position.y-charObj.fs/2],
-//                        to: [charObj.textItem.position.x + charObj.w/2, charObj.textItem.position.y+charObj.fs/2],
-//                        fillColor : cEl_pageText.charsSelection.style["background-color"],
-//                        rotation:charObj.textItem.rotation,
-//                        name:cEl_group.parentName + "_" + cEl_group.name + ".P_" + i
-//                    }));
-//                    
-//                    //rect.sendToBack();
-//                }   
-//            }
-//        }
+        if(!cEl_group.data.values.temp.selData)return true;
+        
+        //if(!cEl_group.data.values.temp.selData.charspos.length > 0)return true;
+        //cdebug(cEl_group.name)();
+        paper.rerender = true;
+        
+        var charspos = cEl_group.data.values.temp.selData.charspos;
+        var symbols = cEl_group.children["TextSymbols"].children;
+        var charsLen = symbols.length;
+        
+        
+        if(charspos[0]===undefined){
+            for(var i = 0; i < charsLen; i++){
+                symbols[i].cselect = false;
+            }
+        }else{
+            var boolNoReset = !cEl_group.data.values.temp.selData.reset;
+            for(var i = 0; i < charsLen; i++){
+                symbols[i].cselect = (charspos.indexOf(i)>-1 && boolNoReset);
+            }
+        }
         
         return true;
         
