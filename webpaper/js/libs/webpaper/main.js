@@ -1013,11 +1013,6 @@ function pre_load_children(cEl,parentName){
                 
                 
                 var cEl_group = setGetShape(cEl,parentName);
-                
-                //paper.activeLayer.addChild();
-                
-                
-                
                 setStyle_cEl(cEl_group);
                 
                 //cdebug(cEl_group.parentName + "_" +cEl_group.name)();
@@ -1497,14 +1492,7 @@ function draw_cEl_layer(cEl_layer) {
         //projectSwitch(cEl_layer.projectName);
         layerSwitch(cEl_layer.layerName);
         
-        
-        
-        
         //setGetProject(cEl,cEl_project.name);
-        
-        
-       
-        //cdebug(paper.shape)();
         
         var w = paper.shape.w;
         var h = paper.shape.h;
@@ -1799,7 +1787,7 @@ function fillGradient(cEl_group,url){
                     url = url.substring(1,url.length-1);
 
 
-                    url = url.replace("@S","15");
+                    url = url.replace("@S","10");
 
                     var xRes = path.bounds.width;
                     var yRes = path.bounds.height;
@@ -1831,8 +1819,8 @@ function fillGradient(cEl_group,url){
                         if(cEl_group.data.type === "map"){
                         
                             //bkg.onLoad = function(){
-                                var star = cEl_group.children["ShapeRaster"].addChild(new paper.Path.Star(path.position,8,6,10));
-                                star.strokeColor = 'red';
+//                                var star = cEl_group.children["ShapeRaster"].addChild(new paper.Path.Star(path.position,8,6,10));
+//                                star.strokeColor = 'red';
                             //};
                         }
                     };

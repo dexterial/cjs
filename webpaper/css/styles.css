@@ -103,10 +103,10 @@ input::-moz-focus-inner {
 .tabs{
 /*    font-family: Arial;
     font-size: 0.9rem;*/
-    background-color:rgba(122,122,122,0.5);
+    background-color:rgba(255,255,255,0.6);
     /*background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&center=55.716086,12.4614506&zoom=15&size=1280x960");*/
     /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon2.jpg");*/
-/*    border-color:rgba(170,221,170,0.7);
+    border-color:rgba(0,0,0,0.5);/*
     border-width: 5px;*/
 /*    border-color: #aff;used for textshade color
     border-width: 1px;used for textshade width
@@ -114,7 +114,7 @@ input::-moz-focus-inner {
     border:thin dotted #FF0000;*/
 }
 .locationTest{
-    background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&center=55.716086,12.4614506&zoom=@S&size=@Xx@Y");
+    background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&format=png32&maptype=roadmap&center=Frederikssundsvej+396,+2700+Brønshøj&zoom=@S&size=@Xx@Y&scale=2&markers=color:green|label:D|55.716086,12.4614506");
 }
 
 .testLabel2{
@@ -220,7 +220,7 @@ input::-moz-focus-inner {
 .tabWhite{
     font-family: Arial;
     font-size: 10px;
-    background-color:rgba(231,231,231,0.8);
+    background-color:rgba(231,231,231,0.6);
     border-color:rgba(0,0,0,0.5);
     /*border-style: solid;*/
     /*border-width: 2px;*/
@@ -349,6 +349,20 @@ input::-moz-focus-inner {
     padding-top: 5px;
     padding-left: 15px;
     color:#000;
+    text-align:justify;
+    cursor:text;
+    text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;
+}
+.copyright{
+/*    my-hover-color:#9aabb;*/
+    font-family: Arial;
+    font-size: 1.2em;
+/*    background-color: rgba(255,255,255,0.2);*/
+    background-color: rgba(0,0,0,0.5);
+    text-indent: 2em;
+    padding-top: 5px;
+    padding-left: 15px;
+    color:#fff;
     text-align:justify;
     cursor:text;
     text-shadow: 2px 2px 3px 22px rgba(218,165,32,1),7px;

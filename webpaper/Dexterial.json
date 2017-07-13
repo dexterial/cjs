@@ -20,18 +20,41 @@
     "text":{
         "defaults":{
             "1":"DEXTERIAL",
-            "1first":"Although Excel VBA and Google Docs is considered a very low tech approach to modern data handling, it is still widely used due to the inherent flexibility and visibility in tackling highly customized or temporary needs that are hard to define in any ERP system.\\nMany times transferring data from one data system to a different data system requires excel exports then data rearrangement then re-import that takes much precious time and can be easily automated, however the  prohibitive cost for requiring a plugin for the data systems providers makes Excel/Google Docs as a lean solution, albeit time consuming one.",
-            "1second":"Dexterial is build around the idea of automating tasks that require or could be done via Excel or Google Docs. This can range from simple graphs export to pdf, automated data parsing/validation, web data interfaces, to adding extra tools to the Ribbon/Sidebar interface, advanced user input validation, advanced data readers and integration (ex reading pdf's and putting them in tables according to specific rules, user input forms, populating custom fields in Word from different data sources, sky's the limit ).",
-            "1third":"By using state of the art Redmine issue management tool, project visibility and time tracking becomes a breeze.\\nStakeholders and developers can see the progress and can collaborate in transparent manner for faster idea to deployment path.",
-            "1fourth":"Using automated testing on multiple Office platforms (OS type and Version numbers) for VBA and on multiple browsers targets for google-scripts makes the quality of our products outstanding. Although the development time is slightly higher upfront, using test driven approach makes the error debugging and fixing a much easier task, thus eliminating much of the pre-deployment time and assuring best quality.",
-            "1a":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
+
+            "1first":"What we do\\nMain experitse @Dexterial is building custom data automation software by leveraging the expandability of Microsoft Office (VBA) or Google Docs (javascript). \\nWe also focus on web design inovation, by using HTML5 new capabilities for more responsive, estetically rich webpages that rely mostly on client side code. This includes vectorial gpu accelerated graphics, using local indexed databases for large data handling, standalone apps that run offline, etc.",
+ 
+            "1second":"Why we do it\\nAlthough spreadsheets are considered a very low tech approach to modern data handling, it is still widely used due to the inherent flexibility and visibility in tackling highly customized or temporary tasks. These are hard to define or simply too costly for any profesional ERP system, but can be easily automated by our consultants.",
+
+            "1third":"How we do it\\nFor medium to large projects we use @Redmine issue management tool for project visibility and time tracking. Stakeholders and developers can collaborate in a transparent manner and that creates a fast track approach to the realization of the project.",
+            "1fourth":"How good we do it\\nWe use automated testing on different Office platforms (OS types and Version numbers) for VBA or multiple target browsers for javascript by using @Dextools Excel app. Although the development time is slightly higher upfront, this approach eliminates much of the debugging time and assures the best quality in the alloted time.",
+            "longtext":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
+            "copyright":"© Dexterial 2017. This website was build using @Webpaper app (dev in progress), see more info in it's own tab.",
             "2":"CONTACT",
-            "2a":"Dan Ionel Blaguiescu \\nConsultant and CEO at Dexterial \\nEmail: dan.blaguiescu@dexterial.com\\nPhone: (+45) 50 13 01 91",
+            "2a":"Contact Person\\nDan Ionel Blaguiescu \\nConsultant and CEO at Dexterial \\nEmail: dan.blaguiescu@dexterial.com\\nPhone: (+45) 50 13 01 91",
+            "2b":"Company Address\\nFrederikssundsvej 396 st th\\n2700 Brønsøj, Denmark",
+            "2c":"Pricing and Workplace\\nDue to the custom solutions we provide, a meeting is required for evaluating the project expenses.\\nOur policy is to offer the best quality per price.\\nWe are flexible in working at our office or at the customer's site, the last is preferred in the initial phase of the project.",
             "3":"WEBPAPER",
             "4":"PROJECTS",
+            "4a":[
+                "You think it, we build it. We worked on various automation projects in the folowing areas:",
+                "VBA(macros for Microsoft Office) :",
+                "*  Bussiness Case Model for Danish Digitalization Ministry https://www.digst.dk/Styring/Dokumenter-og-vejledninger/Dokumenter-i-business-casemodellen",
+                "*  User input validation for data entry and history traker in ACCESS.",
+                "*  Data exports/imports/validation from and to legacy or new systems (ex.Pdf to Excel, Pdf to Word, Maconomy to SugarCrm, Excel to Access, Excell to SugarCrm, etc.).",
+                "*  Custom ribbon interfaces that seamlessly integrate with the Office applications.",
+                "*  Advanced reporting automation, charts, pivots, exports to other applications.",
+                "*  Populating custom fields in Word/Pdf(via Excel) templates from different data sources (like and invoice generator).",
+                "*  Test suites that can be run automatically on different versions of Excel on different platforms, integrated with @Jenkins for building, deploying and automating any project.",
+                "Javascript for Goggle Spreadsheets:",
+                "*  Custom modules/interfaces creation for Google Docs via document embedded google-script extensions ( works similar with VBA embedded code but uses javascript and html ).",
+                "Javascript:",
+                "*  @Webpaper, this very page is using it, it aims to change how webdesign is made",
+                "*  Offline browser based text parser and mapper for very fast searches using IndexedDB for offline storage (<1s complex search results in a text file of 162mb)",
+                "*  Conference multilanguage audio translation page using webRTC and peer to peer communication"
+            ],
             "5":"zzz1 abc \\nzzz2 \\nzzz3 \\nzzz4",
-            "ct1":"Copy",
-            "ct2":"Paste"
+            "ctxt1":"Copy",
+            "ctxt2":"Paste"
         
         },
         "chars":"0123456789 -",
@@ -57,7 +80,7 @@
     "state":{
         "global":["default"],
         "context":["text"],
-        "tabstate":["foldedTL"]
+        "tabstate":["foldedBL"]
     },
     "states":{
         "global-enabled":{"visible":true,"enabled":true,"focus":false,"hover":false,"active":false,"loaded":false,"drawn":false},
@@ -86,26 +109,27 @@
         "t-10":{"reset":{"layout_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.3]}},
         "t-11":{"reset":{"layout_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.7]}},
         
-        "tl-1":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.3]}, "data":{"values":{"vertical":true}}},
-        "tl-2":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.7]}, "data":{"values":{"vertical":true}}},
+        "tl-1":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.3]}, "data":{"values":{"vertical":true}}},
+        "tl-2":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.15,0.7]}, "data":{"values":{"vertical":true}}},
         
-        "tl-3":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.45,0.15]}, "data":{"values":{"vertical":false}}},
-        "tl-4":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.45,0.85]}, "data":{"values":{"vertical":false}}},
+        "tl-3":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.45,0.15]}, "data":{"values":{"vertical":false}}},
+        "tl-4":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.45,0.85]}, "data":{"values":{"vertical":false}}},
         
-        "tl-5":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.55,0.15]}, "data":{"values":{"vertical":false}}},
-        "tl-6":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.55,0.85]}, "data":{"values":{"vertical":false}}},
+        "tl-5":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.55,0.15]}, "data":{"values":{"vertical":false}}},
+        "tl-6":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.69,0.09],"masspoint":[0.55,0.85]}, "data":{"values":{"vertical":false}}},
         
-        "tl-7":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.3]}, "data":{"values":{"vertical":true}}},
-        "tl-8":{"reset":{"layout_shape":true,"text_shape":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.7]}, "data":{"values":{"vertical":true}}}
+        "tl-7":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.3]}, "data":{"values":{"vertical":true}}},
+        "tl-8":{"reset":{"layout_shape":true,"layout_css":true},"shape":{"scale":[0.09,0.39],"masspoint":[0.85,0.7]}, "data":{"values":{"vertical":true}}}
     },
     "shapes":{
         "rectangle-tl":[[0,0],[1,0],[1,1],[0,1]],
         "round-corner-normal":[[-0.5,-0.5,0,15],[-0.5,-0.5],[-0.5,-0.5,15,0],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.5],[-0.5,0]],
+        "round-corner-single":[[-0.5,-0.5],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.4,15,0],[-0.5,0.4],[-0.5,0.4,0,-15],[-0.5,0]],
         "round-corner-full":[
-            [-0.61,-0.51],[-0.62,-0.62],[-0.51,-0.6],[0,-0.5]
+            [-0.6,-0.45],[-0.62,-0.6],[-0.51,-0.58],[0,-0.5]
             ,[0.5,-0.5,-15,0],[0.5,-0.5],[0.5,-0.5,0,15],[0.5,0]
-            ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5]
-            ,[-0.5,0.5,15,0],[-0.5,0.5],[-0.5,0.5,0,-15],[-0.5,0]],
+            ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[-0.2,0.5]
+            ,[-0.5,0.48,15,0],[-0.5,0.48],[-0.5,0.48,0,-15],[-0.5,0]],
         "rectangle-centered":[[-0.5,-0.5],[0.5,-0.5],[0.5,0.5],[-0.5,0.5]],
         "heart1":[[0,-2],[1,-3],[2,-3],[3,-2],[3,-2],[2,1],[0,3],[-2,1],[-3,-1],[-3,-2],[-2,-3],[-1,-3]],
         "plus1":[[-1,-3],[1,-3],[1,-1],[3,-1],[3,1],[1,1],[1,3],[-1,3],[-1,1],[-3,1],[-3,-1],[-1,-1]],
@@ -135,7 +159,8 @@
             },
             "shape":{
                 "name":"rectangle-tl",
-                "type":"poligon"
+                "type":"poligon",
+                "scale":[1,1]
             },
             "states":{
                 "global":{"default":"global-enabled"}
@@ -144,6 +169,7 @@
                 "type":"text",
                 "values":{
                     "editable":false,
+                    "noselect":true,
                     "vertical":false,
                     "pattern":"box-fill"
                 }
@@ -161,7 +187,7 @@
             },
             "shape":{
                 "name":"rectangle-tl",
-                "scale":[0.1,0.1],
+                "scale":[0.1,0.2],
                 "masspoint":[0.2,0.2],
                 "type":"poligon"
             },
@@ -177,8 +203,8 @@
                 "type":"list"
             },
             "children":[
-                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.01]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"ct1"}}},
-                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.35]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"ct2"}}}
+                {"name":"btnCopy","elId":"contextitems","tab":0,"shape":{"masspoint":[0.02,0.1]},"events":{"mousedown":"copyContext(this,true)"},"data":{"values":{"default":"ctxt1"}}},
+                {"name":"btnPaste","elId":"contextitems","tab":1,"shape":{"masspoint":[0.02,0.35]},"events":{"mousedown":"pasteContext(this,true)"},"data":{"values":{"default":"ctxt2"}}}
             ]
         },
         "contextitems":{
@@ -188,7 +214,7 @@
             "events":{},
             "shape":{
                 "name":"rectangle-tl",                
-                "scale":[0.96,0.3],
+                "scale":[0.96,0.2],
                 "type":"poligon"
             },
             "states":{
@@ -204,6 +230,7 @@
                 "values":{
                     "editable":false,
                     "vertical":false,
+                    "noselect":true,
                     "pattern":"box-fill"
                 }
             }
@@ -253,10 +280,9 @@
             "class":"tabs",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
-            "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
             "shape":{
-                "scale":[0.8,0.8],
-                "masspoint":[0.5,0.5],
+                "scale":[0.81,0.85],
+                "masspoint":[0.5,0.51],
                 "name":"round-corner-full",
                 "flipXY":[false,false],
                 "type":"quadratic",
@@ -269,7 +295,8 @@
                 "type":"list"
             },
             "children":[
-                {"name":"logo","elId":"tablabel3","tab":-1,"class":"logo",
+                {"name":"logo","elId":"tablabelSingleCorner","tab":-1,"class":"logo",
+                    "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
                     "shape":{
                         "scale":[0.05],
                         "masspoint":[0.06,0.08]
@@ -277,15 +304,6 @@
                     "data":{
                         "type":"image",
                         "values":{}
-                    },
-                    "states":{
-                        "tabstate":{
-                            "normal":"ct5",
-                            "foldedTL":"ct5",
-                            "foldedTR":"ct5",
-                            "foldedBR":"ct5",
-                            "foldedBL":"ct5"
-                        }
                     }
                 },
                 {"name":"tabTL","elId":"tab","tab":0,"class":"tabWhite",
@@ -318,31 +336,19 @@
                             "data":{"values":{"default":"1"}}
                         },
                         {"name":"tabTLLabel2","elId":"tablabel2","tab":1,"class":"label1",
-                            "shape":{
-                                "scale":[0.68,0.15],
-                                "masspoint":[0.45,0.29]
-                            },
+                            "shape":{"scale":[0.68,0.15],"masspoint":[0.45,0.29]},
                             "data":{"values":{"default":"1first"}}
                         },
                         {"name":"tabTLLabel3","elId":"tablabel2","tab":2,"class":"label1",
-                            "shape":{
-                                "scale":[0.68,0.13],
-                                "masspoint":[0.45,0.45]
-                            },
+                            "shape":{"scale":[0.68,0.13],"masspoint":[0.45,0.45]},
                             "data":{"values":{"default":"1second"}}
                         },
                         {"name":"tabTLLabel4","elId":"tablabel2","tab":3,"class":"label1",
-                            "shape":{
-                                "scale":[0.68,0.09],
-                                "masspoint":[0.45,0.58]
-                            },
+                            "shape":{"scale":[0.68,0.09],"masspoint":[0.45,0.58]},
                             "data":{"values":{"default":"1third"}}
                         },
                         {"name":"tabTLLabel5","elId":"tablabel2","tab":4,"class":"label1",
-                            "shape":{
-                                "scale":[0.68,0.13],
-                                "masspoint":[0.45,0.71]
-                            },
+                            "shape":{"scale":[0.68,0.13],"masspoint":[0.45,0.71]},
                             "data":{"values":{"default":"1fourth"}}
                         }
                     ]
@@ -376,37 +382,23 @@
                             },
                             "data":{"values":{"default":"2"}}
                         },
-                        {"name":"tabTRLabel1","elId":"tablabel3","tab":1,"class":"label1",
-                            "shape":{
-                                "scale":[0.68,0.15],
-                                "masspoint":[0.55,0.29]
-                            },
-                            "data":{
-                                "type":"text",
-                                "values":{
-                                    "editable":false,
-                                    "pattern":"box-fill",
-                                    "default":"2a"
-                                }
-                            },
-                            "states":{
-                                "tabstate":{
-                                    "foldedTR":"ct4"
-                                }
-                            }
+                        {"name":"tabTRLabel2a","elId":"tablabel3","tab":1,"class":"label1",
+                            "shape":{"masspoint":[0.375,0.45],"scale":[0.33,0.12]},
+                            "data":{"values":{"default":"2a"}}
                         },
-                        {"name":"tabTRLabel2","elId":"tablabel3","tab":2,"class":"locationTest",
-                            "shape":{
-                                "scale":[0.68,0.25],
-                                "masspoint":[0.55,0.65]
-                            },
+                        {"name":"tabTRLabel2b","elId":"tablabel3","tab":1,"class":"label1",
+                            "shape":{"masspoint":[0.725,0.45],"scale":[0.33,0.12]},
+                            "data":{"values":{"default":"2b"}}
+                        },
+                        {"name":"tabTRLabel1","elId":"tablabel3","tab":1,"class":"label1",
+                            "shape":{"masspoint":[0.55,0.29],"scale":[0.68,0.16]},
+                            "data":{"values":{"default":"2c"}}
+                        },
+                        {"name":"tabTRmap","elId":"map","tab":2,"class":"locationTest",
+                            "shape":{"scale":[0.68,0.25],"masspoint":[0.55,0.65]},
                             "data":{
-                                "type":"map",
-                                "values":{}
-                            },
-                            "states":{
-                                "tabstate":{
-                                    "foldedTR":"ct5"
+                                "type":"googlemap",
+                                "values":{
                                 }
                             }
                         }
@@ -425,7 +417,7 @@
                         }
                     },
                     "children":[
-                        {"name":"tabBLLabel","elId":"tablabel","tab":0,"class":"testLabel",
+                        {"name":"tabBRLabel","elId":"tablabel","tab":0,"class":"testLabel",
                             "shape":{"flipXY":[false,false]},
                             "rules":{
                                 "tabstate":"r4"
@@ -471,6 +463,10 @@
                                 }
                             },
                             "data":{"values":{"default":"4"}}
+                        },
+                        {"name":"tabTRLabel2a","elId":"tablabel2a","tab":1,"class":"label1",
+                            "shape":{"masspoint":[0.45,0.505],"scale":[0.68,0.57]},
+                            "data":{"values":{"default":"4a"}}
                         }
                     ]
                 }
@@ -513,6 +509,23 @@
                 }
             }
         },
+        "tablabelSingleCorner":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "shape":{
+                "name":"round-corner-single",
+                "flipXY":[false,false],
+                "type":"quadratic",
+                "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
+            },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "pattern":"box-fill"
+                }
+            }
+        },
         "tablabel2":{
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
@@ -526,7 +539,7 @@
                 "global":{"default":"global-enabled"},
                 "tabstate":{
                     "normal":"ct3",
-                    "foldedTL":"ct2",
+                    "foldedTL":"ct5",
                     "foldedTR":"ct3",
                     "foldedBR":"ct3",
                     "foldedBL":"ct3"
@@ -543,6 +556,65 @@
                 "tabstate":"r2"
             }
         },
+        "tablabel2a":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "shape":{
+                "name":"round-corner-normal",
+                "flipXY":[false,true],
+                "type":"quadratic",
+                "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "tabstate":{
+                    "normal":"ct3",
+                    "foldedTL":"ct3",
+                    "foldedTR":"ct3",
+                    "foldedBR":"ct3",
+                    "foldedBL":"ct5"
+                }
+            },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "pattern":"box-fill"
+                }
+            },
+            "rules":{
+                "tabstate":"r5"
+            }
+        },
+        "map":{
+            "tag":"group",
+            "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
+            "shape":{
+                "name":"round-corner-normal",
+                "flipXY":[false,false],
+                "type":"quadratic",
+                "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
+            },
+            "data":{
+                "type":"googlemap",
+                "values":{
+                    
+                }
+            },
+            "states":{
+                "global":{"default":"global-enabled"},
+                "tabstate":{
+                    "foldedTR":"ct5",
+                    "normal":"ct3",
+                    "foldedTL":"ct3",
+                    "foldedBR":"ct3",
+                    "foldedBL":"ct3"
+                }
+            },
+            "rules":{
+                "tabstate":"r3"
+            }
+        },
         "tablabel3":{
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
@@ -552,9 +624,17 @@
                 "type":"quadratic",
                 "mp":{"type":"percent","value":[0,0],"pointoffset":{"x":0.1,"y":0.1,"index":0}}
             },
+            "data":{
+                "type":"text",
+                "values":{
+                    "editable":false,
+                    "pattern":"box-fill"
+                }
+            },
             "states":{
                 "global":{"default":"global-enabled"},
                 "tabstate":{
+                    "foldedTR":"ct5",
                     "normal":"ct3",
                     "foldedTL":"ct3",
                     "foldedBR":"ct3",
@@ -803,7 +883,8 @@
                 {
                     "name":"main","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
                     "children":[
-                        {"name":"tabs","elId":"tabs","tab":0,"events":{"mousedown":"testEvents(this,'mousedown')"}}
+                        {"name":"tabs","elId":"tabs","tab":0,"events":{"mousedown":"testEvents(this,'mousedown')"}},
+                        {"name":"copyright","elId":"tablabelSingleCorner","tab":1,"class":"copyright","shape":{"scale":[0.41,0.028],"masspoint":[0.69,0.915]},"data":{"values":{"default":"copyright"}}}
                     ]
                 },
                 {

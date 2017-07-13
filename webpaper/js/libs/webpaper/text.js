@@ -202,14 +202,21 @@ function set_cEl_text_css(cEl_group){
         return err;
     }
 }
-
 function set_cEl_text(cEl_group, cEl_pageText, strNewText){
     
     try{
         //console.log(strNewText + " vs " + cEl_group.data.values.temp.valueOld);
-
-                if(!cEl_group.data.values.text)cEl_group.data.values.text = cEl_pageText.defaults[cEl_group.data.values.default];
                 var strValAct = cEl_group.data.values.text;
+                if(!strValAct){
+                    strValAct = cEl_pageText.defaults[cEl_group.data.values.default];
+                    if(Array.isArray(strValAct)){
+                        strValAct = strValAct.join("\\n");
+                        strValAct = strValAct.replace(/\r\n/g,'\n');
+                    }
+                    cEl_group.data.values.text =  strValAct;
+                    //cdebug(strValAct)();
+                }
+                
                 
                 // if not set then set the old value to same value and continue to calc
                 if(cEl_group.data.values.temp && !cEl_group.data.values.temp.valueOld){
