@@ -1790,36 +1790,6 @@ function fillGradient(cEl_group,url){
             break;
             case "url":
                 
-                
-                
-//                var url = cEl_layer.style.calc["background-image"];
-//                url = url.match(/url\(["|']?([^"']*)["|']?\)/)[1];
-//                cEl_layer.bkgImg = new Image();
-//                cEl_layer.bkgImg.src = url;
-//                //cdebug(cEl_project.name + " <<< " + url + " start on " + paper.project.name)();
-//
-//                cEl_layer.bkgImg.onload = function(){
-////
-////    //                var scaleX = paper.view.bounds.width/raster.width;
-////    //                var scaleY = paper.view.bounds.height/raster.height;
-////    //                raster.scale([scaleX,scaleY]);
-//                    
-//                    //drawProjects(paper,true);
-//                    layerSwitch(cEl_layer.name);
-//                    //cdebug("done >>> on " + paper.project.name)();
-//                    
-//                    var bkg = cEl_layer.children[0].addChild(new paper.Raster(cEl_layer.bkgImg,new paper.Point(0,0)));
-//                    bkg.fitBounds(paper.project.view.bounds,true);
-//                    
-//                    //var bkg = cEl_project.activeLayer.children[0].children[0];
-//                    bkg.name = cEl_layer.parentName + "_" + cEl_layer.name + "_BKG.I";
-//                    //bkg.fitBounds(cEl_layer.view.bounds,true);
-//                    bkg.onLoad = function(){
-//                        //cEl_project.bkgRaster.sendToBack();
-//                    };
-//                    
-//                };
-                
                 //cdebug(gradObj.fArgs)();
                 
                 if(!cEl_group.children["ShapeRaster"].img){
@@ -1857,10 +1827,14 @@ function fillGradient(cEl_group,url){
                         //cdebug(path.bounds)();
                         var bkg = cEl_group.children["ShapeRaster"].addChild(new paper.Raster(cEl_group.children["ShapeRaster"].img, path.position));
                         bkg.fitBounds(path.bounds);
-                        //bkg.onLoad = function(){
-                            var star = cEl_group.children["ShapeRaster"].addChild(new paper.Path.Star(path.position,8,6,10));
-                            star.strokeColor = 'red';
-                        //};
+                        
+                        if(cEl_group.data.type === "map"){
+                        
+                            //bkg.onLoad = function(){
+                                var star = cEl_group.children["ShapeRaster"].addChild(new paper.Path.Star(path.position,8,6,10));
+                                star.strokeColor = 'red';
+                            //};
+                        }
                     };
                 }
                 
@@ -2484,6 +2458,8 @@ function cEl_setPaperPath(cEl_group,cEl_pathHolder, shapeContainer, boolReset, b
         hF=cEl_layer.shape.h;
         if(!shapeContainer.scale[1]){
             shapeContainer.scale[1] = shapeContainer.scale[0] * wF/hF;
+        }else if(!shapeContainer.scale[0]){
+            shapeContainer.scale[0] = shapeContainer.scale[1] * hF/wF;
         }
         
         var flipXY = shapeContainer.flipXY?shapeContainer.flipXY:[false,false];

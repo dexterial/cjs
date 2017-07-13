@@ -27,7 +27,7 @@
             "1a":"[1] Obsecro itaque vos ego vinctus in Domino, ut digne ambuletis vocatione, qua vocati estis, [2] cum omni humilitate, et mansuetudine, cum patientia, supportantes invicem in caritate, [3] solliciti servare unitatem Spiritus in vinculo pacis.\\n[4] Unum corpus, et unus Spiritus, sicut vocati estis \\zin una spe vocationis vestrae.\\n[5] Unus Dominus, una fides, unum baptisma. abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr.",
             "2":"CONTACT",
             "2a":"Dan Ionel Blaguiescu \\nConsultant and CEO at Dexterial \\nEmail: dan.blaguiescu@dexterial.com\\nPhone: (+45) 50 13 01 91",
-            "3":"ABOUT",
+            "3":"WEBPAPER",
             "4":"PROJECTS",
             "5":"zzz1 abc \\nzzz2 \\nzzz3 \\nzzz4",
             "ct1":"Copy",
@@ -102,7 +102,7 @@
         "rectangle-tl":[[0,0],[1,0],[1,1],[0,1]],
         "round-corner-normal":[[-0.5,-0.5,0,15],[-0.5,-0.5],[-0.5,-0.5,15,0],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.5],[-0.5,0]],
         "round-corner-full":[
-            [-0.61,-0.51],[-0.61,-0.61],[-0.51,-0.6],[0,-0.5]
+            [-0.61,-0.51],[-0.62,-0.62],[-0.51,-0.6],[0,-0.5]
             ,[0.5,-0.5,-15,0],[0.5,-0.5],[0.5,-0.5,0,15],[0.5,0]
             ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5]
             ,[-0.5,0.5,15,0],[-0.5,0.5],[-0.5,0.5,0,-15],[-0.5,0]],
@@ -250,7 +250,7 @@
             }
         },
         "tabs":{
-            "class":"test",
+            "class":"tabs",
             "tag":"group",
             "visible":true,"enabled":true,"focus":false,"hover":false,"active":false,
             "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
@@ -269,6 +269,25 @@
                 "type":"list"
             },
             "children":[
+                {"name":"logo","elId":"tablabel3","tab":-1,"class":"logo",
+                    "shape":{
+                        "scale":[0.05],
+                        "masspoint":[0.06,0.08]
+                    },
+                    "data":{
+                        "type":"image",
+                        "values":{}
+                    },
+                    "states":{
+                        "tabstate":{
+                            "normal":"ct5",
+                            "foldedTL":"ct5",
+                            "foldedTR":"ct5",
+                            "foldedBR":"ct5",
+                            "foldedBL":"ct5"
+                        }
+                    }
+                },
                 {"name":"tabTL","elId":"tab","tab":0,"class":"tabWhite",
                     "shape":{"flipXY":[false,false]},
                     "states":{
@@ -382,7 +401,7 @@
                                 "masspoint":[0.55,0.65]
                             },
                             "data":{
-                                "type":"image",
+                                "type":"map",
                                 "values":{}
                             },
                             "states":{

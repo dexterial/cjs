@@ -95,10 +95,15 @@ input::-moz-focus-inner {
         border:thin dotted #FF0000;*/
 }
 
-.test{
+.logo{
+    background-color:rgba(0,0,0,0.5);
+    background-image: url("graphics/logo3.png");
+}
+
+.tabs{
 /*    font-family: Arial;
     font-size: 0.9rem;*/
-    background-color:rgba(0,0,0,0.3);
+    background-color:rgba(122,122,122,0.5);
     /*background-image: url("http://maps.google.com/maps/api/staticmap?sensor=false&center=55.716086,12.4614506&zoom=15&size=1280x960");*/
     /*background-image: url("graphics/chagulak-island-in-alaska-with-fog-in-the-horizon2.jpg");*/
 /*    border-color:rgba(170,221,170,0.7);
