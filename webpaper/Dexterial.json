@@ -48,9 +48,9 @@
                 "Javascript for Goggle Spreadsheets:",
                 "*  Custom modules/interfaces creation for Google Docs via document embedded google-script extensions ( works similar with VBA embedded code but uses javascript and html ).",
                 "Javascript:",
-                "*  @Webpaper, this very page is using it, it aims to change how webdesign is made",
-                "*  Offline browser based text parser and mapper for very fast searches using IndexedDB for offline storage (<1s complex search results in a text file of 162mb)",
-                "*  Conference multilanguage audio translation page using webRTC and peer to peer communication"
+                "*  @Webpaper, this very page is using it, it aims to simplify the design to deployment of webpages.",
+                "*  Offline browser based text parser and mapper for extremely fast searches using IndexedDB for offline storage (<1s complex search results in a text file of 162mb).",
+                "*  Conference multilanguage audio translation web page using webRTC and peer to peer communication."
             ],
             "5":"zzz1 abc \\nzzz2 \\nzzz3 \\nzzz4",
             "ctxt1":"Copy",
@@ -80,7 +80,7 @@
     "state":{
         "global":["default"],
         "context":["text"],
-        "tabstate":["foldedBL"]
+        "tabstate":["foldedTL"]
     },
     "states":{
         "global-enabled":{"visible":true,"enabled":true,"focus":false,"hover":false,"active":false,"loaded":false,"drawn":false},
@@ -126,6 +126,11 @@
         "round-corner-normal":[[-0.5,-0.5,0,15],[-0.5,-0.5],[-0.5,-0.5,15,0],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.5],[-0.5,0]],
         "round-corner-single":[[-0.5,-0.5],[0,-0.5],[0.5,-0.5],[0.5,0],[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[0,0.5],[-0.5,0.4,15,0],[-0.5,0.4],[-0.5,0.4,0,-15],[-0.5,0]],
         "round-corner-full":[
+            [-0.6,-0.45],[-0.62,-0.6],[-0.51,-0.58],[0,-0.5]
+            ,[0.5,-0.5,-15,0],[0.5,-0.5],[0.5,-0.5,0,15],[0.5,0]
+            ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[-0.2,0.5]
+            ,[-0.5,0.48,15,0],[-0.5,0.48],[-0.5,0.48,0,-15],[-0.5,0]],
+        "logo":[
             [-0.6,-0.45],[-0.62,-0.6],[-0.51,-0.58],[0,-0.5]
             ,[0.5,-0.5,-15,0],[0.5,-0.5],[0.5,-0.5,0,15],[0.5,0]
             ,[0.5,0.5,0,-15],[0.5,0.5],[0.5,0.5,-15,0],[-0.2,0.5]
@@ -296,7 +301,7 @@
             },
             "children":[
                 {"name":"logo","elId":"tablabelSingleCorner","tab":-1,"class":"logo",
-                    "events":{"mousedown":"setState(this,'tabstate')","touchstart":"setState(this,'tabstate')"},
+                    "events":{},
                     "shape":{
                         "scale":[0.05],
                         "masspoint":[0.06,0.08]
@@ -521,8 +526,7 @@
             "data":{
                 "type":"text",
                 "values":{
-                    "editable":false,
-                    "pattern":"box-fill"
+                    "editable":false
                 }
             }
         },
@@ -884,7 +888,7 @@
                     "name":"main","elId":"layer1","tab":0,"shape":{"masspoint":[0,0],"scale":[1,1]},
                     "children":[
                         {"name":"tabs","elId":"tabs","tab":0,"events":{"mousedown":"testEvents(this,'mousedown')"}},
-                        {"name":"copyright","elId":"tablabelSingleCorner","tab":1,"class":"copyright","shape":{"scale":[0.41,0.028],"masspoint":[0.69,0.915]},"data":{"values":{"default":"copyright"}}}
+                        {"name":"copyright","elId":"tablabelSingleCorner","tab":1,"class":"copyright","shape":{"scale":[0.41,0.028],"masspoint":[0.69,0.915]},"data":{"values":{"pattern":"box-fill","default":"copyright"}}}
                     ]
                 },
                 {

@@ -57,9 +57,6 @@ function draw_cEl_text(cEl_group,strNewText){
 
         }
         
-        
-        
-
         cEl_group.reset.text = false;
         cEl_group.reset.text_shape = false;
         cEl_group.reset.text_css = false;
@@ -208,6 +205,9 @@ function set_cEl_text(cEl_group, cEl_pageText, strNewText){
         //console.log(strNewText + " vs " + cEl_group.data.values.temp.valueOld);
                 var strValAct = cEl_group.data.values.text;
                 if(!strValAct){
+                    
+                    //if(cEl_group.name==="logo")cdebug(cEl_group.data.values.default)();
+                    
                     strValAct = cEl_pageText.defaults[cEl_group.data.values.default];
                     if(Array.isArray(strValAct)){
                         strValAct = strValAct.join("\\n");
@@ -216,6 +216,7 @@ function set_cEl_text(cEl_group, cEl_pageText, strNewText){
                     cEl_group.data.values.text =  strValAct;
                     //cdebug(strValAct)();
                 }
+                
                 
                 
                 // if not set then set the old value to same value and continue to calc
@@ -1340,6 +1341,7 @@ function drawChar(charObj,textContainer,cEl_pageText){
         charObj.textItem.nl = charObj.nl;
         charObj.textItem.pc = charObj.pc;
         charObj.textItem.pp = charObj.pp;
+        charObj.textItem.wp = charObj.wp;
         //charObj.textItem.selected = true;
         
     } catch (e) {

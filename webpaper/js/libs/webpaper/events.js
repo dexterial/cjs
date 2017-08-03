@@ -1375,21 +1375,25 @@ function selection_actions(cEl_group, eventholder, actionNo, boolReset){
                 var eol = symbols.length;
                 if(!symbols[cr.pos].pc){
                     startPos = 0;
+                    var wordPos = symbols[cr.pos].wp;
+                    
                     for(var j = cr.pos; j>-1;j--){
-                        chrObj_sibling = symbols[j];
-                        if(!chrObj_sibling || chrObj_sibling.pc || chrObj_sibling.definition.item.content === " "){
+                        chrObj = symbols[j];
+                        //cdebug(chrObj.wp + " " + wordPos)(); 
+                        
+                        if(!chrObj || chrObj.wp !== wordPos || chrObj.definition.item.content === " "){
                             startPos = j+1;
                             break;
                         }
                     }
                     endPos = eol-1;
                     for(var j = cr.pos+1; j<eol;j++){
-                        chrObj_sibling = symbols[j];
-                        if(chrObj_sibling.nl || chrObj_sibling.pc){
+                        chrObj = symbols[j];
+                        if(chrObj.nl || chrObj.pc || chrObj.wp !== wordPos){
 
                             endPos = j-1;
                             break;
-                        }else if(chrObj_sibling.definition.item.content === " "){
+                        }else if(chrObj.definition.item.content === " "){
                             endPos = j;
                             break;
                         }

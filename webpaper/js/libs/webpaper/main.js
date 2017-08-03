@@ -47,41 +47,44 @@ paper.rerender = false;
 //window.setInterval(function(){cdebug("zz",false,true)},100);
 
 // load json from file, to be changed to allow loading json from external file or from local storage or from server directly
-$.getJSON(loadedFile, function (jsonPage) {
-    
-    if(boolEditMode){
-    
-//        $.getJSON(editorFile, function (jsonPageEditor) {
-//
-//            document.title = "<EDIT MODE>" + jsonPage.title;
-//            pre_load_children(jsonPageEditor);
-//            
-//            loadedPage = $.extend(true,{},jsonPage);
-//            loadedPage.shape.masspoint = [0.5,0.25];
-//            loadedPage.shape.scale = [loadedPage.shape.scale[0]/2,loadedPage.shape.scale[1]/2];
-//
-//            loadPageInEditor(false);
-//            
-//            //GLOBAL_debugger = true;
-//        });
-    }else{
+function start(){
+    $.getJSON(loadedFile, function (jsonPage) {
 
-            //clearInterval(interval1);
-            document.title = jsonPage.title;
-            //GLOBAL_debugger = jsonPage.debug;
-            pre_load_children(jsonPage);
-            GLOBAL_renderer = true;
-            //renderer([jsonPage.name]);
-            //renderer([jsonPage.name]);
-            
-            //console.log(paper.version);
-            
-            drawProjects(paper,true);
-            
-            //interval1 = setInterval(function(){renderer([jsonPage.name]);},GLOBAL_rendertime);
- 
-    };
-});
+        if(boolEditMode){
+
+    //        $.getJSON(editorFile, function (jsonPageEditor) {
+    //
+    //            document.title = "<EDIT MODE>" + jsonPage.title;
+    //            pre_load_children(jsonPageEditor);
+    //            
+    //            loadedPage = $.extend(true,{},jsonPage);
+    //            loadedPage.shape.masspoint = [0.5,0.25];
+    //            loadedPage.shape.scale = [loadedPage.shape.scale[0]/2,loadedPage.shape.scale[1]/2];
+    //
+    //            loadPageInEditor(false);
+    //            
+    //            //GLOBAL_debugger = true;
+    //        });
+        }else{
+
+                //clearInterval(interval1);
+                document.title = jsonPage.title;
+                //GLOBAL_debugger = jsonPage.debug;
+                pre_load_children(jsonPage);
+
+                GLOBAL_renderer = true;
+                //renderer([jsonPage.name]);
+                //renderer([jsonPage.name]);
+
+                //console.log(paper.version);
+
+                drawProjects(paper,true);
+
+                //interval1 = setInterval(function(){renderer([jsonPage.name]);},GLOBAL_rendertime);
+
+        };
+    });
+};
 
 function renderer(arrPages){
     try {
@@ -1994,9 +1997,11 @@ function setStyleGlobal(GLOBAL_styles, cId, cClass, tag) {
         
         for( sheets=document.styleSheets.length-1; sheets>=0; sheets-- ){
             cSSSelectors = document.styleSheets[sheets].rules || document.styleSheets[sheets].cssRules;
-            for(var x=0, intMaxSelectors = cSSSelectors.length;x<intMaxSelectors;x++) {
+            for(var x=0,holder, intMaxSelectors = cSSSelectors.length;x<intMaxSelectors;x++) {
                 //cdebug(arrStyle);
-                switch(cSSSelectors[x].selectorText){
+                holder = cSSSelectors[x].selectorText;
+                
+                switch(holder){
                     case "#" + cId:
                     case "." + cClass:
                     case tag :
@@ -2010,28 +2015,24 @@ function setStyleGlobal(GLOBAL_styles, cId, cClass, tag) {
                     case "." + cClass + ":focus":
                     case tag + ":focus":
                         
-                        var ruleStyle = cSSSelectors[x].style ? cSSSelectors[x].style : cSSSelectors[x];
-                        var strCIdStyle = ruleStyle.cssText;
                         
-                        if(strCIdStyle){
-                            
-                            if(!GLOBAL_styles[cSSSelectors[x].selectorText]){
-                                //addToGlobalStyle("{" + strCIdStyle + "}",cSSSelectors[x].selectorText);
+                        //cdebug("<<<<< " + holder)(); 
+                        if(!GLOBAL_styles[holder]){
+                            var ruleStyle = cSSSelectors[x].style ? cSSSelectors[x].style : cSSSelectors[x];
+                            var strCIdStyle = ruleStyle.cssText;
+
+                            if(strCIdStyle){
+
                                 var ruleContainer = {};
-                                for (var keyname in ruleStyle){
-                                    //if(cClass==="colors" && ruleStyle[keyname] && ruleStyle[ruleStyle[keyname]])console.log(keyname + " >>> " + ruleStyle[keyname] + " >>> " + ruleStyle[ruleStyle[keyname]]);
-                                    if(isNumber(keyname)){
-                                        //console.log(strCIdStyle);
-                                        //console.log(keyname + "  >>>>>>> " + ruleStyle[keyname]);
-                                        ruleContainer[ruleStyle[keyname]]=ruleStyle[ruleStyle[keyname]];
-                                    }
+                                for(var i = 0,keyname; i<ruleStyle.length;i++){
+                                    keyname = ruleStyle[i];
+                                    //cdebug(keyname + "  >>>>>>> " + ruleStyle[keyname])();
+                                    ruleContainer[keyname] = ruleStyle[keyname];
                                 }
-                                GLOBAL_styles[cSSSelectors[x].selectorText] = $.extend(true,GLOBAL_styles[cSSSelectors[x].selectorText],ruleContainer);
-//                                console.log(cSSSelectors[x].selectorText + " vs " + ruleContainer["border-top-color"]);
-                            }
-                        }else{
-                            if(!GLOBAL_styles[cSSSelectors[x].selectorText]){
-                                GLOBAL_styles[cSSSelectors[x].selectorText] ={};
+                                
+                                GLOBAL_styles[holder] = ruleContainer;
+                            }else{
+                                GLOBAL_styles[holder] ={};
                             }
                         }
                         
@@ -2060,7 +2061,6 @@ function addToGlobalStyle(GLOBAL_styles,strCIdStyle,selectorText) {
     
     try {
         
-        
         strCIdStyle=strCIdStyle.split("{")[1];
         strCIdStyle=strCIdStyle.split("}")[0];
         var arrStylePairs = strCIdStyle.split(";");
@@ -2073,7 +2073,6 @@ function addToGlobalStyle(GLOBAL_styles,strCIdStyle,selectorText) {
             objTemp[styleKey] = styleVal;
         }
         GLOBAL_styles[selectorText] = objTemp;
-//        console.log(objTemp);
         
         return true;
     } catch (e) {
@@ -2107,6 +2106,7 @@ function setStyle_cEl(cEl) {
         if(!GLOBAL_styles["#" + cEl_fullId]){
             // just make an entry inside the main Global style variable
             setStyleGlobal(GLOBAL_styles,cEl_fullId, cEl.class, cEl.tag);
+            
         }
         
         cEl.style.default.tag =  GLOBAL_styles[cEl.tag];
@@ -2124,6 +2124,8 @@ function setStyle_cEl(cEl) {
         cEl.style.active.tag =  GLOBAL_styles[cEl.tag + ":active"];
         cEl.style.active.class = GLOBAL_styles["." + cEl.class + ":active"];
         cEl.style.active.name = GLOBAL_styles["#" + cEl_fullId + ":active"];
+        
+        
          
         return true;
         
